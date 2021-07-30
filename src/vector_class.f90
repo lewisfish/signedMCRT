@@ -11,7 +11,7 @@ Module vector_class
         generic   :: operator(/)     => vec_div_scal
         generic   :: operator(*)     => vec_mult_vec, vec_mult_scal, scal_mult_vec
         generic   :: operator(+)     => vec_add_vec, vec_add_scal, scal_add_vec
-        generic   :: operator(-)     => vec_minus_vec
+        generic   :: operator(-)     => vec_minus_vec, vec_minus_scal, scal_minus_vec
 
         procedure, pass(a), private :: vec_dot
 
@@ -26,6 +26,8 @@ Module vector_class
         procedure, pass(b), private :: scal_add_vec
 
         procedure, pass(a), private :: vec_minus_vec
+        procedure, pass(a), private :: vec_minus_scal
+        procedure, pass(b), private :: scal_minus_vec
 
     end type vector
 
@@ -109,6 +111,30 @@ Module vector_class
             scal_add_vec = vector(b%x + a, b%y + a, b%z + a)
 
         end function scal_add_vec
+
+
+        type(vector) function vec_minus_scal(a, b)
+
+            implicit none
+
+            class(vector), intent(IN) :: a
+            real,          intent(IN) :: b
+
+            vec_minus_scal = vector(a%x - b, a%y - b, a%z - b)
+
+        end function vec_minus_scal
+
+
+        type(vector) function scal_minus_vec(a, b)
+
+            implicit none
+
+            class(vector), intent(IN) :: b
+            real,          intent(IN) :: a
+
+            scal_minus_vec = vector(b%x - a, b%y - a, b%z - a)
+
+        end function scal_minus_vec
 
 
         type(vector) function vec_add_vec(a, b)

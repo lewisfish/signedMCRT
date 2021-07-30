@@ -107,12 +107,12 @@ CONTAINS
 
         type(cart_grid), intent(IN)    :: grid
         type(photon),    intent(INOUT) :: packet
-        type(cylinder), intent(IN) :: sdfs_array(:)
+        type(container), intent(IN) :: sdfs_array(:)
 
         type(istack) :: layer
 
-        real    :: tau, d_sdf, t_sdf, taurun, ds(3), eps
-        integer :: i, cur_layer, idxs(3)
+        real    :: tau, d_sdf, t_sdf, taurun, ds(size(sdfs_array)), eps
+        integer :: i, cur_layer, idxs(size(sdfs_array))
         type(vector) :: pos, dir
 
         pos = packet%pos
@@ -120,7 +120,7 @@ CONTAINS
 
         ds = 0.
         do i = 1, size(ds)
-            ds(i) = sdfs_array(i)%evaluate(pos)
+            ds(i) = abs(sdfs_array(i)%p%evaluate(pos))
         end do
 
         idxs = argsort(ds)
@@ -133,7 +133,7 @@ CONTAINS
         taurun = 0.
 
         cur_layer = layer%pop()
-        d_sdf = sdfs_array(cur_layer)%evaluate(pos)
+        d_sdf = abs(sdfs_array(cur_layer)%p%evaluate(pos))
 
         do while(packet%tflag .eqv. .false.)
             do while(d_sdf > eps)
@@ -151,7 +151,7 @@ CONTAINS
                 end if
                 ds = 0.
                 do i = 1, size(ds)
-                    ds(i) = sdfs_array(i)%evaluate(pos)
+                    ds(i) = abs(sdfs_array(i)%p%evaluate(pos))
                 end do
                 d_sdf = minval(ds,dim=1)
                 if(abs(pos%x) > grid%xmax)then
@@ -171,7 +171,7 @@ CONTAINS
             if(layer%peek() == -99)then
                 ds = 0.
                 do i = 1, size(ds)
-                    ds(i) = sdfs_array(i)%evaluate(pos)
+                    ds(i) = abs(sdfs_array(i)%p%evaluate(pos))
                 end do
 
                 idxs = argsort(ds)
@@ -185,7 +185,7 @@ CONTAINS
                 cur_layer = layer%pop()
                 ds = 0.
                 do i = 1, size(ds)
-                    ds(i) = sdfs_array(i)%evaluate(pos)
+                    ds(i) = abs(sdfs_array(i)%p%evaluate(pos))
                 end do
                 d_sdf = minval(ds,dim=1)
             end if

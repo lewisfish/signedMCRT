@@ -85,7 +85,6 @@ module photonMod
             this%nzp = this%cost
 
             this%tflag = .false.
-            this%inside = .false.
             this%layer = 2
 
             ! Linear Grid 
@@ -122,7 +121,6 @@ module photonMod
             this%nzp = this%cost
 
             this%tflag = .false.
-            this%inside = .false.
 
             ! Linear Grid 
             this%xcell=int(grid%nxg*(this%pos%x+grid%xmax)/(2.*grid%xmax))+1
@@ -208,7 +206,6 @@ module photonMod
             this%sinp = sin(this%phi)
 
             this%tflag = .false.
-            this%inside = .false.
 
             ! Linear Grid 
             this%xcell=int(grid%nxg*(this%pos%x+grid%xmax)/(2.*grid%xmax))+1

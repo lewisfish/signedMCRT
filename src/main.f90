@@ -60,7 +60,7 @@ end if
 !loop over photons 
 #ifdef _OPENMP
 !$omp parallel default(none) shared(array, grid, numproc, start, nphotons, bar)&
-!$omp& private(ran, id, packet, iseed, skip) reduction(+:nscatt)
+!$omp& private(ran, id, packet, iseed) reduction(+:nscatt)
     numproc = omp_get_num_threads()
     id = omp_get_thread_num()
 #elif MPI
