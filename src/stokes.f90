@@ -3,26 +3,23 @@ MODULE stokes_mod
 implicit none
 
 CONTAINS
-   subroutine stokes(packet, grid)
+   subroutine stokes(packet, hgg, g2)
 
    use constants, only : PI, TWOPI
    use random,    only : ran2   
    use photonMod
-   use gridMod
+   ! use gridMod
 
    implicit none
 
-   type(photon),    intent(INOUT) :: packet
-   type(cart_grid), intent(IN)    :: grid
+   type(photon), intent(INOUT) :: packet
+   real, intent(IN)    :: hgg, g2
    
    real :: costp, sintp, phip, bmu, b, ri1, ri3, cosi3, sini3
    real :: cosb2, sinbt, cosi2, sini1, cosi1, sini2, bott, cosdph
-   integer :: lay
-
-   lay = packet%layer
 
    !***** isotropic scattering if g = 0.0 ******************************
-   if(grid%hgg(lay) == 0.0) then
+   if(hgg == 0.0) then
       packet%cost=2.*ran2()-1.
       packet%sint=(1. - packet%cost**2)
       if(packet%sint.le.0.)then
@@ -47,7 +44,7 @@ CONTAINS
       sintp=packet%sint
       phip=packet%phi
 
-      bmu=((1.+grid%g2(lay))-((1.-grid%g2(lay))/(1.-grid%hgg(lay)+2.*grid%hgg(lay)*ran2()))**2)/(2.*grid%hgg(lay))
+      bmu=((1.+g2)-((1.-g2)/(1.-hgg+2.*hgg*ran2()))**2)/(2.*hgg)
       cosb2=bmu**2
       b=cosb2-1.
 

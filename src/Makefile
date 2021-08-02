@@ -1,4 +1,4 @@
-ifeq ($(FCOMP),gfortran)
+ifeq ($(FCOMP),gfortran-10)
 FCFLAGS = -O2 -cpp -freal-4-real-8 -march=native -flto -mavx
 FCDEBUG = -g -fbacktrace -fcheck=all -fbounds-check -ffpe-trap=invalid,overflow,underflow,denormal
 FCBUILD = -Wall -Wextra -pedantic -std=f2008

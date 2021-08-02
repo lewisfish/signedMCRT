@@ -18,7 +18,7 @@ function showhelp
 function makebuild
 {
   if [ "$comp" = 'gnu' ] && [ "$openmp" = 1 ];then
-      string="FCOMP=gfortran"
+      string="FCOMP=gfortran-10"
   elif [ "$comp" = 'gnu' ] && [ "$mpi" = 1 ];then
     string="FCOMP=/usr/bin/mpifort"
   elif [ "$comp" = 'intel' ] && [ "$openmp" = 1 ];then
@@ -26,23 +26,25 @@ function makebuild
   elif [ "$comp" = 'intel' ] && [ "$openmp" = 1 ];then
       string="FCOMP=mpiifort"
   else
-    string="FCOMP=gfortran"
+    string="FCOMP=gfortran-10"
   fi
 
   if [ "$debug" = 1 ];then
-    make clean && make debug $string
+    make clean
+    make debug $string
   elif [ "$NUM_CORES" = 0 ];then
-    make clean && make build $string
+    make clean
+    make build $string
   else
     if [ "$comp" = 'gnu' ];then
       if [ "$openmp" = 1 ];then
         export OMP_NUM_THREADS=$NUM_CORES
-        make clean && make mp $string
-      else
-        make clean && make $string
       fi
+        make clean &> null
+        make $string > null
     elif [ "$comp" = 'intel' ];then
-      make clean&& make $string
+      make clean &> null
+      make $string > null
     fi
   fi
 }
@@ -87,7 +89,7 @@ function run
       exit 0
   fi
 
-  mv mcgrid "$bdirc" && echo " "&& echo "*****Install complete*****" && echo " "
+  mv mcgrid "$bdirc" #&& echo " "&& echo "*****Install complete*****" && echo " "
 
   # clear
   cd ../bin

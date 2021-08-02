@@ -5,6 +5,7 @@ module sdfs
     implicit none
 
     type :: sdf
+        real :: mus, mua, kappa, albedo, hgg, g2, n
         contains
         procedure :: evaluate => evaluate_fn
     end type sdf
@@ -27,6 +28,10 @@ module sdfs
         procedure :: evaluate => eval_cylinder
     end type cylinder
 
+    interface cylinder
+        module procedure cylinder_init
+    end interface cylinder
+
     type, extends(sdf) :: box
         real :: length
         contains
@@ -41,13 +46,19 @@ module sdfs
         procedure :: evaluate => eval_model
     end type model
 
-    interface cylinder
-        module procedure cylinder_init
-    end interface cylinder
-
     interface model
         module procedure model_init
     end interface model
+
+    interface sphere
+        module procedure sphere_init
+    end interface sphere
+
+    interface box
+        module procedure box_init
+    end interface box
+
+
 
     abstract interface
         real function op(d1, d2)
@@ -57,21 +68,58 @@ module sdfs
     end interface
 
     private
-    public :: sdf, model, cylinder, sphere, container
-    public :: union, intersection, subtraction
+    public :: sdf, model, cylinder, sphere, box, container, model_init, op
+    public :: union, intersection, subtraction, calcNormal
 
     contains
 
+        type(vector) function calcNormal(p, obj)
+
+            implicit none
+
+            type(vector), intent(IN) :: p
+            class(sdf) :: obj
+
+            real :: h
+            type(vector) :: xyy, yyx, yxy, xxx
+
+            h = 1e-8
+            xyy = vector(1., -1., -1.)
+            yyx = vector(-1., -1., 1.)
+            yxy = vector(-1., 1., -1.)
+            xxx = vector(1., 1., 1.)
+
+            calcNormal = xyy*obj%evaluate(p + xyy*h) +  &
+                         yyx*obj%evaluate(p + yyx*h) +  &
+                         yxy*obj%evaluate(p + yxy*h) +  &
+                         xxx*obj%evaluate(p + xxx*h)
+
+            calcNormal = calcNormal%magnitude()
+
+        end function calcNormal
+
+
         function model_init(array, func) result(out)
-            
+        !TODO make sure optical properties are same in all inputs            
             implicit none
 
             type(model) :: out
-            procedure(op), pointer :: func
+
+            procedure(op) :: func
             type(container), intent(IN) :: array(:)
-            
+
             out%array = array
             out%func => func
+
+            associate(member => array(1)%p)
+                out%mus = member%mus
+                out%mua = member%mua
+                out%kappa = member%kappa
+                out%albedo = member%albedo
+                out%g2 = member%g2
+                out%hgg = member%hgg
+                out%n = member%n
+            end associate
 
         end function model_init
 
@@ -99,13 +147,13 @@ module sdfs
             type(vector), intent(IN) :: pos
         end function evaluate_fn
 
-        function cylinder_init(height, radius, c) result(out)
+        function cylinder_init(height, radius, mus, mua, hgg, n, c) result(out)
         
             implicit none
         
             type(cylinder) :: out
             
-            real, intent(IN) :: height, radius
+            real, intent(IN) :: height, radius, mus, mua, hgg, n
             type(vector), optional, intent(IN) :: c
             
             type(vector) :: centre
@@ -120,7 +168,68 @@ module sdfs
             out%radius = radius
             out%centre = centre
 
+            out%mus = mus
+            out%mua = mua
+            out%kappa = mus + mua
+            if(out%mua < 1d-9)then
+                out%albedo = 1.
+            else
+                out%albedo = mus / out%kappa
+            end if
+            out%hgg = hgg
+            out%g2 = hgg**2
+            out%n = n
+
         end function cylinder_init
+
+        function box_init(length, mus, mua, hgg, n) result(out)
+        
+            implicit none
+        
+            type(box) :: out
+            
+            real, intent(IN) :: length, mus, mua, hgg, n
+            
+            out%length = length
+
+            out%mus = mus
+            out%mua = mua
+            out%kappa = mus + mua
+            if(out%mua < 1d-9)then
+                out%albedo = 1.
+            else
+                out%albedo = mus / out%kappa
+            end if
+            out%hgg = hgg
+            out%g2 = hgg**2
+            out%n = n
+
+        end function box_init
+
+        function sphere_init(radius, mus, mua, hgg, n) result(out)
+        
+            implicit none
+        
+            type(sphere) :: out
+            
+            real, intent(IN) :: radius, mus, mua, hgg, n
+            
+            out%radius = radius
+
+            out%mus = mus
+            out%mua = mua
+            out%kappa = mus + mua
+            if(out%mua < 1d-9)then
+                out%albedo = 1.
+            else
+                out%albedo = mus / out%kappa
+            end if
+            out%hgg = hgg
+            out%g2 = hgg**2
+            out%n = n
+
+        end function sphere_init
+
 
         real function eval_cylinder(this, pos)
 
