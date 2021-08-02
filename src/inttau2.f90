@@ -111,11 +111,12 @@ CONTAINS
 
         type(istack) :: layer
 
-        real    :: tau, d_sdf, t_sdf, taurun, ds(size(sdfs_array)), eps
+        real    :: tau, d_sdf, t_sdf, taurun, ds(size(sdfs_array)), eps, dtot
         integer :: i, cur_layer, idxs(size(sdfs_array))
-        type(vector) :: pos, dir
+        type(vector) :: pos, dir, oldpos
 
         pos = packet%pos
+        oldpos = pos
         dir = vector(packet%nxp, packet%nyp, packet%nzp)
 
         ds = 0.
@@ -128,24 +129,24 @@ CONTAINS
             call layer%push(idxs(i))
         end do
 
-        eps = 1d-5
+        eps = 1d-8
         tau = -log(ran2())
         taurun = 0.
 
         cur_layer = layer%pop()
         d_sdf = abs(sdfs_array(cur_layer)%p%evaluate(pos))
-
+        dtot = 0.
         do while(packet%tflag .eqv. .false.)
             do while(d_sdf > eps)
-                t_sdf = d_sdf * grid%kappa(packet%layer)
+                t_sdf = d_sdf * sdfs_array(packet%layer)%p%kappa
                 if(taurun + t_sdf <= tau)then
                     taurun = taurun + t_sdf
-                    call update_jmean(pos, grid, dir, d_sdf, packet)
                     pos = pos + d_sdf * dir
+                    dtot = dtot + d_sdf
                 else
-                    d_sdf = (tau - taurun) / grid%kappa(packet%layer)
+                    d_sdf = (tau - taurun) / sdfs_array(packet%layer)%p%kappa
+                    dtot = dtot + d_sdf
                     taurun = tau
-                    call update_jmean(pos, grid, dir, d_sdf, packet)
                     pos = pos + d_sdf * dir
                     exit
                 end if
@@ -192,6 +193,7 @@ CONTAINS
                 packet%layer = cur_layer
         end do
 
+        call update_jmean(oldpos, grid, dir, dtot, packet)
         packet%pos = pos
 
         if(abs(packet%pos%x) > grid%xmax)then
