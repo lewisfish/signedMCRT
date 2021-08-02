@@ -39,9 +39,6 @@ real    :: nscattGLOBAL
 
 call setup_simulation(nphotons, grid)
 
-array(1) = cylinder(1000., 0.5)
-array(2) = cylinder(1000., 0.6)
-array(3) = cylinder(1000., 1.75)
 
 start = get_time()
 id = 0
@@ -69,7 +66,7 @@ end if
     numproc = 1
     id = 0
 #endif
-if(id == 0)print*,'Photons now running on', numproc,' cores.'
+if(id == 0)print("(a,I3.1,a)"),'Photons now running on', numproc,' cores.'
 
 nscatt = 0
 !init photon object
@@ -80,10 +77,8 @@ call init_rng(123456789)
 
 
 bar = pbar(nphotons/ 100000)
-
 !$OMP do
 do j = 1, nphotons
-
     if(mod(j, 100000) == 0)call bar%progress()
 
     ! Release photon from point source 
@@ -91,12 +86,12 @@ do j = 1, nphotons
 
     ! Find scattering location
     call tauint2(packet, grid, array)
-
     ! Photon scatters in grid until it exits (tflag=TRUE) 
+
     do while(packet%tflag .eqv. .FALSE.)
         ran = ran2()
-        if(ran < grid%albedo(packet%layer))then!interacts with tissue
-            call stokes(packet, grid)
+        if(ran < array(packet%layer)%p%albedo)then!interacts with tissue
+            call stokes(packet, array(packet%layer)%p%hgg, array(packet%layer)%p%g2)
             nscatt = nscatt + 1        
         else
             packet%tflag = .true.
@@ -105,7 +100,6 @@ do j = 1, nphotons
         
         !Find next scattering location
         call tauint2(packet, grid, array)
-    
     end do
 end do
 

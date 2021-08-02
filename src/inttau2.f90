@@ -119,11 +119,11 @@ CONTAINS
         oldpos = pos
         dir = vector(packet%nxp, packet%nyp, packet%nzp)
 
+        !setup sdf distance and current layer
         ds = 0.
         do i = 1, size(ds)
             ds(i) = abs(sdfs_array(i)%p%evaluate(pos))
         end do
-
         idxs = argsort(ds)
         do i = size(idxs), 1, -1
             call layer%push(idxs(i))
@@ -140,60 +140,45 @@ CONTAINS
             do while(d_sdf > eps)
                 t_sdf = d_sdf * sdfs_array(packet%layer)%p%kappa
                 if(taurun + t_sdf <= tau)then
+                    !move full distance to sdf
                     taurun = taurun + t_sdf
                     pos = pos + d_sdf * dir
                     dtot = dtot + d_sdf
                 else
+                    !run out of tau so move remaining tau and exit
                     d_sdf = (tau - taurun) / sdfs_array(packet%layer)%p%kappa
                     dtot = dtot + d_sdf
                     taurun = tau
                     pos = pos + d_sdf * dir
                     exit
                 end if
+                ! get distance to nearest sdf
                 ds = 0.
                 do i = 1, size(ds)
                     ds(i) = abs(sdfs_array(i)%p%evaluate(pos))
                 end do
                 d_sdf = minval(ds,dim=1)
-                if(abs(pos%x) > grid%xmax)then
-                    packet%tflag = .true.
-                    exit
-                elseif(abs(pos%y) > grid%ymax)then
-                    packet%tflag = .true.
-                    exit
-                elseif(abs(pos%z) > grid%zmax)then
-                    packet%tflag = .true.
-                    exit
-                end if
             end do
             ! print*,pos
-            if(taurun >= tau)exit
+            if(taurun >= tau)exit!exit if run out of tau
 
-            if(layer%peek() == -99)then
-                ds = 0.
-                do i = 1, size(ds)
-                    ds(i) = abs(sdfs_array(i)%p%evaluate(pos))
-                end do
-
-                idxs = argsort(ds)
-                do i = size(idxs), 1, -1
-                    call layer%push(idxs(i))
-                end do
-
-                cur_layer = layer%pop()
-                d_sdf = 10.*eps
-            else
-                cur_layer = layer%pop()
-                ds = 0.
-                do i = 1, size(ds)
-                    ds(i) = abs(sdfs_array(i)%p%evaluate(pos))
-                end do
-                d_sdf = minval(ds,dim=1)
-            end if
-                packet%layer = cur_layer
+            !reset sdf stack and get new layer
+            ds = 0.
+            do i = 1, size(ds)
+                ds(i) = abs(sdfs_array(i)%p%evaluate(pos))
+            end do
+            cur_layer = layer%pop()
+            d_sdf = eps + minval(abs(ds),dim=1)
+            packet%layer = cur_layer
+            
+            !if outside last sdf exit
+            if(packet%layer == size(sdfs_array))then
+                packet%tflag=.true.
+                exit
+            end if    
         end do
 
-        call update_jmean(oldpos, grid, dir, dtot, packet)
+        ! call update_jmean(oldpos, grid, dir, dtot, packet)
         packet%pos = pos
 
         if(abs(packet%pos%x) > grid%xmax)then

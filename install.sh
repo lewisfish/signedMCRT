@@ -36,14 +36,14 @@ function makebuild
     make clean
     make build $string
   else
+    make clean &> null
     if [ "$comp" = 'gnu' ];then
       if [ "$openmp" = 1 ];then
         export OMP_NUM_THREADS=$NUM_CORES
+        make mp $string > null
       fi
-        make clean &> null
         make $string > null
     elif [ "$comp" = 'intel' ];then
-      make clean &> null
       make $string > null
     fi
   fi
