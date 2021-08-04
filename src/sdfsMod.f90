@@ -6,6 +6,8 @@ module sdfs
 
     type :: sdf
         real :: mus, mua, kappa, albedo, hgg, g2, n
+        real :: transform(3, 3)
+        integer :: layer
         contains
         procedure :: evaluate => evaluate_fn
     end type sdf
@@ -16,6 +18,7 @@ module sdfs
 
     type, extends(sdf) :: sphere
         real :: radius
+        type(vector) :: centre
         contains
         procedure :: evaluate => eval_sphere
     end type sphere
@@ -69,7 +72,7 @@ module sdfs
 
     private
     public :: sdf, model, cylinder, sphere, box, container, model_init, op
-    public :: union, intersection, subtraction, calcNormal
+    public :: union, intersection, subtraction, calcNormal, rotate_x, rotate_y, rotate_z, identity
 
     contains
 
@@ -119,6 +122,7 @@ module sdfs
                 out%g2 = member%g2
                 out%hgg = member%hgg
                 out%n = member%n
+                out%layer = member%layer
             end associate
 
         end function model_init
@@ -147,16 +151,19 @@ module sdfs
             type(vector), intent(IN) :: pos
         end function evaluate_fn
 
-        function cylinder_init(height, radius, mus, mua, hgg, n, c) result(out)
+        function cylinder_init(height, radius, mus, mua, hgg, n, layer, c, transform) result(out)
         
             implicit none
         
             type(cylinder) :: out
             
             real, intent(IN) :: height, radius, mus, mua, hgg, n
+            integer, intent(IN) :: layer
             type(vector), optional, intent(IN) :: c
-            
+            real, optional :: transform(3, 3)
+
             type(vector) :: centre
+            real         :: t(3, 3)
 
             if(present(c))then
                 centre = c
@@ -164,9 +171,17 @@ module sdfs
                 centre = vector(0., 0., 0.)
             end if
 
+            if(present(transform))then
+                t = transform
+            else
+                t = identity()
+            end if
+
             out%height = height
             out%radius = radius
             out%centre = centre
+            out%layer = layer
+            out%transform = t
 
             out%mus = mus
             out%mua = mua
@@ -182,15 +197,17 @@ module sdfs
 
         end function cylinder_init
 
-        function box_init(length, mus, mua, hgg, n) result(out)
+        function box_init(length, mus, mua, hgg, n, layer) result(out)
         
             implicit none
         
             type(box) :: out
             
             real, intent(IN) :: length, mus, mua, hgg, n
-            
+            integer, intent(IN) :: layer
+
             out%length = length
+            out%layer = layer
 
             out%mus = mus
             out%mua = mua
@@ -206,15 +223,27 @@ module sdfs
 
         end function box_init
 
-        function sphere_init(radius, mus, mua, hgg, n) result(out)
+        function sphere_init(radius, mus, mua, hgg, n, layer, c) result(out)
         
             implicit none
         
             type(sphere) :: out
             
             real, intent(IN) :: radius, mus, mua, hgg, n
-            
+            integer, intent(IN) :: layer
+            type(vector), optional, intent(IN) :: c
+
+            type(vector) :: centre
+
+            if(present(c))then
+                centre = c
+            else
+                centre = vector(0., 0., 0.)
+            end if
+
             out%radius = radius
+            out%layer = layer
+            out%centre = centre
 
             out%mus = mus
             out%mua = mua
@@ -238,7 +267,10 @@ module sdfs
             class(cylinder) :: this
             type(vector), intent(IN) :: pos
 
-            eval_cylinder = cylinder_fn(translate_fn(pos, this%centre), this%radius, this%height)
+            type(vector) :: p
+
+            p = translate_fn(pos, this%centre) .dot. this%transform
+            eval_cylinder = cylinder_fn(p, this%radius, this%height)
 
         end function eval_cylinder
 
@@ -250,7 +282,7 @@ module sdfs
             class(sphere) :: this
             type(vector), intent(IN) :: pos
 
-            eval_sphere = sphere_fn(pos, this%radius)
+            eval_sphere = sphere_fn(translate_fn(pos, this%centre), this%radius)
 
         end function eval_sphere
 
@@ -349,4 +381,63 @@ module sdfs
 
         end function intersection
 
+        function rotate_x(angle) result(r)
+        ! rotation funcs from https://inspirnathan.com/posts/54-shadertoy-tutorial-part-8/
+            implicit none
+            
+            real, intent(IN) :: angle
+            real :: r(3, 3), c, s
+
+            c = cos(angle)
+            s = sin(angle)
+
+            r(:, 1) = [1., 0., 0.]
+            r(:, 2) = [0., c, s]
+            r(:, 3) = [0., s, c]
+
+        end function rotate_x
+
+        function rotate_y(angle) result(r)
+            
+            implicit none
+            
+            real, intent(IN) :: angle
+            real :: r(3, 3), c, s
+
+            c = cos(angle)
+            s = sin(angle)
+
+            r(:, 1) = [c, 0., s]
+            r(:, 2) = [0., 1., 0.]
+            r(:, 3) = [-s, 0., c]
+
+        end function rotate_y
+
+        function rotate_z(angle) result(r)
+            
+            implicit none
+            
+            real, intent(IN) :: angle
+            real :: r(3, 3), c, s
+
+            c = cos(angle)
+            s = sin(angle)
+
+            r(:, 1) = [c, -s, 0.]
+            r(:, 2) = [s, c, 0.]
+            r(:, 3) = [0., 0., 1.]
+
+        end function rotate_z
+
+        function identity() result(r)
+            
+            implicit none
+            
+            real :: r(3, 3)
+
+            r(:, 1) = [1., 0., 0.]
+            r(:, 2) = [0., 1., 0.]
+            r(:, 3) = [0., 0., 1.]
+
+        end function identity
 end module sdfs

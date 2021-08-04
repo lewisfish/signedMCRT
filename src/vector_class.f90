@@ -7,13 +7,14 @@ Module vector_class
         procedure :: magnitude       => magnitude_fn
         procedure :: print           => print_sub
         procedure :: length          => length
-        generic   :: operator(.dot.) => vec_dot
+        generic   :: operator(.dot.) => vec_dot_vec, vec_dot_mat
         generic   :: operator(/)     => vec_div_scal
         generic   :: operator(*)     => vec_mult_vec, vec_mult_scal, scal_mult_vec
         generic   :: operator(+)     => vec_add_vec, vec_add_scal, scal_add_vec
         generic   :: operator(-)     => vec_minus_vec, vec_minus_scal, scal_minus_vec
 
-        procedure, pass(a), private :: vec_dot
+        procedure, pass(a), private :: vec_dot_vec
+        procedure, pass(a), private :: vec_dot_mat
 
         procedure, pass(a), private :: vec_div_scal
 
@@ -149,7 +150,7 @@ Module vector_class
         end function vec_add_vec
 
 
-        elemental function vec_dot(a, b) result (dot)
+        elemental function vec_dot_vec(a, b) result (dot)
 
             implicit none
 
@@ -159,8 +160,21 @@ Module vector_class
 
             dot = (a%x * b%x) + (a%y * b%y) + (a%z * b%z)
 
-        end function vec_dot
+        end function vec_dot_vec
 
+        function vec_dot_mat(a, b) result (dot)
+
+            implicit none
+
+            class(vector), intent(IN) :: a
+            real,          intent(IN) :: b(3, 3)
+            type(vector) :: dot
+
+            dot%x = b(1, 1)*a%x + b(2, 1)*a%y + b(3, 1)*a%z
+            dot%y = b(1, 2)*a%x + b(2, 2)*a%y + b(3, 2)*a%z
+            dot%z = b(1, 3)*a%x + b(2, 3)*a%y + b(3, 3)*a%z
+
+        end function vec_dot_mat
 
         type(vector) function vec_mult_vec(a, b)
 

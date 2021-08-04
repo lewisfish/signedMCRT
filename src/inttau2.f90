@@ -109,11 +109,10 @@ CONTAINS
         type(photon),    intent(INOUT) :: packet
         type(container), intent(IN) :: sdfs_array(:)
 
-        type(istack) :: layer
-
-        real    :: tau, d_sdf, t_sdf, taurun, ds(size(sdfs_array)), eps, dtot
-        integer :: i, cur_layer, idxs(size(sdfs_array))
-        type(vector) :: pos, dir, oldpos
+        real         :: tau, d_sdf, t_sdf, taurun, ds(size(sdfs_array)), dstmp(size(sdfs_array))
+        real         :: eps, dtot, signs(size(sdfs_array))
+        integer      :: i, cur_layer
+        type(vector) :: pos, dir, oldpos, normal
 
         pos = packet%pos
         oldpos = pos
@@ -124,17 +123,13 @@ CONTAINS
         do i = 1, size(ds)
             ds(i) = abs(sdfs_array(i)%p%evaluate(pos))
         end do
-        idxs = argsort(ds)
-        do i = size(idxs), 1, -1
-            call layer%push(idxs(i))
-        end do
+        d_sdf = minval(ds)
 
         eps = 1d-8
         tau = -log(ran2())
         taurun = 0.
 
-        cur_layer = layer%pop()
-        d_sdf = abs(sdfs_array(cur_layer)%p%evaluate(pos))
+        cur_layer = packet%layer
         dtot = 0.
         do while(packet%tflag .eqv. .false.)
             do while(d_sdf > eps)
@@ -155,30 +150,52 @@ CONTAINS
                 ! get distance to nearest sdf
                 ds = 0.
                 do i = 1, size(ds)
-                    ds(i) = abs(sdfs_array(i)%p%evaluate(pos))
+                    ds(i) = sdfs_array(i)%p%evaluate(pos)
                 end do
-                d_sdf = minval(ds,dim=1)
+                d_sdf = minval(abs(ds),dim=1)
+                if(minval(ds) >= 0.)then
+                    packet%tflag = .true.
+                    exit
+                end if
             end do
             ! print*,pos
-            if(taurun >= tau)exit!exit if run out of tau
 
-            !reset sdf stack and get new layer
+            if(packet%tflag)exit
+            if(taurun >= tau)then
+                exit
+            end if
             ds = 0.
             do i = 1, size(ds)
-                ds(i) = abs(sdfs_array(i)%p%evaluate(pos))
+                ds(i) = sdfs_array(i)%p%evaluate(pos)
             end do
-            cur_layer = layer%pop()
-            d_sdf = eps + minval(abs(ds),dim=1)
+            dstmp = ds
+            ds = abs(ds)
+
+            d_sdf = minval(ds) + 5.*eps
+            pos = pos + d_sdf*dir
+            ds = 0.
+            do i = 1, size(ds)
+                ds(i) = sdfs_array(i)%p%evaluate(pos)
+            end do
+
+            signs = 0.
+            do i = 1, size(ds)
+                if(dstmp(i) > ds(i) .or. ds(i) < 0.)then
+                    signs(i) = -1.
+                else
+                    signs(i) = 1.
+                end if
+            end do
+            cur_layer = minloc(signs,dim=1)
             packet%layer = cur_layer
-            
-            !if outside last sdf exit
-            if(packet%layer == size(sdfs_array))then
-                packet%tflag=.true.
+
+            if(minval(dstmp) > 0.)then
+                packet%tflag = .true.
                 exit
-            end if    
+            end if
         end do
 
-        ! call update_jmean(oldpos, grid, dir, dtot, packet)
+        call update_jmean(oldpos, grid, dir, dtot, packet)
         packet%pos = pos
 
         if(abs(packet%pos%x) > grid%xmax)then
