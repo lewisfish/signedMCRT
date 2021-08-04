@@ -9,6 +9,8 @@ https://iquilezles.org/www/articles/distfunctions/distfunctions.htm
 What can be modelled with SDF's
 https://iquilezles.org/www/articles/raymarchingdf/raymarchingdf.htm
 
-## Example of SDF model produced by signedMCRT (rendered in Blender)
-
-![Image of SDF model](https://github.com/lewisfish/signedMCRT/raw/main/Screenshot%20from%202021-08-04%2016-22-48.png)
+## Example of SDF model produced by signedMCRT
+"Ray traced" in signedMCRT
+![Image of SDF model ray traced in signedMCRT](https://github.com/lewisfish/signedMCRT/raw/main/omg_image.png)
+Blender render
+![Image of SDF model in blender](https://github.com/lewisfish/signedMCRT/raw/main/Screenshot%20from%202021-08-04%2016-22-48.png)
