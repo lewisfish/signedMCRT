@@ -10,7 +10,11 @@ What can be modelled with SDF's
 https://iquilezles.org/www/articles/raymarchingdf/raymarchingdf.htm
 
 ## Example of SDF model produced by signedMCRT
-"Ray traced" in signedMCRT
-![Image of SDF model ray traced in signedMCRT](https://github.com/lewisfish/signedMCRT/raw/main/omg_image.png)
+
+"Ray traced" in signedMCRT where the letters are highly absorbing in a non-scattering/absorbing medium.
+
+![Image of SDF model ray traced in signedMCRT](https://github.com/lewisfish/signedMCRT/raw/main/omg_image_signedmcrt.png)
+
 Blender render
-![Image of SDF model in blender](https://github.com/lewisfish/signedMCRT/raw/main/Screenshot%20from%202021-08-04%2016-22-48.png)
+
+![Image of SDF model in blender](https://github.com/lewisfish/signedMCRT/raw/main/blender-omg-smooth.png)
