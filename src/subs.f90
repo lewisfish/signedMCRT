@@ -8,7 +8,7 @@ private :: directory, alloc_array, zarray
 
     contains
 
-        subroutine setup_simulation(nphotons, grid, sdfarray)
+        subroutine setup_simulation(nphotons, grid, sdfarray, choice, tau)
         ! Read in parameters
             use constants, only : resdir
             use ch_opt
@@ -20,6 +20,8 @@ private :: directory, alloc_array, zarray
             integer,                  intent(OUT) :: nphotons
             type(cart_grid),          intent(OUT) :: grid
             type(container), allocatable,         intent(OUT) :: sdfarray(:)
+            character(*), intent(IN) :: choice
+            real, optional, intent(IN) :: tau
 
             real    :: xmax, ymax, zmax, albedo(3), hgg(3), g2(3),kappa(3), n1, n2
             integer :: nxg, nyg, nzg, u
@@ -47,8 +49,88 @@ private :: directory, alloc_array, zarray
             grid = cart_grid(nxg, nyg, nzg, xmax, ymax, zmax, n1, n2)
             call init_opt1(kappa, albedo, hgg, g2)
 
-            sdfarray = setup_omg_sdf()
+            if(choice == "omg")then
+                sdfarray = setup_omg_sdf()
+            elseif(choice == "scat_test")then
+                if(.not. present(tau))error stop "No tau provided"
+                sdfarray = setup_scat_test(tau)
+            elseif(choice == "fresnel_test")then
+                sdfarray = setup_fresnel_test()
+            else
+                error stop "no such routine"
+            end if
+
         end subroutine setup_simulation
+
+        function setup_fresnel_test() result(array)
+
+            use sdfs, only : container, box
+            use vector_class
+
+            implicit none
+
+            type(container), allocatable :: array(:)
+
+            type(box), target, save :: bbox, fibre
+
+            integer :: i, layer
+            real    :: mus, mua, hgg, n
+
+            layer = 1
+            n = 1.d0
+            hgg = 0.d0
+            mua = .1
+            mus = 0.d0
+
+            fibre = box(1., mus, mua, hgg, 1.5, layer)
+            bbox  = box(2., mus, mua, hgg, n, 2)
+
+            allocate(array(2))
+            do i = 1, size(array)
+                allocate(array(i)%p)
+            end do
+
+            array(1)%p => fibre
+            array(2)%p => bbox
+
+        end function setup_fresnel_test
+
+
+
+        function setup_scat_test(tau) result(array)
+
+            use sdfs, only : container, sphere, box
+            use vector_class
+
+            implicit none
+
+            type(container), allocatable :: array(:)
+            real, intent(IN) :: tau
+
+            type(sphere), target, save :: sph
+            type(box), target, save :: bbox
+
+            integer :: i, layer
+            real :: mus, mua, hgg, n
+
+            layer = 1
+            n = 1.d0
+            hgg = 0.d0
+            mua = 1d-17
+            mus = tau
+
+            sph = sphere(1., mus, mua, hgg, n, layer)
+            bbox = box(2., 0.d0, mua, hgg, n, 2)
+
+            allocate(array(2))
+            do i = 1, size(array)
+                allocate(array(i)%p)
+            end do
+
+            array(1)%p => sph
+            array(2)%p => bbox
+
+        end function setup_scat_test
 
         function setup_omg_sdf() result(array)
             
@@ -69,10 +151,10 @@ private :: directory, alloc_array, zarray
             real    :: t(3, 3), mus, mua, hgg, n
             integer :: j, layer
 
-            mus = 0.
-            mua = 1000.
-            hgg = 0.9d0
-            n = 1.
+            mus = 10.
+            mua = 0.
+            hgg = 0.0d0
+            n = 2.65
             layer = 1
 
             !O letter
@@ -104,7 +186,7 @@ private :: directory, alloc_array, zarray
             g(5) = cylinder(.125, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,.9),transform=t)
 
             !bbox
-            boxy = box(2., 0.d0, 1.d-17, 0.d0, 1., 2)
+            boxy = box(2., 0.d0, 100., 0.d0, 1.0, 2)
 
             allocate(array(2))
             do j = 1, size(array)
@@ -178,7 +260,7 @@ private :: directory, alloc_array, zarray
 
             integer, intent(IN) :: nxg, nyg, nzg
 
-            allocate(jmean(nxg, nyg, nzg+1), jmeanGLOBAL(nxg, nyg, nzg+1))
+            allocate(jmean(nxg, nyg, nzg), jmeanGLOBAL(nxg, nyg, nzg))
 
         end subroutine alloc_array
 

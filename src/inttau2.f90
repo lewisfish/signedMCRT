@@ -110,9 +110,10 @@ CONTAINS
         type(container), intent(IN) :: sdfs_array(:)
 
         real         :: tau, d_sdf, t_sdf, taurun, ds(size(sdfs_array)), dstmp(size(sdfs_array))
-        real         :: eps, dtot, signs(size(sdfs_array))
-        integer      :: i, cur_layer
-        type(vector) :: pos, dir, oldpos
+        real         :: eps, dtot, signs(size(sdfs_array)), n1, n2
+        integer      :: i, cur_layer, oldlayer
+        type(vector) :: pos, dir, oldpos, N
+        logical :: rflag
 
         pos = packet%pos
         oldpos = pos
@@ -160,7 +161,9 @@ CONTAINS
             end do
             ! print*,pos
 
-            if(packet%tflag)exit
+            if(packet%tflag)then
+                exit
+            end if
             if(taurun >= tau)then
                 exit
             end if
@@ -186,7 +189,22 @@ CONTAINS
                     signs(i) = 1.
                 end if
             end do
+            n1 = sdfs_array(cur_layer)%p%n
+            oldlayer = cur_layer
             cur_layer = minloc(signs,dim=1)
+            n2 = sdfs_array(cur_layer)%p%n
+
+            if (n1 /= n2)then
+                N = calcNormal(pos, sdfs_array(cur_layer)%p)
+                N = N%magnitude()
+                rflag = .false.
+                call update_jmean(oldpos, grid, dir, dtot, packet)
+                dtot = 0.
+                call reflect_refract(dir, N, n1, n2, rflag)
+                if(rflag)then
+                    cur_layer = oldlayer
+                end if
+            end if
             packet%layer = cur_layer
 
             if(minval(dstmp) > 0.)then
@@ -195,8 +213,8 @@ CONTAINS
             end if
         end do
 
-        call update_jmean(oldpos, grid, dir, dtot, packet)
         packet%pos = pos
+        call update_jmean(oldpos, grid, dir, dtot, packet)
 
         if(abs(packet%pos%x) > grid%xmax)then
             packet%tflag = .true.
@@ -251,7 +269,7 @@ CONTAINS
                 call update_pos(old_pos, grid, celli, cellj, cellk, dcell, .true., dir, ldir, delta)
             end if
         end do
-
+        pos = vector(old_pos%x-grid%xmax, old_pos%y-grid%ymax, old_pos%z-grid%zmax)
         packet%xcell = celli
         packet%ycell = cellj
         packet%zcell = cellk
@@ -304,7 +322,7 @@ CONTAINS
 
         wall_dist = min(dx, dy, dz)
         if(wall_dist < 0.)then
-            ! print*,'dcell < 0.0 warning! ',wall_dist,dx,dy,dz,dir
+            print*,'dcell < 0.0 warning! ',wall_dist,dx,dy,dz,dir
             ! error stop 1
         end if
 

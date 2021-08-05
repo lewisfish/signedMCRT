@@ -1,6 +1,8 @@
-from skimage import measure
-import numpy as np
+from argparse import ArgumentParser
 import struct
+
+from skimage import measure  # type: ignore[import]
+import numpy as np  # type: ignore[import]
 
 
 def write_binary_stl(path, points):
@@ -23,11 +25,21 @@ def marching_cubes(volume, level=0):
     return verts[faces].reshape((-1, 3))
 
 
-file = "model.dat"
-data = np.fromfile(file, sep="", dtype=np.float64)
-data = data.reshape(401, 401, 401)
+parser = ArgumentParser()
+parser.add_argument("-f", "--file", type=str,
+                    help="Name of file to be plotted.")
+parser.add_argument("-n", "--ndim", type=int, default=200,
+                    help="Gives the dimensions of the data cube to be examined.")
+parser.add_argument("-l", "--levels", type=int, default=0,
+                    help="Isolevel to render a contour on.")
 
-points = marching_cubes(data)
+args = parser.parse_args()
+
+
+data = np.fromfile(args.file, sep="", dtype=np.float64)
+data = data.reshape(args.ndim, args.ndim, args.ndim)
+
+points = marching_cubes(data, level=args.levels)
 points -= np.amin(points)
 points /= np.amax(points)
 write_binary_stl("out.stl", points)
