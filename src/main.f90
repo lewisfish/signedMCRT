@@ -32,13 +32,13 @@ double precision :: nscatt
 real             :: ran, start, time_taken
 type(pbar)       :: bar
 
-type(cylinder) :: array(3)
+type(container), allocatable :: array(:)!, cnta(10)
 ! mpi/mp variables
 integer :: id, numproc
 real    :: nscattGLOBAL
 
-call setup_simulation(nphotons, grid)
-
+call setup_simulation(nphotons, grid, array)
+call render(array, grid%xmax, 400)
 
 start = get_time()
 id = 0
@@ -83,11 +83,10 @@ do j = 1, nphotons
 
     ! Release photon from point source 
     call packet%emit(grid, iseed)
-
     ! Find scattering location
     call tauint2(packet, grid, array)
-    ! Photon scatters in grid until it exits (tflag=TRUE) 
 
+    ! Photon scatters in grid until it exits (tflag=TRUE) 
     do while(packet%tflag .eqv. .FALSE.)
         ran = ran2()
         if(ran < array(packet%layer)%p%albedo)then!interacts with tissue

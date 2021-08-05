@@ -83,7 +83,7 @@ module utils
     end interface
 
     private
-    public :: str, swap, colour, mem_free, chdir
+    public :: str, swap, colour, mem_free, chdir, mix, clamp
     public :: bold, italic, underline, strikethrough, black, red, green, yellow, blue, magenta, cyan, white
     public :: black_b, red_b, green_b, yellow_b, blue_b, magenta_b, cyan_b, white_b, pbar
 
@@ -174,6 +174,32 @@ module utils
             err = c_chdir(trim(path)//c_null_char)
             if(present(error))error = err
         end subroutine chdir
+
+        pure real function clamp(val, lo, hi)
+
+            implicit none
+
+            real, intent(IN) :: val, hi, lo
+
+            if(val < lo)then
+                clamp = lo
+            elseif(val > hi)then
+                clamp = hi
+            else
+                clamp = val
+            end if
+
+        end function clamp
+
+        pure real function mix(x, y, a)
+
+            implicit none
+
+            real, intent(IN) :: x, y, a
+
+            mix = x*(1. - a) + y*a
+
+        end function mix
 
         subroutine swap_I(a, b)
 

@@ -8,16 +8,18 @@ private :: directory, alloc_array, zarray
 
     contains
 
-        subroutine setup_simulation(nphotons, grid)
+        subroutine setup_simulation(nphotons, grid, sdfarray)
         ! Read in parameters
             use constants, only : resdir
             use ch_opt
             use gridMod,   only : cart_grid
+            use sdfs, only : container
 
             implicit none
 
             integer,                  intent(OUT) :: nphotons
             type(cart_grid),          intent(OUT) :: grid
+            type(container), allocatable,         intent(OUT) :: sdfarray(:)
 
             real    :: xmax, ymax, zmax, albedo(3), hgg(3), g2(3),kappa(3), n1, n2
             integer :: nxg, nyg, nzg, u
@@ -45,7 +47,91 @@ private :: directory, alloc_array, zarray
             grid = cart_grid(nxg, nyg, nzg, xmax, ymax, zmax, n1, n2)
             call init_opt1(kappa, albedo, hgg, g2)
 
+            sdfarray = setup_omg_sdf()
         end subroutine setup_simulation
+
+        function setup_omg_sdf() result(array)
+            
+            use sdfs,      only : container, cylinder, torus, model, box, smoothunion, rotate_y, model_init
+            use constants, only : pi
+            
+            use vector_class
+
+            implicit none
+
+            type(container), allocatable :: array(:)
+
+            type(container) :: cnta(10)
+            type(cylinder), target, save :: m(4), g(5)!save needed as these
+            type(torus),    target, save :: sph       !are deallocated on sub exit
+            type(box),      target, save :: boxy      !should be safe as this sub only called once
+            type(model),    target, save :: omg_sdf
+            real    :: t(3, 3), mus, mua, hgg, n
+            integer :: j, layer
+
+            mus = 0.
+            mua = 1000.
+            hgg = 0.9d0
+            n = 1.
+            layer = 1
+
+            !O letter
+            sph = torus(.2, 0.05, mus, mua, hgg, n, layer, c=vector(0., 0., -0.75))
+            
+            !M letter
+            m(1) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,-.25))
+            
+            t = rotate_y(-25.*pi/180.)
+            m(2) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,-.125), transform=t)
+            
+            t = rotate_y(25.*pi/180.)
+            m(3) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,.125), transform=t)
+
+            m(4) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,.25))
+
+            !G letter
+            g(1) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,.6))
+
+            t = rotate_y(90.*pi/180.)
+            g(2) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.25,0.,.775),transform=t)
+
+            t = rotate_y(90.*pi/180.)
+            g(3) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(-0.25, 0.,.775),transform=t)
+
+            g(4) = cylinder(.125, .05, mus, mua, hgg, n, layer, c=vector(-0.1,0.,1.))
+
+            t = rotate_y(90.*pi/180.)
+            g(5) = cylinder(.125, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,.9),transform=t)
+
+            !bbox
+            boxy = box(2., 0.d0, 1.d-17, 0.d0, 1., 2)
+
+            allocate(array(2))
+            do j = 1, size(array)
+                allocate(array(j)%p)
+            end do
+
+            do j = 1, size(cnta)
+                allocate(cnta(j)%p)
+            end do
+
+            cnta(1)%p => m(1)
+            cnta(2)%p => m(2)
+            cnta(3)%p => m(3)
+            cnta(4)%p => m(4)
+            cnta(5)%p => sph
+            cnta(6)%p => g(1)
+            cnta(7)%p => g(2)
+            cnta(8)%p => g(3)
+            cnta(9)%p => g(4)
+            cnta(10)%p => g(5)
+
+            omg_sdf = model_init(cnta, smoothunion)
+
+            array(1)%p => omg_sdf ! model
+            array(2)%p => boxy    ! bbox
+
+        end function setup_omg_sdf
 
         subroutine directory
         !  subroutine defines vars to hold paths to various folders   

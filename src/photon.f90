@@ -70,17 +70,17 @@ module photonMod
             type(cart_grid), intent(IN)    :: grid
             integer,         intent(INOUT) :: iseed
 
-            this%pos%z = -grid%zmax - epsilon(1.)
             this%pos%x = ranu(-grid%xmax, grid%xmax)
-            this%pos%y = ranu(-grid%ymax, grid%ymax)
+            this%pos%y = .98!ranu(-grid%ymax, grid%ymax)
+            this%pos%z = ranu(-grid%zmax, grid%zmax)!epsilon(1.)
 
-            this%phi = 0.!ran2()*twoPI
+            this%phi  = 0.!ran2()*twoPI
             this%cosp = 0.!cos(this%phi)
-            this%sinp = 0.!sin(this%phi)       
-            this%cost = 1.!2.*ran2()-1.
-            this%sint =  0.!sqrt(1. - this%cost**2)
+            this%sinp = -1.!sin(this%phi)
+            this%cost = 0.!2.*ran2()-1.
+            this%sint = 1.!sqrt(1. - this%cost**2)
 
-            this%nxp = this%sint * this%cosp  
+            this%nxp = this%sint * this%cosp
             this%nyp = this%sint * this%sinp
             this%nzp = this%cost
 

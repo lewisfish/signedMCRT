@@ -7,6 +7,7 @@ module sdfs
     type :: sdf
         real :: mus, mua, kappa, albedo, hgg, g2, n
         real :: transform(3, 3)
+        type(vector) :: centre
         integer :: layer
         contains
         procedure :: evaluate => evaluate_fn
@@ -17,8 +18,7 @@ module sdfs
     end type container
 
     type, extends(sdf) :: sphere
-        real :: radius
-        type(vector) :: centre
+        real         :: radius
         contains
         procedure :: evaluate => eval_sphere
     end type sphere
@@ -26,7 +26,6 @@ module sdfs
 
     type, extends(sdf) :: cylinder
         real         :: height, radius
-        type(vector) :: centre
         contains
         procedure :: evaluate => eval_cylinder
     end type cylinder
@@ -36,14 +35,19 @@ module sdfs
     end interface cylinder
 
     type, extends(sdf) :: box
-        real :: length
+        real         :: length
         contains
         procedure :: evaluate => eval_box
     end type box
 
+    type, extends(sdf) :: torus
+        real :: oradius, iradius
+        contains
+        procedure :: evaluate => eval_torus
+    end type torus
 
     type, extends(sdf) :: model
-        type(container), allocatable :: array(:)
+        type(container), allocatable  :: array(:)
         procedure(op),nopass, pointer :: func
         contains
         procedure :: evaluate => eval_model
@@ -57,10 +61,13 @@ module sdfs
         module procedure sphere_init
     end interface sphere
 
+    interface torus
+        module procedure torus_init
+    end interface torus
+
     interface box
         module procedure box_init
     end interface box
-
 
 
     abstract interface
@@ -70,9 +77,10 @@ module sdfs
         end function op
     end interface
 
+
     private
-    public :: sdf, model, cylinder, sphere, box, container, model_init, op
-    public :: union, intersection, subtraction, calcNormal, rotate_x, rotate_y, rotate_z, identity
+    public :: sdf, model, cylinder, sphere, box, container, model_init, op, render, torus
+    public :: union, intersection, subtraction, calcNormal, rotate_x, rotate_y, rotate_z, identity, SmoothUnion
 
     contains
 
@@ -100,7 +108,6 @@ module sdfs
             calcNormal = calcNormal%magnitude()
 
         end function calcNormal
-
 
         function model_init(array, func) result(out)
         !TODO make sure optical properties are same in all inputs            
@@ -157,10 +164,11 @@ module sdfs
         
             type(cylinder) :: out
             
-            real, intent(IN) :: height, radius, mus, mua, hgg, n
+            real,    intent(IN) :: height, radius, mus, mua, hgg, n
             integer, intent(IN) :: layer
+
             type(vector), optional, intent(IN) :: c
-            real, optional :: transform(3, 3)
+            real,         optional :: transform(3, 3)
 
             type(vector) :: centre
             real         :: t(3, 3)
@@ -197,17 +205,36 @@ module sdfs
 
         end function cylinder_init
 
-        function box_init(length, mus, mua, hgg, n, layer) result(out)
+        function box_init(length, mus, mua, hgg, n, layer, c, transform) result(out)
         
             implicit none
         
             type(box) :: out
             
-            real, intent(IN) :: length, mus, mua, hgg, n
+            real,    intent(IN) :: length, mus, mua, hgg, n
             integer, intent(IN) :: layer
 
+            real,         optional, intent(in) :: transform(3, 3)
+            type(vector), optional, intent(IN) :: c
+
+            real :: t(3, 3)
+            type(vector) :: centre
+
+            if(present(c))then
+                centre = c
+            else
+                centre = vector(0., 0., 0.)
+            end if
+
+            if(present(transform))then
+                t = transform
+            else
+                t = identity()
+            end if
             out%length = length
             out%layer = layer
+            out%centre = centre
+            out%transform = t
 
             out%mus = mus
             out%mua = mua
@@ -223,7 +250,7 @@ module sdfs
 
         end function box_init
 
-        function sphere_init(radius, mus, mua, hgg, n, layer, c) result(out)
+        function sphere_init(radius, mus, mua, hgg, n, layer, c, transform) result(out)
         
             implicit none
         
@@ -232,8 +259,10 @@ module sdfs
             real, intent(IN) :: radius, mus, mua, hgg, n
             integer, intent(IN) :: layer
             type(vector), optional, intent(IN) :: c
+            real,  optional, intent(IN) :: transform
 
             type(vector) :: centre
+            real         :: t(3, 3)
 
             if(present(c))then
                 centre = c
@@ -241,9 +270,17 @@ module sdfs
                 centre = vector(0., 0., 0.)
             end if
 
+            if(present(transform))then
+                t = transform
+            else
+                t = identity()
+            end if
+
             out%radius = radius
             out%layer = layer
             out%centre = centre
+
+            out%transform = t
 
             out%mus = mus
             out%mua = mua
@@ -259,6 +296,53 @@ module sdfs
 
         end function sphere_init
 
+
+        function torus_init(oradius, iradius, mus, mua, hgg, n, layer, c, transform) result(out)
+                             ! .25,    0.,  100.,0.,  1.,1,     c=vector(0., 0., -0.75)
+            implicit none
+        
+            type(torus) :: out
+            
+            real, intent(IN) :: oradius, iradius, mus, mua, hgg, n
+            integer, intent(IN) :: layer
+            type(vector), optional, intent(IN) :: c
+            real,  optional, intent(IN) :: transform
+
+            type(vector) :: centre
+            real         :: t(3, 3)
+
+            if(present(c))then
+                centre = c
+            else
+                centre = vector(0., 0., 0.)
+            end if
+
+            if(present(transform))then
+                t = transform
+            else
+                t = identity()
+            end if
+
+            out%oradius = oradius
+            out%iradius = iradius
+            out%layer = layer
+            out%centre = centre
+
+            out%transform = t
+
+            out%mus = mus
+            out%mua = mua
+            out%kappa = mus + mua
+            if(out%mua < 1d-9)then
+                out%albedo = 1.
+            else
+                out%albedo = mus / out%kappa
+            end if
+            out%hgg = hgg
+            out%g2 = hgg**2
+            out%n = n
+
+        end function torus_init
 
         real function eval_cylinder(this, pos)
 
@@ -282,6 +366,9 @@ module sdfs
             class(sphere) :: this
             type(vector), intent(IN) :: pos
 
+            type(vector) :: p
+
+            p = translate_fn(pos, this%centre) .dot. this%transform
             eval_sphere = sphere_fn(translate_fn(pos, this%centre), this%radius)
 
         end function eval_sphere
@@ -297,6 +384,21 @@ module sdfs
             eval_box = box_fn(pos, this%length)
 
         end function eval_box
+
+
+        real function eval_torus(this, pos)
+
+            implicit none
+
+            class(torus) :: this
+            type(vector), intent(IN) :: pos
+
+            type(vector) :: p
+
+            p = translate_fn(pos, this%centre) .dot. this%transform
+            eval_torus = torus_fn(translate_fn(pos, this%centre), this%oradius, this%iradius)
+
+        end function eval_torus
 
 
         real function cylinder_fn(p, r, h)
@@ -341,6 +443,21 @@ module sdfs
 
         end function box_fn
 
+        real function torus_fn(p, or, ir)
+
+            implicit none
+
+            type(vector), intent(IN) :: p
+            real,         intent(IN) :: or, ir
+
+
+            type(vector) :: q
+
+            q = vector(length(vector(p%x, 0., p%z)) - or, p%y, 0.)
+            torus_fn = length(q) - ir
+
+        end function torus_fn
+
         type(vector) function translate_fn(position, offset)
 
             implicit none
@@ -361,6 +478,21 @@ module sdfs
             union = min(d1, d2)
         end function union
 
+
+        real function SmoothUnion(d1, d2)
+
+            use utils, only : mix, clamp
+
+            implicit none
+
+            real, intent(IN) :: d1, d2
+            real :: k=0.1, h
+
+            h = clamp(0.5 +.5*(d2-d1)/k, 0., 1.)
+            SmoothUnion = mix(d2, d1, h) - k*h*(1.-h)
+
+        end function SmoothUnion
+
         real function subtraction(d1, d2)
 
             implicit none
@@ -380,6 +512,24 @@ module sdfs
             intersection = max(d1, d2)
 
         end function intersection
+
+        real function extrude(p, h, prim)
+
+            implicit none
+
+            type(vector), intent(IN) :: p
+            real, intent(IN) :: h
+            procedure(primitive) :: prim
+
+            real :: d
+            type(vector) :: w
+
+            d = prim(vector(p%x, p%y, 0.))
+            w = vector(d, abs(p%z) - h, 0.)
+            extrude = min(max(w%x, w%y), 0.) + length(max(w, 0.))
+
+        end function extrude
+
 
         function rotate_x(angle) result(r)
         ! rotation funcs from https://inspirnathan.com/posts/54-shadertoy-tutorial-part-8/
@@ -440,4 +590,48 @@ module sdfs
             r(:, 3) = [0., 0., 1.]
 
         end function identity
+
+        subroutine render(cnt, extent, samples)
+
+            implicit none
+            
+            type(container), intent(IN) :: cnt(:)
+            integer,         intent(IN) :: samples
+            real,            intent(IN) :: extent
+
+            type(vector)      :: pos
+            integer           :: i, j, k, u, ns
+            real              :: x, y, z, wid, ds(size(cnt))
+            real, allocatable :: image(:, :, :)
+
+            ns = int(samples / 2)
+            allocate(image(-ns:ns, -ns:ns, -ns:ns))
+            wid = extent/100.
+!$omp parallel default(none) shared(cnt, ns, wid, image)&
+!$omp private(i, x, y, z, pos, j, k, u, ds)
+!$omp do
+
+            do i = -ns, ns
+                x = i *wid
+                do j = -ns, ns
+                    y = j *wid 
+                    do k = -ns, ns
+                        z = k * wid
+                        pos = vector(x, y, z)
+                        ds = 0.
+                        do u = 1, size(ds)
+                            ds(u) = cnt(u)%p%evaluate(pos)
+                        end do
+                        image(i, j, k) = minval(ds)
+                    end do
+                end do
+            end do
+!$OMP end  do
+!$OMP end parallel
+            open(newunit=u,file="../model.dat", access="stream", form="unformatted")
+            write(u)image
+            close(u)
+
+
+        end subroutine render
 end module sdfs

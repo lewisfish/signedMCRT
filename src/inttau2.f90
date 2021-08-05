@@ -112,7 +112,7 @@ CONTAINS
         real         :: tau, d_sdf, t_sdf, taurun, ds(size(sdfs_array)), dstmp(size(sdfs_array))
         real         :: eps, dtot, signs(size(sdfs_array))
         integer      :: i, cur_layer
-        type(vector) :: pos, dir, oldpos, normal
+        type(vector) :: pos, dir, oldpos
 
         pos = packet%pos
         oldpos = pos
@@ -237,7 +237,7 @@ CONTAINS
                 exit
             end if
             ldir = (/.FALSE., .FALSE., .FALSE./)
-            ! print*,celli,cellj,cellk
+
             dcell = wall_dist(grid, celli, cellj, cellk, old_pos, dir, ldir)
             if(d + dcell > d_sdf)then
                 dcell = d_sdf - d
