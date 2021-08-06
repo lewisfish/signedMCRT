@@ -23,16 +23,11 @@ module sdfs
         procedure :: evaluate => eval_sphere
     end type sphere
 
-
     type, extends(sdf) :: cylinder
         real         :: height, radius
         contains
         procedure :: evaluate => eval_cylinder
     end type cylinder
-
-    interface cylinder
-        module procedure cylinder_init
-    end interface cylinder
 
     type, extends(sdf) :: box
         real         :: length
@@ -53,9 +48,10 @@ module sdfs
         procedure :: evaluate => eval_model
     end type model
 
-    interface model
-        module procedure model_init
-    end interface model
+    interface cylinder
+        module procedure cylinder_init
+    end interface cylinder
+
 
     interface sphere
         module procedure sphere_init
@@ -69,6 +65,9 @@ module sdfs
         module procedure box_init
     end interface box
 
+    interface model
+        module procedure model_init
+    end interface model
 
     abstract interface
         real function op(d1, d2)
@@ -79,7 +78,7 @@ module sdfs
 
 
     private
-    public :: sdf, model, cylinder, sphere, box, container, model_init, op, render, torus
+    public :: sdf, model, cylinder, sphere, box, container, model_init, op, render, torus, onion
     public :: union, intersection, subtraction, calcNormal, rotate_x, rotate_y, rotate_z, identity, SmoothUnion
 
     contains
@@ -597,11 +596,11 @@ module sdfs
             
             type(container), intent(IN) :: cnt(:)
             integer,         intent(IN) :: samples
-            real,            intent(IN) :: extent
+            type(vector),    intent(IN) :: extent
 
-            type(vector)      :: pos
+            type(vector)      :: pos, wid
             integer           :: i, j, k, u, ns
-            real              :: x, y, z, wid, ds(size(cnt))
+            real              :: x, y, z, ds(size(cnt))
             real, allocatable :: image(:, :, :)
 
             ns = int(samples / 2)
@@ -610,19 +609,18 @@ module sdfs
 !$omp parallel default(none) shared(cnt, ns, wid, image)&
 !$omp private(i, x, y, z, pos, j, k, u, ds)
 !$omp do
-
             do i = -ns, ns
-                x = i *wid
+                x = i *wid%x
                 do j = -ns, ns
-                    y = j *wid 
+                    y = j *wid%y
                     do k = -ns, ns
-                        z = k * wid
+                        z = k * wid%z
                         pos = vector(x, y, z)
                         ds = 0.
                         do u = 1, size(ds)
                             ds(u) = cnt(u)%p%evaluate(pos)
                         end do
-                        image(i, j, k) = minval(ds)
+                        image(i, j, k) = minval(abs(ds))
                     end do
                 end do
             end do
@@ -631,7 +629,5 @@ module sdfs
             open(newunit=u,file="../model.dat", access="stream", form="unformatted")
             write(u)image
             close(u)
-
-
         end subroutine render
 end module sdfs

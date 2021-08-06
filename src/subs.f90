@@ -56,11 +56,52 @@ private :: directory, alloc_array, zarray
                 sdfarray = setup_scat_test(tau)
             elseif(choice == "fresnel_test")then
                 sdfarray = setup_fresnel_test()
+            elseif(choice == "exp")then
+                sdfarray = setup_exp()
             else
                 error stop "no such routine"
             end if
 
         end subroutine setup_simulation
+
+
+        function setup_exp() result(array)
+            
+            use sdfs,  only : container, box, cylinder, rotate_y
+            use utils, only : deg2rad
+            use vector_class
+
+            implicit none
+
+            type(container), allocatable :: array(:)
+            type(cylinder), target, save :: cyl(2)
+            type(box),      target, save :: bbox
+
+            real    :: mus, mua, hgg, n, t(3, 3)
+            integer :: i
+
+            n = 1.d0
+            hgg = 0.d0
+            mua = 1.d-17
+            mus = 0.d0
+
+            t = rotate_y(deg2rad(90.))
+            cyl(1) = cylinder(10., 1.75, mus, mua, hgg, n, 1)
+            cyl(2)= cylinder(10., 1.55, mus, mua, hgg, n, 2)
+
+            bbox  = box(2., mus, mua, hgg, n, 3)
+
+            allocate(array(3))
+            do i = 1, size(array)
+                allocate(array(i)%p)
+            end do
+
+            array(1)%p => cyl(1)
+            array(2)%p => cyl(2)
+            array(3)%p => bbox
+
+        end function setup_exp
+
 
         function setup_fresnel_test() result(array)
 

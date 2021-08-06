@@ -83,7 +83,7 @@ module utils
     end interface
 
     private
-    public :: str, swap, colour, mem_free, chdir, mix, clamp
+    public :: str, swap, colour, mem_free, chdir, mix, clamp, rad2deg, deg2rad
     public :: bold, italic, underline, strikethrough, black, red, green, yellow, blue, magenta, cyan, white
     public :: black_b, red_b, green_b, yellow_b, blue_b, magenta_b, cyan_b, white_b, pbar
 
@@ -158,6 +158,32 @@ module utils
             call cpu_time(this%start_t)
 
         end subroutine progress_sub
+
+
+        pure real function rad2deg(angle)
+
+            use constants, only : PI
+
+            implicit none
+
+            real, intent(IN) :: angle
+
+            rad2deg = angle/PI*180.
+
+        end function rad2deg
+
+
+        pure real function deg2rad(angle)
+
+            use constants, only : PI
+
+            implicit none
+
+            real, intent(IN) :: angle
+
+            deg2rad = angle*PI/180.
+
+        end function deg2rad
 
 
         subroutine chdir(path, error)

@@ -15,8 +15,8 @@ endif
 PROGRAM =  mcgrid
 
 SRCS =      random_mod.f90 \
-		    utils.f90 \
             constants.f90 \
+		    utils.f90 \
             stackMod.f90 \
             vector_class.f90 \
             sdfsMod.f90 \

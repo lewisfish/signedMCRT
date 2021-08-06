@@ -27,19 +27,19 @@ implicit none
 
 type(photon)     :: packet
 type(cart_grid)  :: grid
-integer          :: nphotons, iseed, j
+integer          :: nphotons, iseed, j, i
 double precision :: nscatt
-real             :: ran, start, time_taken
+real             :: ran, start, time_taken, ds(3)
 type(pbar)       :: bar
 
-type(container), allocatable :: array(:)!, cnta(10)
+type(container), allocatable :: array(:)
 ! mpi/mp variables
 integer :: id, numproc
 real    :: nscattGLOBAL
 
-call setup_simulation(nphotons, grid, array)
-call render(array, grid%xmax, 400)
-
+call setup_simulation(nphotons, grid, array, "exp")
+! call render(array, vector(grid%xmax, grid%ymax, grid%zmax), 200)
+! stop
 start = get_time()
 id = 0
 !init MPI
@@ -57,7 +57,7 @@ end if
 !loop over photons 
 #ifdef _OPENMP
 !$omp parallel default(none) shared(array, grid, numproc, start, nphotons, bar)&
-!$omp& private(ran, id, packet, iseed) reduction(+:nscatt)
+!$omp& private(ran, id, packet, iseed, ds) reduction(+:nscatt)
     numproc = omp_get_num_threads()
     id = omp_get_thread_num()
 #elif MPI
@@ -83,6 +83,12 @@ do j = 1, nphotons
 
     ! Release photon from point source 
     call packet%emit(grid, iseed)
+    ds = 0.
+    do i = 1, size(ds)
+        ds(i) = array(i)%p%evaluate(packet%pos)
+    end do
+    packet%layer=minloc(ds,dim=1)
+
     ! Find scattering location
     call tauint2(packet, grid, array)
 

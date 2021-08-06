@@ -1,95 +1,11 @@
 module inttau2
 
-   implicit none
-   
-   private
-   public :: tauint2
+    implicit none
+    
+    private
+    public :: tauint2
 
-CONTAINS
-
-!     subroutine tauint1(packet, grid)
-!     !optical depth integration subroutine
-!     !
-!     !
-!         use iarray, only : jmean
-!         use random, only : ran2
-!         use photonMod
-!         use gridMod
-
-!         use vector_class
-   
-!         implicit none
-
-!         type(cart_grid), intent(IN)    :: grid
-!         type(photon),    intent(INOUT) :: packet
-
-!         real    :: tau, taurun, taucell, xcur, ycur, zcur, d, dcell
-!         integer :: celli, cellj, cellk
-!         logical :: dir(3)
-
-!         xcur = packet%xp + grid%xmax
-!         ycur = packet%yp + grid%ymax
-!         zcur = packet%zp + grid%zmax
-
-!         celli = packet%xcell
-!         cellj = packet%ycell
-!         cellk = packet%zcell
-
-!         taurun = 0.
-!         d = 0.
-!         dir = (/.FALSE., .FALSE., .FALSE./)
-
-!         !sample optical distance
-!         tau = -log(ran2())
-!         do
-!             dir = (/.FALSE., .FALSE., .FALSE./)
-!             !get distance to nearest wall in direction dir
-!             dcell = wall_dist(packet, grid, celli, cellj, cellk, xcur, ycur, zcur, dir)
-!             !calculate optical distnace to cell wall
-!             taucell = dcell * grid%rhokap(celli,cellj,cellk)
-
-!             if(taurun + taucell < tau)then!still some tau to move
-!                 taurun = taurun + taucell
-!                 d = d + dcell
-! !$omp atomic
-!                 jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell ! record fluence
-
-!                 call update_pos(packet, grid, xcur, ycur, zcur, celli, cellj, cellk, dcell, .TRUE., dir, &
-!                                 tau, taurun)
-!             else!moved full distance
-
-!                 dcell = (tau - taurun) / grid%rhokap(celli,cellj,cellk)
-!                 d = d + dcell
-! !$omp atomic                
-!                 jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell ! record fluence
-
-!                 call update_pos(packet, grid, xcur, ycur, zcur, celli, cellj, cellk, dcell, .FALSE., dir, &
-!                                 tau, taurun)
-!                 exit
-!             end if
-!             if(celli == -1 .or. cellj == -1 .or. cellk == -1)then
-!                 if(celli == -1 .or. cellj == -1)then
-!                     call repeat_bounds(celli, cellj, xcur, ycur, grid%xmax, grid%ymax, grid%nxg, grid%nyg, grid%delta)
-!                     packet%tflag = .false.
-!                     if(celli == -1 .or. cellj == -1 .or. packet%tflag)then
-!                        print*,'error',celli,cellj,packet%tflag
-!                     end if
-!                 else
-!                     packet%tflag = .true.
-!                     exit
-!                 end if
-!             end if
-!         end do
-   
-!         packet%xp = xcur - grid%xmax
-!         packet%yp = ycur - grid%ymax
-!         packet%zp = zcur - grid%zmax
-!         packet%xcell = celli
-!         packet%ycell = cellj
-!         packet%zcell = cellk
-
-!     end subroutine tauint1
-   
+    contains   
 
     subroutine tauint2(packet, grid, sdfs_array)
     !optical depth integration subroutine
@@ -171,24 +87,40 @@ CONTAINS
             do i = 1, size(ds)
                 ds(i) = sdfs_array(i)%p%evaluate(pos)
             end do
+            if(minval(ds) >= 0.)then
+                packet%tflag = .true.
+                exit
+            end if
             dstmp = ds
             ds = abs(ds)
 
-            d_sdf = minval(ds) + 5.*eps
+            d_sdf = minval(ds) + 10.*eps
             pos = pos + d_sdf*dir
             ds = 0.
             do i = 1, size(ds)
                 ds(i) = sdfs_array(i)%p%evaluate(pos)
             end do
 
+            !check going in to media i.e +ive to -ive
             signs = 0.
             do i = 1, size(ds)
-                if(dstmp(i) > ds(i) .or. ds(i) < 0.)then
+                if(dstmp(i) >= 0. .and. ds(i) < 0.)then
                     signs(i) = -1.
                 else
                     signs(i) = 1.
                 end if
             end do
+            !if all signs +ive then do additional check t0 get corret layer
+            if(sum(signs) == real(size(ds)))then
+                do i = 1, size(ds)
+                    if(dstmp(i) <= 0. .and. ds(i) > 0. .and. i /= cur_layer .or. ds(i) < 0.)then
+                        signs(i) = -1.
+                    else
+                        signs(i) = 1.
+                    end if
+                end do
+            end if
+
             n1 = sdfs_array(cur_layer)%p%n
             oldlayer = cur_layer
             cur_layer = minloc(signs,dim=1)
@@ -207,10 +139,6 @@ CONTAINS
             end if
             packet%layer = cur_layer
 
-            if(minval(dstmp) > 0.)then
-                packet%tflag = .true.
-                exit
-            end if
         end do
 
         packet%pos = pos
@@ -536,31 +464,4 @@ CONTAINS
             return
         end if
     end function fresnel
-
-    function argsort(a) result(b)
-
-    real, intent(IN) :: a(:)   ! array of numbers
-    
-    integer :: b(size(a))         ! indices into the array 'a' that sort it
-
-    integer :: N, i, imin, temp1                           ! number of numbers/vectors
-    real    :: temp2, a2(size(a))
-
-    a2 = a
-    N = size(a)
-
-    do i = 1, N
-        b(i) = i
-    end do
-
-    do i = 1, N-1
-        ! find ith smallest in 'a'
-        imin = minloc(a2(i:),1) + i - 1
-        ! swap to position i in 'a' and 'b', if not already there
-        if (imin /= i) then
-            temp2 = a2(i); a2(i) = a2(imin); a2(imin) = temp2
-            temp1 = b(i); b(i) = b(imin); b(imin) = temp1
-        end if
-    end do
-    end function argsort
 end module inttau2

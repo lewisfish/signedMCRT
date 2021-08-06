@@ -30,7 +30,7 @@ parser.add_argument("-f", "--file", type=str,
                     help="Name of file to be plotted.")
 parser.add_argument("-n", "--ndim", type=int, default=200,
                     help="Gives the dimensions of the data cube to be examined.")
-parser.add_argument("-l", "--levels", type=int, default=0,
+parser.add_argument("-l", "--levels", type=np.float32, default=0.0,
                     help="Isolevel to render a contour on.")
 
 args = parser.parse_args()
