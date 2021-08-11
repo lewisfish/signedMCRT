@@ -26,7 +26,7 @@ def marching_cubes(volume, level=0):
 
 
 parser = ArgumentParser()
-parser.add_argument("-f", "--file", type=str,
+parser.add_argument("-f", "--file", type=str, default="model.dat",
                     help="Name of file to be plotted.")
 parser.add_argument("-n", "--ndim", type=int, default=200,
                     help="Gives the dimensions of the data cube to be examined.")

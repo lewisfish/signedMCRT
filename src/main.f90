@@ -27,7 +27,7 @@ implicit none
 
 type(photon)     :: packet
 type(cart_grid)  :: grid
-integer          :: nphotons, iseed, j, i
+integer          :: nphotons, j, i
 double precision :: nscatt
 real             :: ran, start, time_taken
 real, allocatable:: ds(:)
@@ -40,6 +40,7 @@ real    :: nscattGLOBAL
 
 call setup_simulation(nphotons, grid, array, "exp")
 allocate(ds(size(array)))
+call render(array, vector(grid%xmax, grid%ymax, grid%zmax), 200)
 ! stop
 start = get_time()
 id = 0

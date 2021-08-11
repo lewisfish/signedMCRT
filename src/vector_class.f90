@@ -33,7 +33,7 @@ Module vector_class
     end type vector
 
     private
-    public :: magnitude, vector, print, abs, length, max
+    public :: magnitude, vector, print, abs, length, max, invert
 
 
     interface abs

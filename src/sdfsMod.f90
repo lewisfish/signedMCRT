@@ -7,7 +7,6 @@ module sdfs
     type :: sdf
         real :: mus, mua, kappa, albedo, hgg, g2, n
         real :: transform(4, 4)
-        type(vector) :: centre
         integer :: layer
         contains
         procedure :: evaluate => evaluate_fn
@@ -183,7 +182,6 @@ module sdfs
             out%a = a
             out%b = b
             out%radius = radius
-            out%centre = vector(0.,0.,0.)
             out%layer = layer
             out%transform = t
 
@@ -201,7 +199,7 @@ module sdfs
 
         end function cylinder_init
 
-        function box_init(lengths, mus, mua, hgg, n, layer, c, transform) result(out)
+        function box_init(lengths, mus, mua, hgg, n, layer, transform) result(out)
         
             implicit none
         
@@ -212,16 +210,9 @@ module sdfs
             integer,      intent(IN) :: layer
 
             real,         optional, intent(in) :: transform(4, 4)
-            type(vector), optional, intent(IN) :: c
 
             real :: t(4, 4)
-            type(vector) :: centre
 
-            if(present(c))then
-                centre = c
-            else
-                centre = vector(0., 0., 0.)
-            end if
 
             if(present(transform))then
                 t = transform
@@ -230,7 +221,6 @@ module sdfs
             end if
             out%lengths = .5*lengths! as only half lengths
             out%layer = layer
-            out%centre = centre
             out%transform = t
 
             out%mus = mus
@@ -247,7 +237,7 @@ module sdfs
 
         end function box_init
 
-        function box_init_vec(lengths, mus, mua, hgg, n, layer, c, transform) result(out)
+        function box_init_vec(lengths, mus, mua, hgg, n, layer, transform) result(out)
         
             implicit none
         
@@ -258,14 +248,13 @@ module sdfs
             integer,      intent(IN) :: layer
 
             real,         optional, intent(in) :: transform(4, 4)
-            type(vector), optional, intent(IN) :: c
 
-            out = box_init(lengths, mus, mua, hgg, n, layer, c, transform)
+            out = box_init(lengths, mus, mua, hgg, n, layer, transform)
 
         end function box_init_vec
 
 
-        function box_init_scal(length, mus, mua, hgg, n, layer, c, transform) result(out)
+        function box_init_scal(length, mus, mua, hgg, n, layer, transform) result(out)
         
             implicit none
         
@@ -275,18 +264,17 @@ module sdfs
             integer,      intent(IN) :: layer
 
             real,         optional, intent(in) :: transform(4, 4)
-            type(vector), optional, intent(IN) :: c
 
             type(vector) :: lengths
 
             lengths = vector(length, length, length)
 
-            out = box_init(lengths, mus, mua, hgg, n, layer, c, transform)
+            out = box_init(lengths, mus, mua, hgg, n, layer, transform)
 
         end function box_init_scal
 
 
-        function sphere_init(radius, mus, mua, hgg, n, layer, c, transform) result(out)
+        function sphere_init(radius, mus, mua, hgg, n, layer, transform) result(out)
         
             implicit none
         
@@ -294,17 +282,9 @@ module sdfs
             
             real, intent(IN) :: radius, mus, mua, hgg, n
             integer, intent(IN) :: layer
-            type(vector), optional, intent(IN) :: c
             real,  optional, intent(IN) :: transform
 
-            type(vector) :: centre
             real         :: t(4, 4)
-
-            if(present(c))then
-                centre = c
-            else
-                centre = vector(0., 0., 0.)
-            end if
 
             if(present(transform))then
                 t = transform
@@ -314,7 +294,6 @@ module sdfs
 
             out%radius = radius
             out%layer = layer
-            out%centre = centre
 
             out%transform = t
 
@@ -333,25 +312,17 @@ module sdfs
         end function sphere_init
 
 
-        function torus_init(oradius, iradius, mus, mua, hgg, n, layer, c, transform) result(out)
-                             ! .25,    0.,  100.,0.,  1.,1,     c=vector(0., 0., -0.75)
+        function torus_init(oradius, iradius, mus, mua, hgg, n, layer, transform) result(out)
+
             implicit none
         
             type(torus) :: out
             
-            real, intent(IN) :: oradius, iradius, mus, mua, hgg, n
-            integer, intent(IN) :: layer
-            type(vector), optional, intent(IN) :: c
-            real,  optional, intent(IN) :: transform
+            real,            intent(IN) :: oradius, iradius, mus, mua, hgg, n
+            integer,         intent(IN) :: layer
+            real,  optional, intent(IN) :: transform(4, 4)
 
-            type(vector) :: centre
-            real         :: t(4, 4)
-
-            if(present(c))then
-                centre = c
-            else
-                centre = vector(0., 0., 0.)
-            end if
+            real :: t(4, 4)
 
             if(present(transform))then
                 t = transform
@@ -362,8 +333,6 @@ module sdfs
             out%oradius = oradius
             out%iradius = iradius
             out%layer = layer
-            out%centre = centre
-
             out%transform = t
 
             out%mus = mus
@@ -557,7 +526,7 @@ module sdfs
             implicit none
 
             real, intent(IN) :: d1, d2
-            real :: k=0.1, h
+            real :: k=0.01, h
 
             h = clamp(0.5 +.5*(d2-d1)/k, 0., 1.)
             SmoothUnion = mix(d2, d1, h) - k*h*(1.-h)
@@ -691,7 +660,7 @@ module sdfs
 
             ns = int(samples / 2)
             allocate(image(-ns:ns, -ns:ns, -ns:ns))
-            wid = extent/100.
+            wid = extent/real(ns)
 !$omp parallel default(none) shared(cnt, ns, wid, image)&
 !$omp private(i, x, y, z, pos, j, k, u, ds)
 !$omp do

@@ -191,8 +191,10 @@ private :: directory, alloc_array, zarray
             type(torus),    target, save :: sph       !are deallocated on sub exit
             type(box),      target, save :: boxy      !should be safe as this sub only called once
             type(model),    target, save :: omg_sdf
-            real    :: t(4, 4), mus, mua, hgg, n
-            integer :: j, layer
+            
+            type(vector) :: a, b
+            real         :: t(4, 4), mus, mua, hgg, n
+            integer      :: j, layer
 
             mus = 10.
             mua = 0.16
@@ -200,34 +202,55 @@ private :: directory, alloc_array, zarray
             n = 2.65
             layer = 1
 
+            ! x
+            ! |
+            ! |
+            ! |
+            ! |
+            ! |_____z
+
             !O letter
-            sph = torus(.2, 0.05, mus, mua, hgg, n, layer, c=vector(0., 0., -0.75))
-                        error stop "need to fix cylinders"
+            t = invert(translate(vector(0., 0., -0.7)))
+            sph = torus(.2, 0.05, mus, mua, hgg, n, layer, transform=t)
 
             !M letter
-            ! m(1) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,-.25))
+            a = vector(-.25, 0., -.25)
+            b = vector(-.25, 0., .25)
+            t = invert(rotate_y(90.))
+            m(1) = cylinder(a, b, .05, mus, mua, hgg, n, layer, transform=t)
             
-            ! t = rotate_y(-25.*pi/180.)
-            ! m(2) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,-.125), transform=t)
+            a = vector(-.25, 0., -.25)
+            b = vector(.25, 0., .0)
+            m(2) = cylinder(a, b, .05, mus, mua, hgg, n, layer)
             
-            ! t = rotate_y(25.*pi/180.)
-            ! m(3) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,.125), transform=t)
+            a = vector(.25, 0., .0)
+            b = vector(-.25, 0., .25)
+            m(3) = cylinder(a, b, .05, mus, mua, hgg, n, layer)
 
-            ! m(4) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,.25))
+            a = vector(-.25, 0., .25)
+            b = vector(.25, 0., .25)
+            m(4) = cylinder(a, b, .05, mus, mua, hgg, n, layer)
 
-            ! !G letter
-            ! g(1) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,.6))
+            !G letter
+            a = vector(-.25, 0., .5)
+            b = vector(.25, 0., .5)
+            g(1) = cylinder(a, b, .05, mus, mua, hgg, n, layer)
 
-            ! t = rotate_y(90.*pi/180.)
-            ! g(2) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.25,0.,.775),transform=t)
+            a = vector(-.25, 0., .5)
+            b = vector(-.25, 0., .75)
+            g(2) = cylinder(a, b, .05, mus, mua, hgg, n, layer)
 
-            ! t = rotate_y(90.*pi/180.)
-            ! g(3) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(-0.25, 0.,.775),transform=t)
+            a = vector(.25, 0., .5)
+            b = vector(.25, 0., .75)
+            g(3) = cylinder(a, b, .05, mus, mua, hgg, n, layer)
 
-            ! g(4) = cylinder(.125, .05, mus, mua, hgg, n, layer, c=vector(-0.1,0.,1.))
+            a = vector(.25, 0., .75)
+            b = vector(0., 0., .75)
+            g(4) = cylinder(a, b, .05, mus, mua, hgg, n, layer)
 
-            ! t = rotate_y(90.*pi/180.)
-            ! g(5) = cylinder(.125, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,.9),transform=t)
+            a = vector(0., 0., .625)
+            b = vector(0., 0., .75)
+            g(5) = cylinder(a, b, .05, mus, mua, hgg, n, layer)
 
             !bbox
             boxy = box(2., 0.d0, 10., 0.d0, 1.0, 2)
