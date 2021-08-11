@@ -6,7 +6,7 @@ module sdfs
 
     type :: sdf
         real :: mus, mua, kappa, albedo, hgg, g2, n
-        real :: transform(3, 3)
+        real :: transform(4, 4)
         type(vector) :: centre
         integer :: layer
         contains
@@ -24,13 +24,14 @@ module sdfs
     end type sphere
 
     type, extends(sdf) :: cylinder
-        real         :: height, radius
+        real         :: radius
+        type(vector) :: a, b
         contains
         procedure :: evaluate => eval_cylinder
     end type cylinder
 
     type, extends(sdf) :: box
-        real         :: length
+        type(vector) :: lengths
         contains
         procedure :: evaluate => eval_box
     end type box
@@ -62,7 +63,8 @@ module sdfs
     end interface torus
 
     interface box
-        module procedure box_init
+        module procedure box_init_vec
+        module procedure box_init_scal
     end interface box
 
     interface model
@@ -78,8 +80,9 @@ module sdfs
 
 
     private
-    public :: sdf, model, cylinder, sphere, box, container, model_init, op, render, torus, onion
-    public :: union, intersection, subtraction, calcNormal, rotate_x, rotate_y, rotate_z, identity, SmoothUnion
+    public :: sdf, model, cylinder, sphere, box, container, model_init, render, torus
+    public :: union, intersection, subtraction, calcNormal, onion, SmoothUnion, op
+    public :: rotate_x, rotate_y, rotate_z, identity, translate
 
     contains
 
@@ -157,26 +160,19 @@ module sdfs
             type(vector), intent(IN) :: pos
         end function evaluate_fn
 
-        function cylinder_init(height, radius, mus, mua, hgg, n, layer, c, transform) result(out)
+        function cylinder_init(a, b, radius, mus, mua, hgg, n, layer, transform) result(out)
         
             implicit none
         
             type(cylinder) :: out
             
-            real,    intent(IN) :: height, radius, mus, mua, hgg, n
-            integer, intent(IN) :: layer
+            real,         intent(IN) :: radius, mus, mua, hgg, n
+            integer,      intent(IN) :: layer
+            type(vector), intent(IN) :: a, b
 
-            type(vector), optional, intent(IN) :: c
-            real,         optional :: transform(3, 3)
+            real,         optional :: transform(4, 4)
 
-            type(vector) :: centre
-            real         :: t(3, 3)
-
-            if(present(c))then
-                centre = c
-            else
-                centre = vector(0., 0., 0.)
-            end if
+            real         :: t(4, 4)
 
             if(present(transform))then
                 t = transform
@@ -184,9 +180,10 @@ module sdfs
                 t = identity()
             end if
 
-            out%height = height
+            out%a = a
+            out%b = b
             out%radius = radius
-            out%centre = centre
+            out%centre = vector(0.,0.,0.)
             out%layer = layer
             out%transform = t
 
@@ -204,19 +201,20 @@ module sdfs
 
         end function cylinder_init
 
-        function box_init(length, mus, mua, hgg, n, layer, c, transform) result(out)
+        function box_init(lengths, mus, mua, hgg, n, layer, c, transform) result(out)
         
             implicit none
         
             type(box) :: out
             
-            real,    intent(IN) :: length, mus, mua, hgg, n
-            integer, intent(IN) :: layer
+            type(vector), intent(IN) :: lengths
+            real,         intent(IN) :: mus, mua, hgg, n
+            integer,      intent(IN) :: layer
 
-            real,         optional, intent(in) :: transform(3, 3)
+            real,         optional, intent(in) :: transform(4, 4)
             type(vector), optional, intent(IN) :: c
 
-            real :: t(3, 3)
+            real :: t(4, 4)
             type(vector) :: centre
 
             if(present(c))then
@@ -230,7 +228,7 @@ module sdfs
             else
                 t = identity()
             end if
-            out%length = length
+            out%lengths = .5*lengths! as only half lengths
             out%layer = layer
             out%centre = centre
             out%transform = t
@@ -249,6 +247,45 @@ module sdfs
 
         end function box_init
 
+        function box_init_vec(lengths, mus, mua, hgg, n, layer, c, transform) result(out)
+        
+            implicit none
+        
+            type(box) :: out
+            
+            type(vector), intent(IN) :: lengths
+            real,         intent(IN) :: mus, mua, hgg, n
+            integer,      intent(IN) :: layer
+
+            real,         optional, intent(in) :: transform(4, 4)
+            type(vector), optional, intent(IN) :: c
+
+            out = box_init(lengths, mus, mua, hgg, n, layer, c, transform)
+
+        end function box_init_vec
+
+
+        function box_init_scal(length, mus, mua, hgg, n, layer, c, transform) result(out)
+        
+            implicit none
+        
+            type(box) :: out
+            
+            real,         intent(IN) :: length, mus, mua, hgg, n
+            integer,      intent(IN) :: layer
+
+            real,         optional, intent(in) :: transform(4, 4)
+            type(vector), optional, intent(IN) :: c
+
+            type(vector) :: lengths
+
+            lengths = vector(length, length, length)
+
+            out = box_init(lengths, mus, mua, hgg, n, layer, c, transform)
+
+        end function box_init_scal
+
+
         function sphere_init(radius, mus, mua, hgg, n, layer, c, transform) result(out)
         
             implicit none
@@ -261,7 +298,7 @@ module sdfs
             real,  optional, intent(IN) :: transform
 
             type(vector) :: centre
-            real         :: t(3, 3)
+            real         :: t(4, 4)
 
             if(present(c))then
                 centre = c
@@ -308,7 +345,7 @@ module sdfs
             real,  optional, intent(IN) :: transform
 
             type(vector) :: centre
-            real         :: t(3, 3)
+            real         :: t(4, 4)
 
             if(present(c))then
                 centre = c
@@ -352,8 +389,8 @@ module sdfs
 
             type(vector) :: p
 
-            p = translate_fn(pos, this%centre) .dot. this%transform
-            eval_cylinder = cylinder_fn(p, this%radius, this%height)
+            p = pos .dot. this%transform
+            eval_cylinder = cylinder_fn(p, this%a, this%b, this%radius)
 
         end function eval_cylinder
 
@@ -367,8 +404,8 @@ module sdfs
 
             type(vector) :: p
 
-            p = translate_fn(pos, this%centre) .dot. this%transform
-            eval_sphere = sphere_fn(translate_fn(pos, this%centre), this%radius)
+            p = pos .dot. this%transform
+            eval_sphere = sphere_fn(p, this%radius)
 
         end function eval_sphere
 
@@ -380,7 +417,10 @@ module sdfs
             class(box) :: this
             type(vector), intent(IN) :: pos
 
-            eval_box = box_fn(pos, this%length)
+            type(vector) :: p
+
+            p = pos .dot. this%transform
+            eval_box = box_fn(p, this%lengths)
 
         end function eval_box
 
@@ -394,24 +434,52 @@ module sdfs
 
             type(vector) :: p
 
-            p = translate_fn(pos, this%centre) .dot. this%transform
-            eval_torus = torus_fn(translate_fn(pos, this%centre), this%oradius, this%iradius)
+            p = pos .dot. this%transform
+            eval_torus = torus_fn(p, this%oradius, this%iradius)
 
         end function eval_torus
 
-
-        real function cylinder_fn(p, r, h)
-
+        real function cylinder_fn(p, a, b, r)
+            !p = pos
+            !a = pt1
+            !b = pt2
+            !r = radius
+            !draws cylinder along the axis between 2 points a and b
             implicit none
 
-            type(vector), intent(IN) :: p
-            real,         intent(IN) :: h, r
+            type(vector), intent(IN) :: p, a, b
+            real,         intent(IN) :: r
 
-            type(vector) :: d
+            type(vector) :: ba, pa
+            real :: x, y, x2, y2, d, baba, paba
 
-            !lies along x plane
-            d = abs(vector(sqrt(p%z**2 + p%y**2), p%x, 0.)) - vector(r, h, 0.)
-            cylinder_fn = min(max(d%x, d%y), 0.) + length(max(d, 0.))
+            ba = b - a
+            pa = p - a
+            baba = ba .dot. ba
+            paba = pa .dot. ba
+            x = length(pa * baba - ba*paba) - r*baba
+            y = abs(paba - baba*.5) - baba*.5
+            x2 = x**2
+            y2 = (y**2)*baba
+            if(max(x, y) < 0.)then
+                d = -min(x2, y2)
+            else
+                if(x > 0. .and. y > 0.)then
+                    d = x2 + y2
+                elseif(x > 0.)then
+                    d = x2
+                elseif(y > 0)then
+                    d = y2
+                else
+                    d = 0.
+                end if
+            end if
+
+            cylinder_fn = sign(sqrt(abs(d))/baba, d)
+
+            !lies along y plane
+            ! d = abs(vector(sqrt(p%x**2 + p%z**2), p%y, 0.)) - vector(h, r, 0.)
+            ! cylinder_fn = min(max(d%x, d%y), 0.) + length(max(d, 0.))
 
         end function cylinder_fn
 
@@ -432,8 +500,7 @@ module sdfs
 
             implicit none
 
-            type(vector), intent(IN) :: p
-            real,         intent(IN) :: b
+            type(vector), intent(IN) :: p, b
 
             type(vector) :: q
 
@@ -457,15 +524,20 @@ module sdfs
 
         end function torus_fn
 
-        type(vector) function translate_fn(position, offset)
+        function translate(o) result(out)
 
             implicit none
 
-            type(vector) :: position, offset
+            type(vector), intent(IN) :: o
 
-            translate_fn = position - offset
+            real :: out(4, 4)
 
-        end function translate_fn
+            out(:, 1) = [1., 0., 0., o%x] 
+            out(:, 2) = [0., 1., 0., o%y] 
+            out(:, 3) = [0., 0., 1., o%z] 
+            out(:, 4) = [0., 0., 0., 1.] 
+
+        end function translate
 
 
         real function union(d1, d2)
@@ -532,49 +604,62 @@ module sdfs
 
         function rotate_x(angle) result(r)
         ! rotation funcs from https://inspirnathan.com/posts/54-shadertoy-tutorial-part-8/
+            use utils, only : deg2rad
+
             implicit none
             
             real, intent(IN) :: angle
-            real :: r(3, 3), c, s
+            real :: r(4, 4), c, s, a
 
-            c = cos(angle)
-            s = sin(angle)
+            a = deg2rad(angle)
+            c = cos(a)
+            s = sin(a)
 
-            r(:, 1) = [1., 0., 0.]
-            r(:, 2) = [0., c, s]
-            r(:, 3) = [0., s, c]
+            r(:, 1) = [1., 0., 0., 0.]
+            r(:, 2) = [0., c,  s,  0.]
+            r(:, 3) = [0.,-s,  c,  0.]
+            r(:, 4) = [0., 0., 0., 1.]
 
         end function rotate_x
 
         function rotate_y(angle) result(r)
             
+            use utils, only : deg2rad
+
             implicit none
             
             real, intent(IN) :: angle
-            real :: r(3, 3), c, s
+            real :: r(4, 4), c, s, a
 
-            c = cos(angle)
-            s = sin(angle)
+            a = deg2rad(angle)
+            ! c = cos(a)
+            s = sin(a)
+            c = sqrt(1. - s**2)
 
-            r(:, 1) = [c, 0., s]
-            r(:, 2) = [0., 1., 0.]
-            r(:, 3) = [-s, 0., c]
+            r(:, 1) = [c,  0., -s,  0.]
+            r(:, 2) = [0., 1.,  0., 0.]
+            r(:, 3) = [s,  0.,  c,  0.]
+            r(:, 4) = [0., 0.,  0., 1.]
 
         end function rotate_y
 
         function rotate_z(angle) result(r)
             
+            use utils, only : deg2rad
+
             implicit none
             
             real, intent(IN) :: angle
-            real :: r(3, 3), c, s
+            real :: r(4, 4), c, s, a
 
-            c = cos(angle)
-            s = sin(angle)
+            a = deg2rad(angle)
+            c = cos(a)
+            s = sin(a)
 
-            r(:, 1) = [c, -s, 0.]
-            r(:, 2) = [s, c, 0.]
-            r(:, 3) = [0., 0., 1.]
+            r(:, 1) = [c, -s,  0., 0.]
+            r(:, 2) = [s,  c,  0., 0.]
+            r(:, 3) = [0., 0., 1., 0.]
+            r(:, 4) = [0., 0., 0., 1.]
 
         end function rotate_z
 
@@ -582,11 +667,12 @@ module sdfs
             
             implicit none
             
-            real :: r(3, 3)
+            real :: r(4, 4)
 
-            r(:, 1) = [1., 0., 0.]
-            r(:, 2) = [0., 1., 0.]
-            r(:, 3) = [0., 0., 1.]
+            r(:, 1) = [1., 0., 0., 0.]
+            r(:, 2) = [0., 1., 0., 0.]
+            r(:, 3) = [0., 0., 1., 0.]
+            r(:, 4) = [0., 0., 0., 1.]
 
         end function identity
 

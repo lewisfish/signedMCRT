@@ -23,15 +23,13 @@ module photonMod
     end interface photon
 
     abstract interface
-        subroutine generic_emit(this, grid, iseed)
+        subroutine generic_emit(this, grid)
             
             use gridMod
 
             import :: photon
             class(photon) :: this
-
-            type(cart_grid), intent(IN)    :: grid
-            integer,         intent(INOUT) :: iseed
+            type(cart_grid), intent(IN) :: grid
 
         end subroutine generic_emit
     end interface
@@ -51,6 +49,8 @@ module photonMod
                 init_source%emit => uniform
             elseif(choice == "pencil")then
                 init_source%emit => pencil
+            elseif(choice == "annulus")then
+                init_source%emit => annulus
             else
                 init_source%emit => circular_beam
             end if
@@ -58,17 +58,16 @@ module photonMod
 
         end function init_source
 
-        subroutine uniform(this, grid, iseed)
+        subroutine uniform(this, grid)
 
             use gridMod
             use random, only : ranu, ran2
-            use constants, only : twoPI
+            use constants, only : twoPI,pi
 
             implicit none
 
             class(photon) :: this
             type(cart_grid), intent(IN)    :: grid
-            integer,         intent(INOUT) :: iseed
 
             this%pos%x = ranu(-grid%xmax, grid%xmax)
             this%pos%y = .98!ranu(-grid%ymax, grid%ymax)
@@ -95,7 +94,7 @@ module photonMod
         end subroutine uniform
 
 
-        subroutine pencil(this, grid, iseed)
+        subroutine pencil(this, grid)
 
             use gridMod
             use random, only : ranu
@@ -104,7 +103,6 @@ module photonMod
 
             class(photon) :: this
             type(cart_grid), intent(IN)    :: grid
-            integer,         intent(INOUT) :: iseed
 
             this%pos%z = grid%zmax - epsilon(1.d0)
             this%pos%x = ranu(-grid%xmax/10., grid%xmax/10.)
@@ -128,8 +126,97 @@ module photonMod
             this%zcell=int(grid%nzg*(this%pos%z+grid%zmax)/(2.*grid%zmax))+1
 
         end subroutine pencil
+        
+        subroutine annulus(this, grid)
 
-        subroutine circular_beam(this, grid, iseed)
+            use gridMod
+            use utils,     only : deg2rad
+            use random,    only : ranu, ran2, rang
+            use surfaces, only : reflect_refract
+            ! use constants, only : twoPI, pi
+
+            implicit none
+
+            class(photon) :: this
+            type(cart_grid), intent(IN) :: grid
+
+
+            real :: ra, ta, alpha, Ls, beam_width, rp, da, dist
+            real :: tana, x, y, total_length, axicon_n, height, k
+            type(vector) :: pos, dir, normal, centre, newpos
+            logical :: flag
+
+            ra = 4. ! 12.7mm
+            beam_width = .5d0 !100um
+            do
+                call rang(x, y, 0., beam_width)
+                rp = sqrt(x**2 + y**2)
+                axicon_n = 1.45
+                ta = 0.0d-3  ! 0.0 mm
+                alpha = deg2rad(20.0)
+                tana = tan(alpha)
+                height = tana * ra
+                Ls = 10.  ! 100mm
+                centre = vector(0., 0., 0.)
+                k  = (rp / height)**2
+                
+                da = (ra - rp) * tana
+                pos = vector(x, y, -da)
+
+                total_length = Ls + height
+
+                dir = vector(0., 0., -1.)
+                !https://math.stackexchange.com/a/3349448
+                normal =vector(2.*pos%x, 2.*pos%y, -2*ra**2*(pos%z+height)/height**2)
+                normal = normal%magnitude()
+                call reflect_refract(dir, normal, axicon_n, 1., flag)
+                if(.not. flag)then
+                    exit
+                end if
+            end do
+
+            !move packet to L1 location
+            pos = pos + dir * (-total_length / dir%z)
+
+            !focus to a point
+            pos%z = 4.d0 !f distance 40mm
+            call rang(x, y, 0., 5.d-4)
+            newpos = vector(x, y, 0.)
+            dist = sqrt((pos%x - newpos%x)**2 + (pos%y - newpos%y)**2 +(pos%z - newpos%z)**2)
+
+            dir = (-1.)*pos / dist
+            dist = (grid%zmax + 5e-8 - pos%z) / dir%z
+            pos = pos + dist * dir
+            this%pos = pos
+
+            dir = dir%magnitude()
+
+            this%nxp = dir%x
+            this%nyp = dir%y
+            this%nzp = dir%z
+
+            this%cost = this%nzp
+            this%sint = sqrt(1.d0 - this%cost**2)
+
+            this%phi = atan2(this%nyp, this%nxp)
+            this%cosp = cos(this%phi)
+            this%sinp = sin(this%phi)
+
+            this%tflag = .false.
+            this%layer = 3
+
+            !teleport to just inside medium
+            this%pos%z = grid%zmax - 5e-8
+
+            ! Linear Grid 
+            this%xcell=int(grid%nxg*(this%pos%x+grid%xmax)/(2.*grid%xmax))+1
+            this%ycell=int(grid%nyg*(this%pos%y+grid%ymax)/(2.*grid%ymax))+1
+            this%zcell=int(grid%nzg*(this%pos%z+grid%zmax)/(2.*grid%zmax))+1
+
+
+        end subroutine annulus
+        
+        subroutine circular_beam(this, grid)
 
             use gridMod,   only : cart_grid
             use constants, only : PI, twoPI
@@ -141,7 +228,6 @@ module photonMod
 
             class(photon) :: this
             type(cart_grid), intent(IN)    :: grid
-            integer,         intent(INOUT) :: iseed
 
 
             real :: seperation, beam_width, radius, height, alpha, axicon_n, base_pos
@@ -215,7 +301,7 @@ module photonMod
 
         end subroutine circular_beam
 
-        ! subroutine bessel(this, grid, iseed)
+        ! subroutine bessel(this, grid)
 
         !     use gridMod,   only : cart_grid
         !     use constants, only : PI, twoPI
@@ -225,7 +311,6 @@ module photonMod
 
         !     class(photon) :: this
         !     type(cart_grid), intent(IN)    :: grid
-        !     integer,         intent(INOUT) :: iseed
 
         !     real :: tana, r_pos, x0, y0, z0, dist, n
 
@@ -242,14 +327,14 @@ module photonMod
         !     this%phase = 0.d0
         !     tana = tan(alpha *pi/180.)
 
-        !     call rang(this%xp, this%yp, 0.d0, sqrt(2.)*waist/4., iseed)
+        !     call rang(this%xp, this%yp, 0.d0, sqrt(2.)*waist/4.)
         !     r_pos = sqrt(this%xp**2 + this%yp**2)
 
         !     this%zp = (raxi - r_pos) * tana
         !     this%phase = this%zp * n
 
-        !     x0 = ranu(-grid%xmax, grid%xmax, iseed)
-        !     y0 = ranu(-grid%xmax, grid%xmax, iseed)
+        !     x0 = ranu(-grid%xmax, grid%xmax)
+        !     y0 = ranu(-grid%xmax, grid%xmax)
         !     z0 = (r_pos * tana) + d + this%zp
             
 

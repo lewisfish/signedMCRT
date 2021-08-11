@@ -29,7 +29,8 @@ type(photon)     :: packet
 type(cart_grid)  :: grid
 integer          :: nphotons, iseed, j, i
 double precision :: nscatt
-real             :: ran, start, time_taken, ds(3)
+real             :: ran, start, time_taken
+real, allocatable:: ds(:)
 type(pbar)       :: bar
 
 type(container), allocatable :: array(:)
@@ -38,7 +39,7 @@ integer :: id, numproc
 real    :: nscattGLOBAL
 
 call setup_simulation(nphotons, grid, array, "exp")
-! call render(array, vector(grid%xmax, grid%ymax, grid%zmax), 200)
+allocate(ds(size(array)))
 ! stop
 start = get_time()
 id = 0
@@ -57,7 +58,7 @@ end if
 !loop over photons 
 #ifdef _OPENMP
 !$omp parallel default(none) shared(array, grid, numproc, start, nphotons, bar)&
-!$omp& private(ran, id, packet, iseed, ds) reduction(+:nscatt)
+!$omp& private(ran, id, packet, ds) reduction(+:nscatt)
     numproc = omp_get_num_threads()
     id = omp_get_thread_num()
 #elif MPI
@@ -82,7 +83,7 @@ do j = 1, nphotons
     if(mod(j, 100000) == 0)call bar%progress()
 
     ! Release photon from point source 
-    call packet%emit(grid, iseed)
+    call packet%emit(grid)
     ds = 0.
     do i = 1, size(ds)
         ds(i) = array(i)%p%evaluate(packet%pos)

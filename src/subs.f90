@@ -58,6 +58,8 @@ private :: directory, alloc_array, zarray
                 sdfarray = setup_fresnel_test()
             elseif(choice == "exp")then
                 sdfarray = setup_exp()
+            elseif(choice == "skin")then
+                sdfarray = setup_skin_model()
             else
                 error stop "no such routine"
             end if
@@ -77,7 +79,7 @@ private :: directory, alloc_array, zarray
             type(cylinder), target, save :: cyl(2)
             type(box),      target, save :: bbox
 
-            real    :: mus, mua, hgg, n, t(3, 3)
+            real    :: mus, mua, hgg, n, t(4, 4)
             integer :: i
 
             n = 1.d0
@@ -85,10 +87,10 @@ private :: directory, alloc_array, zarray
             mua = 1.d-17
             mus = 0.d0
 
-            t = rotate_y(deg2rad(90.))
-            cyl(1) = cylinder(10., 1.75, mus, mua, hgg, n, 1)
-            cyl(2)= cylinder(10., 1.55, mus, mua, hgg, n, 2)
-
+            ! t = rotate_y(deg2rad(90.))
+            ! cyl(1) = cylinder(10., 1.55, mus, mua, hgg, 1.3, 1)
+            ! cyl(2) = cylinder(10., 1.75, mus, mua, hgg, 1.5, 2)
+            error stop "need to fix cylinders"
             bbox  = box(2., mus, mua, hgg, n, 3)
 
             allocate(array(3))
@@ -189,45 +191,46 @@ private :: directory, alloc_array, zarray
             type(torus),    target, save :: sph       !are deallocated on sub exit
             type(box),      target, save :: boxy      !should be safe as this sub only called once
             type(model),    target, save :: omg_sdf
-            real    :: t(3, 3), mus, mua, hgg, n
+            real    :: t(4, 4), mus, mua, hgg, n
             integer :: j, layer
 
             mus = 10.
-            mua = 0.
+            mua = 0.16
             hgg = 0.0d0
             n = 2.65
             layer = 1
 
             !O letter
             sph = torus(.2, 0.05, mus, mua, hgg, n, layer, c=vector(0., 0., -0.75))
-            
+                        error stop "need to fix cylinders"
+
             !M letter
-            m(1) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,-.25))
+            ! m(1) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,-.25))
             
-            t = rotate_y(-25.*pi/180.)
-            m(2) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,-.125), transform=t)
+            ! t = rotate_y(-25.*pi/180.)
+            ! m(2) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,-.125), transform=t)
             
-            t = rotate_y(25.*pi/180.)
-            m(3) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,.125), transform=t)
+            ! t = rotate_y(25.*pi/180.)
+            ! m(3) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,.125), transform=t)
 
-            m(4) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,.25))
+            ! m(4) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,.25))
 
-            !G letter
-            g(1) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,.6))
+            ! !G letter
+            ! g(1) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,.6))
 
-            t = rotate_y(90.*pi/180.)
-            g(2) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.25,0.,.775),transform=t)
+            ! t = rotate_y(90.*pi/180.)
+            ! g(2) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(0.25,0.,.775),transform=t)
 
-            t = rotate_y(90.*pi/180.)
-            g(3) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(-0.25, 0.,.775),transform=t)
+            ! t = rotate_y(90.*pi/180.)
+            ! g(3) = cylinder(.25, .05, mus, mua, hgg, n, layer, c=vector(-0.25, 0.,.775),transform=t)
 
-            g(4) = cylinder(.125, .05, mus, mua, hgg, n, layer, c=vector(-0.1,0.,1.))
+            ! g(4) = cylinder(.125, .05, mus, mua, hgg, n, layer, c=vector(-0.1,0.,1.))
 
-            t = rotate_y(90.*pi/180.)
-            g(5) = cylinder(.125, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,.9),transform=t)
+            ! t = rotate_y(90.*pi/180.)
+            ! g(5) = cylinder(.125, .05, mus, mua, hgg, n, layer, c=vector(0.,0.,.9),transform=t)
 
             !bbox
-            boxy = box(2., 0.d0, 100., 0.d0, 1.0, 2)
+            boxy = box(2., 0.d0, 10., 0.d0, 1.0, 2)
 
             allocate(array(2))
             do j = 1, size(array)
@@ -255,6 +258,90 @@ private :: directory, alloc_array, zarray
             array(2)%p => boxy    ! bbox
 
         end function setup_omg_sdf
+
+
+        function setup_skin_model() result(array)
+
+            use sdfs, only : container, model, cylinder, box, translate, model_init, rotate_y, rotate_x, rotate_z
+            use utils, only : deg2rad
+            use vector_class
+
+            implicit none
+
+            type(container), allocatable :: array(:), cnta(:)
+
+            type(cylinder), target, save :: cyls(2)
+            type(box),      target, save :: skin(3)
+            type(model),    target, save :: vessels
+
+            integer :: i
+            real    :: mus, mua, hgg, n, t(4, 4)
+
+            real :: mus_epi, mus_derm, mua_epi, mua_derm, n_epi, n_derm, hgg_epi, hgg_derm
+            real :: mus_b, mua_b, hgg_b, n_b
+            type(vector) :: a, b, c
+
+            n = 1.d0
+            hgg = 0.d0
+            mua = 1d-17
+            mus = 0.
+
+            mus_epi = 376.
+            mua_epi = 16.6
+            hgg_epi = 0.9
+            n_epi = 1.
+
+            mus_derm = 357.
+            mua_derm = 0.459
+            hgg_derm = 0.9
+            n_derm = 1.
+
+            mus_b = 0.
+            mua_b = 0.
+            hgg_b = 0.9
+            n_b = 1.
+
+            ! total 0.1 cm 
+            ! c = vector(0., 0., 0.045)
+            ! t = invert(translate(c))
+            ! skin(3) = box(vector(.1, .1, .01), mus, mua, hgg, n, 3, transform=t)!water
+
+            ! c = vector(0., 0., .037)
+            ! t = invert(translate(c))
+            ! skin(2) = box(vector(.1, .1, .006), mus, mua, hgg, n, 2, transform=t)!epidermis
+
+            ! c = vector(0., 0., -.008)
+            ! t = invert(translate(c))
+            ! skin(1) = box(vector(.1, .1, 0.084), mus, mua, hgg, n, 1, transform=t)!dermis
+            skin(1) = box(vector(.1, .1, .1), mus, mua, hgg, n, 2)!bbox for debug
+            
+            ! cyl(1) = cylinder(a, b, radius, mus, mua, hgg, n, layer, transform)
+            t = invert(rotate_z(25.))
+            a = vector(-.05, 0., 0.)
+            b = vector(.05, 0., 0.)
+            cyls(1) = cylinder(a, b, .005, mus_b, mua_b, hgg_b, n_b, 1)
+
+            a = vector(0., 0., -0.04)
+            b = vector(0., 0., 0.04)
+            t = invert(rotate_y(90.))
+            cyls(2) = cylinder(a, b, .025, mus_b, mua_b, hgg_b, n_b, 2, transform=t)
+
+            allocate(array(3))
+            ! allocate(cnta(1)%p)
+            ! cnta(1)%p => cyls(1)
+            ! vessels = model_init(cnta, smoothunion)
+            do i = 1, size(array)
+                allocate(array(i)%p)
+            end do
+
+            array(1)%p => cyls(1)
+            array(2)%p => cyls(2)
+            array(3)%p => skin(1)
+            ! array(1)%p => skin(1)
+            ! array(2)%p => skin(3)
+            ! array(2)%p => skin(3)
+
+        end function setup_skin_model
 
         subroutine directory
         !  subroutine defines vars to hold paths to various folders   
