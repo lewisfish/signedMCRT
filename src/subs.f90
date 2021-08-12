@@ -138,8 +138,6 @@ private :: directory, alloc_array, zarray
 
         end function setup_fresnel_test
 
-
-
         function setup_scat_test(tau) result(array)
 
             use sdfs, only : container, sphere, box
@@ -177,7 +175,7 @@ private :: directory, alloc_array, zarray
 
         function setup_omg_sdf() result(array)
             
-            use sdfs,      only : container, cylinder, torus, model, box, smoothunion, rotate_y, model_init
+            use sdfs,      only : container, cylinder, torus, model, box, smoothunion, rotate_y, model_init, translate
             use constants, only : pi
             
             use vector_class
@@ -285,7 +283,7 @@ private :: directory, alloc_array, zarray
 
         function setup_skin_model() result(array)
 
-            use sdfs, only : container, model, cylinder, box, translate, model_init, rotate_y, rotate_x, rotate_z
+            use sdfs, only : container, model, cylinder, box, translate, model_init, smoothunion
             use utils, only : deg2rad
             use vector_class
 
@@ -293,7 +291,7 @@ private :: directory, alloc_array, zarray
 
             type(container), allocatable :: array(:), cnta(:)
 
-            type(cylinder), target, save :: cyls(2)
+            type(cylinder), target, save :: cyls(12)
             type(box),      target, save :: skin(3)
             type(model),    target, save :: vessels
 
@@ -305,64 +303,107 @@ private :: directory, alloc_array, zarray
             type(vector) :: a, b, c
 
             n = 1.d0
-            hgg = 0.d0
-            mua = 1d-17
-            mus = 0.
+            hgg = 1.d0
+            mua = 0.!.00036
+            mus = 0.!10.
 
-            mus_epi = 376.
-            mua_epi = 16.6
+            mus_epi = 0.!376.
+            mua_epi = 0.!16.6
             hgg_epi = 0.9
             n_epi = 1.
 
-            mus_derm = 357.
-            mua_derm = 0.459
+            mus_derm = 0.!357.
+            mua_derm = 0.!0.459
             hgg_derm = 0.9
             n_derm = 1.
 
-            mus_b = 0.
-            mua_b = 0.
+            mus_b = 0.!94.
+            mua_b = 231000.
             hgg_b = 0.9
             n_b = 1.
 
             ! total 0.1 cm 
-            ! c = vector(0., 0., 0.045)
-            ! t = invert(translate(c))
-            ! skin(3) = box(vector(.1, .1, .01), mus, mua, hgg, n, 3, transform=t)!water
+            c = vector(0., 0., 0.045)
+            t = invert(translate(c))
+            skin(3) = box(vector(.1, .1, .01), mus, mua, hgg, n, 4, transform=t)!water
 
-            ! c = vector(0., 0., .037)
-            ! t = invert(translate(c))
-            ! skin(2) = box(vector(.1, .1, .006), mus, mua, hgg, n, 2, transform=t)!epidermis
+            c = vector(0., 0., .037)
+            t = invert(translate(c))
+            skin(2) = box(vector(.1, .1, .006), mus_epi, mua_epi, hgg_epi, n_epi, 3, transform=t)!epidermis
 
-            ! c = vector(0., 0., -.008)
-            ! t = invert(translate(c))
-            ! skin(1) = box(vector(.1, .1, 0.084), mus, mua, hgg, n, 1, transform=t)!dermis
-            skin(1) = box(vector(.1, .1, .1), mus, mua, hgg, n, 2)!bbox for debug
+            c = vector(0., 0., -.008)
+            t = invert(translate(c))
+            skin(1) = box(vector(.1, .1, 0.084), mus_derm, mua_derm, hgg_derm, n_derm, 2, transform=t)!dermis
+            ! skin(1) = box(vector(.1, .1, .1), mus, mua, hgg, n, 2)!bbox for debug
             
-            ! cyl(1) = cylinder(a, b, radius, mus, mua, hgg, n, layer, transform)
-            t = invert(rotate_z(25.))
-            a = vector(-.05, 0., 0.)
-            b = vector(.05, 0., 0.)
+            a = vector(0., -0.05, 0.)
+            b = vector(0., -0.03, 0.)
             cyls(1) = cylinder(a, b, .005, mus_b, mua_b, hgg_b, n_b, 1)
 
-            a = vector(0., 0., -0.04)
-            b = vector(0., 0., 0.04)
-            t = invert(rotate_y(90.))
-            cyls(2) = cylinder(a, b, .025, mus_b, mua_b, hgg_b, n_b, 2, transform=t)
+            a = vector(0., -0.03-.005, 0.)
+            b = vector(0.03, -0.02, 0.)
+            cyls(2) = cylinder(a, b, .005, mus_b, mua_b, hgg_b, n_b, 1)
 
-            allocate(array(3))
-            ! allocate(cnta(1)%p)
-            ! cnta(1)%p => cyls(1)
-            ! vessels = model_init(cnta, smoothunion)
+            a = vector(0.03, -0.02-.005, 0.)
+            b = vector(0., 0.01, 0.)
+            cyls(3) = cylinder(a, b, .005, mus_b, mua_b, hgg_b, n_b, 1)
+
+            a = vector(0., 0.01-.005, 0.)
+            b = vector(0., 0.03, 0.)
+            cyls(4) = cylinder(a, b, .005, mus_b, mua_b, hgg_b, n_b, 1)
+
+            a = vector(0., 0.03-.005, 0.)
+            b = vector(0.03, 0.05, 0.)
+            cyls(5) = cylinder(a, b, .005, mus_b, mua_b, hgg_b, n_b, 1)
+
+            !branch 1
+            a = vector(-0.0025, -0.04, 0.)
+            b = vector(-0.03, -0.03, 0.)
+            cyls(6) = cylinder(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
+
+            a = vector(-0.03, -0.03, 0.)
+            b = vector(-0.03, -0.02, 0.)
+            cyls(7) = cylinder(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
+
+            a = vector(-0.03, -0.02, 0.)
+            b = vector(0.0025, 0.02, 0.)
+            cyls(8) = cylinder(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
+
+
+            !branch 2
+            a = vector(0.015, -0.025, 0.)
+            b = vector(0.048, -0.02, 0.)
+            cyls(9) = cylinder(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
+
+            a = vector(0.048, -0.02, 0.)
+            b = vector(0.04, 0.01, 0.)
+            cyls(10) = cylinder(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
+
+            a = vector(0.04, 0.01, 0.)
+            b = vector(0.03, 0.025, 0.)
+            cyls(11) = cylinder(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
+
+            a = vector(0.03, 0.025, 0.)
+            b = vector(-0.0025, 0.02, 0.)
+            cyls(12) = cylinder(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
+
+
+            allocate(array(4))
             do i = 1, size(array)
                 allocate(array(i)%p)
             end do
 
-            array(1)%p => cyls(1)
-            array(2)%p => cyls(2)
-            array(3)%p => skin(1)
-            ! array(1)%p => skin(1)
-            ! array(2)%p => skin(3)
-            ! array(2)%p => skin(3)
+            allocate(cnta(size(cyls)))
+            do i = 1, size(cnta)
+                allocate(cnta(i)%p)
+                cnta(i)%p => cyls(i)
+            end do
+
+            vessels = model_init(cnta, smoothunion)
+            array(1)%p => vessels
+            array(2)%p => skin(1)
+            array(3)%p => skin(2)
+            array(4)%p => skin(3)
 
         end function setup_skin_model
 
