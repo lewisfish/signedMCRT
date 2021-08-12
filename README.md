@@ -13,7 +13,7 @@ https://iquilezles.org/www/articles/raymarchingdf/raymarchingdf.htm
 
 "Ray traced" in signedMCRT where the letters are highly absorbing in a non-scattering/absorbing medium.
 
-![Image of SDF model ray traced in signedMCRT](https://github.com/lewisfish/signedMCRT/raw/main/omg_image_signedmcrt.png)
+![Image of SDF model ray traced in signedMCRT](https://github.com/lewisfish/signedMCRT/raw/main/omg_logo_sdf.png)
 
 Blender render
 
