@@ -17,13 +17,13 @@ private :: directory, alloc_array, zarray
 
             implicit none
 
-            integer,                  intent(OUT) :: nphotons
-            type(cart_grid),          intent(OUT) :: grid
-            type(container), allocatable,         intent(OUT) :: sdfarray(:)
-            character(*), intent(IN) :: choice
-            real, optional, intent(IN) :: tau
+            integer,                      intent(OUT) :: nphotons
+            type(cart_grid),              intent(OUT) :: grid
+            character(*),                 intent(IN)  :: choice
+            type(container), allocatable, intent(OUT) :: sdfarray(:)
+            real,            optional,    intent(IN)  :: tau
 
-            real    :: xmax, ymax, zmax, albedo(3), hgg(3), g2(3),kappa(3), n1, n2
+            real    :: xmax, ymax, zmax, albedo(3), hgg(3), g2(3),kappa(3)
             integer :: nxg, nyg, nzg, u
 
             !set directory paths
@@ -37,8 +37,6 @@ private :: directory, alloc_array, zarray
                 read(u,*) nxg
                 read(u,*) nyg
                 read(u,*) nzg
-                read(u,*) n1
-                read(u,*) n2
             close(u)
 
             !allocate and set arrays to 0
@@ -46,7 +44,7 @@ private :: directory, alloc_array, zarray
             call zarray
 
             ! Set up grid
-            grid = cart_grid(nxg, nyg, nzg, xmax, ymax, zmax, n1, n2)
+            grid = cart_grid(nxg, nyg, nzg, xmax, ymax, zmax)
             call init_opt1(kappa, albedo, hgg, g2)
 
             if(choice == "omg")then
@@ -60,11 +58,93 @@ private :: directory, alloc_array, zarray
                 sdfarray = setup_exp()
             elseif(choice == "skin")then
                 sdfarray = setup_skin_model()
+            elseif(choice == "interior")then
+                sdfarray = interior_test()
+            elseif(choice == "sphere")then
+                sdfarray = setup_sphere()
             else
                 error stop "no such routine"
             end if
 
         end subroutine setup_simulation
+
+
+        function setup_sphere() result(array)
+
+            use sdfs, only : sphere, box, container
+            use vector_class
+
+            implicit none
+
+            type(container), allocatable :: array(:)
+            type(sphere),   target, save :: sph
+            type(box),      target, save :: bbox
+ 
+            real :: mus, mua, n, hgg
+            integer :: i
+
+            mus = 0.; mua = 0.; hgg = 0.; n = 1.;
+            bbox = box(2., mus, mua, hgg, n, 2)
+            
+            mus = 0.; mua = .5; hgg = .0; n = 1.5;
+            sph = sphere(.5, mus, mua, hgg, n, 1)
+
+            allocate(array(2))
+            do i = 1, size(array)
+                allocate(array(i)%p)
+            end do
+
+            array(1)%p => sph
+            array(2)%p => bbox
+
+        end function setup_sphere
+
+
+        function interior_test() result(array)
+
+            use sdfs, only : container, model, union, sphere, box, translate, model_init
+            use vector_class
+
+            implicit none
+
+
+            type(container) :: array(1), cnta(3)
+            type(sphere), target, save :: sph
+            type(box),    target, save :: boxes(2), bbox
+            type(model),  target, save :: m
+
+            integer :: i
+            real :: t(4, 4)
+
+
+            bbox = box(2., 0., 0., 0., 1., 2)
+
+            t = invert(translate(vector(.25, .0, 0.)))
+            boxes(1) = box(vector(.5, 1., 1.), 0., 0., 0., 1., 1, transform=t)
+            t = invert(translate(vector(0., .75, 0.)))
+            boxes(2) = box(vector(1., .5, 1.), 0., 0., 0., 1., 1, transform=t)
+
+            t = invert(translate(vector(.5, 0., 0.)))
+            sph = sphere(0.5, 0., 0., 0., 1., 1, transform=t)
+
+            do i = 1, size(cnta)
+                allocate(cnta(i)%p)
+            end do
+
+            do i = 1, size(array)
+                allocate(array(i)%p)
+            end do
+
+            cnta(1)%p => sph
+            cnta(2)%p => boxes(1)
+            cnta(3)%p => boxes(2)
+
+            m = model_init(cnta, union)
+
+            array(1)%p => m
+            ! array(2)%p => bbox
+
+        end function interior_test
 
 
         function setup_exp() result(array)
@@ -304,20 +384,20 @@ private :: directory, alloc_array, zarray
 
             n = 1.d0
             hgg = 1.d0
-            mua = 0.!.00036
-            mus = 0.!10.
+            mua = .00036
+            mus = 10.
 
-            mus_epi = 0.!376.
-            mua_epi = 0.!16.6
+            mus_epi = 376.
+            mua_epi = 16.6
             hgg_epi = 0.9
             n_epi = 1.
 
-            mus_derm = 0.!357.
-            mua_derm = 0.!0.459
+            mus_derm = 357.
+            mua_derm = 0.459
             hgg_derm = 0.9
             n_derm = 1.
 
-            mus_b = 0.!94.
+            mus_b = 94.
             mua_b = 231000.
             hgg_b = 0.9
             n_b = 1.

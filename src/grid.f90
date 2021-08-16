@@ -17,14 +17,14 @@ module gridMod
 
     contains
 
-    type(cart_grid) function init_grid(nxg, nyg, nzg, xmax, ymax, zmax, n1, n2)
+    type(cart_grid) function init_grid(nxg, nyg, nzg, xmax, ymax, zmax)
 
         use ch_opt
 
         implicit none
         
         integer, intent(IN) :: nxg, nyg, nzg 
-        real,    intent(IN) :: xmax, ymax, zmax, n1, n2
+        real,    intent(IN) :: xmax, ymax, zmax
         
         real    :: kappa(3), albedo(3), hgg(3), g2(3)
         integer :: i
