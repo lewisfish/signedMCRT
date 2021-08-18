@@ -1,10 +1,18 @@
 module sdfs
-
+!   Module provides signed distance functions (SDFs) for various shapes 
+!   and some operations to adjust, move, rotate etc them
+!   All SDF functions are adapted from Inigo Quilex exhaustive list at:
+!   https://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm
+!
     use vector_class
 
     implicit none
 
     type, abstract :: sdf
+    ! base class.
+    ! provides deferred evaluation func to get distance to shape
+    ! and gives the transform and optical prperties.
+    ! Layer is an important bookeeping integer.
         real :: mus, mua, kappa, albedo, hgg, g2, n
         real :: transform(4, 4)
         integer :: layer
@@ -23,15 +31,17 @@ module sdfs
     end interface
 
 
-    type :: container
-        class(sdf), pointer :: p => null()
-    end type container
 
     type, extends(sdf) :: sphere
         real :: radius
         contains
         procedure :: evaluate => eval_sphere
     end type sphere
+
+    interface sphere
+        module procedure sphere_init
+    end interface sphere
+
 
     type, extends(sdf) :: cylinder
         real         :: radius
@@ -40,11 +50,22 @@ module sdfs
         procedure :: evaluate => eval_cylinder
     end type cylinder
 
+    interface cylinder
+        module procedure cylinder_init
+    end interface cylinder
+
+
     type, extends(sdf) :: box
         type(vector) :: lengths
         contains
         procedure :: evaluate => eval_box
     end type box
+
+    interface box
+        module procedure box_init_vec
+        module procedure box_init_scal
+    end interface box
+
 
     type, extends(sdf) :: torus
         real :: oradius, iradius
@@ -52,12 +73,52 @@ module sdfs
         procedure :: evaluate => eval_torus
     end type torus
 
+    interface torus
+        module procedure torus_init
+    end interface torus
+
+
+    type, extends(sdf) :: triprisim
+        real :: h1, h2
+        contains
+        procedure :: evaluate => eval_triprisim
+    end type triprisim
+
+    interface triprisim
+        module procedure triprisim_init
+    end interface triprisim
+
+
+    type, extends(sdf) :: cone
+        type(vector) :: a, b
+        real         :: ra, rb
+        contains
+        procedure :: evaluate => eval_cone
+    end type cone
+
+    interface cone
+        module procedure cone_init
+    end interface cone
+
+
     type, extends(sdf) :: model
         type(container), allocatable  :: array(:)
         procedure(op),nopass, pointer :: func
         contains
         procedure :: evaluate => eval_model
     end type model
+
+    interface model
+        module procedure model_init
+    end interface model
+
+
+    type :: container
+        class(sdf), pointer :: p => null()
+    end type container
+
+
+
 
     type, extends(sdf) :: twist
         real :: k
@@ -103,26 +164,7 @@ module sdfs
         module procedure elongate_init
     end interface elongate
 
-    interface cylinder
-        module procedure cylinder_init
-    end interface cylinder
 
-    interface sphere
-        module procedure sphere_init
-    end interface sphere
-
-    interface torus
-        module procedure torus_init
-    end interface torus
-
-    interface box
-        module procedure box_init_vec
-        module procedure box_init_scal
-    end interface box
-
-    interface model
-        module procedure model_init
-    end interface model
 
     abstract interface
         real function op(d1, d2)
@@ -140,10 +182,18 @@ module sdfs
     end interface
 
     private
-    public :: sdf, model, cylinder, sphere, box, container, model_init, render, torus
-    public :: union, intersection, subtraction, calcNormal, SmoothUnion, op
+    ! shapes
+    public :: sdf, cylinder, sphere, box, torus, cone, triprisim
+    ! meta
+    public :: model, container
+    ! boolean ops
+    public :: union, intersection, subtraction, SmoothUnion, op
+    ! move ops
     public :: rotate_x, rotate_y, rotate_z, identity, translate
+    ! deform ops
     public :: displacement, bend, twist, elongate
+    ! utility funcs
+    public :: calcNormal, model_init, render
 
     contains
 
@@ -207,7 +257,6 @@ module sdfs
             integer :: i
 
             eval_model = this%array(1)%p%evaluate(pos)
-
             do i = 2, size(this%array)
                 eval_model = this%func(eval_model, this%array(i)%p%evaluate(pos))
             end do
@@ -221,13 +270,12 @@ module sdfs
         
             type(cylinder) :: out
             
-            real,         intent(IN) :: radius, mus, mua, hgg, n
-            integer,      intent(IN) :: layer
-            type(vector), intent(IN) :: a, b
+            real,           intent(IN) :: radius, mus, mua, hgg, n
+            integer,        intent(IN) :: layer
+            type(vector),   intent(IN) :: a, b
+            real, optional, intent(IN) :: transform(4, 4)
 
-            real,         optional :: transform(4, 4)
-
-            real         :: t(4, 4)
+            real :: t(4, 4)
 
             if(present(transform))then
                 t = transform
@@ -255,156 +303,6 @@ module sdfs
 
         end function cylinder_init
 
-        function box_init(lengths, mus, mua, hgg, n, layer, transform) result(out)
-        
-            implicit none
-        
-            type(box) :: out
-            
-            type(vector), intent(IN) :: lengths
-            real,         intent(IN) :: mus, mua, hgg, n
-            integer,      intent(IN) :: layer
-
-            real,         optional, intent(in) :: transform(4, 4)
-
-            real :: t(4, 4)
-
-
-            if(present(transform))then
-                t = transform
-            else
-                t = identity()
-            end if
-            out%lengths = .5*lengths! as only half lengths
-            out%layer = layer
-            out%transform = t
-
-            out%mus = mus
-            out%mua = mua
-            out%kappa = mus + mua
-            if(out%mua < 1d-9)then
-                out%albedo = 1.
-            else
-                out%albedo = mus / out%kappa
-            end if
-            out%hgg = hgg
-            out%g2 = hgg**2
-            out%n = n
-
-        end function box_init
-
-        function box_init_vec(lengths, mus, mua, hgg, n, layer, transform) result(out)
-        
-            implicit none
-        
-            type(box) :: out
-            
-            type(vector), intent(IN) :: lengths
-            real,         intent(IN) :: mus, mua, hgg, n
-            integer,      intent(IN) :: layer
-
-            real,         optional, intent(in) :: transform(4, 4)
-
-            out = box_init(lengths, mus, mua, hgg, n, layer, transform)
-
-        end function box_init_vec
-
-
-        function box_init_scal(length, mus, mua, hgg, n, layer, transform) result(out)
-        
-            implicit none
-        
-            type(box) :: out
-            
-            real,         intent(IN) :: length, mus, mua, hgg, n
-            integer,      intent(IN) :: layer
-
-            real,         optional, intent(in) :: transform(4, 4)
-
-            type(vector) :: lengths
-
-            lengths = vector(length, length, length)
-
-            out = box_init(lengths, mus, mua, hgg, n, layer, transform)
-
-        end function box_init_scal
-
-
-        function sphere_init(radius, mus, mua, hgg, n, layer, transform) result(out)
-        
-            implicit none
-        
-            type(sphere) :: out
-            
-            real,            intent(IN) :: radius, mus, mua, hgg, n
-            integer,         intent(IN) :: layer
-            real,  optional, intent(IN) :: transform(4, 4)
-
-            real :: t(4, 4)
-
-            if(present(transform))then
-                t = transform
-            else
-                t = identity()
-            end if
-
-            out%radius = radius
-            out%layer = layer
-
-            out%transform = t
-
-            out%mus = mus
-            out%mua = mua
-            out%kappa = mus + mua
-            if(out%mua < 1d-9)then
-                out%albedo = 1.
-            else
-                out%albedo = mus / out%kappa
-            end if
-            out%hgg = hgg
-            out%g2 = hgg**2
-            out%n = n
-
-        end function sphere_init
-
-
-        function torus_init(oradius, iradius, mus, mua, hgg, n, layer, transform) result(out)
-
-            implicit none
-        
-            type(torus) :: out
-            
-            real,            intent(IN) :: oradius, iradius, mus, mua, hgg, n
-            integer,         intent(IN) :: layer
-            real,  optional, intent(IN) :: transform(4, 4)
-
-            real :: t(4, 4)
-
-            if(present(transform))then
-                t = transform
-            else
-                t = identity()
-            end if
-
-            out%oradius = oradius
-            out%iradius = iradius
-            out%layer = layer
-            out%transform = t
-
-            out%mus = mus
-            out%mua = mua
-            out%kappa = mus + mua
-            if(out%mua < 1d-9)then
-                out%albedo = 1.
-            else
-                out%albedo = mus / out%kappa
-            end if
-            out%hgg = hgg
-            out%g2 = hgg**2
-            out%n = n
-
-        end function torus_init
-
         real function eval_cylinder(this, pos)
 
             implicit none
@@ -418,51 +316,6 @@ module sdfs
             eval_cylinder = cylinder_fn(p, this%a, this%b, this%radius)
 
         end function eval_cylinder
-
-
-        real function eval_sphere(this, pos)
-
-            implicit none
-
-            class(sphere) :: this
-            type(vector), intent(IN) :: pos
-
-            type(vector) :: p
-
-            p = pos .dot. this%transform
-            eval_sphere = sphere_fn(p, this%radius)
-
-        end function eval_sphere
-
-
-        real function eval_box(this, pos)
-
-            implicit none
-
-            class(box) :: this
-            type(vector), intent(IN) :: pos
-
-            type(vector) :: p
-
-            p = pos .dot. this%transform
-            eval_box = box_fn(p, this%lengths)
-
-        end function eval_box
-
-
-        real function eval_torus(this, pos)
-
-            implicit none
-
-            class(torus) :: this
-            type(vector), intent(IN) :: pos
-
-            type(vector) :: p
-
-            p = pos .dot. this%transform
-            eval_torus = torus_fn(p, this%oradius, this%iradius)
-
-        end function eval_torus
 
         real function cylinder_fn(p, a, b, r)
             !p = pos
@@ -505,17 +358,90 @@ module sdfs
         end function cylinder_fn
 
 
-        real function sphere_fn(p, c)
+        function box_init(lengths, mus, mua, hgg, n, layer, transform) result(out)
+        
+            implicit none
+        
+            type(box) :: out
+            
+            type(vector),   intent(IN) :: lengths
+            real,           intent(IN) :: mus, mua, hgg, n
+            integer,        intent(IN) :: layer
+            real, optional, intent(in) :: transform(4, 4)
+
+            real :: t(4, 4)
+
+
+            if(present(transform))then
+                t = transform
+            else
+                t = identity()
+            end if
+
+            out%lengths = .5*lengths! as only half lengths
+            out%layer = layer
+            out%transform = t
+
+            out%mus = mus
+            out%mua = mua
+            out%kappa = mus + mua
+            if(out%mua < 1d-9)then
+                out%albedo = 1.
+            else
+                out%albedo = mus / out%kappa
+            end if
+            out%hgg = hgg
+            out%g2 = hgg**2
+            out%n = n
+
+        end function box_init
+
+        function box_init_vec(lengths, mus, mua, hgg, n, layer, transform) result(out)
+        
+            implicit none
+        
+            type(box) :: out
+            
+            type(vector),   intent(IN) :: lengths
+            real,           intent(IN) :: mus, mua, hgg, n
+            integer,        intent(IN) :: layer
+            real, optional, intent(in) :: transform(4, 4)
+
+            out = box_init(lengths, mus, mua, hgg, n, layer, transform)
+
+        end function box_init_vec
+
+        function box_init_scal(length, mus, mua, hgg, n, layer, transform) result(out)
+        
+            implicit none
+        
+            type(box) :: out
+            
+            real,           intent(IN) :: length, mus, mua, hgg, n
+            integer,        intent(IN) :: layer
+            real, optional, intent(in) :: transform(4, 4)
+
+            type(vector) :: lengths
+
+            lengths = vector(length, length, length)
+
+            out = box_init(lengths, mus, mua, hgg, n, layer, transform)
+
+        end function box_init_scal
+
+        real function eval_box(this, pos)
 
             implicit none
 
-            type(vector), intent(IN) :: p
-            real,         intent(IN) :: c
+            class(box) :: this
+            type(vector), intent(IN) :: pos
 
-            sphere_fn = sqrt(p%x**2+p%y**2+p%z**2) - c
+            type(vector) :: p
 
-        end function sphere_fn
+            p = pos .dot. this%transform
+            eval_box = box_fn(p, this%lengths)
 
+        end function eval_box
 
         real function box_fn(p, b)
 
@@ -529,6 +455,122 @@ module sdfs
             box_fn = length(max(q, 0.)) + min(max(q%x, max(q%y, q%z)), 0.)
 
         end function box_fn
+
+
+
+        function sphere_init(radius, mus, mua, hgg, n, layer, transform) result(out)
+        
+            implicit none
+        
+            type(sphere) :: out
+            
+            real,            intent(IN) :: radius, mus, mua, hgg, n
+            integer,         intent(IN) :: layer
+            real,  optional, intent(IN) :: transform(4, 4)
+
+            real :: t(4, 4)
+
+            if(present(transform))then
+                t = transform
+            else
+                t = identity()
+            end if
+
+            out%radius = radius
+            out%layer = layer
+
+            out%transform = t
+
+            out%mus = mus
+            out%mua = mua
+            out%kappa = mus + mua
+            if(out%mua < 1d-9)then
+                out%albedo = 1.
+            else
+                out%albedo = mus / out%kappa
+            end if
+            out%hgg = hgg
+            out%g2 = hgg**2
+            out%n = n
+
+        end function sphere_init
+
+        real function eval_sphere(this, pos)
+
+            implicit none
+
+            class(sphere) :: this
+            type(vector), intent(IN) :: pos
+
+            type(vector) :: p
+
+            p = pos .dot. this%transform
+            eval_sphere = sphere_fn(p, this%radius)
+
+        end function eval_sphere
+
+        real function sphere_fn(p, c)
+
+            implicit none
+
+            type(vector), intent(IN) :: p
+            real,         intent(IN) :: c
+
+            sphere_fn = sqrt(p%x**2+p%y**2+p%z**2) - c
+
+        end function sphere_fn
+
+
+        function torus_init(oradius, iradius, mus, mua, hgg, n, layer, transform) result(out)
+
+            implicit none
+        
+            type(torus) :: out
+            
+            real,            intent(IN) :: oradius, iradius, mus, mua, hgg, n
+            integer,         intent(IN) :: layer
+            real,  optional, intent(IN) :: transform(4, 4)
+
+            real :: t(4, 4)
+
+            if(present(transform))then
+                t = transform
+            else
+                t = identity()
+            end if
+
+            out%oradius = oradius
+            out%iradius = iradius
+            out%layer = layer
+            out%transform = t
+
+            out%mus = mus
+            out%mua = mua
+            out%kappa = mus + mua
+            if(out%mua < 1d-9)then
+                out%albedo = 1.
+            else
+                out%albedo = mus / out%kappa
+            end if
+            out%hgg = hgg
+            out%g2 = hgg**2
+            out%n = n
+
+        end function torus_init
+
+        real function eval_torus(this, pos)
+
+            implicit none
+
+            class(torus) :: this
+            type(vector), intent(IN) :: pos
+
+            type(vector) :: p
+
+            p = pos .dot. this%transform
+            eval_torus = torus_fn(p, this%oradius, this%iradius)
+
+        end function eval_torus
 
         real function torus_fn(p, or, ir)
 
@@ -545,6 +587,165 @@ module sdfs
 
         end function torus_fn
 
+
+        function triprisim_init(h1, h2, mus, mua, hgg, n, layer, transform) result(out)
+
+            implicit none
+        
+            type(triprisim) :: out
+            
+            real,            intent(IN) :: h1, h2, mus, mua, hgg, n
+            integer,         intent(IN) :: layer
+            real,  optional, intent(IN) :: transform(4, 4)
+
+            real :: t(4, 4)
+
+            if(present(transform))then
+                t = transform
+            else
+                t = identity()
+            end if
+
+            out%h1 = h1
+            out%h2 = h2
+            out%layer = layer
+            out%transform = t
+
+            out%mus = mus
+            out%mua = mua
+            out%kappa = mus + mua
+            if(out%mua < 1d-9)then
+                out%albedo = 1.
+            else
+                out%albedo = mus / out%kappa
+            end if
+            out%hgg = hgg
+            out%g2 = hgg**2
+            out%n = n
+
+        end function triprisim_init
+
+        real function eval_triprisim(this, pos)
+
+            implicit none
+
+            class(triprisim) :: this
+            type(vector), intent(IN) :: pos
+
+            type(vector) :: p
+
+            p = pos .dot. this%transform
+            eval_triprisim = triprisim_fn(p, this%h1, this%h2)
+
+        end function eval_triprisim
+
+        real function triprisim_fn(p, h1, h2)
+
+            implicit none
+
+            type(vector), intent(IN) :: p
+            real,         intent(IN) :: h1, h2
+
+
+            type(vector) :: q
+
+            q = abs(p)
+            triprisim_fn = max(q%z - h2, max(q%x*.866025 + p%y*.5, -p%y) - h1*.5) 
+
+        end function triprisim_fn
+
+        function cone_init(a, b, ra, rb, mus, mua, hgg, n, layer, transform) result(out)
+
+            implicit none
+        
+            type(cone) :: out
+            
+            type(vector),    intent(IN) :: a, b
+            real,            intent(IN) :: ra, rb, mus, mua, hgg, n
+            integer,         intent(IN) :: layer
+            real,  optional, intent(IN) :: transform(4, 4)
+
+            real :: t(4, 4)
+
+            if(present(transform))then
+                t = transform
+            else
+                t = identity()
+            end if
+
+            out%a = a
+            out%b = b
+            out%ra = ra
+            out%rb = rb
+            out%layer = layer
+            out%transform = t
+
+            out%mus = mus
+            out%mua = mua
+            out%kappa = mus + mua
+            if(out%mua < 1d-9)then
+                out%albedo = 1.
+            else
+                out%albedo = mus / out%kappa
+            end if
+            out%hgg = hgg
+            out%g2 = hgg**2
+            out%n = n
+
+        end function cone_init
+
+        real function eval_cone(this, pos)
+
+            implicit none
+
+            class(cone) :: this
+            type(vector), intent(IN) :: pos
+
+            type(vector) :: p
+
+            p = pos .dot. this%transform
+            eval_cone = cone_fn(p, this%a, this%b, this%ra, this%rb)
+
+        end function eval_cone
+
+        real function cone_fn(p, a, b, ra, rb)
+
+            use utils, only : clamp
+
+            implicit none
+
+            type(vector), intent(IN) :: p, a, b
+            real,         intent(IN) :: ra, rb
+
+
+            type(vector) :: q
+            real :: rba, baba, papa, paba, x, cax, cay, k, f, cbx, cby, s
+
+            rba = rb - ra
+            baba = (b-a) .dot. (b-a)
+            papa = (p-a) .dot. (p-a)
+            paba =  ((p-a) .dot. (b-a))/ baba
+            x = sqrt(papa - baba*paba**2)
+            if(paba < 0.5)then
+                cax = max(0., x - ra)
+            else
+                cax = max(0., x - rb)
+            end if
+            cay = abs(paba - 0.5) - .5
+            k = rba**2 + baba
+            f = clamp((rba * (x - ra) + paba*baba) / k, 0., 1.)
+            cbx = x - ra - f*rba
+            cby = paba - f
+            if(cbx < 0. .and. cay <0.)then
+                s = -1.
+            else
+                s = 1.
+            end if 
+            cone_fn = s * sqrt(min(cax**2 + baba*cay**2, cbx**2 + baba*cby**2)) 
+
+        end function cone_fn
+
+
         function translate(o) result(out)
 
             implicit none
@@ -559,7 +760,6 @@ module sdfs
             out(:, 4) = [0., 0., 0., 1.] 
 
         end function translate
-
 
         real function union(d1, d2)
 
@@ -814,23 +1014,6 @@ module sdfs
 
         end function twist_fn
 
-        real function extrude(p, h, prim)
-
-            implicit none
-
-            type(vector), intent(IN) :: p
-            real, intent(IN) :: h
-            procedure(primitive) :: prim
-
-            real :: d
-            type(vector) :: w
-
-            d = prim(vector(p%x, p%y, 0.))
-            w = vector(d, abs(p%z) - h, 0.)
-            extrude = min(max(w%x, w%y), 0.) + length(max(w, 0.))
-
-        end function extrude
-
 
         function rotate_x(angle) result(r)
         ! rotation funcs from https://inspirnathan.com/posts/54-shadertoy-tutorial-part-8/
@@ -905,6 +1088,7 @@ module sdfs
             r(:, 4) = [0., 0., 0., 1.]
 
         end function identity
+
 
         subroutine render(cnt, extent, samples, fname)
 

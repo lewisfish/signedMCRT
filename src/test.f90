@@ -29,6 +29,7 @@ program test_sdf
     
     type(torus), target :: tor
     type(box),   target :: boxy
+    type(cone),  target :: cony
 
     type(displacement), target :: dp
     type(elongate),     target :: ep
@@ -39,11 +40,17 @@ program test_sdf
 
     boxy = box(1., 1., 2., 3., 4., 1)
     tor = torus(.5, .2, 1., 2., 3., 4., 1)
+    cony = cone(vector(0., 0., -.5), vector(0., 0., .5), 1., 0.0, 2., 3., 4., 1., 1)
 
     bp = bend(boxy, 1.)
     dp = displacement(tor, dip_map)
     ep = elongate(tor, vector(0., 0., 1.))
     tp = twist(boxy, 3.14/2.)
+
+    allocate(array(1)%p, source=cony)
+    array(1)%p => cony
+    call render(array, vector(1., 1., 1.), 200, "../cone.dat")
+    stop
 
     allocate(array(1)%p, source=bp)
     array(1)%p => bp
