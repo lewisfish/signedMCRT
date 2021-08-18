@@ -4,20 +4,31 @@ module sdfs
 
     implicit none
 
-    type :: sdf
+    type, abstract :: sdf
         real :: mus, mua, kappa, albedo, hgg, g2, n
         real :: transform(4, 4)
         integer :: layer
         contains
-        procedure :: evaluate => evaluate_fn
+        procedure(evalInterface), deferred :: evaluate
     end type sdf
+
+    abstract interface
+        real function evalInterface(this, pos)
+            use vector_class
+            import sdf
+            implicit none
+            class(sdf) :: this
+            type(vector), intent(IN) :: pos
+        end function evalInterface
+    end interface
+
 
     type :: container
         class(sdf), pointer :: p => null()
     end type container
 
     type, extends(sdf) :: sphere
-        real         :: radius
+        real :: radius
         contains
         procedure :: evaluate => eval_sphere
     end type sphere
@@ -48,10 +59,53 @@ module sdfs
         procedure :: evaluate => eval_model
     end type model
 
+    type, extends(sdf) :: twist
+        real :: k
+        class(sdf), pointer :: prim
+        contains
+        procedure :: evaluate => eval_twist
+    end type twist
+
+    interface twist
+        module procedure twist_init
+    end interface twist
+
+    type, extends(sdf) :: displacement
+        procedure(primitive), nopass, pointer :: func
+        class(sdf), pointer :: prim
+        contains
+        procedure :: evaluate => eval_disp
+    end type displacement
+
+    interface displacement
+        module procedure displacement_init
+    end interface displacement
+
+    type, extends(sdf) :: bend
+        real :: k
+        class(sdf), pointer :: prim
+        contains
+        procedure :: evaluate => eval_bend
+    end type bend
+
+    interface bend
+        module procedure bend_init
+    end interface bend
+
+    type, extends(sdf) :: elongate
+        type(vector) :: size
+        class(sdf), pointer :: prim
+        contains
+        procedure :: evaluate => eval_elongate
+    end type elongate
+
+    interface elongate
+        module procedure elongate_init
+    end interface elongate
+
     interface cylinder
         module procedure cylinder_init
     end interface cylinder
-
 
     interface sphere
         module procedure sphere_init
@@ -77,11 +131,19 @@ module sdfs
         end function op
     end interface
 
+    abstract interface
+        real function primitive(pos)
+            use vector_class, only : vector
+            implicit none
+            type(vector), intent(IN) :: pos
+        end function primitive
+    end interface
 
     private
     public :: sdf, model, cylinder, sphere, box, container, model_init, render, torus
-    public :: union, intersection, subtraction, calcNormal, onion, SmoothUnion, op
+    public :: union, intersection, subtraction, calcNormal, SmoothUnion, op
     public :: rotate_x, rotate_y, rotate_z, identity, translate
+    public :: displacement, bend, twist, elongate
 
     contains
 
@@ -95,7 +157,7 @@ module sdfs
             real :: h
             type(vector) :: xyy, yyx, yxy, xxx
 
-            h = 1e-8
+            h = 1d-10
             xyy = vector(1., -1., -1.)
             yyx = vector(-1., -1., 1.)
             yxy = vector(-1., 1., -1.)
@@ -152,12 +214,6 @@ module sdfs
 
         end function eval_model
 
-        real function evaluate_fn(this, pos)
-            
-            implicit none
-            class(sdf) :: this
-            type(vector), intent(IN) :: pos
-        end function evaluate_fn
 
         function cylinder_init(a, b, radius, mus, mua, hgg, n, layer, transform) result(out)
         
@@ -280,11 +336,11 @@ module sdfs
         
             type(sphere) :: out
             
-            real, intent(IN) :: radius, mus, mua, hgg, n
-            integer, intent(IN) :: layer
-            real,  optional, intent(IN) :: transform
+            real,            intent(IN) :: radius, mus, mua, hgg, n
+            integer,         intent(IN) :: layer
+            real,  optional, intent(IN) :: transform(4, 4)
 
-            real         :: t(4, 4)
+            real :: t(4, 4)
 
             if(present(transform))then
                 t = transform
@@ -446,10 +502,6 @@ module sdfs
 
             cylinder_fn = sign(sqrt(abs(d))/baba, d)
 
-            !lies along y plane
-            ! d = abs(vector(sqrt(p%x**2 + p%z**2), p%y, 0.)) - vector(h, r, 0.)
-            ! cylinder_fn = min(max(d%x, d%y), 0.) + length(max(d, 0.))
-
         end function cylinder_fn
 
 
@@ -553,6 +605,215 @@ module sdfs
 
         end function intersection
 
+        type(elongate) function elongate_init(prim, size) result(out)
+
+            implicit none
+
+            type(vector), intent(IN) :: size
+            class(sdf), target :: prim
+
+            out%size = size
+            out%prim => prim
+
+            out%mus = prim%mus
+            out%mua = prim%mua
+            out%hgg = prim%hgg
+            out%g2 = prim%g2
+            out%n = prim%n
+            out%kappa = prim%kappa
+            out%albedo = prim%kappa
+            out%layer = prim%layer
+            out%transform = identity()
+
+            end function elongate_init
+
+        real function eval_elongate(this, pos)
+
+            implicit none
+
+            class(elongate) :: this
+            type(vector), intent(IN) :: pos
+
+            eval_elongate = elongate_fn(pos, this%size, this%prim)
+
+        end function eval_elongate
+
+        real function elongate_fn(p, size, prim)
+
+            implicit none
+
+            class(sdf) :: prim
+
+            type(vector), intent(IN) :: size
+            type(vector), intent(IN) :: p
+
+            real :: w
+            type(vector) :: q
+
+            q = abs(p) - size
+            w = min(max(q%x, max(q%y, q%z)), 0.)
+
+            elongate_fn = prim%evaluate(max(q, 0.)) + w
+
+        end function elongate_fn
+
+        type(bend) function bend_init(prim, k) result(out)
+
+            implicit none
+
+            real, intent(IN) :: k
+            class(sdf), target :: prim
+
+            out%k = k
+            out%prim => prim
+
+            out%mus = prim%mus
+            out%mua = prim%mua
+            out%hgg = prim%hgg
+            out%g2 = prim%g2
+            out%n = prim%n
+            out%kappa = prim%kappa
+            out%albedo = prim%kappa
+            out%layer = prim%layer
+            out%transform = identity()
+
+            end function bend_init
+
+        real function eval_bend(this, pos)
+
+            implicit none
+
+            class(bend) :: this
+            type(vector), intent(IN) :: pos
+
+            eval_bend = bend_fn(pos, this%k, this%prim)
+
+        end function eval_bend
+
+        real function bend_fn(p, k, prim)
+
+            implicit none
+
+            class(sdf) :: prim
+
+            real, intent(IN)         :: k
+            type(vector), intent(IN) :: p
+
+            real :: c, s, x2, y2, z2
+
+            c = cos(k * p%x)
+            s = sin(k * p%x)
+            x2 = c * p%x - s * p%y
+            y2 = s * p%x + c * p%y
+            z2 = p%z
+
+            bend_fn = prim%evaluate(vector(x2, y2, z2))
+
+        end function bend_fn
+
+        type(displacement) function displacement_init(prim, func) result(out)
+
+            implicit none
+
+            class(sdf), target :: prim
+            procedure(primitive) :: func
+
+            out%func => func
+            out%prim => prim
+
+            out%mus = prim%mus
+            out%mua = prim%mua
+            out%hgg = prim%hgg
+            out%g2 = prim%g2
+            out%n = prim%n
+            out%kappa = prim%kappa
+            out%albedo = prim%kappa
+            out%layer = prim%layer
+            out%transform = identity()
+
+            end function displacement_init
+
+        real function eval_disp(this, pos)
+
+            implicit none
+
+            class(displacement) :: this
+            type(vector), intent(IN) :: pos
+
+            eval_disp = displacement_fn(pos, this%prim, this%func)
+
+
+        end function eval_disp
+
+        real function displacement_fn(p, prim, disp)
+
+            implicit none
+
+            class(sdf) :: prim
+            procedure(primitive) :: disp
+            type(vector), intent(IN) :: p
+
+            real :: d1, d2
+
+            d1 = prim%evaluate(p)
+            d2 = disp(p)
+
+            displacement_fn = d1 + d2
+
+        end function displacement_fn
+
+        type(twist) function twist_init(prim, k) result(out)
+
+            implicit none
+
+            class(sdf), target :: prim
+            real :: k
+
+            out%k = k
+            out%prim => prim
+            out%mus = prim%mus
+            out%mua = prim%mua
+            out%hgg = prim%hgg
+            out%g2 = prim%g2
+            out%n = prim%n
+            out%kappa = prim%kappa
+            out%albedo = prim%kappa
+            out%layer = prim%layer
+            out%transform = identity()
+
+            end function twist_init
+
+        real function eval_twist(this, pos)
+
+            implicit none
+
+            class(twist) :: this
+            type(vector), intent(IN) :: pos
+
+            eval_twist = twist_fn(pos, this%k, this%prim)
+
+        end function eval_twist
+
+        real function twist_fn(p, k, prim)
+
+            implicit none
+
+            class(sdf) :: prim
+            type(vector) :: p
+            real :: k
+
+            real :: c, s, x2, y2, z2, x, y, z
+
+            c = cos(k * p%z)
+            s = sin(k * p%z)
+            x2 = c*p%x - s*p%y
+            y2 = s*p%x + c*p%y
+            z2 = p%z
+
+            twist_fn = prim%evaluate(vector(x2, y2, z2))
+
+        end function twist_fn
+
         real function extrude(p, h, prim)
 
             implicit none
@@ -645,43 +906,53 @@ module sdfs
 
         end function identity
 
-        subroutine render(cnt, extent, samples)
+        subroutine render(cnt, extent, samples, fname)
 
             implicit none
             
-            type(container), intent(IN) :: cnt(:)
-            integer,         intent(IN) :: samples
-            type(vector),    intent(IN) :: extent
+            type(container),        intent(IN) :: cnt(:)
+            integer,                intent(IN) :: samples
+            type(vector),           intent(IN) :: extent
+            character(*), optional, intent(IN) :: fname
 
             type(vector)      :: pos, wid
             integer           :: i, j, k, u, ns
             real              :: x, y, z, ds(size(cnt))
             real, allocatable :: image(:, :, :)
+            
+            character(len=:), allocatable  :: filename
+
+            if(present(fname))then
+                filename = fname
+            else
+                filename = "../model.dat"
+            end if
 
             ns = int(samples / 2)
-            allocate(image(-ns:ns, -ns:ns, -ns:ns))
+            allocate(image(samples, samples, samples))
             wid = extent/real(ns)
-!$omp parallel default(none) shared(cnt, ns, wid, image)&
+!$omp parallel default(none) shared(cnt, ns, wid, image, samples)&
 !$omp private(i, x, y, z, pos, j, k, u, ds)
 !$omp do
-            do i = -ns, ns
-                x = i *wid%x
-                do j = -ns, ns
-                    y = j *wid%y
-                    do k = -ns, ns
-                        z = k * wid%z
+            do i = 1, samples
+                x = (i-ns) *wid%x
+                do j = 1, samples
+                    y = (j-ns) *wid%y
+                    do k = 1, samples
+                        z = (k-ns) * wid%z
                         pos = vector(x, y, z)
                         ds = 0.
                         do u = 1, size(ds)
                             ds(u) = cnt(u)%p%evaluate(pos)
                         end do
-                        image(i, j, k) = minval(abs(ds))
+
+                        image(i, j, k) = minval(ds)
                     end do
                 end do
             end do
 !$OMP end  do
 !$OMP end parallel
-            open(newunit=u,file="../model.dat", access="stream", form="unformatted")
+            open(newunit=u,file=filename, access="stream", form="unformatted")
             write(u)image
             close(u)
         end subroutine render

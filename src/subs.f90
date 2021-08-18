@@ -47,27 +47,58 @@ private :: directory, alloc_array, zarray
             grid = cart_grid(nxg, nyg, nzg, xmax, ymax, zmax)
             call init_opt1(kappa, albedo, hgg, g2)
 
-            if(choice == "omg")then
-                sdfarray = setup_omg_sdf()
-            elseif(choice == "scat_test")then
-                if(.not. present(tau))error stop "No tau provided"
-                sdfarray = setup_scat_test(tau)
-            elseif(choice == "fresnel_test")then
-                sdfarray = setup_fresnel_test()
-            elseif(choice == "exp")then
-                sdfarray = setup_exp()
-            elseif(choice == "skin")then
-                sdfarray = setup_skin_model()
-            elseif(choice == "interior")then
-                sdfarray = interior_test()
-            elseif(choice == "sphere")then
-                sdfarray = setup_sphere()
-            else
-                error stop "no such routine"
-            end if
+
+            select case(choice)
+                case("omg")
+                    sdfarray = setup_omg_sdf()
+                case("scat_test")
+                    if(.not. present(tau))error stop "No tau provided"
+                    sdfarray = setup_scat_test(tau)
+                case("fresnel_test")
+                    sdfarray = setup_fresnel_test()
+                case("skin")
+                    sdfarray = setup_skin_model()
+                case("interior")
+                    sdfarray = interior_test()
+                case("sphere")
+                    sdfarray = setup_sphere()
+                case("exp")
+                    sdfarray = setup_exp()
+                case("jacques")
+                    sdfarray = setup_jacques()
+                case default
+                    error stop "no such routine"
+            end select
 
         end subroutine setup_simulation
 
+
+        function setup_jacques() result(array)
+
+            use sdfs, only : container, box
+            use vector_class
+
+            implicit none
+
+            type(container)         :: array(2)
+            type(box), target, save :: medium, bbox
+            integer                 :: i
+
+
+            bbox   = box(vector(5.2, 5.2, 1.01), 0., 0., 0., 1., 2) 
+            !420
+            medium = box(vector(5., 5., 1.), 82., 1.8, 0.9, 1.38, 1)
+            !630
+            ! medium = box(vector(100., 100., 1.), 21., .23, 0.9, 1.38, 1)
+
+
+            allocate(array(1)%p, source=medium)
+            allocate(array(2)%p, source=bbox)
+
+            array(1)%p => medium
+            array(2)%p => bbox
+
+        end function setup_jacques
 
         function setup_sphere() result(array)
 
@@ -90,9 +121,8 @@ private :: directory, alloc_array, zarray
             sph = sphere(.5, mus, mua, hgg, n, 1)
 
             allocate(array(2))
-            do i = 1, size(array)
-                allocate(array(i)%p)
-            end do
+            allocate(array(1)%p, source=sph)
+            allocate(array(2)%p, source=bbox)
 
             array(1)%p => sph
             array(2)%p => bbox
@@ -127,13 +157,11 @@ private :: directory, alloc_array, zarray
             t = invert(translate(vector(.5, 0., 0.)))
             sph = sphere(0.5, 0., 0., 0., 1., 1, transform=t)
 
-            do i = 1, size(cnta)
-                allocate(cnta(i)%p)
-            end do
+            allocate(cnta(1)%p, source=sph)
+            allocate(cnta(2)%p, source=boxes(1))
+            allocate(cnta(3)%p, source=boxes(2))
 
-            do i = 1, size(array)
-                allocate(array(i)%p)
-            end do
+            allocate(array(1)%p, source=m)
 
             cnta(1)%p => sph
             cnta(2)%p => boxes(1)
@@ -174,9 +202,9 @@ private :: directory, alloc_array, zarray
             bbox  = box(2., mus, mua, hgg, n, 3)
 
             allocate(array(3))
-            do i = 1, size(array)
-                allocate(array(i)%p)
-            end do
+            allocate(array(1)%p, source=cyl(1))
+            allocate(array(2)%p, source=cyl(2))
+            allocate(array(3)%p, source=bbox)
 
             array(1)%p => cyl(1)
             array(2)%p => cyl(2)
@@ -209,9 +237,8 @@ private :: directory, alloc_array, zarray
             bbox  = box(2., mus, mua, hgg, n, 2)
 
             allocate(array(2))
-            do i = 1, size(array)
-                allocate(array(i)%p)
-            end do
+            allocate(array(1)%p, source=fibre)
+            allocate(array(2)%p, source=bbox)
 
             array(1)%p => fibre
             array(2)%p => bbox
@@ -244,9 +271,8 @@ private :: directory, alloc_array, zarray
             bbox = box(2., 0.d0, mua, hgg, n, 2)
 
             allocate(array(2))
-            do i = 1, size(array)
-                allocate(array(i)%p)
-            end do
+            allocate(array(1)%p, source=sph)
+            allocate(array(2)%p, source=bbox)
 
             array(1)%p => sph
             array(2)%p => bbox
@@ -334,12 +360,15 @@ private :: directory, alloc_array, zarray
             boxy = box(2., 0.d0, 10., 0.d0, 1.0, 2)
 
             allocate(array(2))
-            do j = 1, size(array)
-                allocate(array(j)%p)
+            allocate(array(1)%p, source=omg_sdf)
+            allocate(array(2)%p, source=boxy)
+
+            do j = 1, size(m)
+                allocate(cnta(j)%p, source=m(j))
             end do
 
-            do j = 1, size(cnta)
-                allocate(cnta(j)%p)
+            do j = 1, size(g)
+                allocate(cnta(j+size(m))%p, source=g(j))
             end do
 
             cnta(1)%p => m(1)
@@ -469,13 +498,17 @@ private :: directory, alloc_array, zarray
 
 
             allocate(array(4))
-            do i = 1, size(array)
-                allocate(array(i)%p)
-            end do
+            ! do i = 1, size(array)
+            allocate(array(1)%p, source=vessels)
+            allocate(array(2)%p, source=skin(1))
+            allocate(array(3)%p, source=skin(2))
+            allocate(array(4)%p, source=skin(3))
+
+            ! end do
 
             allocate(cnta(size(cyls)))
             do i = 1, size(cnta)
-                allocate(cnta(i)%p)
+                allocate(cnta(i)%p, source=cyls(i))
                 cnta(i)%p => cyls(i)
             end do
 
