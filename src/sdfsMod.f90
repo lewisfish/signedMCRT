@@ -100,6 +100,27 @@ module sdfs
         module procedure cone_init
     end interface cone
 
+    type, extends(sdf) :: capsule
+        type(vector) :: a, b
+        real         :: r
+        contains
+        procedure :: evaluate => eval_capsule
+    end type capsule
+
+    interface capsule
+        module procedure capsule_init
+    end interface capsule
+
+    type, extends(sdf) :: plane
+        type(vector) :: a
+        contains
+        procedure :: evaluate => eval_plane
+    end type plane
+
+    interface plane
+        module procedure plane_init
+    end interface plane
+
 
     type, extends(sdf) :: model
         type(container), allocatable  :: array(:)
@@ -164,6 +185,18 @@ module sdfs
         module procedure elongate_init
     end interface elongate
 
+    type, extends(sdf) :: repeat
+        real :: c
+        type(vector) :: la, lb
+        class(sdf), pointer :: prim
+        contains
+        procedure :: evaluate => eval_repeat
+    end type repeat
+
+    interface repeat
+        module procedure repeat_init
+    end interface repeat
+
 
 
     abstract interface
@@ -184,6 +217,7 @@ module sdfs
     private
     ! shapes
     public :: sdf, cylinder, sphere, box, torus, cone, triprisim
+    public :: capsule, plane!, text
     ! meta
     public :: model, container
     ! boolean ops
@@ -191,7 +225,7 @@ module sdfs
     ! move ops
     public :: rotate_x, rotate_y, rotate_z, identity, translate
     ! deform ops
-    public :: displacement, bend, twist, elongate
+    public :: displacement, bend, twist, elongate, repeat
     ! utility funcs
     public :: calcNormal, model_init, render
 
@@ -579,7 +613,6 @@ module sdfs
             type(vector), intent(IN) :: p
             real,         intent(IN) :: or, ir
 
-
             type(vector) :: q
 
             q = vector(length(vector(p%x, 0., p%z)) - or, p%y, 0.)
@@ -589,7 +622,9 @@ module sdfs
 
 
         function triprisim_init(h1, h2, mus, mua, hgg, n, layer, transform) result(out)
-
+        !h1 is height
+        !h2 is length
+        !
             implicit none
         
             type(triprisim) :: out
@@ -645,7 +680,6 @@ module sdfs
 
             type(vector), intent(IN) :: p
             real,         intent(IN) :: h1, h2
-
 
             type(vector) :: q
 
@@ -717,7 +751,6 @@ module sdfs
             type(vector), intent(IN) :: p, a, b
             real,         intent(IN) :: ra, rb
 
-
             type(vector) :: q
             real :: rba, baba, papa, paba, x, cax, cay, k, f, cbx, cby, s
 
@@ -744,6 +777,143 @@ module sdfs
             cone_fn = s * sqrt(min(cax**2 + baba*cay**2, cbx**2 + baba*cby**2)) 
 
         end function cone_fn
+
+        function capsule_init(a, b, r, mus, mua, hgg, n, layer, transform) result(out)
+
+            implicit none
+        
+            type(capsule) :: out
+            
+            type(vector),    intent(IN) :: a, b
+            real,            intent(IN) :: r, mus, mua, hgg, n
+            integer,         intent(IN) :: layer
+            real,  optional, intent(IN) :: transform(4, 4)
+
+            real :: t(4, 4)
+
+            if(present(transform))then
+                t = transform
+            else
+                t = identity()
+            end if
+
+            out%a = a
+            out%b = b
+            out%r = r
+            out%layer = layer
+            out%transform = t
+
+            out%mus = mus
+            out%mua = mua
+            out%kappa = mus + mua
+            if(out%mua < 1d-9)then
+                out%albedo = 1.
+            else
+                out%albedo = mus / out%kappa
+            end if
+            out%hgg = hgg
+            out%g2 = hgg**2
+            out%n = n
+
+        end function capsule_init
+
+        real function eval_capsule(this, pos)
+
+            implicit none
+
+            class(capsule) :: this
+            type(vector), intent(IN) :: pos
+
+            type(vector) :: p
+
+            p = pos .dot. this%transform
+            eval_capsule = capsule_fn(p, this%a, this%b, this%r)
+
+        end function eval_capsule
+
+        real function capsule_fn(p, a, b, r)
+
+            use utils, only : clamp
+
+            implicit none
+
+            type(vector), intent(IN) :: p, a, b
+            real,         intent(IN) :: r
+
+            type(vector) :: pa, ba
+            real :: h
+
+            pa = p - a
+            ba = b - a
+            h = clamp((pa .dot. ba) / (ba .dot. ba), 0., 1.)
+            capsule_fn = length(pa - ba*h) - r
+
+        end function capsule_fn
+
+
+        function plane_init(a, mus, mua, hgg, n, layer, transform) result(out)
+
+            implicit none
+        
+            type(plane) :: out
+            
+            type(vector),    intent(IN) :: a
+            real,            intent(IN) :: mus, mua, hgg, n
+            integer,         intent(IN) :: layer
+            real,  optional, intent(IN) :: transform(4, 4)
+
+            real :: t(4, 4)
+
+            if(present(transform))then
+                t = transform
+            else
+                t = identity()
+            end if
+
+            out%a = a
+            out%layer = layer
+            out%transform = t
+
+            out%mus = mus
+            out%mua = mua
+            out%kappa = mus + mua
+            if(out%mua < 1d-9)then
+                out%albedo = 1.
+            else
+                out%albedo = mus / out%kappa
+            end if
+            out%hgg = hgg
+            out%g2 = hgg**2
+            out%n = n
+
+        end function plane_init
+
+        real function eval_plane(this, pos)
+
+            implicit none
+
+            class(plane) :: this
+            type(vector), intent(IN) :: pos
+
+            type(vector) :: p
+
+            p = pos .dot. this%transform
+            eval_plane = plane_fn(p, this%a)
+
+        end function eval_plane
+
+        real function plane_fn(p, n)
+
+            use utils, only : clamp
+
+            implicit none
+
+            type(vector), intent(IN) :: p, n
+
+            !n must be normalised
+            plane_fn = (p .dot. n)
+
+        end function plane_fn
 
 
         function translate(o) result(out)
@@ -1013,6 +1183,60 @@ module sdfs
             twist_fn = prim%evaluate(vector(x2, y2, z2))
 
         end function twist_fn
+
+
+        type(repeat) function repeat_init(prim, c, la, lb) result(out)
+
+            implicit none
+
+            class(sdf), target :: prim
+            type(vector), intent(IN) :: la, lb
+            real,         intent(IN) :: c
+
+            out%c = c
+            out%la = la
+            out%lb = lb
+            out%prim => prim
+
+            out%mus = prim%mus
+            out%mua = prim%mua
+            out%hgg = prim%hgg
+            out%g2 = prim%g2
+            out%n = prim%n
+            out%kappa = prim%kappa
+            out%albedo = prim%kappa
+            out%layer = prim%layer
+            out%transform = identity()
+
+            end function repeat_init
+
+        real function eval_repeat(this, pos)
+
+            implicit none
+
+            class(repeat) :: this
+            type(vector), intent(IN) :: pos
+
+            eval_repeat = repeat_fn(pos, this%c, this%la, this%lb, this%prim)
+
+        end function eval_repeat
+
+        real function repeat_fn(p, c, la, lb, prim)
+
+            use vector_class
+
+            implicit none
+
+            class(sdf) :: prim
+            type(vector), intent(IN) :: p, la, lb
+            real,         intent(IN) :: c
+
+            type(vector) :: q
+
+            q = p - c*clamp_vec(nint(p/c), la, lb)
+            repeat_fn = prim%evaluate(q)
+
+        end function repeat_fn
 
 
         function rotate_x(angle) result(r)
