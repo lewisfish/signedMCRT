@@ -124,7 +124,8 @@ module sdfs
 
     type, extends(sdf) :: model
         type(container), allocatable  :: array(:)
-        procedure(op),nopass, pointer :: func
+        procedure(op), nopass, pointer :: func
+        real :: k
         contains
         procedure :: evaluate => eval_model
     end type model
@@ -200,9 +201,9 @@ module sdfs
 
 
     abstract interface
-        real function op(d1, d2)
+        real function op(d1, d2, k)
             implicit none
-            real, intent(IN) :: d1, d2
+            real, intent(IN) :: d1, d2, k
         end function op
     end interface
 
@@ -256,7 +257,7 @@ module sdfs
 
         end function calcNormal
 
-        function model_init(array, func) result(out)
+        function model_init(array, func, kopt) result(out)
         !TODO make sure optical properties are same in all inputs            
             implicit none
 
@@ -264,9 +265,15 @@ module sdfs
 
             procedure(op) :: func
             type(container), intent(IN) :: array(:)
+            real, optional,  intent(IN) :: kopt
 
             out%array = array
             out%func => func
+            if(present(kopt))then
+                out%k = kopt
+            else
+                out%k = 0.
+            end if
 
             associate(member => array(1)%p)
                 out%mus = member%mus
@@ -292,7 +299,7 @@ module sdfs
 
             eval_model = this%array(1)%p%evaluate(pos)
             do i = 2, size(this%array)
-                eval_model = this%func(eval_model, this%array(i)%p%evaluate(pos))
+                eval_model = this%func(eval_model, this%array(i)%p%evaluate(pos), this%k)
             end do
 
         end function eval_model
@@ -751,7 +758,6 @@ module sdfs
             type(vector), intent(IN) :: p, a, b
             real,         intent(IN) :: ra, rb
 
-            type(vector) :: q
             real :: rba, baba, papa, paba, x, cax, cay, k, f, cbx, cby, s
 
             rba = rb - ra
@@ -931,45 +937,45 @@ module sdfs
 
         end function translate
 
-        real function union(d1, d2)
+        real function union(d1, d2, k)
 
             implicit none
 
-            real, intent(IN) :: d1, d2
+            real, intent(IN) :: d1, d2, k
 
             union = min(d1, d2)
         end function union
 
 
-        real function SmoothUnion(d1, d2)
+        real function SmoothUnion(d1, d2, k)
 
             use utils, only : mix, clamp
 
             implicit none
 
-            real, intent(IN) :: d1, d2
-            real :: k=0.01, h
+            real, intent(IN) :: d1, d2, k
+            real :: h
 
             h = clamp(0.5 +.5*(d2-d1)/k, 0., 1.)
             SmoothUnion = mix(d2, d1, h) - k*h*(1.-h)
 
         end function SmoothUnion
 
-        real function subtraction(d1, d2)
+        real function subtraction(d1, d2, k)
 
             implicit none
 
-            real, intent(IN) :: d1, d2
+            real, intent(IN) :: d1, d2, k
 
             subtraction = max(-d1, d2)
 
         end function subtraction
 
-        real function intersection(d1, d2)
+        real function intersection(d1, d2, k)
 
             implicit none
 
-            real, intent(IN) :: d1, d2
+            real, intent(IN) :: d1, d2, k
 
             intersection = max(d1, d2)
 
@@ -1169,10 +1175,10 @@ module sdfs
             implicit none
 
             class(sdf) :: prim
-            type(vector) :: p
-            real :: k
+            type(vector), intent(IN) :: p
+            real,         intent(IN) :: k
 
-            real :: c, s, x2, y2, z2, x, y, z
+            real :: c, s, x2, y2, z2
 
             c = cos(k * p%z)
             s = sin(k * p%z)
@@ -1269,9 +1275,8 @@ module sdfs
             real :: r(4, 4), c, s, a
 
             a = deg2rad(angle)
-            ! c = cos(a)
+            c = cos(a)
             s = sin(a)
-            c = sqrt(1. - s**2)
 
             r(:, 1) = [c,  0., -s,  0.]
             r(:, 2) = [0., 1.,  0., 0.]

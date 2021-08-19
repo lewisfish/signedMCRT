@@ -60,7 +60,7 @@ program test_sdf
 
     implicit none
 
-    type(container), allocatable :: array(:)
+    type(container), allocatable :: array(:), cnta(:)
     
     type(torus),     target :: tor
     type(box),       target :: boxy, sboxy
@@ -77,7 +77,9 @@ program test_sdf
     type(twist),        target :: tp
     type(bend),         target :: bp
 
-    allocate(array(1))
+    type(model), target :: mod
+
+    allocate(array(1), cnta(2))
 
     boxy = box(1., 1., 2., 3., 4., 1)
     sboxy = box(vector(.4, .2, .2), 1., 2., 3., 4., 1)
@@ -110,4 +112,30 @@ program test_sdf
     call draw(array, tp, "../twist.dat")
     call draw(array, rp, "../repeat.dat", vector(2., 4., 4.))
 
+
+    sph = sphere(.5, 1., 2., 3., 4., 1)
+    boxy = box(vector(1.1, 1.5, .5), 1., 2., 3., 4., 1)
+    allocate(cnta(2)%p, source=boxy)
+    allocate(cnta(1)%p, source=sph)
+    cnta(2)%p => boxy
+    cnta(1)%p => sph
+
+    mod = model_init(cnta, union)
+    call draw(array, mod, "../union.dat")
+    mod = model_init(cnta, smoothunion, .5)
+    call draw(array, mod, "../smoothunion.dat")
+    mod = model_init(cnta, subtraction)
+    call draw(array, mod, "../subtraction.dat")
+    mod = model_init(cnta, intersection)
+    call draw(array, mod, "../intersection.dat")
+
 end program test_sdf
+
+! 16
+
+! 4x4
+
+! cone, triprisim, torus, box
+! sphere, cylinder, capsule, plane
+! union(smooth), inter, sub, repeat
+! bend, twist, disp, elongate
