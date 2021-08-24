@@ -27,7 +27,7 @@ module inttau2
 
         real         :: tau, d_sdf, t_sdf, taurun, ds(size(sdfs_array)), dstmp(size(sdfs_array))
         real         :: eps, dtot, signs(size(sdfs_array)), n1, n2
-        integer      :: i, cur_layer, oldlayer
+        integer      :: i, cur_layer, oldlayer, celli, cellj, cellk
         type(vector) :: pos, dir, oldpos, N
         logical :: rflag
 
@@ -48,12 +48,15 @@ module inttau2
 
         cur_layer = packet%layer
         dtot = 0.
-        do while(packet%tflag .eqv. .false.)
+        do
             do while(d_sdf > eps)
+
                 t_sdf = d_sdf * sdfs_array(packet%layer)%p%kappa
                 if(taurun + t_sdf <= tau)then
                     !move full distance to sdf
                     taurun = taurun + t_sdf
+                    oldpos = pos
+                    call update_jmean(oldpos, grid, dir, d_sdf, packet)
                     pos = pos + d_sdf * dir
                     dtot = dtot + d_sdf
                 else
@@ -61,7 +64,9 @@ module inttau2
                     d_sdf = (tau - taurun) / sdfs_array(packet%layer)%p%kappa
                     dtot = dtot + d_sdf
                     taurun = tau
+                    oldpos = pos
                     pos = pos + d_sdf * dir
+                    call update_jmean(oldpos, grid, dir, d_sdf, packet)
                     exit
                 end if
                 ! get distance to nearest sdf
@@ -71,37 +76,30 @@ module inttau2
                 end do
                 d_sdf = minval(abs(ds),dim=1)
                 if(minval(ds) >= 0.)then
-                    packet%tflag = .true.
                     exit
                 end if
             end do
-            ! print*,pos
-
-            if(packet%tflag)then
-                exit
-            end if
             if(taurun >= tau)then
                 exit
             end if
+
             ds = 0.
             do i = 1, size(ds)
                 ds(i) = sdfs_array(i)%p%evaluate(pos)
             end do
-            if(minval(ds) >= 0.)then
-                packet%tflag = .true.
-                exit
-            end if
+
             dstmp = ds
             ds = abs(ds)
 
-            d_sdf = minval(ds) + 10.*eps
+            d_sdf = minval(ds) + 2.*eps
             pos = pos + d_sdf*dir
             ds = 0.
             do i = 1, size(ds)
                 ds(i) = sdfs_array(i)%p%evaluate(pos)
             end do
+            pos = pos - d_sdf*dir
 
-            !check going in to media i.e +ive to -ive
+            ! check going in to media i.e +ive to -ive
             signs = 0.
             do i = 1, size(ds)
                 if(dstmp(i) >= 0. .and. ds(i) < 0.)then
@@ -110,7 +108,7 @@ module inttau2
                     signs(i) = 1.
                 end if
             end do
-            !if all signs +ive then do additional check t0 get corret layer
+            !if all signs +ive then do additional check t0 get correct layer
             if(sum(signs) == real(size(ds)))then
                 do i = 1, size(ds)
                     if(dstmp(i) <= 0. .and. ds(i) > 0. .and. i /= cur_layer .or. ds(i) < 0.)then
@@ -126,13 +124,14 @@ module inttau2
             cur_layer = minloc(signs,dim=1)
             n2 = sdfs_array(cur_layer)%p%n
 
-            if (n1 /= n2)then
+            if (n1 /= n2 .and. dir%z >0.)then
                 N = calcNormal(pos, sdfs_array(cur_layer)%p)
                 N = N%magnitude()
                 rflag = .false.
-                call update_jmean(oldpos, grid, dir, dtot, packet)
-                dtot = 0.
                 call reflect_refract(dir, N, n1, n2, rflag)
+                packet%rr = packet%rr + 1
+                tau = -log(ran2())
+                taurun = 0.
                 if(rflag)then
                     cur_layer = oldlayer
                 end if
@@ -142,13 +141,18 @@ module inttau2
         end do
 
         packet%pos = pos
-        call update_jmean(oldpos, grid, dir, dtot, packet)
+        packet%nxp = dir%x
+        packet%nyp = dir%y
+        packet%nzp = dir%z
 
-        if(abs(packet%pos%x) > grid%xmax)then
-            packet%tflag = .true.
-        elseif(abs(packet%pos%y) > grid%ymax)then
-            packet%tflag = .true.
-        elseif(abs(packet%pos%z) > grid%zmax)then
+        packet%phi = atan2(dir%y, dir%x)
+        packet%sinp = sin(packet%phi)
+        packet%cosp = cos(packet%phi)
+
+        packet%cost = dir%z
+        packet%sint = sqrt(1.-packet%cost**2)
+
+        if(abs(packet%pos%z) > grid%zmax)then
             packet%tflag = .true.
         end if
     end subroutine tauint2
@@ -173,15 +177,18 @@ module inttau2
         real :: dcell, delta=1d-8,d
 
         old_pos = vector(pos%x+grid%xmax, pos%y+grid%ymax, pos%z+grid%zmax)
-        celli = packet%xcell        
-        cellj = packet%ycell
-        cellk = packet%zcell
+        call update_voxels(old_pos, grid, celli, cellj, cellk)
+        packet%xcell = celli
+        packet%ycell = cellj
+        packet%zcell = cellk
+
         d = 0.
+        if(celli == -1 .or. cellj == -1 .or. cellk == -1)then
+            packet%tflag = .true.
+            pos = vector(old_pos%x-grid%xmax, old_pos%y-grid%ymax, old_pos%z-grid%zmax)
+            return
+        end if
         do
-            if(celli == -1 .or. cellj == -1 .or. cellk == -1)then
-                packet%tflag = .true.
-                exit
-            end if
             ldir = (/.FALSE., .FALSE., .FALSE./)
 
             dcell = wall_dist(grid, celli, cellj, cellk, old_pos, dir, ldir)
@@ -195,6 +202,10 @@ module inttau2
                 d = d + dcell
                 jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell
                 call update_pos(old_pos, grid, celli, cellj, cellk, dcell, .true., dir, ldir, delta)
+            end if
+            if(celli == -1 .or. cellj == -1 .or. cellk == -1)then
+                packet%tflag = .true.
+                exit
             end if
         end do
         pos = vector(old_pos%x-grid%xmax, old_pos%y-grid%ymax, old_pos%z-grid%zmax)
@@ -250,8 +261,11 @@ module inttau2
 
         wall_dist = min(dx, dy, dz)
         if(wall_dist < 0.)then
-            print*,'dcell < 0.0 warning! ',wall_dist,dx,dy,dz,dir
-            ! error stop 1
+            print*,'dcell < 0.0 warning! ',wall_dist
+            print*,dx,dy,dz
+            print*,dir
+            print*,celli,cellj,cellk
+            error stop 1
         end if
 
         if(wall_dist == dx)ldir = [.TRUE., .FALSE., .FALSE.]
@@ -342,15 +356,47 @@ module inttau2
         type(vector),    intent(IN)    :: pos
         integer, intent(INOUT) :: celli, cellj, cellk
 
-        celli = floor(grid%nxg * (pos%x) / (2. * grid%xmax)) + 1
-        cellj = floor(grid%nyg * (pos%y) / (2. * grid%ymax)) + 1
-        cellk = floor(grid%nzg * (pos%z) / (2. * grid%zmax)) + 1
-
+        celli = find(pos%x, grid%xface) 
+        cellj = find(pos%y, grid%yface)
+        cellk = find(pos%z, grid%zface) 
         if(celli > grid%nxg .or. celli < 1)celli = -1
         if(cellj > grid%nyg .or. cellj < 1)cellj = -1
         if(cellk > grid%nzg .or. cellk < 1)cellk = -1
 
     end subroutine update_voxels
+
+    integer function find(val, a)
+    !searchs for bracketing indicies for a value val in an array a
+    !
+    !
+        implicit none
+
+        real, intent(IN) :: val, a(:)
+        integer          :: n, lo, mid, hi
+
+        n = size(a)
+        lo = 0
+        hi = n + 1
+
+        if (val == a(1)) then
+            find = 1
+        else if (val == a(n)) then
+            find = n-1
+        else if((val > a(n)) .or. (val < a(1))) then
+            find = -1
+        else
+            do
+                if (hi-lo <= 1) exit
+                mid = (hi+lo)/2
+                if (val >= a(mid)) then
+                    lo = mid
+                else
+                    hi = mid
+                end if
+            end do
+            find = lo
+        end if
+    end function find
 
 
     subroutine reflect_refract(I, N, n1, n2, rflag)

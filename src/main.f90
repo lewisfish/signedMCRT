@@ -36,9 +36,10 @@ type(pbar)       :: bar
 type(container), allocatable :: array(:)
 ! mpi/mp variables
 integer :: id, numproc
-real    :: nscattGLOBAL
+real    :: nscattGLOBAL,rr
 
-call setup_simulation(nphotons, grid, array, "exp")
+rr = 0.
+call setup_simulation(nphotons, grid, array, "jacques")
 allocate(ds(size(array)))
 call render(array, vector(grid%xmax, grid%ymax, grid%zmax), 200)
 ! stop
@@ -59,7 +60,7 @@ end if
 !loop over photons 
 #ifdef _OPENMP
 !$omp parallel default(none) shared(array, grid, numproc, start, nphotons, bar)&
-!$omp& private(ran, id, packet, ds) reduction(+:nscatt)
+!$omp& private(ran, id, packet, ds) reduction(+:nscatt,rr)
     numproc = omp_get_num_threads()
     id = omp_get_thread_num()
 #elif MPI
@@ -75,16 +76,20 @@ nscatt = 0
 packet = photon("uniform")
 
 ! set seed for rnd generator. id to change seed for each process
-call init_rng(123456789)
+call init_rng(spread(123456789+id, 1, 8), fwd=.true.)
+! call init_rng([], fwd=.false.)
 
 
 bar = pbar(nphotons/ 100000)
 !$OMP do
 do j = 1, nphotons
+
     if(mod(j, 100000) == 0)call bar%progress()
 
     ! Release photon from point source 
     call packet%emit(grid)
+
+    packet%id = id
     ds = 0.
     do i = 1, size(ds)
         ds(i) = array(i)%p%evaluate(packet%pos)
@@ -93,13 +98,12 @@ do j = 1, nphotons
 
     ! Find scattering location
     call tauint2(packet, grid, array)
-
     ! Photon scatters in grid until it exits (tflag=TRUE) 
     do while(packet%tflag .eqv. .FALSE.)
         ran = ran2()
         if(ran < array(packet%layer)%p%albedo)then!interacts with tissue
             call stokes(packet, array(packet%layer)%p%hgg, array(packet%layer)%p%g2)
-            nscatt = nscatt + 1        
+            nscatt = nscatt + 1
         else
             packet%tflag = .true.
             exit
@@ -107,7 +111,9 @@ do j = 1, nphotons
         
         !Find next scattering location
         call tauint2(packet, grid, array)
+
     end do
+    rr = rr + packet%rr
 end do
 
 #ifdef _OPENMP
@@ -123,7 +129,7 @@ end do
     jmeanGLOBAL = jmean
     nscattGLOBAL = nscatt
 #endif
-
+print*,rr/nphotons
 
 if(id == 0)then
 #ifdef _OPENMP
@@ -132,7 +138,7 @@ if(id == 0)then
     print*,'Average # of scatters per photon:',nscattGLOBAL/(nphotons*numproc)
 #endif
     !write out files
-    call writer()
+    call writer(nphotons, grid)
     print*,'write done'
 end if
 

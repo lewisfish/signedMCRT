@@ -9,10 +9,11 @@ module photonMod
         type(vector) :: pos                   ! position
         real    :: nxp, nyp, nzp                ! direction vectors
         real    :: sint, cost, sinp, cosp, phi  ! direction cosines
-        real    :: wavelength           ! Only used if tracking the phase
+        real    :: wavelength, rr           ! Only used if tracking the phase
         integer :: xcell, ycell, zcell          ! grid cell position
         logical :: tflag                        ! Is photon dead?
         integer :: layer ! pointer to sdf packet is inside
+        integer :: id   ! thread running packet
 
         procedure(generic_emit), pointer :: emit => null()
 

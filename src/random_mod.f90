@@ -7,33 +7,46 @@ module random
 
     contains
 
-        subroutine init_rng(input_seed)
+        subroutine init_rng(input_seed, fwd)
         ! initiate RNG state with reproducable state
 
             implicit none
             
-            integer, optional, intent(IN) :: input_seed
+            integer, optional, intent(IN) :: input_seed(:)
+            logical, optional, intent(IN) :: fwd
 
             integer, allocatable :: seed(:)
             integer              :: n, i
+            logical              :: ffwd
             real                 :: a
+
 
             call random_seed(size=n)
             allocate(seed(n))
-            
+
             if(present(input_seed))then
-                seed = input_seed
+                seed = 0
+                seed(:) = input_seed
             else
                 seed = 1234567
+            end if
+
+            if(present(fwd))then
+                ffwd = fwd
+            else
+                ffwd = .true.
             end if
 
             call random_seed(put=seed)
 
             !fast forward rng state 100 times to avoid any potential bad seeds
-            do i = 1, 100
-                a = ran2()
-            end do
-
+            if(ffwd)then
+                call random_seed(get=seed)
+                do i = 1, 100
+                    a = ran2()
+                    call random_seed(get=seed)
+                end do
+            end if
         end subroutine init_rng
 
         real function ran2()

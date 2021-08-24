@@ -82,14 +82,15 @@ private :: directory, alloc_array, zarray
 
             type(container)         :: array(2)
             type(box), target, save :: medium, bbox
-            integer                 :: i
+            real                 :: hgg
 
+            hgg = 0.9
 
-            bbox   = box(vector(5.2, 5.2, 1.01), 0., 0., 0., 1., 2) 
+            bbox = box(vector(10., 10., 2.001), 0., 0., 0., 1., 2) 
             !420
-            medium = box(vector(5., 5., 1.), 82., 1.8, 0.9, 1.38, 1)
+            medium = box(vector(10., 10., 2.), 82./(1.-hgg), 1.8, hgg, 1.38, 1)
             !630
-            ! medium = box(vector(100., 100., 1.), 21., .23, 0.9, 1.38, 1)
+            ! medium = box(vector(10., 10., 2.), 21./(1.-hgg), .23, hgg, 1.38, 1)
 
 
             allocate(array(1)%p, source=medium)

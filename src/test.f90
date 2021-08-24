@@ -135,7 +135,7 @@ end program test_sdf
 
 ! 4x4
 
-! cone, triprisim, torus, box
 ! sphere, cylinder, capsule, plane
+! cone, triprisim, torus, box
 ! union(smooth), inter, sub, repeat
 ! bend, twist, disp, elongate
