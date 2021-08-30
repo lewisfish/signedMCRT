@@ -1,9 +1,11 @@
 module random
 
+    use vector_class
+
     implicit none
 
     private
-    public  :: ran2, ranu, rang, init_rng
+    public  :: ran2, ranu, rang, init_rng, hemi
 
     contains
 
@@ -94,4 +96,36 @@ module random
             y = avg + sigma*tmp
 
         end subroutine rang
+
+
+        type(vector) function hemi(cosThetaMax, x, y, z)
+
+            use constants, only: twopi
+            use utils, only : lerp
+
+            implicit none
+
+            ! real :: z, phi, r
+            type(vector) :: x, y, z
+            real :: ran, cosTheta, sinTheta, phi, cosThetaMax
+
+            ! z = ran2()
+            ! r = sqrt(max(0., 1.-z**2))
+            ! phi = twopi*ran2()
+
+            ! hemi = vector(r * cos(phi), r * sin(phi), z)
+            ! ran = ran2()
+            ! cosTheta = 1. - ran + ran*cosThetaMax
+            ! sinTheta = sqrt(1. - cosTheta**2)
+            ! phi = ran2()*twopi
+            ! hemi = vector(cos(phi)*sinTheta, sin(phi)*sinTheta, cosTheta)
+
+            cosTheta = lerp(ran2(), cosThetaMax, 1.)
+            sinTheta = sqrt(max(0., 1. - cosTheta**2))
+            phi = ran2()*twopi
+            hemi = cos(phi)*sinTheta*x + sin(phi)*sinTheta*y + cosTheta*z
+
+        end function hemi
+
+
 end module random

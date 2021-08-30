@@ -60,7 +60,7 @@ end if
 !loop over photons 
 #ifdef _OPENMP
 !$omp parallel default(none) shared(array, grid, numproc, start, nphotons, bar)&
-!$omp& private(ran, id, packet, ds) reduction(+:nscatt,rr)
+!$omp& private(ran, id, ds) reduction(+:nscatt,rr) firstprivate(packet)
     numproc = omp_get_num_threads()
     id = omp_get_thread_num()
 #elif MPI
@@ -71,20 +71,18 @@ end if
 #endif
 if(id == 0)print("(a,I3.1,a)"),'Photons now running on', numproc,' cores.'
 
-nscatt = 0
 !init photon object
-packet = photon("uniform")
 
 ! set seed for rnd generator. id to change seed for each process
 call init_rng(spread(123456789+id, 1, 8), fwd=.true.)
 ! call init_rng([], fwd=.false.)
 
 
-bar = pbar(nphotons/ 100000)
+bar = pbar(nphotons/ 10000)
 !$OMP do
 do j = 1, nphotons
 
-    if(mod(j, 100000) == 0)call bar%progress()
+    if(mod(j, 10000) == 0)call bar%progress()
 
     ! Release photon from point source 
     call packet%emit(grid)

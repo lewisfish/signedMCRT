@@ -27,7 +27,7 @@ module inttau2
 
         real         :: tau, d_sdf, t_sdf, taurun, ds(size(sdfs_array)), dstmp(size(sdfs_array))
         real         :: eps, dtot, signs(size(sdfs_array)), n1, n2
-        integer      :: i, cur_layer, oldlayer, celli, cellj, cellk
+        integer      :: i, cur_layer, oldlayer
         type(vector) :: pos, dir, oldpos, N
         logical :: rflag
 
@@ -75,11 +75,14 @@ module inttau2
                     ds(i) = sdfs_array(i)%p%evaluate(pos)
                 end do
                 d_sdf = minval(abs(ds),dim=1)
+                !check if outside all sdfs
                 if(minval(ds) >= 0.)then
+                    packet%tflag = .true.
                     exit
                 end if
             end do
-            if(taurun >= tau)then
+
+            if(taurun >= tau .or. packet%tflag)then
                 exit
             end if
 
@@ -91,12 +94,14 @@ module inttau2
             dstmp = ds
             ds = abs(ds)
 
+            !step a bit into next sdf to get n2
             d_sdf = minval(ds) + 2.*eps
             pos = pos + d_sdf*dir
             ds = 0.
             do i = 1, size(ds)
                 ds(i) = sdfs_array(i)%p%evaluate(pos)
             end do
+            !step back inside original sdf
             pos = pos - d_sdf*dir
 
             ! check going in to media i.e +ive to -ive
@@ -108,6 +113,7 @@ module inttau2
                     signs(i) = 1.
                 end if
             end do
+
             !if all signs +ive then do additional check t0 get correct layer
             if(sum(signs) == real(size(ds)))then
                 do i = 1, size(ds)
@@ -119,6 +125,7 @@ module inttau2
                 end do
             end if
 
+            !check for fresnel reflection
             n1 = sdfs_array(cur_layer)%p%n
             oldlayer = cur_layer
             cur_layer = minloc(signs,dim=1)
@@ -152,6 +159,12 @@ module inttau2
         packet%cost = dir%z
         packet%sint = sqrt(1.-packet%cost**2)
 
+        if(abs(packet%pos%x) > grid%xmax)then
+            packet%tflag = .true.
+        end if
+        if(abs(packet%pos%y) > grid%ymax)then
+            packet%tflag = .true.
+        end if
         if(abs(packet%pos%z) > grid%zmax)then
             packet%tflag = .true.
         end if
@@ -167,14 +180,16 @@ module inttau2
 
         implicit none
         
-        type(cart_grid), intent(IN) :: grid
-        type(vector), intent(INOUT) :: pos, dir
-        real,         intent(IN) :: d_sdf
-        type(photon), intent(INOUT) :: packet
+        type(cart_grid), intent(IN)    :: grid
+        type(vector),    intent(IN)    :: dir
+        real,            intent(IN)    :: d_sdf
+        type(vector),    intent(INOUT) :: pos
+        type(photon),    intent(INOUT) :: packet
+
         type(vector) :: old_pos
-        logical :: ldir(3)
-        integer :: celli, cellj, cellk
-        real :: dcell, delta=1d-8,d
+        logical      :: ldir(3)
+        integer      :: celli, cellj, cellk
+        real         :: dcell, delta=1d-8, d
 
         old_pos = vector(pos%x+grid%xmax, pos%y+grid%ymax, pos%z+grid%zmax)
         call update_voxels(old_pos, grid, celli, cellj, cellk)
@@ -195,11 +210,13 @@ module inttau2
             if(d + dcell > d_sdf)then
                 dcell = d_sdf - d
                 d = d_sdf
+!$omp atomic
                 jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell
                 call update_pos(old_pos, grid, celli, cellj, cellk, dcell, .false., dir, ldir, delta)
                 exit
             else
                 d = d + dcell
+!$omp atomic
                 jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell
                 call update_pos(old_pos, grid, celli, cellj, cellk, dcell, .true., dir, ldir, delta)
             end if
@@ -287,11 +304,13 @@ module inttau2
 
         implicit none
       
-        type(cart_grid), intent(IN) :: grid
-        type(vector),    intent(INOUT) :: pos, dir
-        real,    intent(IN)    :: dcell, delta
-        integer, intent(INOUT) :: celli, cellj, cellk
-        logical, intent(IN)    :: wall_flag, ldir(:)
+        type(cart_grid), intent(IN)    :: grid
+        type(vector),    intent(IN)    :: dir
+        logical,         intent(IN)    :: wall_flag, ldir(:)
+        real,            intent(IN)    :: dcell, delta
+        type(vector),    intent(INOUT) :: pos
+        integer,         intent(INOUT) :: celli, cellj, cellk
+
         character(len=32)      :: tmp  
 
         if(wall_flag)then

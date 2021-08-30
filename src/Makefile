@@ -14,18 +14,18 @@ FCBUILD = -warn all -stand f08
 endif
 PROGRAM =  mcgrid
 
-SRCS =      random_mod.f90 \
-            constants.f90 \
+SRCS =      constants.f90 \
 		    utils.f90 \
             stackMod.f90 \
             vector_class.f90 \
+            random_mod.f90 \
             sdfsMod.f90 \
             ch_opt.f90 \
             surfaces.f90 \
             grid.f90 \
             iarray.f90 \
-            subs.f90 \
 		    photon.f90 \
+            subs.f90 \
             inttau2.f90 \
             stokes.f90 \
             writer.f90 \

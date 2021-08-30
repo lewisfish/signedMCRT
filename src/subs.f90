@@ -8,22 +8,25 @@ private :: directory, alloc_array, zarray
 
     contains
 
-        subroutine setup_simulation(nphotons, grid, sdfarray, choice, tau)
+        subroutine setup_simulation(nphotons, grid, packet, sdfarray, choice, tau)
         ! Read in parameters
             use constants, only : resdir
-            use ch_opt
             use gridMod,   only : cart_grid
-            use sdfs, only : container
+            use sdfs,      only : container
+            
+            use photonMod
+            use ch_opt
 
             implicit none
 
-            integer,                      intent(OUT) :: nphotons
-            type(cart_grid),              intent(OUT) :: grid
             character(*),                 intent(IN)  :: choice
-            type(container), allocatable, intent(OUT) :: sdfarray(:)
             real,            optional,    intent(IN)  :: tau
+            type(container), allocatable, intent(OUT) :: sdfarray(:)
+            type(cart_grid),              intent(OUT) :: grid
+            type(photon),                 intent(OUT) :: packet
+            integer,                      intent(OUT) :: nphotons
 
-            real    :: xmax, ymax, zmax, albedo(3), hgg(3), g2(3),kappa(3)
+            real    :: xmax, ymax, zmax, albedo(3), hgg(3), g2(3), kappa(3)
             integer :: nxg, nyg, nzg, u
 
             !set directory paths
@@ -50,22 +53,22 @@ private :: directory, alloc_array, zarray
 
             select case(choice)
                 case("omg")
-                    sdfarray = setup_omg_sdf()
+                    sdfarray = setup_omg_sdf(packet)
                 case("scat_test")
                     if(.not. present(tau))error stop "No tau provided"
-                    sdfarray = setup_scat_test(tau)
+                    sdfarray = setup_scat_test(packet, tau)
                 case("fresnel_test")
-                    sdfarray = setup_fresnel_test()
+                    sdfarray = setup_fresnel_test(packet)
                 case("skin")
-                    sdfarray = setup_skin_model()
+                    sdfarray = setup_skin_model(packet)
                 case("interior")
-                    sdfarray = interior_test()
+                    sdfarray = interior_test(packet)
                 case("sphere")
-                    sdfarray = setup_sphere()
+                    sdfarray = setup_sphere(packet)
                 case("exp")
-                    sdfarray = setup_exp()
+                    sdfarray = setup_exp(packet)
                 case("jacques")
-                    sdfarray = setup_jacques()
+                    sdfarray = setup_jacques(packet)
                 case default
                     error stop "no such routine"
             end select
@@ -73,16 +76,21 @@ private :: directory, alloc_array, zarray
         end subroutine setup_simulation
 
 
-        function setup_jacques() result(array)
+        function setup_jacques(packet) result(array)
 
             use sdfs, only : container, box
             use vector_class
+            use photonMod
 
             implicit none
+
+            type(photon), intent(OUT) :: packet
 
             type(container)         :: array(2)
             type(box), target, save :: medium, bbox
             real                 :: hgg
+
+            packet = photon("uniform")
 
             hgg = 0.9
 
@@ -101,20 +109,25 @@ private :: directory, alloc_array, zarray
 
         end function setup_jacques
 
-        function setup_sphere() result(array)
+        function setup_sphere(packet) result(array)
 
             use sdfs, only : sphere, box, container
             use vector_class
+            use photonMod
 
             implicit none
+            
+            type(photon), intent(OUT) :: packet
 
             type(container), allocatable :: array(:)
             type(sphere),   target, save :: sph
             type(box),      target, save :: bbox
- 
+
             real :: mus, mua, n, hgg
             integer :: i
 
+            packet = photon("uniform")
+            
             mus = 0.; mua = 0.; hgg = 0.; n = 1.;
             bbox = box(2., mus, mua, hgg, n, 2)
             
@@ -131,13 +144,16 @@ private :: directory, alloc_array, zarray
         end function setup_sphere
 
 
-        function interior_test() result(array)
+        function interior_test(packet) result(array)
 
             use sdfs, only : container, model, union, sphere, box, translate, model_init
+            
             use vector_class
+            use photonMod
 
             implicit none
 
+            type(photon), intent(OUT) :: packet
 
             type(container) :: array(1), cnta(3)
             type(sphere), target, save :: sph
@@ -147,6 +163,7 @@ private :: directory, alloc_array, zarray
             integer :: i
             real :: t(4, 4)
 
+            packet = photon("point")
 
             bbox = box(2., 0., 0., 0., 1., 2)
 
@@ -176,13 +193,17 @@ private :: directory, alloc_array, zarray
         end function interior_test
 
 
-        function setup_exp() result(array)
+        function setup_exp(packet) result(array)
             
             use sdfs,  only : container, box, cylinder, rotate_y
             use utils, only : deg2rad
+
             use vector_class
+            use photonMod
 
             implicit none
+
+            type(photon), intent(OUT) :: packet
 
             type(container), allocatable :: array(:)
             type(cylinder), target, save :: cyl(2)
@@ -190,6 +211,8 @@ private :: directory, alloc_array, zarray
 
             real    :: mus, mua, hgg, n, t(4, 4)
             integer :: i
+
+            packet = photon("uniform")
 
             n = 1.d0
             hgg = 0.d0
@@ -214,19 +237,23 @@ private :: directory, alloc_array, zarray
         end function setup_exp
 
 
-        function setup_fresnel_test() result(array)
+        function setup_fresnel_test(packet) result(array)
 
             use sdfs, only : container, box
             use vector_class
+            use photonMod
 
             implicit none
 
-            type(container), allocatable :: array(:)
+            type(photon), intent(OUT) :: packet
 
+            type(container), allocatable :: array(:)
             type(box), target, save :: bbox, fibre
 
             integer :: i, layer
             real    :: mus, mua, hgg, n
+
+            packet = photon("uniform")
 
             layer = 1
             n = 1.d0
@@ -246,29 +273,33 @@ private :: directory, alloc_array, zarray
 
         end function setup_fresnel_test
 
-        function setup_scat_test(tau) result(array)
+        function setup_scat_test(packet, tau) result(array)
 
             use sdfs, only : container, sphere, box
             use vector_class
+            use photonMod
 
             implicit none
 
+            type(photon), intent(OUT) :: packet
             type(container), allocatable :: array(:)
             real, intent(IN) :: tau
 
             type(sphere), target, save :: sph
             type(box), target, save :: bbox
 
-            integer :: i, layer
+            integer :: i
             real :: mus, mua, hgg, n
 
-            layer = 1
+
+            packet = photon("point")
+
             n = 1.d0
             hgg = 0.d0
             mua = 1d-17
             mus = tau
 
-            sph = sphere(1., mus, mua, hgg, n, layer)
+            sph = sphere(1., mus, mua, hgg, n, 1)
             bbox = box(2., 0.d0, mua, hgg, n, 2)
 
             allocate(array(2))
@@ -280,14 +311,17 @@ private :: directory, alloc_array, zarray
 
         end function setup_scat_test
 
-        function setup_omg_sdf() result(array)
+        function setup_omg_sdf(packet) result(array)
             
             use sdfs,      only : container, cylinder, torus, model, box, smoothunion, rotate_y, model_init, translate
             use constants, only : pi
             
             use vector_class
+            use photonMod
 
             implicit none
+
+            type(photon), intent(OUT) :: packet
 
             type(container), allocatable :: array(:)
 
@@ -300,6 +334,8 @@ private :: directory, alloc_array, zarray
             type(vector) :: a, b
             real         :: t(4, 4), mus, mua, hgg, n
             integer      :: j, layer
+
+            packet = photon("uniform")
 
             mus = 10.
             mua = 0.16
@@ -391,17 +427,97 @@ private :: directory, alloc_array, zarray
         end function setup_omg_sdf
 
 
-        function setup_skin_model() result(array)
+        function gen_vessels(packet, size) result(array)
 
-            use sdfs, only : container, model, cylinder, box, translate, model_init, smoothunion
-            use utils, only : deg2rad
+            use sdfs, only : container, model, capsule, translate, model_init, union, rotate_x, box
+            use random, only : rang, hemi, ranu
             use vector_class
+            use utils, only : deg2rad
+            use photonMod
 
             implicit none
 
+            type(photon):: packet
+            integer, intent(IN) :: size
+            type(container), allocatable :: array(:)
+            type(container), target, save, allocatable :: cnta(:)
+            type(box), target, save :: bbox
+            type(capsule), target, save, allocatable :: cyls(:)
+            type(model),   target, save, allocatable :: vessels(:)
+
+
+            integer :: i, j, counter
+            type(vector) :: a, b, dir
+            real    :: xmax, xmin, radius, dist, x, y, z, t(4, 4)
+
+            packet = photon("uniform")
+
+
+            allocate(cnta(size**2), cyls(size**2), vessels(size))
+            do i = 1, size**2
+                allocate(cnta(i)%p, source=cyls(1))
+            end do
+
+            xmax = 0.05
+            xmin = -0.05
+
+            radius = 0.001
+            dist = 0.02
+
+            counter = 1
+            do j = 1, size
+                x = -xmax!ranu(-xmax, xmax)
+                y = ranu(-xmax/2, xmax/2)
+                z = ranu(-xmax/2, xmax/2)
+                a = vector(x, y, z)
+                do i = counter, counter+size-1
+
+                    b = hemi(cos(deg2rad(45.)), vector(0.,0.,1.), vector(0., 1., 0.), vector(1., 0., 0.))
+                    t = rotate_x(90.)
+                    b = b .dot. t
+                    dist = length(a - b)
+                    dir = (b - a) / dist
+
+                    call rang(dist, y, 0.02, 0.0001)
+                    b = a + dist*dir
+                    if(i == counter + size-1 .and. b%x < xmax)b%x=xmax
+
+                    cyls(i) = capsule(a, b, radius, 0., 10., 0., 1., j)
+                    cnta(i)%p => cyls(i)
+
+                    a = b
+                end do
+
+                vessels(j) = model_init(cnta(counter:counter+size-1), union)
+                counter = counter + size
+            end do
+
+            allocate(array(size+1))
+            do i = 1, size
+                allocate(array(i)%p, source=vessels(i))
+                array(i)%p => vessels(i)
+            end do
+            allocate(array(size+1)%p, source=bbox)
+            bbox = box(.1, 0., 0., 0., 1., 2)
+            array(size+1)%p => bbox
+
+        end function gen_vessels
+
+
+        function setup_skin_model(packet) result(array)
+
+            use sdfs, only : container, model, capsule, box, translate, model_init, smoothunion
+
+            use vector_class
+            use photonMod
+
+            implicit none
+
+            type(photon), intent(OUT) :: packet
+
             type(container), allocatable :: array(:), cnta(:)
 
-            type(cylinder), target, save :: cyls(12)
+            type(capsule), target, save :: cyls(15)
             type(box),      target, save :: skin(3)
             type(model),    target, save :: vessels
 
@@ -411,6 +527,8 @@ private :: directory, alloc_array, zarray
             real :: mus_epi, mus_derm, mua_epi, mua_derm, n_epi, n_derm, hgg_epi, hgg_derm
             real :: mus_b, mua_b, hgg_b, n_b
             type(vector) :: a, b, c
+
+            packet = photon("uniform")
 
             n = 1.d0
             hgg = 1.d0
@@ -446,66 +564,85 @@ private :: directory, alloc_array, zarray
             skin(1) = box(vector(.1, .1, 0.084), mus_derm, mua_derm, hgg_derm, n_derm, 2, transform=t)!dermis
             ! skin(1) = box(vector(.1, .1, .1), mus, mua, hgg, n, 2)!bbox for debug
             
+
+            !   x
+            !   |
+            !   |
+            !   |
+            !   |
+            !   |_______y
+
             a = vector(0., -0.05, 0.)
             b = vector(0., -0.03, 0.)
-            cyls(1) = cylinder(a, b, .005, mus_b, mua_b, hgg_b, n_b, 1)
+            cyls(1) = capsule(a, b, .005, mus_b, mua_b, hgg_b, n_b, 1)
 
-            a = vector(0., -0.03-.005, 0.)
+            a = vector(0.005, -0.025, 0.)
             b = vector(0.03, -0.02, 0.)
-            cyls(2) = cylinder(a, b, .005, mus_b, mua_b, hgg_b, n_b, 1)
+            cyls(2) = capsule(a, b, .005, mus_b, mua_b, hgg_b, n_b, 1)
 
-            a = vector(0.03, -0.02-.005, 0.)
-            b = vector(0., 0.01, 0.)
-            cyls(3) = cylinder(a, b, .005, mus_b, mua_b, hgg_b, n_b, 1)
+            a = vector(0.03, -0.02, 0.)
+            b = vector(0., 0.01, -0.02)
+            cyls(3) = capsule(a, b, .005, mus_b, mua_b, hgg_b, n_b, 1)
 
-            a = vector(0., 0.01-.005, 0.)
+            a = vector(0., 0.01, -0.02)
             b = vector(0., 0.03, 0.)
-            cyls(4) = cylinder(a, b, .005, mus_b, mua_b, hgg_b, n_b, 1)
+            cyls(4) = capsule(a, b, .005, mus_b, mua_b, hgg_b, n_b, 1)
 
-            a = vector(0., 0.03-.005, 0.)
+            a = vector(0., 0.03, 0.)
             b = vector(0.03, 0.05, 0.)
-            cyls(5) = cylinder(a, b, .005, mus_b, mua_b, hgg_b, n_b, 1)
+            cyls(5) = capsule(a, b, .005, mus_b, mua_b, hgg_b, n_b, 1)
 
             !branch 1
             a = vector(-0.0025, -0.04, 0.)
             b = vector(-0.03, -0.03, 0.)
-            cyls(6) = cylinder(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
+            cyls(6) = capsule(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
 
-            a = vector(-0.03, -0.03, 0.)
+            a = vector(-0.03, -0.028, 0.)
             b = vector(-0.03, -0.02, 0.)
-            cyls(7) = cylinder(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
+            cyls(7) = capsule(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
 
-            a = vector(-0.03, -0.02, 0.)
-            b = vector(0.0025, 0.02, 0.)
-            cyls(8) = cylinder(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
+            a = vector(-0.03, -0.018, 0.)
+            b = vector(0.0025, 0.011, -0.02)
+            cyls(8) = capsule(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
 
 
             !branch 2
             a = vector(0.015, -0.025, 0.)
             b = vector(0.048, -0.02, 0.)
-            cyls(9) = cylinder(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
+            cyls(9) = capsule(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
 
-            a = vector(0.048, -0.02, 0.)
+            a = vector(0.048, -0.018, 0.)
             b = vector(0.04, 0.01, 0.)
-            cyls(10) = cylinder(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
+            cyls(10) = capsule(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
 
-            a = vector(0.04, 0.01, 0.)
+            a = vector(0.04, 0.012, 0.)
             b = vector(0.03, 0.025, 0.)
-            cyls(11) = cylinder(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
+            cyls(11) = capsule(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
 
-            a = vector(0.03, 0.025, 0.)
-            b = vector(-0.0025, 0.02, 0.)
-            cyls(12) = cylinder(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
+            a = vector(0.028, 0.025, 0.)
+            b = vector(0.00, 0.025, 0.)
+            cyls(12) = capsule(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
+
+            !branch 3
+            a = vector(0.015, -0.025, 0.)
+            b = vector(0.015, 0.00, 0.02)
+            cyls(13) = capsule(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
+
+            a = vector(0.015, 0.002, 0.02)
+            b = vector(0.02, 0.025, 0.01)
+            cyls(14) = capsule(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
+
+            a = vector(0.02, 0.027, 0.01)
+            b = vector(0.015, 0.04, 0.)
+            cyls(15) = capsule(a, b, .001, mus_b, mua_b, hgg_b, n_b, 1)
 
 
-            allocate(array(4))
-            ! do i = 1, size(array)
+            allocate(array(1))
+
             allocate(array(1)%p, source=vessels)
-            allocate(array(2)%p, source=skin(1))
-            allocate(array(3)%p, source=skin(2))
-            allocate(array(4)%p, source=skin(3))
-
-            ! end do
+            ! allocate(array(2)%p, source=skin(1))
+            ! allocate(array(3)%p, source=skin(2))
+            ! allocate(array(4)%p, source=skin(3))
 
             allocate(cnta(size(cyls)))
             do i = 1, size(cnta)
@@ -513,7 +650,7 @@ private :: directory, alloc_array, zarray
                 cnta(i)%p => cyls(i)
             end do
 
-            vessels = model_init(cnta, smoothunion)
+            vessels = model_init(cnta, smoothunion, 0.005)
             array(1)%p => vessels
             array(2)%p => skin(1)
             array(3)%p => skin(2)
@@ -532,13 +669,13 @@ private :: directory, alloc_array, zarray
             !get current working directory
 
             call get_environment_variable('PWD', cwd)
-
+  
             ! get 'home' dir from cwd
-            homedir = trim(cwd(1:len(trim(cwd))-3))
+            homedir = trim(cwd)
             ! get data dir
-            fileplace = trim(homedir)//'data/'
+            fileplace = trim(homedir)//'/data/'
             ! get res dir
-            resdir = trim(homedir)//'res/'
+            resdir = trim(homedir)//'/res/'
 
         end subroutine directory
 

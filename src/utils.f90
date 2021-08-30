@@ -83,11 +83,21 @@ module utils
     end interface
 
     private
-    public :: str, swap, colour, mem_free, chdir, mix, clamp, rad2deg, deg2rad
+    public :: str, swap, colour, mem_free, chdir, mix, clamp, rad2deg, deg2rad, lerp
     public :: bold, italic, underline, strikethrough, black, red, green, yellow, blue, magenta, cyan, white
     public :: black_b, red_b, green_b, yellow_b, blue_b, magenta_b, cyan_b, white_b, pbar
 
     contains
+
+        pure real function lerp(t, v1, v2)
+
+            implicit none
+
+            real, intent(IN) :: v1, v2, t
+
+            lerp = (1.-t)*v1+t*v2
+
+        end function lerp
 
         type(pbar) function init_pbar_func(n)
 

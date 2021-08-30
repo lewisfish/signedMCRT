@@ -956,8 +956,10 @@ module sdfs
             real, intent(IN) :: d1, d2, k
             real :: h
 
-            h = clamp(0.5 +.5*(d2-d1)/k, 0., 1.)
-            SmoothUnion = mix(d2, d1, h) - k*h*(1.-h)
+            h = max(k - abs(d1 - d2), 0.) / k
+            SmoothUnion = min(d1, d2) - h*h*h*k*(1./6.)
+            ! h = clamp(0.5 +.5*(d2-d1)/k, 0., 1.)
+            ! SmoothUnion = mix(d2, d1, h) - k*h*(1.-h)
 
         end function SmoothUnion
 
@@ -1338,7 +1340,7 @@ module sdfs
             if(present(fname))then
                 filename = fname
             else
-                filename = "../model.dat"
+                filename = "model.dat"
             end if
 
             ns = int(samples / 2)
@@ -1358,14 +1360,13 @@ module sdfs
                         do u = 1, size(ds)
                             ds(u) = cnt(u)%p%evaluate(pos)
                         end do
-
                         image(i, j, k) = minval(ds)
                     end do
                 end do
             end do
 !$OMP end  do
 !$OMP end parallel
-            open(newunit=u,file=filename, access="stream", form="unformatted")
+            open(newunit=u,file=filename, access="stream", form="unformatted", status="replace")
             write(u)image
             close(u)
         end subroutine render

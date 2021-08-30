@@ -63,7 +63,6 @@ module photonMod
 
             use gridMod
             use random, only : ranu, ran2
-            use constants, only : twoPI,pi
 
             implicit none
 
@@ -71,21 +70,22 @@ module photonMod
             type(cart_grid), intent(IN)    :: grid
 
             this%pos%x = ranu(-grid%xmax, grid%xmax)
-            this%pos%y = .98!ranu(-grid%ymax, grid%ymax)
-            this%pos%z = ranu(-grid%zmax, grid%zmax)!epsilon(1.)
+            this%pos%y = ranu(-grid%ymax, grid%ymax)
+            this%pos%z = grid%zmax-1e-8
 
-            this%phi  = 0.!ran2()*twoPI
-            this%cosp = 0.!cos(this%phi)
-            this%sinp = -1.!sin(this%phi)
-            this%cost = 0.!2.*ran2()-1.
-            this%sint = 1.!sqrt(1. - this%cost**2)
+            this%phi  = 0.
+            this%cosp = 1.
+            this%sinp = 0.
+            this%cost = -1.
+            this%sint = 0.
 
             this%nxp = this%sint * this%cosp
             this%nyp = this%sint * this%sinp
             this%nzp = this%cost
 
             this%tflag = .false.
-            this%layer = 2
+            this%layer = 1
+            this%rr = 0
 
             ! Linear Grid 
             this%xcell=int(grid%nxg*(this%pos%x+grid%xmax)/(2.*grid%xmax))+1
@@ -220,7 +220,6 @@ module photonMod
         subroutine circular_beam(this, grid)
 
             use gridMod,   only : cart_grid
-            use constants, only : PI, twoPI
             use random,    only : ranu, rang
             use surfaces, only : intersect_cone, reflect_refract
             use vector_class
