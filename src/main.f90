@@ -21,7 +21,7 @@ use stokes_mod
 use writer_mod
 use vector_class
 use sdfs
-use utils, only : pbar
+use utils, only : pbar, str
 
 implicit none
 
@@ -35,14 +35,42 @@ type(pbar)       :: bar
 
 type(container), allocatable :: array(:)
 ! mpi/mp variables
-integer :: id, numproc
-real    :: nscattGLOBAL,rr
+integer :: id, numproc, u
+real    :: nscattGLOBAL, optprop(5)
 
-rr = 0.
-call setup_simulation(nphotons, grid, array, "jacques")
-allocate(ds(size(array)))
-call render(array, vector(grid%xmax, grid%ymax, grid%zmax), 200)
+nscatt = 0.
+call init_rng(spread(123456789+0, 1, 8), fwd=.true.)
+!alcohol mua: Linear refractive index and absorption measurements of nonlinear optical liquids in the visible and near-infrared spectral region
+!glass mua: https://refractiveindex.info/?shelf=glass&book=soda-lime&page=Rubin-clear
+!tissue set hgg = .9
+!others set hgg = .7
+! no scat set hgg = 0.
+!bottle mus, mua, contents mus, mua
+! mua: 0.01, .152,  0.313, .856, 1.40
+! optprop = [24.91/(1.-.9), 1.4, 0.0, 0.01]
+! optprop = [100., 1.4, 0.0, 0.01]
+! optprop = [15.89/(1.-.7), 1.4, 0.0, 0.01]
+! optprop = [15.89/(2.*(1.-.7)), 1.4, 0.0, 0.01]
+! optprop = [0., 1.4, 0.0, 0.01]
+
+! optprop = [0., 0.01, 24.91/(1.-.9), 0.01]
+optprop = 0.
+open(newunit=u,file='/home/lewis/postdoc/signedMCRT/res/optprops.params',status='old')
+    read(u,*) optprop(1)
+    read(u,*) optprop(2)
+    read(u,*) optprop(3)
+    read(u,*) optprop(4)
+    read(u,*) optprop(5)
+close(u)
+
+
+call setup_simulation(nphotons, grid, packet, array, "neural", optprop=optprop)
+! call render(array, vector(grid%xmax, grid%ymax, grid%zmax), 200, fname="neural-test.dat")
 ! stop
+
+
+allocate(ds(size(array)))
+
 start = get_time()
 id = 0
 !init MPI
@@ -60,7 +88,7 @@ end if
 !loop over photons 
 #ifdef _OPENMP
 !$omp parallel default(none) shared(array, grid, numproc, start, nphotons, bar)&
-!$omp& private(ran, id, ds) reduction(+:nscatt,rr) firstprivate(packet)
+!$omp& private(ran, id, ds) reduction(+:nscatt) firstprivate(packet)
     numproc = omp_get_num_threads()
     id = omp_get_thread_num()
 #elif MPI
@@ -97,7 +125,7 @@ do j = 1, nphotons
     ! Find scattering location
     call tauint2(packet, grid, array)
     ! Photon scatters in grid until it exits (tflag=TRUE) 
-    do while(packet%tflag .eqv. .FALSE.)
+    do while(.not. packet%tflag)
         ran = ran2()
         if(ran < array(packet%layer)%p%albedo)then!interacts with tissue
             call stokes(packet, array(packet%layer)%p%hgg, array(packet%layer)%p%g2)
@@ -111,7 +139,6 @@ do j = 1, nphotons
         call tauint2(packet, grid, array)
 
     end do
-    rr = rr + packet%rr
 end do
 
 #ifdef _OPENMP
@@ -127,7 +154,7 @@ end do
     jmeanGLOBAL = jmean
     nscattGLOBAL = nscatt
 #endif
-print*,rr/nphotons
+
 
 if(id == 0)then
 #ifdef _OPENMP
@@ -136,7 +163,7 @@ if(id == 0)then
     print*,'Average # of scatters per photon:',nscattGLOBAL/(nphotons*numproc)
 #endif
     !write out files
-    call writer(nphotons, grid)
+    call writer(nphotons, grid, optprop)
     print*,'write done'
 end if
 

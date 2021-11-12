@@ -40,6 +40,7 @@ module inttau2
         do i = 1, size(ds)
             ds(i) = abs(sdfs_array(i)%p%evaluate(pos))
         end do
+        ! packet%cnts = packet%cnts + size(ds)
         d_sdf = minval(ds)
 
         eps = 1d-8
@@ -56,7 +57,7 @@ module inttau2
                     !move full distance to sdf
                     taurun = taurun + t_sdf
                     oldpos = pos
-                    call update_jmean(oldpos, grid, dir, d_sdf, packet)
+                    call update_jmean(oldpos, grid, dir, d_sdf, packet, sdfs_array(packet%layer)%p%mua)
                     pos = pos + d_sdf * dir
                     dtot = dtot + d_sdf
                 else
@@ -66,7 +67,7 @@ module inttau2
                     taurun = tau
                     oldpos = pos
                     pos = pos + d_sdf * dir
-                    call update_jmean(oldpos, grid, dir, d_sdf, packet)
+                    call update_jmean(oldpos, grid, dir, d_sdf, packet, sdfs_array(packet%layer)%p%mua)
                     exit
                 end if
                 ! get distance to nearest sdf
@@ -74,6 +75,8 @@ module inttau2
                 do i = 1, size(ds)
                     ds(i) = sdfs_array(i)%p%evaluate(pos)
                 end do
+                packet%cnts = packet%cnts + size(ds)
+
                 d_sdf = minval(abs(ds),dim=1)
                 !check if outside all sdfs
                 if(minval(ds) >= 0.)then
@@ -90,6 +93,7 @@ module inttau2
             do i = 1, size(ds)
                 ds(i) = sdfs_array(i)%p%evaluate(pos)
             end do
+            packet%cnts = packet%cnts + size(ds)
 
             dstmp = ds
             ds = abs(ds)
@@ -101,6 +105,8 @@ module inttau2
             do i = 1, size(ds)
                 ds(i) = sdfs_array(i)%p%evaluate(pos)
             end do
+            packet%cnts = packet%cnts + size(ds)
+
             !step back inside original sdf
             pos = pos - d_sdf*dir
 
@@ -131,12 +137,11 @@ module inttau2
             cur_layer = minloc(signs,dim=1)
             n2 = sdfs_array(cur_layer)%p%n
 
-            if (n1 /= n2 .and. dir%z >0.)then
+            if (n1 /= n2)then
                 N = calcNormal(pos, sdfs_array(cur_layer)%p)
                 N = N%magnitude()
                 rflag = .false.
                 call reflect_refract(dir, N, n1, n2, rflag)
-                packet%rr = packet%rr + 1
                 tau = -log(ran2())
                 taurun = 0.
                 if(rflag)then
@@ -171,7 +176,7 @@ module inttau2
     end subroutine tauint2
    
 
-    subroutine update_jmean(pos, grid, dir, d_sdf, packet)
+    subroutine update_jmean(pos, grid, dir, d_sdf, packet, mua)
         
         use vector_class
         use iarray, only: jmean
@@ -182,7 +187,7 @@ module inttau2
         
         type(cart_grid), intent(IN)    :: grid
         type(vector),    intent(IN)    :: dir
-        real,            intent(IN)    :: d_sdf
+        real,            intent(IN)    :: d_sdf, mua
         type(vector),    intent(INOUT) :: pos
         type(photon),    intent(INOUT) :: packet
 
@@ -211,13 +216,15 @@ module inttau2
                 dcell = d_sdf - d
                 d = d_sdf
 !$omp atomic
-                jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell
+                jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell!*mua!real(packet%cnts)
+                ! packet%cnts = 0
                 call update_pos(old_pos, grid, celli, cellj, cellk, dcell, .false., dir, ldir, delta)
                 exit
             else
                 d = d + dcell
 !$omp atomic
-                jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell
+                jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell!*mua!real(packet%cnts)
+                ! packet%cnts = 0
                 call update_pos(old_pos, grid, celli, cellj, cellk, dcell, .true., dir, ldir, delta)
             end if
             if(celli == -1 .or. cellj == -1 .or. cellk == -1)then
@@ -378,6 +385,10 @@ module inttau2
         celli = find(pos%x, grid%xface) 
         cellj = find(pos%y, grid%yface)
         cellk = find(pos%z, grid%zface) 
+        ! celli = floor(grid%nxg * (pos%x) / (2. * grid%xmax)) + 1
+        ! cellj = floor(grid%nyg * (pos%y) / (2. * grid%ymax)) + 1
+        ! cellk = floor(grid%nzg * (pos%z) / (2. * grid%zmax)) + 1
+
         if(celli > grid%nxg .or. celli < 1)celli = -1
         if(cellj > grid%nyg .or. cellj < 1)cellj = -1
         if(cellk > grid%nzg .or. cellk < 1)cellk = -1

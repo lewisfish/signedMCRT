@@ -5,7 +5,7 @@ module random
     implicit none
 
     private
-    public  :: ran2, ranu, rang, init_rng, hemi
+    public  :: ran2, ranu, rang, randint, init_rng
 
     contains
 
@@ -28,7 +28,7 @@ module random
 
             if(present(input_seed))then
                 seed = 0
-                seed(:) = input_seed
+                seed = input_seed
             else
                 seed = 1234567
             end if
@@ -97,35 +97,28 @@ module random
 
         end subroutine rang
 
-
-        type(vector) function hemi(cosThetaMax, x, y, z)
-
-            use constants, only: twopi
-            use utils, only : lerp
+        integer function randint(a, b)
 
             implicit none
 
-            ! real :: z, phi, r
-            type(vector) :: x, y, z
-            real :: ran, cosTheta, sinTheta, phi, cosThetaMax
+            integer, intent(IN) :: a, b
 
-            ! z = ran2()
-            ! r = sqrt(max(0., 1.-z**2))
-            ! phi = twopi*ran2()
+            randint = a + floor((b + 1 - a)*ran2()) 
 
-            ! hemi = vector(r * cos(phi), r * sin(phi), z)
-            ! ran = ran2()
-            ! cosTheta = 1. - ran + ran*cosThetaMax
-            ! sinTheta = sqrt(1. - cosTheta**2)
-            ! phi = ran2()*twopi
-            ! hemi = vector(cos(phi)*sinTheta, sin(phi)*sinTheta, cosTheta)
-
-            cosTheta = lerp(ran2(), cosThetaMax, 1.)
-            sinTheta = sqrt(max(0., 1. - cosTheta**2))
-            phi = ran2()*twopi
-            hemi = cos(phi)*sinTheta*x + sin(phi)*sinTheta*y + cosTheta*z
-
-        end function hemi
-
+        end function randint
 
 end module random
+
+! Program test
+    
+!     use random, only : randint
+
+!     implicit none
+    
+!     integer :: i
+
+!     do i = 1, 100
+!         print*,randint(0, 5)
+!     end do
+
+! end program test

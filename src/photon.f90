@@ -6,14 +6,15 @@ module photonMod
     
     type :: photon
     
-        type(vector) :: pos                   ! position
+        type(vector) :: pos                     ! position
         real    :: nxp, nyp, nzp                ! direction vectors
         real    :: sint, cost, sinp, cosp, phi  ! direction cosines
-        real    :: wavelength, rr           ! Only used if tracking the phase
+        real    :: wavelength                   ! Only used if tracking the phase
         integer :: xcell, ycell, zcell          ! grid cell position
         logical :: tflag                        ! Is photon dead?
-        integer :: layer ! pointer to sdf packet is inside
-        integer :: id   ! thread running packet
+        integer :: layer                        ! id of sdf the packet is inside
+        integer :: id                           ! thread running packet
+        integer :: cnts                         !  number of sdf evals.
 
         procedure(generic_emit), pointer :: emit => null()
 
@@ -52,6 +53,10 @@ module photonMod
                 init_source%emit => pencil
             elseif(choice == "annulus")then
                 init_source%emit => annulus
+            elseif(choice == "focus")then
+                init_source%emit => focus
+            elseif(choice == "point")then
+                init_source%emit => point
             else
                 init_source%emit => circular_beam
             end if
@@ -59,33 +64,182 @@ module photonMod
 
         end function init_source
 
-        subroutine uniform(this, grid)
+        subroutine point(this, grid)
+            
+            use random,    only : ran2
+            use constants, only : twoPI
 
             use gridMod
-            use random, only : ranu, ran2
 
             implicit none
-
+        
             class(photon) :: this
-            type(cart_grid), intent(IN)    :: grid
+            type(cart_grid), intent(IN) :: grid
+        
+            this%pos%x = 0.
+            this%pos%y = 0.
+            this%pos%z = 0.
 
-            this%pos%x = ranu(-grid%xmax, grid%xmax)
-            this%pos%y = ranu(-grid%ymax, grid%ymax)
-            this%pos%z = grid%zmax-1e-8
-
-            this%phi  = 0.
-            this%cosp = 1.
-            this%sinp = 0.
-            this%cost = -1.
-            this%sint = 0.
+            this%phi  = ran2()*twoPI
+            this%cosp = cos(this%phi)
+            this%sinp = sin(this%phi)
+            this%cost = 2.*ran2()-1.
+            this%sint = sqrt(1. - this%cost**2)
 
             this%nxp = this%sint * this%cosp
             this%nyp = this%sint * this%sinp
             this%nzp = this%cost
 
             this%tflag = .false.
-            this%layer = 1
-            this%rr = 0
+            this%cnts = 0
+            this%layer=1
+
+            ! Linear Grid 
+            this%xcell=int(grid%nxg*(this%pos%x+grid%xmax)/(2.*grid%xmax))+1
+            this%ycell=int(grid%nyg*(this%pos%y+grid%ymax)/(2.*grid%ymax))+1
+            this%zcell=int(grid%nzg*(this%pos%z+grid%zmax)/(2.*grid%zmax))+1
+        
+        end subroutine point
+
+        subroutine focus(this, grid)
+
+            use gridMod
+            use random, only : ranu
+            use utils, only : deg2rad
+            use vector_class, only : length
+
+            implicit none
+
+            class(photon) :: this
+            type(cart_grid), intent(IN) :: grid
+
+            type(vector) :: targ, dir
+            real :: dist
+
+            targ = vector(0.,0.,0.)
+
+            this%pos%x = ranu(-grid%xmax, grid%xmax)
+            this%pos%y = ranu(-grid%ymax, grid%ymax)
+            this%pos%z = grid%zmax - 1d-8
+
+            dist = length(this%pos)
+
+            dir = (-1.)*this%pos / dist
+            dir = dir%magnitude()
+
+            this%nxp = dir%x
+            this%nyp = dir%y
+            this%nzp = dir%z
+            this%phi  = atan2(this%nyp, this%nxp)
+            this%cosp = cos(this%phi)
+            this%sinp = sin(this%phi)
+            this%cost = this%nzp
+            this%sint = sqrt(1. - this%cost**2)
+
+            this%nxp = this%sint * this%cosp
+            this%nyp = this%sint * this%sinp
+            this%nzp = this%cost
+
+            this%tflag = .false.
+
+            ! Linear Grid 
+            this%xcell=int(grid%nxg*(this%pos%x+grid%xmax)/(2.*grid%xmax))+1
+            this%ycell=int(grid%nyg*(this%pos%y+grid%ymax)/(2.*grid%ymax))+1
+            this%zcell=int(grid%nzg*(this%pos%z+grid%zmax)/(2.*grid%zmax))+1
+
+        end subroutine focus
+
+
+        subroutine uniform(this, grid)
+
+            use gridMod
+            use random, only : ranu, ran2, randint
+
+            implicit none
+
+            class(photon) :: this
+            type(cart_grid), intent(IN)    :: grid
+            
+            integer :: val
+
+
+            val = randint(1, 6)
+            if(val == 1)then
+                ! -ive z 
+                this%pos%x = ranu(-grid%xmax+1e-3, grid%xmax-1e-3)
+                this%pos%y = ranu(-grid%ymax+1e-3, grid%ymax-1e-3)
+                this%pos%z = grid%xmax-1e-8
+
+                this%phi  = 0.
+                this%cosp = 1.
+                this%sinp = 0.
+                this%cost = -1.
+                this%sint = 0.
+            elseif(val == 2)then
+                ! +ive z 
+                this%pos%x = ranu(-grid%xmax+1e-3, grid%xmax-1e-3)
+                this%pos%y = ranu(-grid%ymax+1e-3, grid%ymax-1e-3)
+                this%pos%z = -grid%xmax + 1e-8
+
+                this%phi  = 0.
+                this%cosp = 1.
+                this%sinp = 0.
+                this%cost = 1.
+                this%sint = 0.
+
+            elseif(val == 3)then
+                ! -ive x
+                this%pos%x = grid%xmax-1e-8
+                this%pos%y = ranu(-grid%ymax+1e-3, grid%ymax-1e-3)
+                this%pos%z = ranu(-grid%zmax+1e-3, grid%zmax-1e-3)
+
+                this%phi  = 0.
+                this%cosp = 1.
+                this%sinp = 0.
+                this%cost = 0.
+                this%sint = -1.
+            elseif(val == 4)then
+                ! +ive x
+                this%pos%x = -grid%xmax+1e-8
+                this%pos%y = ranu(-grid%ymax+1e-3, grid%ymax-1e-3)
+                this%pos%z = ranu(-grid%zmax+1e-3, grid%zmax-1e-3)
+
+                this%phi  = 0.
+                this%cosp = 1.
+                this%sinp = 0.
+                this%cost = 0.
+                this%sint = 1.
+            elseif(val == 5)then
+                ! -ive y
+                this%pos%x = ranu(-grid%xmax+1e-3, grid%xmax-1e-3)
+                this%pos%y = grid%xmax-1e-8
+                this%pos%z = ranu(-grid%zmax+1e-3, grid%zmax-1e-3)
+
+                this%phi  = 0.
+                this%cosp = 0.
+                this%sinp = -1.
+                this%cost = 0.
+                this%sint = 1.
+            elseif(val == 6)then
+                ! +ive y
+                this%pos%x = ranu(-grid%xmax+1e-3, grid%xmax-1e-3)
+                this%pos%y = -grid%xmax+1e-8
+                this%pos%z = ranu(-grid%zmax+1e-3, grid%zmax-1e-3)
+
+                this%phi  = 0.
+                this%cosp = 0.
+                this%sinp = 1.
+                this%cost = 0.
+                this%sint = 1.
+            end if
+
+
+            this%nxp = this%sint * this%cosp
+            this%nyp = this%sint * this%sinp
+            this%nzp = this%cost
+
+            this%tflag = .false.
+            this%cnts = 0
 
             ! Linear Grid 
             this%xcell=int(grid%nxg*(this%pos%x+grid%xmax)/(2.*grid%xmax))+1

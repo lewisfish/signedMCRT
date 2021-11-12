@@ -21,10 +21,10 @@ function makebuild
       string="FCOMP=gfortran-10"
   elif [ "$comp" = 'gnu' ] && [ "$mpi" = 1 ];then
     string="FCOMP=/usr/bin/mpifort"
-  elif [ "$comp" = 'intel' ] && [ "$openmp" = 1 ];then
+  elif [ "$comp" = 'intel' ] && [ "$openmp" = 0 ];then
       string="FCOMP=ifort"
   elif [ "$comp" = 'intel' ] && [ "$openmp" = 1 ];then
-      string="FCOMP=mpiifort"
+      string="FCOMP=ifort"
   else
     string="FCOMP=gfortran-10"
   fi
@@ -36,15 +36,21 @@ function makebuild
     make clean
     make build $string
   else
-    make clean &> null
+    make clean
     if [ "$comp" = 'gnu' ];then
       if [ "$openmp" = 1 ];then
         export OMP_NUM_THREADS=$NUM_CORES
         make mp $string > null
+      else
+        make $string
       fi
-        make $string > null
     elif [ "$comp" = 'intel' ];then
-      make $string > null
+      if [ "$openmp" = 1 ];then
+        export OMP_NUM_THREADS=$NUM_CORES
+        make mp $string
+      else
+        make $string
+      fi
     fi
   fi
 }
@@ -92,19 +98,19 @@ function run
   mv mcgrid "$bdirc" #&& echo " "&& echo "*****Install complete*****" && echo " "
 
   # clear
-  cd ../bin
+  cd ..
 
   if [ "$NUM_CORES" = "1" ]; then
-      ./mcgrid
+      ./bin/mcgrid
   else
     if [ $mpi == 1 ];then
       if [ $comp = 'gnu' ];then
-        /usr/local/bin/mpirun -n $NUM_CORES ./mcgrid
+        /usr/local/bin/mpirun -n $NUM_CORES ./bin/mcgrid
       elif [ $comp = 'intel' ];then
-        mpirun -n $NUM_CORES ./mcgrid
+        mpirun -n $NUM_CORES ./bin/mcgrid
       fi
     else
-      ./mcgrid
+      ./bin/mcgrid
     fi
   fi
 }

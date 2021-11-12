@@ -8,7 +8,7 @@ Module vector_class
         procedure :: print           => print_sub
         procedure :: length          => length
         generic   :: operator(.dot.) => vec_dot_vec, vec_dot_mat
-        generic   :: operator(/)     => vec_div_scal
+        generic   :: operator(/)     => vec_div_scal_r4, vec_div_scal_int
         generic   :: operator(*)     => vec_mult_vec, vec_mult_scal, scal_mult_vec
         generic   :: operator(+)     => vec_add_vec, vec_add_scal, scal_add_vec
         generic   :: operator(-)     => vec_minus_vec, vec_minus_scal, scal_minus_vec
@@ -16,7 +16,8 @@ Module vector_class
         procedure, pass(a), private :: vec_dot_vec
         procedure, pass(a), private :: vec_dot_mat
 
-        procedure, pass(a), private :: vec_div_scal
+        procedure, pass(a), private :: vec_div_scal_r4
+        procedure, pass(a), private :: vec_div_scal_int
 
         procedure, pass(a), private :: vec_mult_vec
         procedure, pass(a), private :: vec_mult_scal
@@ -245,16 +246,27 @@ Module vector_class
         end function scal_mult_vec
 
 
-        type(vector) function vec_div_scal(a, b)
+        type(vector) function vec_div_scal_r4(a, b)
 
             implicit none
 
             class(vector), intent(IN) :: a
             real,         intent(IN) :: b
 
-            vec_div_scal = vector(a%x / b, a%y / b, a%z / b)
+            vec_div_scal_r4 = vector(a%x / b, a%y / b, a%z / b)
 
-        end function vec_div_scal
+        end function vec_div_scal_r4
+
+        type(vector) function vec_div_scal_int(a, b)
+
+            implicit none
+
+            class(vector), intent(IN) :: a
+            integer,       intent(IN) :: b
+
+            vec_div_scal_int = vector(a%x / real(b), a%y / real(b), a%z / real(b))
+
+        end function vec_div_scal_int
 
 
         type(vector) function magnitude_fn(this)

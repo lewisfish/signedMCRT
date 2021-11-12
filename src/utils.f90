@@ -106,6 +106,7 @@ module utils
             implicit none
 
             integer, intent(IN) :: n
+
 #ifdef _OPENMP
             init_pbar_func%threads = omp_get_max_threads()
 #else
@@ -127,12 +128,15 @@ module utils
 
         subroutine progress_sub(this)
 
+            use iso_fortran_env, only : output_unit
+
             implicit none
 
             class(pbar) :: this
-            integer :: width
+            integer           :: width
             character(len=52) :: line
-            real :: time
+            real              :: time
+
 !$omp critical
             if(.not. this%first)then
                 call cpu_time(this%finish_t)
@@ -140,11 +144,12 @@ module utils
                 time = this%average / real(this%threads * this%current_iter)
                 time = time * (this%iters - this%current_iter)
                 this%time_remaing(1) = floor(time / (60*60))
-                this%time_remaing(2) = floor(time / 60)
+                this%time_remaing(2) = floor(mod(time / 60, 60.))
                 this%time_remaing(3) = int(mod(time, 60.))
+
                 time = (this%finish_t - this%start_tt) / this%threads
                 this%time_taken(1) = floor(time / (60*60))
-                this%time_taken(2) = floor(time / 60)
+                this%time_taken(2) = floor(mod(time / 60, 60.))
                 this%time_taken(3) = int(mod(time, 60.))
             else    
                 this%first = .false.
@@ -159,10 +164,10 @@ module utils
                 width = int(this%percentage/ 2.)
                 line = "[" // repeat("#", width) // repeat(" ", 50 - width) // "]"
 
-                write(unit=6,fmt='(A)',advance="no") start//"1000D"//line//" "//str(int(this%percentage),3)//"%  ["//&
+                write(unit=output_unit,fmt='(A)',advance="no") start//"1000D"//line//" "//str(int(this%percentage),3)//"%  ["//&
                 str(this%time_taken)//"<"//str(this%time_remaing)//"]"
-
-                if(this%percentage >= 100.)write(unit=6,fmt='(A)')new_line("a")
+                if(this%percentage >= 100.)write(unit=output_unit,fmt='(A)')new_line("a")
+                flush(output_unit)
             end if
 !$omp end critical
             call cpu_time(this%start_t)
@@ -346,16 +351,23 @@ module utils
 
             character(len=:), allocatable :: str_iarray
             character(len=100) :: string
-            integer :: j
+            integer :: k, j, length
 
+            length = 3*size(i)-1
+            str_iarray = repeat(" ", length)
+
+            k = 1
             do j = 1, size(i)
                 write(string,'(I2.2)') I(j)
                 if(j == 1)then
-                    str_iarray = str_iarray//trim(adjustl(string))
+                    str_iarray(k:k+2) = trim(adjustl(string))
+                    k = k + 2
                 else
-                    str_iarray = str_iarray//':'//trim(adjustl(string))
+                    str_iarray(k:k+2) = ':'//trim(adjustl(string))
+                    k = k + 3
                 end if
             end do
+
         end function str_iarray
 
 

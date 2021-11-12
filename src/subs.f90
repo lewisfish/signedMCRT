@@ -1,4 +1,4 @@
-MODULE subs
+module subs
 
 implicit none
 
@@ -8,7 +8,7 @@ private :: directory, alloc_array, zarray
 
     contains
 
-        subroutine setup_simulation(nphotons, grid, packet, sdfarray, choice, tau)
+        subroutine setup_simulation(nphotons, grid, packet, sdfarray, choice, tau, optprop)
         ! Read in parameters
             use constants, only : resdir
             use gridMod,   only : cart_grid
@@ -16,11 +16,12 @@ private :: directory, alloc_array, zarray
             
             use photonMod
             use ch_opt
+            use vector_class
 
             implicit none
 
             character(*),                 intent(IN)  :: choice
-            real,            optional,    intent(IN)  :: tau
+            real,            optional,    intent(IN)  :: tau, optprop(:)
             type(container), allocatable, intent(OUT) :: sdfarray(:)
             type(cart_grid),              intent(OUT) :: grid
             type(photon),                 intent(OUT) :: packet
@@ -50,8 +51,9 @@ private :: directory, alloc_array, zarray
             grid = cart_grid(nxg, nyg, nzg, xmax, ymax, zmax)
             call init_opt1(kappa, albedo, hgg, g2)
 
-
             select case(choice)
+                case("neural")
+                    sdfarray = setup_neural_sdf(packet)
                 case("omg")
                     sdfarray = setup_omg_sdf(packet)
                 case("scat_test")
@@ -63,17 +65,56 @@ private :: directory, alloc_array, zarray
                     sdfarray = setup_skin_model(packet)
                 case("interior")
                     sdfarray = interior_test(packet)
+                case("exterior")
+                    sdfarray = exterior_test(packet)
                 case("sphere")
                     sdfarray = setup_sphere(packet)
                 case("exp")
-                    sdfarray = setup_exp(packet)
+                    if(.not. present(optprop) )error stop "No opt props provided"
+                    sdfarray = setup_exp(packet, optprop)
                 case("jacques")
                     sdfarray = setup_jacques(packet)
+                case("vessels")
+                    sdfarray = get_vessels(packet)
+                    ! psb = bsp(sdfarray, 2, vector(2., 2., 2.))!vector(xmax*2., ymax*2., zmax*2.))
+                    ! stop
                 case default
                     error stop "no such routine"
             end select
 
         end subroutine setup_simulation
+
+        function setup_neural_sdf(packet) result(array)
+
+            use sdfs, only : container, box, neural
+            use vector_class
+            use photonMod
+
+            implicit none
+
+            type(photon), intent(OUT) :: packet
+
+            type(container)         :: array(2)
+            type(box), target, save :: bbox
+            type(neural), target, save :: neu
+            
+            real :: hgg
+
+            packet = photon("point")
+
+            hgg = 0.9
+
+            bbox = box(vector(10., 10., 2.001), 0., 0., 0., 1., 2) 
+            !420
+            neu = neural(82./(1.-hgg), 1.8, hgg, 1.38, 1)
+
+            allocate(array(1)%p, source=neu)
+            allocate(array(2)%p, source=bbox)
+
+            array(1)%p => neu
+            array(2)%p => bbox
+
+        end function setup_neural_sdf
 
 
         function setup_jacques(packet) result(array)
@@ -128,10 +169,10 @@ private :: directory, alloc_array, zarray
 
             packet = photon("uniform")
             
-            mus = 0.; mua = 0.; hgg = 0.; n = 1.;
+            mus = 0.; mua = 1.d-17; hgg = 0.; n = 1.;
             bbox = box(2., mus, mua, hgg, n, 2)
             
-            mus = 0.; mua = .5; hgg = .0; n = 1.5;
+            mus = 0.; mua = 1.d-17; hgg = .0; n = 1.46;
             sph = sphere(.5, mus, mua, hgg, n, 1)
 
             allocate(array(2))
@@ -160,19 +201,19 @@ private :: directory, alloc_array, zarray
             type(box),    target, save :: boxes(2), bbox
             type(model),  target, save :: m
 
-            integer :: i
             real :: t(4, 4)
 
             packet = photon("point")
 
             bbox = box(2., 0., 0., 0., 1., 2)
 
-            t = invert(translate(vector(.25, .0, 0.)))
+            t = invert(translate(vector(.25-.2, -.1, 0.)))
             boxes(1) = box(vector(.5, 1., 1.), 0., 0., 0., 1., 1, transform=t)
-            t = invert(translate(vector(0., .75, 0.)))
-            boxes(2) = box(vector(1., .5, 1.), 0., 0., 0., 1., 1, transform=t)
 
-            t = invert(translate(vector(.5, 0., 0.)))
+            t = invert(translate(vector(0.-.2, .6, 0.)))
+            boxes(2) = box(vector(1., .5, 1.), -.1, 0., 0., 1., 1, transform=t)
+
+            t = invert(translate(vector(.5-.2, -.1, 0.)))
             sph = sphere(0.5, 0., 0., 0., 1., 1, transform=t)
 
             allocate(cnta(1)%p, source=sph)
@@ -196,6 +237,9 @@ private :: directory, alloc_array, zarray
         function setup_exp(packet) result(array)
             
             use sdfs,  only : container, box, cylinder, rotate_y
+        function setup_exp(packet, optprop) result(array)
+            
+            use sdfs,  only : container, box, cylinder, rotate_y, model, model_init, subtraction, translate
             use utils, only : deg2rad
 
             use vector_class
@@ -204,36 +248,43 @@ private :: directory, alloc_array, zarray
             implicit none
 
             type(photon), intent(OUT) :: packet
+            real,         intent(IN)  :: optprop(:)
 
-            type(container), allocatable :: array(:)
+            type(container), allocatable :: array(:), cnta(:)
+            type(model),    target, save :: m
             type(cylinder), target, save :: cyl(2)
-            type(box),      target, save :: bbox
+            type(box),      target, save :: bbox, slab
 
-            real    :: mus, mua, hgg, n, t(4, 4)
-            integer :: i
+            type(vector) :: a, b
+            real         :: n
+            real :: t(4, 4)
 
-            packet = photon("uniform")
+            packet = photon("annulus")
 
             n = 1.d0
-            hgg = 0.d0
-            mua = 1.d-17
-            mus = 0.d0
 
-            ! t = rotate_y(deg2rad(90.))
-            ! cyl(1) = cylinder(10., 1.55, mus, mua, hgg, 1.3, 1)
-            ! cyl(2) = cylinder(10., 1.75, mus, mua, hgg, 1.5, 2)
-            error stop "need to fix cylinders"
-            bbox  = box(2., mus, mua, hgg, n, 3)
+            a = vector(-10., 0., 0.)
+            b = vector(10., 0., 0.)
+            !bottle
+            ! cyl(2) = cylinder(a, b, 1.75, optprop(1), optprop(2), optprop(5), 1.5, 2)
+            ! contents
+            ! cyl(1) = cylinder(a, b, 1.55, optprop(3), optprop(4), optprop(5), 1.3, 1)
 
-            allocate(array(3))
-            allocate(array(1)%p, source=cyl(1))
-            allocate(array(2)%p, source=cyl(2))
-            allocate(array(3)%p, source=bbox)
+            t = invert(translate(vector(0., 0., -5.+1.75)))
+            slab = box(vector(10., 10., 10.), optprop(3), optprop(4), optprop(5), 1.3, 1, transform=t)
+            bbox = box(4., 0.0, 0.0, 0.0, n, 2)
 
-            array(1)%p => cyl(1)
-            array(2)%p => cyl(2)
-            array(3)%p => bbox
+            allocate(array(2))
+            ! allocate(array(1)%p, source=cyl(1))
+            ! allocate(array(2)%p, source=cyl(2))
+            allocate(array(1)%p, source=slab)
+            allocate(array(2)%p, source=bbox)
 
+            ! array(1)%p => cyl(1)
+            ! array(2)%p => cyl(2)
+            ! array(3)%p => bbox
+            array(1)%p => slab
+            array(2)%p => bbox
         end function setup_exp
 
 
@@ -250,7 +301,7 @@ private :: directory, alloc_array, zarray
             type(container), allocatable :: array(:)
             type(box), target, save :: bbox, fibre
 
-            integer :: i, layer
+            integer :: layer
             real    :: mus, mua, hgg, n
 
             packet = photon("uniform")
@@ -288,9 +339,7 @@ private :: directory, alloc_array, zarray
             type(sphere), target, save :: sph
             type(box), target, save :: bbox
 
-            integer :: i
             real :: mus, mua, hgg, n
-
 
             packet = photon("point")
 
@@ -351,7 +400,8 @@ private :: directory, alloc_array, zarray
             ! |_____z
 
             !O letter
-            t = invert(translate(vector(0., 0., -0.7)))
+            a = vector(0., 0., -0.7)
+            t = invert(translate(a))
             sph = torus(.2, 0.05, mus, mua, hgg, n, layer, transform=t)
 
             !M letter
@@ -394,7 +444,7 @@ private :: directory, alloc_array, zarray
             g(5) = cylinder(a, b, .05, mus, mua, hgg, n, layer)
 
             !bbox
-            boxy = box(2., 0.d0, 10., 0.d0, 1.0, 2)
+            boxy = box(2., 0.d0, 0., 0.d0, 1.0, 2)
 
             allocate(array(2))
             allocate(array(1)%p, source=omg_sdf)
@@ -419,7 +469,7 @@ private :: directory, alloc_array, zarray
             cnta(9)%p => g(4)
             cnta(10)%p => g(5)
 
-            omg_sdf = model_init(cnta, smoothunion)
+            omg_sdf = model_init(cnta, smoothunion, 0.05)
 
             array(1)%p => omg_sdf ! model
             array(2)%p => boxy    ! bbox
@@ -427,81 +477,127 @@ private :: directory, alloc_array, zarray
         end function setup_omg_sdf
 
 
-        function gen_vessels(packet, size) result(array)
+        function get_vessels(packet) result(array)
 
-            use sdfs, only : container, model, capsule, translate, model_init, union, rotate_x, box
-            use random, only : rang, hemi, ranu
-            use vector_class
-            use utils, only : deg2rad
+            use sdfs, only : container, model, capsule, model_init, union, box, union
             use photonMod
+            use vector_class
 
             implicit none
 
-            type(photon):: packet
-            integer, intent(IN) :: size
-            type(container), allocatable :: array(:)
-            type(container), target, save, allocatable :: cnta(:)
+            type(photon) :: packet
+            type(container), allocatable :: array(:), cnta(:)
+            type(model), target, save :: vessels
+            type(capsule), allocatable, target, save :: cyls(:)
             type(box), target, save :: bbox
-            type(capsule), target, save, allocatable :: cyls(:)
-            type(model),   target, save, allocatable :: vessels(:)
 
-
-            integer :: i, j, counter
-            type(vector) :: a, b, dir
-            real    :: xmax, xmin, radius, dist, x, y, z, t(4, 4)
+            real, allocatable :: nodes(:, :), radii(:)
+            integer, allocatable :: edges(:, :)
+            integer :: io, edge_cnt, tmp1, tmp2, u, node_cnt, i, counter
+            real :: x, y, z, radius, res, maxx, maxy, maxz
+            real :: musv, muav, gv, nv
+            real :: musd, muad, gd, nd
+            type(vector) :: a, b
 
             packet = photon("uniform")
+            ! mua, mus, g, n]
+            !MCmatlab: an open-source, user-friendly, MATLAB-integrated three-dimensional Monte Carlo light transport solver with heat diffusion and tissue damage
+            muav = 231.
+            musv = 94.
+            gv = 0.9
+            nv = 1.37
 
+            muad = 0.458
+            musd = 357.
+            gd = 0.9
+            nd = 1.37
 
-            allocate(cnta(size**2), cyls(size**2), vessels(size))
-            do i = 1, size**2
+            !get number of edges
+            open(newunit=u, file="res/edges.dat", iostat=io)
+            edge_cnt = 0
+            do
+                read(u,*,iostat=io)tmp1, tmp2
+                if(io /= 0)exit
+                edge_cnt = edge_cnt + 1
+            end do
+            close(u)
+
+            !get number of nodes and radii
+            open(newunit=u, file="res/nodes.dat", iostat=io)
+            node_cnt = 0
+            do
+                read(u,*,iostat=io)x, y, z
+                if(io /= 0)exit
+                node_cnt = node_cnt + 1
+            end do
+            allocate(edges(edge_cnt, 2), nodes(node_cnt, 3), radii(node_cnt))
+            ! print*,node_cnt,edge_cnt
+            ! stop
+            !read in edges
+            open(newunit=u, file="res/edges.dat", iostat=io)
+            do i = 1, edge_cnt
+                read(u,*,iostat=io)edges(i, :)
+                if(io /= 0)exit
+            end do
+            close(u)
+
+            !read in nodes
+            open(newunit=u, file="res/nodes.dat", iostat=io)
+            do i = 1, edge_cnt
+                read(u,*,iostat=io)nodes(i, :)
+                if(io /= 0)exit
+            end do
+            close(u)
+
+            !read in radii
+            open(newunit=u, file="res/radii.dat", iostat=io)
+            do i = 1, node_cnt
+                read(u,*,iostat=io)radii(i)
+                if(io /= 0)exit
+            end do
+            close(u)
+
+            res = 0.001!0.01mm
+            maxx = maxval(abs(nodes(:, 1)))
+            maxy = maxval(abs(nodes(:, 2)))
+            maxz = maxval(abs(nodes(:, 3)))
+
+            nodes(:, 1) = (nodes(:, 1) / maxx) - 0.5
+            nodes(:, 2) = (nodes(:, 2) / maxy) - 0.5
+            nodes(:, 3) = (nodes(:, 3) / maxz) - 0.5
+            nodes(:, 1) = nodes(:, 1) * maxx * res
+            nodes(:, 2) = nodes(:, 2) * maxy * res
+            nodes(:, 3) = nodes(:, 3) * maxz * res
+
+            !allocate SDFs and container
+            allocate(cyls(edge_cnt), cnta(edge_cnt))
+            do i = 1, edge_cnt
                 allocate(cnta(i)%p, source=cyls(1))
             end do
 
-            xmax = 0.05
-            xmin = -0.05
-
-            radius = 0.001
-            dist = 0.02
-
             counter = 1
-            do j = 1, size
-                x = -xmax!ranu(-xmax, xmax)
-                y = ranu(-xmax/2, xmax/2)
-                z = ranu(-xmax/2, xmax/2)
-                a = vector(x, y, z)
-                do i = counter, counter+size-1
+            do i = 1, edge_cnt
+                a = vector(nodes(edges(i, 1), 1), nodes(edges(i, 1), 2), nodes(edges(i, 1), 3))
+                b = vector(nodes(edges(i, 2), 1), nodes(edges(i, 2), 2), nodes(edges(i, 2), 3))
+                radius = radii(edges(i, 1)) * res
 
-                    b = hemi(cos(deg2rad(45.)), vector(0.,0.,1.), vector(0., 1., 0.), vector(1., 0., 0.))
-                    t = rotate_x(90.)
-                    b = b .dot. t
-                    dist = length(a - b)
-                    dir = (b - a) / dist
-
-                    call rang(dist, y, 0.02, 0.0001)
-                    b = a + dist*dir
-                    if(i == counter + size-1 .and. b%x < xmax)b%x=xmax
-
-                    cyls(i) = capsule(a, b, radius, 0., 10., 0., 1., j)
-                    cnta(i)%p => cyls(i)
-
-                    a = b
-                end do
-
-                vessels(j) = model_init(cnta(counter:counter+size-1), union)
-                counter = counter + size
+                                                     ! mus, mua, hgg, n, layer
+                cyls(counter) = capsule(a, b, radius, musv, muav, gv, nv, 1)
+                cnta(counter)%p => cyls(counter)
+                counter = counter + 1
             end do
 
-            allocate(array(size+1))
-            do i = 1, size
-                allocate(array(i)%p, source=vessels(i))
-                array(i)%p => vessels(i)
-            end do
-            allocate(array(size+1)%p, source=bbox)
-            bbox = box(.1, 0., 0., 0., 1., 2)
-            array(size+1)%p => bbox
+            allocate(array(2))
+            allocate(array(1)%p, source=vessels)
+            vessels = model_init(cnta, union, 0.005)
 
-        end function gen_vessels
+            bbox = box(vector(.32, .18,.26), musd, muad, gd, nd, 2)
+            allocate(array(2)%p, source=bbox)
+
+            array(1)%p => vessels
+            array(2)%p => bbox
+
+        end function get_vessels
 
 
         function setup_skin_model(packet) result(array)
@@ -732,11 +828,11 @@ private :: directory, alloc_array, zarray
             integer, intent(IN) :: id
 
             if(id == 0)then
-                if(time >= 60. .and. id == 0)then
-                   print*, floor((time)/60.) + mod(time, 60.)/100.
-                else
+                ! if(time >= 60. .and. id == 0)then
+                !    print*, floor((time)/60.) + mod(time, 60.)/100.
+                ! else
                    print*, 'time taken ~',time,'s'
-                end if
+                ! end if
             end if
 
         end subroutine print_time

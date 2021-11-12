@@ -121,6 +121,25 @@ module sdfs
         module procedure plane_init
     end interface plane
 
+    type, extends(sdf) :: moon
+        real :: d, ra, rb
+        contains
+        procedure :: evaluate => eval_moon
+    end type moon
+
+    interface moon
+        module procedure moon_init
+    end interface moon
+
+    type, extends(sdf) :: neural
+        contains
+        procedure :: evaluate => eval_neural
+    end type neural
+
+    interface neural
+        module procedure neural_init
+    end interface neural
+
 
     type, extends(sdf) :: model
         type(container), allocatable  :: array(:)
@@ -198,6 +217,17 @@ module sdfs
         module procedure repeat_init
     end interface repeat
 
+    type, extends(sdf) :: extrude
+        real :: h
+        class(sdf), pointer :: prim
+        contains
+        procedure :: evaluate => eval_extrude
+    end type extrude
+
+    interface extrude
+        module procedure extrude_init
+    end interface extrude
+
 
 
     abstract interface
@@ -218,7 +248,7 @@ module sdfs
     private
     ! shapes
     public :: sdf, cylinder, sphere, box, torus, cone, triprisim
-    public :: capsule, plane!, text
+    public :: capsule, plane, moon, neural!, text
     ! meta
     public :: model, container
     ! boolean ops
@@ -226,11 +256,117 @@ module sdfs
     ! move ops
     public :: rotate_x, rotate_y, rotate_z, identity, translate
     ! deform ops
-    public :: displacement, bend, twist, elongate, repeat
+    public :: displacement, bend, twist, elongate, repeat, extrude
     ! utility funcs
     public :: calcNormal, model_init, render
 
     contains
+
+        function neural_init(mus, mua, hgg, n, layer, transform) result(out)
+        
+            implicit none
+        
+            type(neural) :: out
+            
+            real,           intent(IN) :: mus, mua, hgg, n
+            integer,        intent(IN) :: layer
+            real, optional, intent(IN) :: transform(4, 4)
+
+            real :: t(4, 4)
+
+            if(present(transform))then
+                t = transform
+            else
+                t = identity()
+            end if
+
+            out%layer = layer
+            out%transform = t
+
+            out%mus = mus
+            out%mua = mua
+            out%kappa = mus + mua
+            if(out%mua < 1d-9)then
+                out%albedo = 1.
+            else
+                out%albedo = mus / out%kappa
+            end if
+            out%hgg = hgg
+            out%g2 = hgg**2
+            out%n = n
+
+        end function neural_init
+
+
+
+real function eval_neural(this, pos) result(out)
+
+    use vec4_class
+    use mat_class
+
+    implicit none
+
+    class(neural) :: this
+    type(vector), intent(IN) :: pos
+
+    type(vec4) :: f0_0, f0_1, f0_2, f0_3, f1_0, f1_1, f1_2, f1_3, f2_0, f2_1, f2_2, f2_3
+ 
+f0_0=sin(pos%y*vec4(-2.845,2.169,-3.165,-3.379)+pos%z*vec4(-1.938,2.632,-1.872,3.019)+pos%x*vec4(1.042,4.283,-.778,-3.063)+vec4(8.246,7.046,6.947,4.930))
+f0_1=sin(pos%y*vec4(-.870,-.224,-3.854,-2.134)+pos%z*vec4(-1.474,-2.259,4.302,2.238)+pos%x*vec4(1.576,-.826,1.014,2.511)+vec4(.639,-.425,6.931,7.475))
+f0_2=sin(pos%y*vec4(-2.161,1.539,-3.024,1.739)+pos%z*vec4(-3.388,.743,-3.374,-.536)+pos%x*vec4(3.843,-3.060,3.127,1.533)+vec4(1.916,-2.519,-.403,-1.918))
+f0_3=sin(pos%y*vec4(.076,1.427,-2.403,-.442)+pos%z*vec4(3.012,1.584,-3.421,1.513)+pos%x*vec4(.061,-3.592,-.935,.125)+vec4(7.654,-.949,-7.044,4.319))
+f1_0=sin(mat([.230,.244,-.196,-.230,-.303,.187,.122,-.410,.388,-.741,.731,.031,-.999,-.044,.107,.171])*f0_0+&
+   mat([.141,-.542,-.726,-.280,-.445,-.038,-.397,.348,-.086,.413,.544,.298,-.075,.122,-.315,.293])*f0_1+&
+   mat([.329,-.106,-.690,.012,-.073,-.862,.381,.628,.378,-.012,-.137,-.071,.580,.060,-1.094,.652])*f0_2+&
+   mat([.616,.363,.211,-.366,-.396,.388,-.090,.217,.479,-.339,-.039,-.132,.176,.223,.312,.082])*f0_3+&
+   vec4(-2.491,3.220,2.193,2.989))/1.0+f0_0
+f1_1=sin(mat([.137,.498,.156,.391,-.059,.084,-.182,-.027,.650,.302,.676,-.202,-.488,.297,-.136,-.366])*f0_0+&
+   mat([.211,.210,-.557,.021,.808,-.041,-.726,.028,.003,-.012,-.280,-.539,-.624,.261,.262,-.123])*f0_1+&
+   mat([-.220,-.208,.211,-.740,-.009,-.103,.741,-.820,-.312,.074,.432,-.258,.390,-.249,.375,.169])*f0_2+&
+   mat([-.085,-.105,.309,.291,-.476,-.764,.048,-.148,-.318,.182,-.170,-.220,-1.041,-.116,-1.077,.565])*f0_3+&
+   vec4(1.529,2.058,-.449,-1.700))/1.0+f0_1
+f1_2=sin(mat([.385,.698,-.630,-.482,-.099,-.552,.173,-.148,-.711,-.721,.342,.079,-.470,-.177,.011,-.117])*f0_0+&
+   mat([.834,-.758,.162,.761,-.348,.367,.375,.721,.731,.078,.024,.329,.340,-.429,-.006,.084])*f0_1+&
+   mat([.277,.015,-.449,-.100,-.223,-.897,.623,-.004,.049,-.371,.040,-.200,.367,.221,-.063,.665])*f0_2+&
+   mat([1.595,.428,.417,.268,-.241,.145,.141,-.185,.430,-.096,.521,.109,-.239,.770,-.100,-.128])*f0_3+&
+   vec4(-1.674,2.261,-2.165,-3.244))/1.0+f0_2
+f1_3=sin(mat([.228,-.315,.459,.085,-.060,-.070,-.217,-.605,-.217,-.237,.400,.358,.198,-.722,-.062,-.805])*f0_0+&
+   mat([.108,.313,.793,-.378,-.168,-.350,.504,.664,.251,-.058,.087,-.405,.068,.077,.148,-.741])*f0_1+&
+   mat([.324,-.130,.018,.100,-.658,.087,-.077,-.082,.101,-.103,-.132,.159,-.117,-.563,-.606,-.278])*f0_2+&
+   mat([.181,.584,.390,-.498,.096,-.461,-.324,.573,-.261,.849,-.012,.017,-.289,.578,.161,-1.158])*f0_3+&
+   vec4(-.938,-.744,2.675,1.662))/1.0+f0_3
+f2_0=sin(mat([-.165,-.648,-.274,-.443,.307,-.478,-.204,-.103,-.017,1.027,.680,.228,-.121,.419,.137,-.253])*f1_0+&
+   mat([-.252,.249,.450,-.249,-1.085,-.292,.609,.047,-.999,-.082,-.005,-.836,-.356,.411,-.402,.699])*f1_1+&
+   mat([-.103,-.218,-.000,-.639,-.057,.447,-.502,-.505,-.298,.029,-.363,-.607,.116,-.942,2.064,.363])*f1_2+&
+   mat([.394,.030,.070,1.402,-.552,-.391,.255,-.733,-.102,.263,-.291,.190,.489,.614,.683,.061])*f1_3+&
+   vec4(-.896,.069,3.048,2.889))/1.4+f1_0
+f2_1=sin(mat([.553,-.627,-.284,-1.032,-.524,.294,-.078,-.128,.100,.112,.089,.318,.560,.407,-.317,-1.634])*f1_0+&
+   mat([.024,.420,.599,.063,-.317,.728,.197,-1.037,.425,-.035,-.240,-1.530,-.246,.333,.209,-1.455])*f1_1+&
+   mat([.514,-.095,.139,-.551,-.225,-.067,.568,-.958,.038,.161,-.057,-.871,.468,-.633,.440,1.798])*f1_2+&
+   mat([.185,-.798,.206,.941,1.032,-.016,.629,-.416,.026,-.777,.206,-.360,-.456,.463,1.117,.883])*f1_3+&
+   vec4(2.594,2.602,-4.067,.754))/1.4+f1_1
+f2_2=sin(mat([.601,.096,-.071,.363,-1.159,-.053,.049,-.140,.056,.701,-.047,-.031,1.257,-.421,-.360,-1.596])*f1_0+&
+   mat([.357,.525,-.130,-.001,-.643,-.206,.237,-.837,.813,-.308,.407,-.157,1.845,.737,-.374,.390])*f1_1+&
+   mat([-.569,.109,.476,-.377,.124,.171,-.100,-.606,-.560,.414,.176,.483,-2.082,-.375,.928,.125])*f1_2+&
+   mat([-.599,.549,-.414,.642,-.525,.025,.385,-.797,1.270,.342,-.068,.965,-1.026,-.177,.890,.156])*f1_3+&
+   vec4(-4.226,1.935,3.830,-2.055))/1.4+f1_2
+f2_3=sin(mat([.463,1.053,.008,-.354,-.124,-.566,-.734,.673,.970,-.193,.377,.283,-.481,-1.345,.024,.687])*f1_0+&
+   mat([-.358,-.069,.358,.373,.745,-.056,.054,1.070,-.459,-.404,-.654,.665,-.400,.127,.422,.202])*f1_1+&
+   mat([.255,-.513,-.741,-.345,-.404,.188,.118,.486,.783,.610,-.790,-.099,-.555,-3.111,-1.241,-.215])*f1_2+&
+   mat([.776,.131,.035,.434,.355,-2.543,-.158,-.140,.454,1.154,.156,.543,.555,-.726,.369,-1.032])*f1_3+&
+   vec4(1.108,.703,-.637,.098))/1.4+f1_3
+out= (f2_0.dot.vec4(-.041,-.048,-.054,.034))+&
+    (f2_1.dot.vec4(.066,.103,.066,-.022))+&
+    (f2_2.dot.vec4(.011,.059,-.092,.064))+&
+    (f2_3.dot.vec4(-.059,-.031,.063,-.052))+&
+    (0.079)
+end function eval_neural
+
+
+
+
+
+
 
         type(vector) function calcNormal(p, obj)
 
@@ -411,7 +547,6 @@ module sdfs
             real, optional, intent(in) :: transform(4, 4)
 
             real :: t(4, 4)
-
 
             if(present(transform))then
                 t = transform
@@ -922,6 +1057,86 @@ module sdfs
         end function plane_fn
 
 
+        function moon_init(d, ra, rb, mus, mua, hgg, n, layer, transform) result(out)
+
+            implicit none
+        
+            type(moon) :: out
+            
+            real,            intent(IN) :: d, ra, rb, mus, mua, hgg, n
+            integer,         intent(IN) :: layer
+            real,  optional, intent(IN) :: transform(4, 4)
+
+            real :: t(4, 4)
+
+            if(present(transform))then
+                t = transform
+            else
+                t = identity()
+            end if
+
+            out%d = d
+            out%ra = ra
+            out%rb = rb
+            out%layer = layer
+            out%transform = t
+
+            out%mus = mus
+            out%mua = mua
+            out%kappa = mus + mua
+            if(out%mua < 1d-9)then
+                out%albedo = 1.
+            else
+                out%albedo = mus / out%kappa
+            end if
+            out%hgg = hgg
+            out%g2 = hgg**2
+            out%n = n
+
+        end function moon_init
+
+        real function eval_moon(this, pos)
+
+            implicit none
+
+            class(moon) :: this
+            type(vector), intent(IN) :: pos
+
+            type(vector) :: p
+
+            p = pos .dot. this%transform
+            eval_moon = moon_fn(p, this%d, this%ra, this%rb)
+
+        end function eval_moon
+
+        real function moon_fn(p, d, ra, rb)
+
+            use utils, only : clamp
+
+            implicit none
+
+            type(vector), intent(IN) :: p
+            real, intent(IN) :: d, ra, rb
+
+            type(vector) :: pos
+            real :: a, b, ra2, rb2, d2
+
+            pos = vector(p%x, abs(p%y), 0.)
+            ra2 = ra*ra
+            rb2 = rb*rb
+            d2 = d*d
+            a = (ra2 - rb2 + d2) / (2.*d)
+            b = sqrt(max(ra2 - a**2, 0.))
+            if(d*(pos%x*b - pos%y*a) > d2*max(b - pos%y, 0.))then
+                moon_fn = length(pos - vector(a, b, 0.))
+            else
+                moon_fn = max(-length(pos) - ra, length(pos - vector(d, 0., 0.)) - rb)
+            end if
+
+        end function moon_fn
+
+
+
         function translate(o) result(out)
 
             implicit none
@@ -1246,6 +1461,58 @@ module sdfs
 
         end function repeat_fn
 
+        type(extrude) function extrude_init(prim, h) result(out)
+
+            implicit none
+
+            class(sdf), target :: prim
+            real, intent(IN)   :: h
+
+            out%h = h
+            out%prim => prim
+
+            out%mus = prim%mus
+            out%mua = prim%mua
+            out%hgg = prim%hgg
+            out%g2 = prim%g2
+            out%n = prim%n
+            out%kappa = prim%kappa
+            out%albedo = prim%kappa
+            out%layer = prim%layer
+            out%transform = identity()
+
+        end function extrude_init
+
+        real function eval_extrude(this, pos)
+
+            implicit none
+
+            class(extrude) :: this
+            type(vector), intent(IN) :: pos
+
+            eval_extrude = extrude_fn(pos, this%h, this%prim)
+
+        end function eval_extrude
+
+
+        real function extrude_fn(p, h, prim)
+
+            implicit none
+
+            class(sdf) :: prim
+            type(vector), intent(IN) :: p
+            real,         intent(IN) ::  h
+
+            type(vector) :: w
+            real :: d
+
+            d = prim%evaluate(p)
+            w = vector(d, p%z - h, 0.)
+            extrude_fn = min(max(w%x, w%y), 0.) + length(max(w, 0.))
+
+        end function extrude_fn
+
+
 
         function rotate_x(angle) result(r)
         ! rotation funcs from https://inspirnathan.com/posts/54-shadertoy-tutorial-part-8/
@@ -1323,6 +1590,8 @@ module sdfs
 
         subroutine render(cnt, extent, samples, fname)
 
+            use utils, only : pbar
+
             implicit none
             
             type(container),        intent(IN) :: cnt(:)
@@ -1331,10 +1600,11 @@ module sdfs
             character(*), optional, intent(IN) :: fname
 
             type(vector)      :: pos, wid
-            integer           :: i, j, k, u, ns
-            real              :: x, y, z, ds(size(cnt))
+            integer           :: i, j, k, u, ns, id
+            real              :: x, y, z, ds(size(cnt)-1)
             real, allocatable :: image(:, :, :)
-            
+            type(pbar)        :: bar
+
             character(len=:), allocatable  :: filename
 
             if(present(fname))then
@@ -1342,14 +1612,15 @@ module sdfs
             else
                 filename = "model.dat"
             end if
-
             ns = int(samples / 2)
             allocate(image(samples, samples, samples))
             wid = extent/real(ns)
-!$omp parallel default(none) shared(cnt, ns, wid, image, samples)&
-!$omp private(i, x, y, z, pos, j, k, u, ds)
+            bar = pbar(samples)
+!$omp parallel default(none) shared(cnt, ns, wid, image, samples, bar)&
+!$omp private(i, x, y, z, pos, j, k, u, ds, id)
 !$omp do
             do i = 1, samples
+                call bar%progress()
                 x = (i-ns) *wid%x
                 do j = 1, samples
                     y = (j-ns) *wid%y
@@ -1360,7 +1631,22 @@ module sdfs
                         do u = 1, size(ds)
                             ds(u) = cnt(u)%p%evaluate(pos)
                         end do
-                        image(i, j, k) = minval(ds)
+
+                        if(all(ds > 0.))then
+                            id=0.
+                        else
+                            if(maxval(ds) < 0.)then
+                                id = cnt(maxloc(ds,dim=1))%p%layer
+                            else
+                                id = cnt(minloc(ds,dim=1))%p%layer
+                            end if
+                        end if
+                        if(minval(ds) > 0)then
+                            id = 0
+                        else
+                            id =  minval(ds)!minloc(ds, dim=1)
+                        end if
+                        image(i, j, k) = minval(ds)!id
                     end do
                 end do
             end do
