@@ -52,6 +52,8 @@ private :: directory, alloc_array, zarray
             call init_opt1(kappa, albedo, hgg, g2)
 
             select case(choice)
+                case("logo")
+                    sdfarray = setup_logo(packet)
                 case("neural")
                     sdfarray = setup_neural_sdf(packet)
                 case("omg")
@@ -83,6 +85,49 @@ private :: directory, alloc_array, zarray
             end select
 
         end subroutine setup_simulation
+
+        function setup_logo(packet) result(array)
+
+            use sdfs, only : container, box, segment, extrude
+            use vector_class
+            use photonMod
+
+            implicit none
+
+            type(photon), intent(OUT) :: packet
+
+            type(container)         :: array(465)
+            type(box),     target, save :: bbox
+            type(segment), target, save :: seg(464)
+            type(vector) :: a, b
+            
+            real :: hgg, mus, mua, n
+            integer :: layer, i
+
+            packet = photon("point")
+
+            mus = 10.
+            mua = .1
+            hgg = 0.9
+            n = 1.5
+            layer = 1
+
+            bbox = box(vector(10., 10., 2.001), 0., 0., 0., 1., 2) 
+            !420
+
+            include "../res/svg.f90"
+
+
+            do i = 1, 464
+                allocate(array(i)%p, source=seg(i))
+                array(i)%p => seg(i)
+            end do
+
+            allocate(array(465)%p, source=bbox)
+            array(465)%p => bbox
+
+        end function setup_logo
+
 
         function setup_neural_sdf(packet) result(array)
 

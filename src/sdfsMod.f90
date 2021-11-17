@@ -121,6 +121,16 @@ module sdfs
         module procedure plane_init
     end interface plane
 
+    type, extends(sdf) :: segment
+        type(vector) :: a, b
+        contains
+        procedure :: evaluate => eval_segment
+    end type segment
+
+    interface segment
+        module procedure segment_init
+    end interface segment
+
     type, extends(sdf) :: moon
         real :: d, ra, rb
         contains
@@ -157,7 +167,6 @@ module sdfs
     type :: container
         class(sdf), pointer :: p => null()
     end type container
-
 
 
 
@@ -248,7 +257,7 @@ module sdfs
     private
     ! shapes
     public :: sdf, cylinder, sphere, box, torus, cone, triprisim
-    public :: capsule, plane, moon, neural!, text
+    public :: capsule, plane, moon, neural, segment
     ! meta
     public :: model, container
     ! boolean ops
@@ -261,6 +270,87 @@ module sdfs
     public :: calcNormal, model_init, render
 
     contains
+
+
+        function segment_init(a, b, mus, mua, hgg, n, layer, transform) result(out)
+
+            implicit none
+
+            type(segment) :: out
+
+            type(vector),   intent(IN) :: a, b
+            real,           intent(IN) :: mus, mua, hgg, n
+            integer,        intent(IN) :: layer
+            real, optional, intent(IN) :: transform(4, 4)
+
+            real :: t(4, 4)
+
+            if(present(transform))then
+                t = transform
+            else
+                t = identity()
+            end if
+
+            out%a = a
+            out%b = b
+
+            out%layer = layer
+            out%transform = t
+
+            out%mus = mus
+            out%mua = mua
+            out%kappa = mus + mua
+            if(out%mua < 1d-9)then
+                out%albedo = 1.
+            else
+                out%albedo = mus / out%kappa
+            end if
+            out%hgg = hgg
+            out%g2 = hgg**2
+            out%n = n
+
+        end function segment_init
+
+        real function eval_segment(this, pos)
+
+            implicit none
+
+            class(segment) :: this
+            type(vector), intent(IN) :: pos
+
+            type(vector) :: p
+
+            p = pos .dot. this%transform
+            eval_segment = segment_fn(p, this%a, this%b) - 0.1d0
+
+        end function eval_segment
+
+        real function segment_fn(p, a, b)
+            !p = pos
+            !a = pt1
+            !b = pt2
+            !draws segment along the axis between 2 points a and b
+
+            use utils, only : clamp
+
+            implicit none
+
+            type(vector), intent(IN) :: p, a, b
+
+            type(vector) :: pa, ba
+            real :: h
+           
+            pa = p - a
+            ba = b - a
+            ! print*,p,a
+            ! print*,pa
+            ! print*," "
+            h = clamp((pa .dot. ba) / (ba .dot. ba), 0.0, 1.0)
+
+            segment_fn = length(pa - ba*h)
+
+        end function segment_fn
+
 
         function neural_init(mus, mua, hgg, n, layer, transform) result(out)
         
@@ -361,11 +451,6 @@ out= (f2_0.dot.vec4(-.041,-.048,-.054,.034))+&
     (f2_3.dot.vec4(-.059,-.031,.063,-.052))+&
     (0.079)
 end function eval_neural
-
-
-
-
-
 
 
         type(vector) function calcNormal(p, obj)
@@ -1501,13 +1586,13 @@ end function eval_neural
 
             class(sdf) :: prim
             type(vector), intent(IN) :: p
-            real,         intent(IN) ::  h
+            real,         intent(IN) :: h
 
             type(vector) :: w
             real :: d
 
             d = prim%evaluate(p)
-            w = vector(d, p%z - h, 0.)
+            w = vector(d, abs(p%z) - h, 0.)
             extrude_fn = min(max(w%x, w%y), 0.) + length(max(w, 0.))
 
         end function extrude_fn
