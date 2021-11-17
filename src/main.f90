@@ -36,6 +36,7 @@ real, allocatable:: ds(:)
 type(pbar)       :: bar
 
 type(container), allocatable :: array(:)
+character(len=:), allocatable :: string
 ! mpi/mp variables
 integer :: id, numproc, u
 real    :: nscattGLOBAL, optprop(5)
@@ -167,15 +168,18 @@ if(id == 0)then
 #endif
     !write out files
     !create dict to store metadata and nrrd hdr info
-    dict = dict_t(3)
+    dict = dict_t(4)
     call dict%add_entry("space units", '"cm" "cm" "cm"')
-    call dict%add_entry("space origin", "("//str(-grid%xmax+(2.*grid%xmax/grid%nxg),7)//","&
+    string = "("//str(-grid%xmax+(2.*grid%xmax/grid%nxg),7)//","&
                         //str(-grid%ymax+(2.*grid%ymax/grid%nyg),7)//","&
-                        //str(-grid%zmax+(2.*grid%zmax/grid%nzg),7)//")")
+                        //str(-grid%zmax+(2.*grid%zmax/grid%nzg),7)//")"
+    call dict%add_entry("space origin", string)
+    deallocate(string)
     call dict%add_entry("space directions", "(1,0,0) (0,1,0) (0,0,1)")
-    call dict%add_entry("spacings", str((2.*grid%xmax/grid%nxg),7)//" "//&
+    string=str((2.*grid%xmax/grid%nxg),7)//" "//&
                                     str((2.*grid%ymax/grid%nyg),7)//" "//&
-                                    str((2.*grid%zmax/grid%nzg),7))
+                                    str((2.*grid%zmax/grid%nzg),7)
+    call dict%add_entry("spacings", string)
     ! call dict%add_entry("thickness", str(2.*grid%xmax,7)//" "//&
     !                                  str(2.*grid%ymax,7)//" "//&
     !                                  str(2.*grid%zmax,7))

@@ -139,7 +139,7 @@ implicit none
             real,     intent(IN) :: array(:, :, :)
             type(dict_t), optional, intent(IN) :: dicts
 
-            character(len=:), allocatable :: key
+            character(len=64) :: key
             integer :: u, i
 
             open(newunit=u,file=filename,form="formatted")
@@ -148,8 +148,7 @@ implicit none
             if(present(dicts))then
                 do i = 1, dicts%count
                     key = trim(dicts%dict(i)%key)
-                    write(u, "(A)")trim(key)//": "//dicts%get_value_str(key)
-                    deallocate(key)
+                    write(u, "(A)")trim(key)//": "//dicts%get_value_str(trim(key))
                 end do
             end if
 
