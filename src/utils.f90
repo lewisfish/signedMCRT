@@ -50,6 +50,7 @@ module utils
         ! module procedure str_R4
         module procedure str_R8
         module procedure str_R8array
+        module procedure str_logical
         module procedure str_logicalarray
     end interface str
 
@@ -421,6 +422,21 @@ module utils
                 str_R8array = str_R8array//' '//trim(adjustl(string))
             end do
         end function str_R8array
+
+
+        function str_logical(a)
+
+            implicit none
+
+            logical, intent(IN) :: a
+
+            character(len=:), allocatable :: str_logical
+            character(len=100) :: string
+
+            write(string,'(L1)') a
+            str_logical = trim(adjustl(string))
+
+        end function str_logical
 
 
         function str_logicalarray(a)

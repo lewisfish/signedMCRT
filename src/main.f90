@@ -12,6 +12,7 @@ program mcpolar
 use photonMod
 use iarray
 use random, only : ran2, init_rng, ranu
+use constants, only : fileplace
 
 !subroutines
 use subs
@@ -22,6 +23,7 @@ use writer_mod
 use vector_class
 use sdfs
 use utils, only : pbar, str
+use dict_mod
 
 implicit none
 
@@ -37,6 +39,7 @@ type(container), allocatable :: array(:)
 ! mpi/mp variables
 integer :: id, numproc, u
 real    :: nscattGLOBAL, optprop(5)
+type(dict_t) :: dict
 
 nscatt = 0.
 call init_rng(spread(123456789+0, 1, 8), fwd=.true.)
@@ -163,7 +166,22 @@ if(id == 0)then
     print*,'Average # of scatters per photon:',nscattGLOBAL/(nphotons*numproc)
 #endif
     !write out files
-    call writer(nphotons, grid, optprop)
+    !create dict to store metadata and nrrd hdr info
+    dict = dict_t(3)
+    call dict%add_entry("space units", '"cm" "cm" "cm"')
+    call dict%add_entry("space origin", "("//str(-grid%xmax+(2.*grid%xmax/grid%nxg),7)//","&
+                        //str(-grid%ymax+(2.*grid%ymax/grid%nyg),7)//","&
+                        //str(-grid%zmax+(2.*grid%zmax/grid%nzg),7)//")")
+    call dict%add_entry("space directions", "(1,0,0) (0,1,0) (0,0,1)")
+    call dict%add_entry("spacings", str((2.*grid%xmax/grid%nxg),7)//" "//&
+                                    str((2.*grid%ymax/grid%nyg),7)//" "//&
+                                    str((2.*grid%zmax/grid%nzg),7))
+    ! call dict%add_entry("thickness", str(2.*grid%xmax,7)//" "//&
+    !                                  str(2.*grid%ymax,7)//" "//&
+    !                                  str(2.*grid%zmax,7))
+
+    jmeanGLOBAL = normalise_fluence(jmeanGLOBAL, grid, nphotons)
+    call write(jmeanGLOBAL, trim(fileplace)//"jmean/jmean-test-new-io.nrrd", dict)!, normalise, dicts)
     print*,'write done'
 end if
 

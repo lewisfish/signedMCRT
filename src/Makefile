@@ -17,6 +17,7 @@ PROGRAM =  mcgrid
 
 SRCS =      constants.f90 \
 		    utils.f90 \
+            dictsMod.f90 \
             stackMod.f90 \
             vector_class.f90 \
             vec4_class.f90 \
