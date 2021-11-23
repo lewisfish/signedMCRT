@@ -2,13 +2,20 @@ module subs
 
 implicit none
 
+
+    type :: settings_t
+        integer :: nphotons, iseed
+        character(len=:), allocatable :: experiment, outfile, renderfile
+        logical :: render_bool       
+    end type settings_t
+
 public  :: setup_simulation, print_time, get_time, Sellmeier
 private :: directory, alloc_array, zarray
 
 
     contains
 
-        subroutine setup_simulation(nphotons, grid, packet, sdfarray, choice, tau, optprop)
+        subroutine setup_simulation(grid, packet, sdfarray, settings, tau, optprop)
         ! Read in parameters
             use constants, only : resdir
             use gridMod,   only : cart_grid
@@ -20,21 +27,33 @@ private :: directory, alloc_array, zarray
 
             implicit none
 
-            character(*),                 intent(IN)  :: choice
             real,            optional,    intent(IN)  :: tau, optprop(:)
             type(container), allocatable, intent(OUT) :: sdfarray(:)
             type(cart_grid),              intent(OUT) :: grid
             type(photon),                 intent(OUT) :: packet
-            integer,                      intent(OUT) :: nphotons
+            type(settings_t),             intent(OUT) :: settings
 
             real    :: xmax, ymax, zmax, albedo(3), hgg(3), g2(3), kappa(3)
             integer :: nxg, nyg, nzg, u
+            character(len=256) :: experiment, outfile, renderfile
 
             !set directory paths
             call directory
 
             open(newunit=u,file=trim(resdir)//'input.params',status='old')
-                read(u,*) nphotons
+                read(u,*) settings%nphotons
+                
+                read(u,"(A)") experiment
+                settings%experiment = trim(experiment)
+                
+                read(u,"(A)") outfile
+                settings%outfile = trim(outfile)
+                
+                read(u,"(A)") renderfile
+                settings%renderfile = trim(renderfile)
+                
+                read(u,*) settings%render_bool
+                read(u,*) settings%iseed
                 read(u,*) xmax
                 read(u,*) ymax
                 read(u,*) zmax
@@ -51,7 +70,7 @@ private :: directory, alloc_array, zarray
             grid = cart_grid(nxg, nyg, nzg, xmax, ymax, zmax)
             call init_opt1(kappa, albedo, hgg, g2)
 
-            select case(choice)
+            select case(settings%experiment)
                 case("logo")
                     sdfarray = setup_logo(packet)
                 case("neural")
@@ -78,17 +97,18 @@ private :: directory, alloc_array, zarray
                     sdfarray = setup_jacques(packet)
                 case("vessels")
                     sdfarray = get_vessels(packet)
-                    ! psb = bsp(sdfarray, 2, vector(2., 2., 2.))!vector(xmax*2., ymax*2., zmax*2.))
-                    ! stop
+                case("lens")
+                    sdfarray = lens_test_setup(packet)
                 case default
                     error stop "no such routine"
             end select
 
         end subroutine setup_simulation
 
-        function setup_logo(packet) result(array)
 
-            use sdfs, only : container, box, segment, extrude
+        function lens_test_setup(packet) result(array)
+
+            use sdfs, only : sphere, container, box, model, intersection, model_init, translate
             use vector_class
             use photonMod
 
@@ -96,15 +116,74 @@ private :: directory, alloc_array, zarray
 
             type(photon), intent(OUT) :: packet
 
-            type(container)         :: array(465)
+            type(container),target, save :: cnta(2)
+            type(container) :: array(2)
             type(box),     target, save :: bbox
-            type(segment), target, save :: seg(464)
+            type(sphere), target, save :: sph(2)
+            type(model), target, save :: m
+            
             type(vector) :: a, b
+            real :: hgg, mus, mua, n1, n2, t(4,4)
+            integer :: layer, i
+
+            packet = photon("uniform")
+
+            mus = 0.d0
+            mua = 1.d-17
+            hgg = 0.0
+            n1 = 1.33
+            n2 = 1.52
+            layer = 1
+
+            bbox = box(vector(2., 2., 2.), mus, mua, hgg, n1, 2) 
+            !sphere1
+            a = vector(0., 0., 0.05)
+            t = 0.d0
+            t = invert(translate(a))
+            sph(1) = sphere(.2, mus, mua, hgg, n2, 1, transform=t)
+            !sphere2
+            b = vector(0., 0., -0.15)
+            t = 0.d0
+            t = invert(translate(b))
+            sph(2) = sphere(.25, mus, mua, hgg, n2, 1, transform=t)
+
+            do i = 1, size(cnta)
+                allocate(cnta(i)%p, source=sph(i))
+                cnta(i)%p => sph(i)
+            end do
+
+            m = model_init(cnta, intersection)
+            allocate(array(1)%p, source=m)
+            array(1)%p => m
+
+            allocate(array(2)%p, source=bbox)
+            array(2)%p => bbox
+
+        end function lens_test_setup
+
+
+        function setup_logo(packet) result(array)
+
+            use sdfs, only : container, box, segment, extrude, model, union, model_init
+            use vector_class
+            use photonMod
+
+            implicit none
+
+            type(photon), intent(OUT) :: packet
+
+            type(container), allocatable :: cnta(:), array(:)
+            type(box),     target, save :: bbox
+            type(segment), allocatable, target, save :: seg(:)
+            type(extrude), allocatable, target, save :: ex(:)
+            type(model), target, save :: m
             
             real :: hgg, mus, mua, n
             integer :: layer, i
 
-            packet = photon("point")
+            packet = photon("uniform")
+
+            allocate(array(2), cnta(725), seg(725), ex(725))
 
             mus = 10.
             mua = .1
@@ -117,14 +196,17 @@ private :: directory, alloc_array, zarray
 
             include "../res/svg.f90"
 
-
-            do i = 1, 464
-                allocate(array(i)%p, source=seg(i))
-                array(i)%p => seg(i)
+            do i = 1, size(cnta)
+                allocate(cnta(i)%p, source=ex(i))
+                cnta(i)%p => ex(i)
             end do
 
-            allocate(array(465)%p, source=bbox)
-            array(465)%p => bbox
+            m = model_init(cnta, union)
+            allocate(array(1)%p, source=m)
+            array(1)%p => m
+
+            allocate(array(2)%p, source=bbox)
+            array(2)%p => bbox
 
         end function setup_logo
 
@@ -197,7 +279,7 @@ private :: directory, alloc_array, zarray
 
         function setup_sphere(packet) result(array)
 
-            use sdfs, only : sphere, box, container
+            use sdfs, only : sphere, box, container, translate
             use vector_class
             use photonMod
 
@@ -207,25 +289,30 @@ private :: directory, alloc_array, zarray
 
             type(container), allocatable :: array(:)
             type(sphere),   target, save :: sph
-            type(box),      target, save :: bbox
+            type(box),      target, save :: bbox(2)
 
-            real :: mus, mua, n, hgg
-            integer :: i
+            real :: mus, mua, n, hgg, t(4, 4)
+            type(vector) :: a
 
             packet = photon("uniform")
             
             mus = 0.; mua = 1.d-17; hgg = 0.; n = 1.;
-            bbox = box(2., mus, mua, hgg, n, 2)
-            
-            mus = 0.; mua = 1.d-17; hgg = .0; n = 1.46;
-            sph = sphere(.5, mus, mua, hgg, n, 1)
+            bbox(1) = box(2., mus, mua, hgg, n, 2)
+            bbox(2) = box(2.01, mus, 10000000.d0, hgg, n, 2)
 
-            allocate(array(2))
+            mus = 0.; mua = 1.d-17; hgg = .0; n = 1.46;
+            a = vector(.5, 0., -1.)
+            t = invert(translate(a))
+            sph = sphere(1., mus, mua, hgg, n, 1, transform=t)
+
+            allocate(array(3))
             allocate(array(1)%p, source=sph)
-            allocate(array(2)%p, source=bbox)
+            allocate(array(2)%p, source=bbox(1))
+            allocate(array(3)%p, source=bbox(2))
 
             array(1)%p => sph
-            array(2)%p => bbox
+            array(2)%p => bbox(1)
+            array(3)%p => bbox(2)
 
         end function setup_sphere
 
@@ -279,12 +366,70 @@ private :: directory, alloc_array, zarray
         end function interior_test
 
 
-        function setup_exp(packet) result(array)
+        function exterior_test(packet) result(array)
+
+            use sdfs, only : container, moon, box, translate
             
-            use sdfs,  only : container, box, cylinder, rotate_y
+            use vector_class
+            use photonMod
+
+            implicit none
+
+            type(photon), intent(OUT) :: packet
+
+            type(container) :: array(1)
+            ! type(sphere), target, save :: sph
+            type(box),    target, save :: boxes(6), bbox
+            ! type(model),  target, save :: m
+            type(moon), target, save :: luna
+            ! type(extrude), target, save :: ex
+            real :: t(4, 4)
+            ! integer :: i
+
+            packet = photon("point")
+! d, ra, rb, mus, mua, hgg, n, layer, transform
+            t = invert(translate(vector(-0.4-1.0, .3, 0.)))
+
+            luna = moon(1.2+cos(3.9), 1., .8, 0., 0., 0., 0., 1)
+            ! ex = extrude(luna, 5.)
+
+            bbox = box(2., 0., 0., 0., 1., 2)
+            t = invert(translate(vector(0.0, 1.0, 0.)))
+            boxes(1) = box(2.*vector(2., 0.2, 0.), 0., 0., 0., 1., 1, transform=t)
+
+            t = invert(translate(vector(1.2, 1.0, 0.)))
+            boxes(2) = box(2.*vector(0.8, 1., 0.), 0., 0., 0., 1., 1, transform=t)
+
+            t = invert(translate(vector(1.4, -0.3, 0.)))
+            boxes(3) = box(2.*vector(0.6, 0.9, 0.), 0., 0., 0., 1., 1, transform=t)
+
+            t = invert(translate(vector(0.0, -1.0, 0.)))
+            boxes(4) = box(2.*vector(1.0, 0.2, 0.), 0., 0., 0., 1., 1, transform=t)
+
+            t = invert(translate(vector(-1.2, -0.8, 0.)))
+            boxes(5) = box(2.*vector(0.8, 0.6, 0.), 0., 0., 0., 1., 1, transform=t)
+            
+            t = invert(translate(vector(-1.5, 0.3, 0.)))
+            boxes(6) = box(2.*vector(0.6, 0.7, 0.), 0., 0., 0., 1., 1, transform=t)
+
+
+            ! allocate(array(7))
+            ! do i = 1, 6
+            !     allocate(array(i)%p, source=boxes(i))
+            !     array(i)%p => boxes(i)
+            ! end do
+            allocate(array(1)%p, source=luna)
+            array(1)%p => luna
+
+            ! allocate(array(7)%p, source=bbox)
+            ! array(7)%p => bbox
+
+        end function exterior_test
+
+
         function setup_exp(packet, optprop) result(array)
             
-            use sdfs,  only : container, box, cylinder, rotate_y, model, model_init, subtraction, translate
+            use sdfs,  only : container, box, cylinder, rotate_y, subtraction, translate
             use utils, only : deg2rad
 
             use vector_class
@@ -295,9 +440,8 @@ private :: directory, alloc_array, zarray
             type(photon), intent(OUT) :: packet
             real,         intent(IN)  :: optprop(:)
 
-            type(container), allocatable :: array(:), cnta(:)
-            type(model),    target, save :: m
-            type(cylinder), target, save :: cyl(2)
+            type(container), allocatable :: array(:)
+            ! type(cylinder), target, save :: cyl(2)
             type(box),      target, save :: bbox, slab
 
             type(vector) :: a, b
@@ -408,7 +552,6 @@ private :: directory, alloc_array, zarray
         function setup_omg_sdf(packet) result(array)
             
             use sdfs,      only : container, cylinder, torus, model, box, smoothunion, rotate_y, model_init, translate
-            use constants, only : pi
             
             use vector_class
             use photonMod

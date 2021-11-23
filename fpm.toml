@@ -1,0 +1,20 @@
+name = "sMCRT"
+version = "1.0.0"
+license = "MIT"
+author = "Lewis McMillan"
+maintainer = "lewisfish92"
+copyright = "2020 Lewis McMillan"
+
+[library]
+source-dir="src"
+
+[build]
+external-modules = "mpi_f08"
+auto-executables = false
+auto-tests = false
+auto-examples = false
+
+[[ executable ]]
+name="sMCRT"
+source-dir="src"
+main="main.f90"

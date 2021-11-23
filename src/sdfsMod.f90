@@ -1675,8 +1675,10 @@ end function eval_neural
 
         subroutine render(cnt, extent, samples, fname)
 
-            use utils, only : pbar
-
+            use utils,     only : pbar
+            use constants, only : fileplace
+            use writer_mod
+            
             implicit none
             
             type(container),        intent(IN) :: cnt(:)
@@ -1737,8 +1739,6 @@ end function eval_neural
             end do
 !$OMP end  do
 !$OMP end parallel
-            open(newunit=u,file=filename, access="stream", form="unformatted", status="replace")
-            write(u)image
-            close(u)
+            call write(image, trim(fileplace)//filename)
         end subroutine render
 end module sdfs

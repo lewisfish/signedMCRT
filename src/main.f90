@@ -29,7 +29,8 @@ implicit none
 
 type(photon)     :: packet
 type(cart_grid)  :: grid
-integer          :: nphotons, j, i
+type(settings_t) :: settings
+integer          :: j
 double precision :: nscatt
 real             :: ran, start, time_taken
 real, allocatable:: ds(:)
@@ -68,9 +69,10 @@ open(newunit=u,file='/home/lewis/postdoc/signedMCRT/res/optprops.params',status=
 close(u)
 
 
-call setup_simulation(nphotons, grid, packet, array, "neural", optprop=optprop)
-! call render(array, vector(grid%xmax, grid%ymax, grid%zmax), 200, fname="neural-test.dat")
-! stop
+call setup_simulation(grid, packet, array, settings)
+if(settings%render_bool)then
+    call render(array, vector(grid%xmax, grid%ymax, grid%zmax), 200, fname=settings%renderfile)
+end if
 
 
 allocate(ds(size(array)))
@@ -86,12 +88,12 @@ id = 0
 
 
 if(id == 0)then
-   print*,'# of photons to run',nphotons
+   print*,'# of photons to run',settings%nphotons
 end if
 
 !loop over photons 
 #ifdef _OPENMP
-!$omp parallel default(none) shared(array, grid, numproc, start, nphotons, bar)&
+!$omp parallel default(none) shared(array, grid, numproc, start, settings, bar)&
 !$omp& private(ran, id, ds) reduction(+:nscatt) firstprivate(packet)
     numproc = omp_get_num_threads()
     id = omp_get_thread_num()
@@ -110,9 +112,9 @@ call init_rng(spread(123456789+id, 1, 8), fwd=.true.)
 ! call init_rng([], fwd=.false.)
 
 
-bar = pbar(nphotons/ 10000)
+bar = pbar(settings%nphotons/ 10000)
 !$OMP do
-do j = 1, nphotons
+do j = 1, settings%nphotons
 
     if(mod(j, 10000) == 0)call bar%progress()
 
@@ -162,9 +164,9 @@ end do
 
 if(id == 0)then
 #ifdef _OPENMP
-    print*,'Average # of scatters per photon:',nscattGLOBAL/(nphotons)
+    print*,'Average # of scatters per photon:',nscattGLOBAL/(settings%nphotons)
 #else
-    print*,'Average # of scatters per photon:',nscattGLOBAL/(nphotons*numproc)
+    print*,'Average # of scatters per photon:',nscattGLOBAL/(settings%nphotons*numproc)
 #endif
     !write out files
     !create dict to store metadata and nrrd hdr info
@@ -184,8 +186,8 @@ if(id == 0)then
     !                                  str(2.*grid%ymax,7)//" "//&
     !                                  str(2.*grid%zmax,7))
 
-    jmeanGLOBAL = normalise_fluence(jmeanGLOBAL, grid, nphotons)
-    call write(jmeanGLOBAL, trim(fileplace)//"jmean/jmean-test-new-io.nrrd", dict)!, normalise, dicts)
+    jmeanGLOBAL = normalise_fluence(jmeanGLOBAL, grid, settings%nphotons)
+    call write(jmeanGLOBAL, trim(fileplace)//"jmean/"//settings%outfile, dict)
     print*,'write done'
 end if
 

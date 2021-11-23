@@ -1,5 +1,5 @@
 ifeq ($(FCOMP),gfortran-10)
-FCFLAGS = -O2 -cpp -freal-4-real-8 -march=native -flto -mavx -ffree-line-length-none
+FCFLAGS = -O2 -cpp -freal-4-real-8 -march=native -flto -mavx -ffree-line-length-none -Wno-compare-reals
 FCDEBUG = -g -fbacktrace -fcheck=all -fbounds-check -ffpe-trap=invalid,overflow,underflow,denormal
 FCBUILD = -Wall -Wextra -pedantic -std=f2008
 FCOPENMP = -fopenmp
@@ -23,16 +23,16 @@ SRCS =      constants.f90 \
             vec4_class.f90 \
             mat_class.f90 \
             random_mod.f90 \
-            sdfsMod.f90 \
             ch_opt.f90 \
-            surfaces.f90 \
             grid.f90 \
+            writer.f90 \
+            sdfsMod.f90 \
+            surfaces.f90 \
             iarray.f90 \
 		    photon.f90 \
             subs.f90 \
             inttau2.f90 \
             stokes.f90 \
-            writer.f90 \
             main.f90 
             
 OBJECTS = $(SRCS:.f90=.o)

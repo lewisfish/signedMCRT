@@ -1,0 +1,8 @@
+@build
+option build --flag "-cpp -freal-4-real-8 -ffree-line-length-none -Wno-compare-reals -g -fbacktrace -fcheck=all -fbounds-check -ffpe-trap=invalid,overflow,underflow,denormal -Wall -Wextra -pedantic -std=f2008"
+
+@run
+option run sMCRT --compiler gfortran-10 --flag "-O2 -cpp -freal-4-real-8 -march=native -flto -mavx -ffree-line-length-none"
+
+@runmp
+option run sMCRT --compiler gfortran-10 --flag "-O2 -cpp -freal-4-real-8 -march=native -flto -mavx -ffree-line-length-none -fopenmp"
