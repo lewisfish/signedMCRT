@@ -407,19 +407,29 @@ module utils
         end function str_R8
 
 
-        function str_R8array(a)
+        function str_R8array(a, width)
 
             implicit none
 
-            double precision, intent(IN) :: a(:)
+            double precision,  intent(IN) :: a(:)
+            integer,           intent(IN) :: width
 
             character(len=:), allocatable :: str_R8array
-            character(len=100) :: string
-            integer :: i
+            integer :: i, length, lens(size(a)), k
 
+            length = 0
+            lens = 0
             do i = 1, size(a)
-                write(string,'(f100.16)') a(i)
-                str_R8array = str_R8array//' '//trim(adjustl(string))
+                lens(i) = len(str_R8(a(i), width))
+                length = length + lens(i)
+            end do
+            length = length + size(a)
+
+            str_R8array = repeat(" ", length)
+            k = 1
+            do i = 1, size(a)
+                str_R8array(k:k+lens(i)) = str_R8(a(i), width)//" "
+                k = k + lens(i)+1
             end do
         end function str_R8array
 

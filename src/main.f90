@@ -30,14 +30,13 @@ implicit none
 type(photon)     :: packet
 type(cart_grid)  :: grid
 type(settings_t) :: settings
-integer          :: j
+integer          :: j, i
 double precision :: nscatt
 real             :: ran, start, time_taken
 real, allocatable:: ds(:)
 type(pbar)       :: bar
 
 type(container), allocatable :: array(:)
-character(len=:), allocatable :: string
 ! mpi/mp variables
 integer :: id, numproc, u
 real    :: nscattGLOBAL, optprop(5)
@@ -67,13 +66,19 @@ open(newunit=u,file='/home/lewis/postdoc/signedMCRT/res/optprops.params',status=
     read(u,*) optprop(4)
     read(u,*) optprop(5)
 close(u)
+dict = dict_t(9)
+call dict%add_entry("focus", .9d0)
+call dict%add_entry("musb", optprop(1))
+call dict%add_entry("muab", optprop(2))
+call dict%add_entry("musc", optprop(3))
+call dict%add_entry("muac", optprop(4))
+call dict%add_entry("hgg", optprop(5))
 
 
-call setup_simulation(grid, packet, array, settings)
+call setup_simulation(grid, packet, array, settings, dict)
 if(settings%render_bool)then
     call render(array, vector(grid%xmax, grid%ymax, grid%zmax), 200, fname=settings%renderfile)
 end if
-
 
 allocate(ds(size(array)))
 
@@ -119,7 +124,7 @@ do j = 1, settings%nphotons
     if(mod(j, 10000) == 0)call bar%progress()
 
     ! Release photon from point source 
-    call packet%emit(grid)
+    call packet%emit(grid, dict)
 
     packet%id = id
     ds = 0.
@@ -170,21 +175,10 @@ if(id == 0)then
 #endif
     !write out files
     !create dict to store metadata and nrrd hdr info
-    dict = dict_t(4)
-    call dict%add_entry("space units", '"cm" "cm" "cm"')
-    string = "("//str(-grid%xmax+(2.*grid%xmax/grid%nxg),7)//","&
-                        //str(-grid%ymax+(2.*grid%ymax/grid%nyg),7)//","&
-                        //str(-grid%zmax+(2.*grid%zmax/grid%nzg),7)//")"
-    call dict%add_entry("space origin", string)
-    deallocate(string)
-    call dict%add_entry("space directions", "(1,0,0) (0,1,0) (0,0,1)")
-    string=str((2.*grid%xmax/grid%nxg),7)//" "//&
-                                    str((2.*grid%ymax/grid%nyg),7)//" "//&
-                                    str((2.*grid%zmax/grid%nzg),7)
-    call dict%add_entry("spacings", string)
-    ! call dict%add_entry("thickness", str(2.*grid%xmax,7)//" "//&
-    !                                  str(2.*grid%ymax,7)//" "//&
-    !                                  str(2.*grid%zmax,7))
+    call dict%add_entry("grid_data", 'fluence map')
+    call dict%add_entry("real_size", str(grid%xmax,7)//" "//str(grid%ymax,7)//" "//str(grid%zmax,7))
+    call dict%add_entry("units", "cm")
+
 
     jmeanGLOBAL = normalise_fluence(jmeanGLOBAL, grid, settings%nphotons)
     call write(jmeanGLOBAL, trim(fileplace)//"jmean/"//settings%outfile, dict)

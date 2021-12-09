@@ -1,6 +1,7 @@
 module photonMod
     
     use vector_class
+    use dict_mod
 
     implicit none
     
@@ -25,13 +26,15 @@ module photonMod
     end interface photon
 
     abstract interface
-        subroutine generic_emit(this, grid)
+        subroutine generic_emit(this, grid, dict)
             
             use gridMod
+            use dict_mod
 
             import :: photon
             class(photon) :: this
-            type(cart_grid), intent(IN) :: grid
+            type(cart_grid),        intent(IN) :: grid
+            type(dict_t), optional, intent(IN) :: dict
 
         end subroutine generic_emit
     end interface
@@ -64,7 +67,7 @@ module photonMod
 
         end function init_source
 
-        subroutine point(this, grid)
+        subroutine point(this, grid, dict)
             
             use random,    only : ran2
             use constants, only : twoPI
@@ -74,8 +77,9 @@ module photonMod
             implicit none
         
             class(photon) :: this
-            type(cart_grid), intent(IN) :: grid
-        
+            type(cart_grid),        intent(IN) :: grid
+            type(dict_t), optional, intent(IN) :: dict
+
             this%pos%x = 0.
             this%pos%y = 0.
             this%pos%z = 0.
@@ -101,7 +105,7 @@ module photonMod
         
         end subroutine point
 
-        subroutine focus(this, grid)
+        subroutine focus(this, grid, dict)
 
             use gridMod
             use random, only : ranu
@@ -111,7 +115,8 @@ module photonMod
             implicit none
 
             class(photon) :: this
-            type(cart_grid), intent(IN) :: grid
+            type(cart_grid),        intent(IN) :: grid
+            type(dict_t), optional, intent(IN) :: dict
 
             type(vector) :: targ, dir
             real :: dist
@@ -150,7 +155,7 @@ module photonMod
         end subroutine focus
 
 
-        subroutine uniform(this, grid)
+        subroutine uniform(this, grid, dict)
 
             use gridMod
             use random, only : ranu, ran2, randint
@@ -158,17 +163,18 @@ module photonMod
             implicit none
 
             class(photon) :: this
-            type(cart_grid), intent(IN)    :: grid
-            
+            type(cart_grid),        intent(IN) :: grid
+            type(dict_t), optional, intent(IN) :: dict
+
             integer :: val
 
 
-            val = randint(1, 6)
+            val = 1!randint(1, 6)
             if(val == 1)then
                 ! -ive z 
                 this%pos%x = ranu(-grid%xmax+1e-3, grid%xmax-1e-3)
                 this%pos%y = ranu(-grid%ymax+1e-3, grid%ymax-1e-3)
-                this%pos%z = grid%xmax-1e-8
+                this%pos%z = grid%zmax-1e-6
 
                 this%phi  = 0.
                 this%cosp = 1.
@@ -179,7 +185,7 @@ module photonMod
                 ! +ive z 
                 this%pos%x = ranu(-grid%xmax+1e-3, grid%xmax-1e-3)
                 this%pos%y = ranu(-grid%ymax+1e-3, grid%ymax-1e-3)
-                this%pos%z = -grid%xmax + 1e-8
+                this%pos%z = -grid%zmax + 1e-8
 
                 this%phi  = 0.
                 this%cosp = 1.
@@ -249,7 +255,7 @@ module photonMod
         end subroutine uniform
 
 
-        subroutine pencil(this, grid)
+        subroutine pencil(this, grid, dict)
 
             use gridMod
             use random, only : ranu
@@ -257,16 +263,17 @@ module photonMod
             implicit none
 
             class(photon) :: this
-            type(cart_grid), intent(IN)    :: grid
+            type(cart_grid),        intent(IN) :: grid
+            type(dict_t), optional, intent(IN) :: dict
 
             this%pos%z = grid%zmax - epsilon(1.d0)
             this%pos%x = ranu(-grid%xmax/10., grid%xmax/10.)
             this%pos%y = ranu(-grid%ymax/10., grid%ymax/10.)
 
-            this%phi = 0.
+            this%phi = 0.d0
             this%cosp = 0.d0
-            this%sinp = 0.d0          
-            this%cost = -1.d0 
+            this%sinp = 0.d0      
+            this%cost = -1.d0
             this%sint =  0.d0
 
             this%nxp = this%sint * this%cosp  
@@ -282,18 +289,18 @@ module photonMod
 
         end subroutine pencil
         
-        subroutine annulus(this, grid)
+        subroutine annulus(this, grid, dict)
 
             use gridMod
             use utils,     only : deg2rad
             use random,    only : ranu, ran2, rang
-            use surfaces, only : reflect_refract
-            ! use constants, only : twoPI, pi
+            use surfaces,  only : reflect_refract
 
             implicit none
 
             class(photon) :: this
-            type(cart_grid), intent(IN) :: grid
+            type(cart_grid),        intent(IN) :: grid
+            type(dict_t), optional, intent(IN) :: dict
 
 
             real :: ra, ta, alpha, Ls, beam_width, rp, da, dist
@@ -336,7 +343,8 @@ module photonMod
             !focus to a point
             pos%z = 4.d0 !f distance 40mm
             call rang(x, y, 0., 5.d-4)
-            newpos = vector(x, y, 0.)
+
+            newpos = vector(x, y, dict%get_value_real("focus"))!.775
             dist = sqrt((pos%x - newpos%x)**2 + (pos%y - newpos%y)**2 +(pos%z - newpos%z)**2)
 
             dir = (-1.)*pos / dist
@@ -359,9 +367,10 @@ module photonMod
 
             this%tflag = .false.
             this%layer = 3
+            this%cnts = 0
 
             !teleport to just inside medium
-            this%pos%z = grid%zmax - 5e-8
+            this%pos%z = grid%zmax - 1e-8
 
             ! Linear Grid 
             this%xcell=int(grid%nxg*(this%pos%x+grid%xmax)/(2.*grid%xmax))+1
@@ -371,17 +380,18 @@ module photonMod
 
         end subroutine annulus
         
-        subroutine circular_beam(this, grid)
+        subroutine circular_beam(this, grid, dict)
 
             use gridMod,   only : cart_grid
             use random,    only : ranu, rang
-            use surfaces, only : intersect_cone, reflect_refract
+            use surfaces,  only : intersect_cone, reflect_refract
             use vector_class
 
             implicit none
 
             class(photon) :: this
-            type(cart_grid), intent(IN)    :: grid
+            type(cart_grid),        intent(IN)  :: grid
+            type(dict_t), optional,  intent(IN) :: dict
 
 
             real :: seperation, beam_width, radius, height, alpha, axicon_n, base_pos

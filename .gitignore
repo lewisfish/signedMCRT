@@ -3,3 +3,5 @@
 *.dat
 bin/*
 *mcgrid*
+data/*
+figs/*

@@ -1,7 +1,8 @@
 module subs
 
-implicit none
+    use dict_mod
 
+    implicit none
 
     type :: settings_t
         integer :: nphotons, iseed
@@ -9,13 +10,12 @@ implicit none
         logical :: render_bool       
     end type settings_t
 
-public  :: setup_simulation, print_time, get_time, Sellmeier
-private :: directory, alloc_array, zarray
-
+    public  :: setup_simulation, print_time, get_time, Sellmeier
+    private :: directory, alloc_array, zarray
 
     contains
 
-        subroutine setup_simulation(grid, packet, sdfarray, settings, tau, optprop)
+        subroutine setup_simulation(grid, packet, sdfarray, settings, dict)
         ! Read in parameters
             use constants, only : resdir
             use gridMod,   only : cart_grid
@@ -27,7 +27,7 @@ private :: directory, alloc_array, zarray
 
             implicit none
 
-            real,            optional,    intent(IN)  :: tau, optprop(:)
+            type(dict_t),    optional,    intent(IN)  :: dict
             type(container), allocatable, intent(OUT) :: sdfarray(:)
             type(cart_grid),              intent(OUT) :: grid
             type(photon),                 intent(OUT) :: packet
@@ -78,8 +78,7 @@ private :: directory, alloc_array, zarray
                 case("omg")
                     sdfarray = setup_omg_sdf(packet)
                 case("scat_test")
-                    if(.not. present(tau))error stop "No tau provided"
-                    sdfarray = setup_scat_test(packet, tau)
+                    sdfarray = setup_scat_test(packet, dict)
                 case("fresnel_test")
                     sdfarray = setup_fresnel_test(packet)
                 case("skin")
@@ -91,8 +90,7 @@ private :: directory, alloc_array, zarray
                 case("sphere")
                     sdfarray = setup_sphere(packet)
                 case("exp")
-                    if(.not. present(optprop) )error stop "No opt props provided"
-                    sdfarray = setup_exp(packet, optprop)
+                    sdfarray = setup_exp(packet, dict)
                 case("jacques")
                     sdfarray = setup_jacques(packet)
                 case("vessels")
@@ -427,7 +425,7 @@ private :: directory, alloc_array, zarray
         end function exterior_test
 
 
-        function setup_exp(packet, optprop) result(array)
+        function setup_exp(packet, dict) result(array)
             
             use sdfs,  only : container, box, cylinder, rotate_y, subtraction, translate
             use utils, only : deg2rad
@@ -438,17 +436,22 @@ private :: directory, alloc_array, zarray
             implicit none
 
             type(photon), intent(OUT) :: packet
-            real,         intent(IN)  :: optprop(:)
+            type(dict_t), intent(IN)  :: dict
 
             type(container), allocatable :: array(:)
             ! type(cylinder), target, save :: cyl(2)
             type(box),      target, save :: bbox, slab
 
             type(vector) :: a, b
-            real         :: n
-            real :: t(4, 4)
+            real         :: n, t(4, 4), optprop(5)
 
             packet = photon("annulus")
+
+            optprop(1) = dict%get_value_real("musb")
+            optprop(2) = dict%get_value_real("muab")
+            optprop(3) = dict%get_value_real("musc")
+            optprop(4) = dict%get_value_real("muac")
+            optprop(5) = dict%get_value_real("hgg")
 
             n = 1.d0
 
@@ -513,7 +516,7 @@ private :: directory, alloc_array, zarray
 
         end function setup_fresnel_test
 
-        function setup_scat_test(packet, tau) result(array)
+        function setup_scat_test(packet, dict) result(array)
 
             use sdfs, only : container, sphere, box
             use vector_class
@@ -523,13 +526,14 @@ private :: directory, alloc_array, zarray
 
             type(photon), intent(OUT) :: packet
             type(container), allocatable :: array(:)
-            real, intent(IN) :: tau
+            type(dict_t), intent(IN) :: dict
 
             type(sphere), target, save :: sph
             type(box), target, save :: bbox
 
-            real :: mus, mua, hgg, n
+            real :: mus, mua, hgg, n, tau
 
+            tau = dict%get_value_real("tau")
             packet = photon("point")
 
             n = 1.d0

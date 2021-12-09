@@ -9,6 +9,7 @@ module dict_mod
             procedure :: add_entry
             procedure :: get_value
             procedure :: get_value_str
+            procedure :: get_value_real
     end type dict_t
 
     interface dict_t
@@ -109,4 +110,43 @@ module dict_mod
         Error stop "No such key!"
 
     end function get_value_str
+
+    function get_value_real(this, key)
+
+        implicit none
+
+        class(dict_t) :: this
+        character(*), intent(IN) :: key
+        class(*), allocatable :: value
+        real :: get_value_real
+
+        integer :: i, pos
+
+        get_value_real = -99.
+
+        !this is very inefficient, but will suffice for small dicts like intended
+        !if a large dict is required then will need to use hash tables I think...
+        do i = 1, size(this%dict)
+            pos = index(this%dict(i)%key, key)
+            if(pos > 0)then
+                value = this%dict(i)%value
+                    select type (value)
+                    type is (character(*))
+                        error stop "cant convert string to real"
+                    type is(integer)
+                        get_value_real = real(value)
+                    type is(double precision)
+                        get_value_real = dble(value)
+                    type is(logical)
+                        error stop "cant convert logical to real"                        
+                    class default
+                        continue
+                    end select
+                return
+            end if
+        end do
+        Error stop "No such key!"
+
+    end function get_value_real
+
 end module dict_mod
