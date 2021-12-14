@@ -2,6 +2,11 @@
 Use of signed distance fields in Monte Carlo Radiative Transfer.
 This allows modelling of smooth surfaces with out the need to use triangle or similar meshes.
 
+## Publication
+The code in this repo forms the basis for the following publication:
+
+Meshless Monte Carlo Radiation Transfer Method for CurvedGeometries using Signed Distance Functions, currently in review.
+
 ## SDF information
 List of SDF functions
 https://iquilezles.org/www/articles/distfunctions/distfunctions.htm
