@@ -2,6 +2,11 @@
 Use of signed distance fields in Monte Carlo Radiative Transfer.
 This allows modelling of smooth surfaces with out the need to use triangle or similar meshes.
 
+Pre-print describing operation of signedMCRT: https://arxiv.org/abs/2112.08035
+
+Pre-print of an application of signedMCRT: https://arxiv.org/abs/2112.08877
+
+
 ## Instructions
 
 Code prerequisites: fortran 2018 compliant complier e.g gfortran-10 or intel oneAPI fortran.
