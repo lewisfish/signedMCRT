@@ -1,4 +1,7 @@
 module writer_mod
+! module provides output routines in raw binary and .nrrd formats
+!
+!
 
     use gridmod
     use utils, only : str

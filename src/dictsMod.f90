@@ -1,4 +1,7 @@
 module dict_mod
+! module provides a limited dictionary type for storing simulation parameters
+!
+!
 
     implicit none
 

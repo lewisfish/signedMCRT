@@ -1,5 +1,7 @@
 Module vector_class
-
+! module contains full vector class implmentation
+!
+!
     type :: vector
         real :: x, y, z
         contains

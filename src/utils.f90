@@ -1,5 +1,7 @@
 module utils
-
+! module provides various utility functions for simulation
+! progress bar, var to str converters
+! colours for pretty output
     implicit none
 
     !foreground colours

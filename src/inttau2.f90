@@ -8,8 +8,9 @@ module inttau2
     contains   
 
     subroutine tauint2(packet, grid, sdfs_array)
-    !optical depth integration subroutine
-    !
+    ! optical depth integration subroutine
+    ! Moves photons to interaction location
+    ! Calculated is any reflection or refraction happens whilst moving
     !
         use random, only : ran2
         use photonMod
@@ -17,19 +18,18 @@ module inttau2
         use gridMod
 
         use vector_class
-        use stackMod
    
         implicit none
 
-        type(cart_grid), intent(IN)    :: grid
         type(photon),    intent(INOUT) :: packet
-        type(container), intent(IN) :: sdfs_array(:)
+        type(cart_grid), intent(IN)    :: grid
+        type(container), intent(IN)    :: sdfs_array(:)
 
         real         :: tau, d_sdf, t_sdf, taurun, ds(size(sdfs_array)), dstmp(size(sdfs_array))
         real         :: eps, dtot, signs(size(sdfs_array)), n1, n2
         integer      :: i, cur_layer, oldlayer
         type(vector) :: pos, dir, oldpos, N
-        logical :: rflag
+        logical      :: rflag
 
         pos = packet%pos
         oldpos = pos
@@ -120,7 +120,7 @@ module inttau2
                 end if
             end do
 
-            !if all signs +ive then do additional check t0 get correct layer
+            !if all signs +ive then do additional check to get correct layer
             if(sum(signs) == real(size(ds)))then
                 do i = 1, size(ds)
                     if(dstmp(i) <= 0. .and. ds(i) > 0. .and. i /= cur_layer .or. ds(i) < 0.)then
@@ -137,6 +137,7 @@ module inttau2
             cur_layer = minloc(signs,dim=1)
             n2 = sdfs_array(cur_layer)%p%n
 
+            !carry out refelction/refraction
             if (n1 /= n2)then
                 N = calcNormal(pos, sdfs_array(cur_layer)%p)
                 N = N%magnitude()
@@ -177,12 +178,14 @@ module inttau2
    
 
     subroutine update_jmean(pos, grid, dir, d_sdf, packet, mua)
-        
+    ! recored fluence using path length estimators.
+
         use vector_class
-        use iarray, only: jmean
         use gridMod
         use photonMod
 
+        use iarray, only: jmean
+    
         implicit none
         
         type(cart_grid), intent(IN)    :: grid
@@ -196,6 +199,7 @@ module inttau2
         integer      :: celli, cellj, cellk
         real         :: dcell, delta=1d-8, d
 
+        !convert to different coordinate system. Origin is at lower left corner of fluence grid
         old_pos = vector(pos%x+grid%xmax, pos%y+grid%ymax, pos%z+grid%zmax)
         call update_voxels(old_pos, grid, celli, cellj, cellk)
         packet%xcell = celli
@@ -203,11 +207,13 @@ module inttau2
         packet%zcell = cellk
 
         d = 0.
+        !if packet outside grid return
         if(celli == -1 .or. cellj == -1 .or. cellk == -1)then
             packet%tflag = .true.
             pos = vector(old_pos%x-grid%xmax, old_pos%y-grid%ymax, old_pos%z-grid%zmax)
             return
         end if
+        !move photon through grid updating path length estimators
         do
             ldir = (/.FALSE., .FALSE., .FALSE./)
 
@@ -240,7 +246,7 @@ module inttau2
     end subroutine update_jmean
 
     real function wall_dist(grid, celli, cellj, cellk, pos, dir, ldir)
-    !funtion that returns distant to nearest wall and which wall that is (x,y or z)
+    !funtion that returns distant to nearest wall and which wall that is (x, y, or z)
     !
     !
         use vector_class
@@ -248,12 +254,12 @@ module inttau2
 
         implicit none
 
-        type(cart_grid), intent(IN) :: grid
-        type(vector),    intent(IN) :: pos, dir
-        logical, intent(INOUT) :: ldir(:)
-        integer, intent(INOUT) :: celli, cellj, cellk
-        real                   :: dx, dy, dz
-
+        type(cart_grid), intent(IN)    :: grid
+        type(vector),    intent(IN)    :: pos, dir
+        logical,         intent(INOUT) :: ldir(:)
+        integer,         intent(INOUT) :: celli, cellj, cellk
+        
+        real :: dx, dy, dz
 
         dx = -999.
         dy = -999.
@@ -304,8 +310,6 @@ module inttau2
     !routine that upates postions of photon and calls fresnel routines if photon leaves current voxel
     !
     !
-        ! use iarray,      only : xface, yface, zface
-        use utils,       only : str, red, bold, colour
         use vector_class
         use gridMod
 
@@ -317,8 +321,6 @@ module inttau2
         real,            intent(IN)    :: dcell, delta
         type(vector),    intent(INOUT) :: pos
         integer,         intent(INOUT) :: celli, cellj, cellk
-
-        character(len=32)      :: tmp  
 
         if(wall_flag)then
 
@@ -353,7 +355,7 @@ module inttau2
                 pos%x = pos%x + dir%x*dcell
                 pos%y = pos%y + dir%y*dcell 
             else
-                tmp = colour('Error in update_pos... '//str(ldir), red, bold)
+                print*,'Error in update_pos... '//str(ldir)
                 error stop 1
             end if
         else
@@ -378,9 +380,9 @@ module inttau2
 
         implicit none
 
-        type(cart_grid), intent(IN) :: grid
+        type(cart_grid), intent(IN)    :: grid
         type(vector),    intent(IN)    :: pos
-        integer, intent(INOUT) :: celli, cellj, cellk
+        integer,         intent(INOUT) :: celli, cellj, cellk
 
         celli = find(pos%x, grid%xface) 
         cellj = find(pos%y, grid%yface)
@@ -430,19 +432,22 @@ module inttau2
 
 
     subroutine reflect_refract(I, N, n1, n2, rflag)
-
+    ! wrapper routine for fresnel calculation
+    !
+    !
         use random, only : ran2
         use vector_class
 
         implicit none
 
-        type(vector), intent(INOUT) :: I
-        type(vector), intent(INOUT) :: N
-        real,         intent(IN)    :: n1, n2
-        logical,      intent(OUT)   :: rflag
+        type(vector), intent(INOUT) :: I !incident vector
+        type(vector), intent(INOUT) :: N ! normal vector
+        real,         intent(IN)    :: n1, n2 !refractive indcies
+        logical,      intent(OUT)   :: rflag !reflection flag
 
         rflag = .FALSE.
 
+        !draw random number, if less than fresnel coefficents, then reflect, else refract
         if(ran2() <= fresnel(I, N, n1, n2))then
             call reflect(I, N)
             rflag = .true.
@@ -461,8 +466,8 @@ module inttau2
 
         implicit none
 
-        type(vector), intent(INOUT) :: I
-        type(vector), intent(IN)    :: N
+        type(vector), intent(INOUT) :: I ! incident vector
+        type(vector), intent(IN)    :: N ! normal vector
 
         type(vector) :: R
 
@@ -514,10 +519,10 @@ module inttau2
 
         implicit none
 
-        real, intent(IN)         :: n1, n2
+        real,         intent(IN) :: n1, n2
         type(vector), intent(IN) :: I, N
 
-        real             ::  costt, sintt, sint2, cost2, tir, f1, f2
+        real ::  costt, sintt, sint2, cost2, tir, f1, f2
 
         costt = abs(I .dot. N)
 

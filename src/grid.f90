@@ -3,9 +3,9 @@ module gridMod
     implicit none
 
     type :: cart_grid
-        integer :: nxg, nyg, nzg
-        real    :: xmax, ymax, zmax, kappa(3), albedo(3), hgg(3), g2(3), delta
-        real, allocatable :: xface(:), yface(:), zface(:)
+        integer :: nxg, nyg, nzg ! number of voxels in each cardinal direction for fluence grid
+        real    :: xmax, ymax, zmax, delta ! size of each dimension in fluence grid. Delta is the round of for near voxel cell walls
+        real, allocatable :: xface(:), yface(:), zface(:) ! position of each cell wall in fluence grid
     end type cart_grid
 
     interface cart_grid
@@ -18,15 +18,14 @@ module gridMod
     contains
 
     type(cart_grid) function init_grid(nxg, nyg, nzg, xmax, ymax, zmax)
-
-        use ch_opt
-
+    ! setup grid
+    !
+    !
         implicit none
         
         integer, intent(IN) :: nxg, nyg, nzg 
         real,    intent(IN) :: xmax, ymax, zmax
         
-        real    :: kappa(3), albedo(3), hgg(3), g2(3)
         integer :: i
 
         init_grid%nxg = nxg
@@ -59,13 +58,6 @@ module gridMod
         do i = 1, nzg + 2
             init_grid%zface(i) = (i - 1) * 2. * zmax/nzg
         end do
-
-        call init_opt1(kappa, albedo, hgg, g2)
-
-        init_grid%hgg = hgg
-        init_grid%albedo = albedo
-        init_grid%g2 = g2
-        init_grid%kappa = kappa
 
     end function init_grid
 end module gridMod

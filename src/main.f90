@@ -39,25 +39,12 @@ type(pbar)       :: bar
 type(container), allocatable :: array(:)
 ! mpi/mp variables
 integer :: id, numproc, u
-real    :: nscattGLOBAL, optprop(5)
+real    :: nscattGLOBAL, optprop(5), focus
 type(dict_t) :: dict
 
 nscatt = 0.
 call init_rng(spread(123456789+0, 1, 8), fwd=.true.)
-!alcohol mua: Linear refractive index and absorption measurements of nonlinear optical liquids in the visible and near-infrared spectral region
-!glass mua: https://refractiveindex.info/?shelf=glass&book=soda-lime&page=Rubin-clear
-!tissue set hgg = .9
-!others set hgg = .7
-! no scat set hgg = 0.
-!bottle mus, mua, contents mus, mua
-! mua: 0.01, .152,  0.313, .856, 1.40
-! optprop = [24.91/(1.-.9), 1.4, 0.0, 0.01]
-! optprop = [100., 1.4, 0.0, 0.01]
-! optprop = [15.89/(1.-.7), 1.4, 0.0, 0.01]
-! optprop = [15.89/(2.*(1.-.7)), 1.4, 0.0, 0.01]
-! optprop = [0., 1.4, 0.0, 0.01]
 
-! optprop = [0., 0.01, 24.91/(1.-.9), 0.01]
 optprop = 0.
 open(newunit=u,file='/home/lewis/postdoc/signedMCRT/res/optprops.params',status='old')
     read(u,*) optprop(1)
@@ -65,9 +52,11 @@ open(newunit=u,file='/home/lewis/postdoc/signedMCRT/res/optprops.params',status=
     read(u,*) optprop(3)
     read(u,*) optprop(4)
     read(u,*) optprop(5)
+    read(u,*) focus
 close(u)
+
 dict = dict_t(9)
-call dict%add_entry("focus", .9d0)
+call dict%add_entry("focus", focus)
 call dict%add_entry("musb", optprop(1))
 call dict%add_entry("muab", optprop(2))
 call dict%add_entry("musc", optprop(3))
@@ -77,6 +66,7 @@ call dict%add_entry("hgg", optprop(5))
 
 call setup_simulation(grid, packet, array, settings, dict)
 if(settings%render_bool)then
+    ! render geometry to voxel format for debugging
     call render(array, vector(grid%xmax, grid%ymax, grid%zmax), 200, fname=settings%renderfile)
 end if
 
@@ -96,9 +86,8 @@ if(id == 0)then
    print*,'# of photons to run',settings%nphotons
 end if
 
-!loop over photons 
 #ifdef _OPENMP
-!$omp parallel default(none) shared(array, grid, numproc, start, settings, bar)&
+!$omp parallel default(none) shared(array, grid, numproc, start, settings, bar, dict)&
 !$omp& private(ran, id, ds) reduction(+:nscatt) firstprivate(packet)
     numproc = omp_get_num_threads()
     id = omp_get_thread_num()
@@ -114,11 +103,11 @@ if(id == 0)print("(a,I3.1,a)"),'Photons now running on', numproc,' cores.'
 
 ! set seed for rnd generator. id to change seed for each process
 call init_rng(spread(123456789+id, 1, 8), fwd=.true.)
-! call init_rng([], fwd=.false.)
 
 
 bar = pbar(settings%nphotons/ 10000)
 !$OMP do
+!loop over photons 
 do j = 1, settings%nphotons
 
     if(mod(j, 10000) == 0)call bar%progress()
@@ -178,7 +167,6 @@ if(id == 0)then
     call dict%add_entry("grid_data", 'fluence map')
     call dict%add_entry("real_size", str(grid%xmax,7)//" "//str(grid%ymax,7)//" "//str(grid%zmax,7))
     call dict%add_entry("units", "cm")
-
 
     jmeanGLOBAL = normalise_fluence(jmeanGLOBAL, grid, settings%nphotons)
     call write(jmeanGLOBAL, trim(fileplace)//"jmean/"//settings%outfile, dict)

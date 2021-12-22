@@ -1,6 +1,6 @@
 module mat_class
 
-    !not fully implmented mat class
+    !not fully implmented matix class
     !minimum implmented for neural sdf type
     type :: mat
         real :: vals(4, 4)

@@ -17,12 +17,13 @@ module subs
 
         subroutine setup_simulation(grid, packet, sdfarray, settings, dict)
         ! Read in parameters
+        ! Setup up various simulation parameters and routines
+        !
             use constants, only : resdir
             use gridMod,   only : cart_grid
             use sdfs,      only : container
             
             use photonMod
-            use ch_opt
             use vector_class
 
             implicit none
@@ -33,13 +34,14 @@ module subs
             type(photon),                 intent(OUT) :: packet
             type(settings_t),             intent(OUT) :: settings
 
-            real    :: xmax, ymax, zmax, albedo(3), hgg(3), g2(3), kappa(3)
-            integer :: nxg, nyg, nzg, u
+            real               :: xmax, ymax, zmax
+            integer            :: nxg, nyg, nzg, u
             character(len=256) :: experiment, outfile, renderfile
 
             !set directory paths
             call directory
 
+            ! read in parameters
             open(newunit=u,file=trim(resdir)//'input.params',status='old')
                 read(u,*) settings%nphotons
                 
@@ -68,8 +70,8 @@ module subs
 
             ! Set up grid
             grid = cart_grid(nxg, nyg, nzg, xmax, ymax, zmax)
-            call init_opt1(kappa, albedo, hgg, g2)
 
+            ! setup geometry using SDFs
             select case(settings%experiment)
                 case("logo")
                     sdfarray = setup_logo(packet)
@@ -105,7 +107,7 @@ module subs
 
 
         function lens_test_setup(packet) result(array)
-
+        !create lens geometry from tran and Jacques interpolated normals approach paper
             use sdfs, only : sphere, container, box, model, intersection, model_init, translate
             use vector_class
             use photonMod
@@ -161,10 +163,12 @@ module subs
 
 
         function setup_logo(packet) result(array)
-
-            use sdfs, only : container, box, segment, extrude, model, union, model_init
+        ! setup uni crest geometry
+        !
+        !
             use vector_class
             use photonMod
+            use sdfs, only : container, box, segment, extrude, model, union, model_init
 
             implicit none
 
@@ -210,10 +214,12 @@ module subs
 
 
         function setup_neural_sdf(packet) result(array)
-
-            use sdfs, only : container, box, neural
+        ! Setup up neural SDF geometry
+        !
+        !
             use vector_class
             use photonMod
+            use sdfs, only : container, box, neural
 
             implicit none
 
@@ -243,6 +249,7 @@ module subs
 
 
         function setup_jacques(packet) result(array)
+        ! setup the classic jacques test geometry
 
             use sdfs, only : container, box
             use vector_class
@@ -276,7 +283,9 @@ module subs
         end function setup_jacques
 
         function setup_sphere(packet) result(array)
-
+        ! setup the sphere test case from tran and jacques paper.
+        !
+        !
             use sdfs, only : sphere, box, container, translate
             use vector_class
             use photonMod
@@ -426,7 +435,9 @@ module subs
 
 
         function setup_exp(packet, dict) result(array)
-            
+        ! Setup experimental geometry from Georgies paper. i.e a glass bottle with contents
+        !
+        !
             use sdfs,  only : container, box, cylinder, rotate_y, subtraction, translate
             use utils, only : deg2rad
 

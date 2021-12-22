@@ -18,16 +18,13 @@ PROGRAM =  mcgrid
 SRCS =      constants.f90 \
 		    utils.f90 \
             dictsMod.f90 \
-            stackMod.f90 \
             vector_class.f90 \
             vec4_class.f90 \
             mat_class.f90 \
             random_mod.f90 \
-            ch_opt.f90 \
             grid.f90 \
             writer.f90 \
             sdfsMod.f90 \
-            surfaces.f90 \
             iarray.f90 \
 		    photon.f90 \
             subs.f90 \

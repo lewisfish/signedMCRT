@@ -390,7 +390,7 @@ module sdfs
 
 
 real function eval_neural(this, pos) result(out)
-
+! this function is generated using code. do not edit
     use vec4_class
     use mat_class
 

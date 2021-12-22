@@ -1,8 +1,12 @@
-MODULE stokes_mod
+module stokes_mod
+!
+! This module contains the scattering routines for isotropic and henyey-greenstein governed scattering
+! Original is due to K. Woods
+!
 
 implicit none
 
-CONTAINS
+contains
    subroutine stokes(packet, hgg, g2)
 
    use constants, only : PI, TWOPI

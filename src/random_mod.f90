@@ -1,5 +1,7 @@
 module random
-
+! module provides an interface to call random_numbers and various other random distributions
+!
+!
     use vector_class
 
     implicit none
