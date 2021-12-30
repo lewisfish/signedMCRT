@@ -12,11 +12,10 @@ program mcpolar
 use photonMod
 use iarray
 use random, only : ran2, init_rng, ranu
-use constants, only : fileplace
+use constants, only : fileplace, wp
 
 !subroutines
 use subs
-use gridmod
 use inttau2
 use stokes_mod
 use writer_mod
@@ -24,36 +23,38 @@ use vector_class
 use sdfs
 use utils, only : pbar, str
 use dict_mod
+use parse_mod
+use sim_state_mod, only : state
 
 implicit none
 
-type(photon)     :: packet
-type(cart_grid)  :: grid
-type(settings_t) :: settings
-integer          :: j, i
-double precision :: nscatt
-real             :: ran, start, time_taken
-real, allocatable:: ds(:)
-type(pbar)       :: bar
+type(photon)   :: packet
+integer        :: j, i
+real(kind=wp)  :: ran, start, time_taken, nscatt
+type(pbar)     :: bar
+real(kind=wp), allocatable:: ds(:)
 
 type(container), allocatable :: array(:)
 ! mpi/mp variables
-integer :: id, numproc, u
-real    :: nscattGLOBAL, optprop(5), focus
-type(dict_t) :: dict
+integer       :: id, numproc
+real(kind=wp) :: nscattGLOBAL, optprop(5), focus
+type(dict_t)  :: dict
 
-nscatt = 0.
-call init_rng(spread(123456789+0, 1, 8), fwd=.true.)
+call parse_params("res/input.toml")
 
-optprop = 0.
-open(newunit=u,file='/home/lewis/postdoc/signedMCRT/res/optprops.params',status='old')
-    read(u,*) optprop(1)
-    read(u,*) optprop(2)
-    read(u,*) optprop(3)
-    read(u,*) optprop(4)
-    read(u,*) optprop(5)
-    read(u,*) focus
-close(u)
+nscatt = 0._wp
+call init_rng(spread(state%iseed+0, 1, 8), fwd=.true.)
+
+optprop = 0._wp
+focus = 0._wp
+! open(newunit=u,file='/home/lewis/postdoc/signedMCRT/res/optprops.params',status='old')
+!     read(u,*) optprop(1)
+!     read(u,*) optprop(2)
+!     read(u,*) optprop(3)
+!     read(u,*) optprop(4)
+!     read(u,*) optprop(5)
+!     read(u,*) focus
+! close(u)
 
 dict = dict_t(9)
 call dict%add_entry("focus", focus)
@@ -63,13 +64,10 @@ call dict%add_entry("musc", optprop(3))
 call dict%add_entry("muac", optprop(4))
 call dict%add_entry("hgg", optprop(5))
 
-
-call setup_simulation(grid, packet, array, settings, dict)
-if(settings%render_bool)then
-    ! render geometry to voxel format for debugging
-    call render(array, vector(grid%xmax, grid%ymax, grid%zmax), 200, fname=settings%renderfile)
-end if
-
+call setup_simulation(packet, array, dict)
+! render geometry to voxel format for debugging
+call render(array, vector(state%grid%xmax, state%grid%ymax, state%grid%zmax), 200, fname=state%renderfile)
+! stop
 allocate(ds(size(array)))
 
 start = get_time()
@@ -83,11 +81,11 @@ id = 0
 
 
 if(id == 0)then
-   print*,'# of photons to run',settings%nphotons
+   print*,'# of photons to run',state%nphotons
 end if
 
 #ifdef _OPENMP
-!$omp parallel default(none) shared(array, grid, numproc, start, settings, bar, dict)&
+!$omp parallel default(none) shared(array, numproc, start, state, bar, dict)&
 !$omp& private(ran, id, ds) reduction(+:nscatt) firstprivate(packet)
     numproc = omp_get_num_threads()
     id = omp_get_thread_num()
@@ -105,25 +103,24 @@ if(id == 0)print("(a,I3.1,a)"),'Photons now running on', numproc,' cores.'
 call init_rng(spread(123456789+id, 1, 8), fwd=.true.)
 
 
-bar = pbar(settings%nphotons/ 10000)
+bar = pbar(state%nphotons/ 10000)
 !$OMP do
 !loop over photons 
-do j = 1, settings%nphotons
-
+do j = 1, state%nphotons
     if(mod(j, 10000) == 0)call bar%progress()
 
     ! Release photon from point source 
-    call packet%emit(grid, dict)
+    call packet%emit(dict)
 
     packet%id = id
-    ds = 0.
+    ds = 0._wp
     do i = 1, size(ds)
         ds(i) = array(i)%p%evaluate(packet%pos)
     end do
     packet%layer=minloc(ds,dim=1)
 
     ! Find scattering location
-    call tauint2(packet, grid, array)
+    call tauint2(packet, array)
     ! Photon scatters in grid until it exits (tflag=TRUE) 
     do while(.not. packet%tflag)
         ran = ran2()
@@ -136,7 +133,7 @@ do j = 1, settings%nphotons
         end if
         
         !Find next scattering location
-        call tauint2(packet, grid, array)
+        call tauint2(packet, array)
 
     end do
 end do
@@ -158,18 +155,18 @@ end do
 
 if(id == 0)then
 #ifdef _OPENMP
-    print*,'Average # of scatters per photon:',nscattGLOBAL/(settings%nphotons)
+    print*,'Average # of scatters per photon:',nscattGLOBAL/(state%nphotons)
 #else
-    print*,'Average # of scatters per photon:',nscattGLOBAL/(settings%nphotons*numproc)
+    print*,'Average # of scatters per photon:',nscattGLOBAL/(state%nphotons*numproc)
 #endif
     !write out files
     !create dict to store metadata and nrrd hdr info
     call dict%add_entry("grid_data", 'fluence map')
-    call dict%add_entry("real_size", str(grid%xmax,7)//" "//str(grid%ymax,7)//" "//str(grid%zmax,7))
+    call dict%add_entry("real_size", str(state%grid%xmax,7)//" "//str(state%grid%ymax,7)//" "//str(state%grid%zmax,7))
     call dict%add_entry("units", "cm")
 
-    jmeanGLOBAL = normalise_fluence(jmeanGLOBAL, grid, settings%nphotons)
-    call write(jmeanGLOBAL, trim(fileplace)//"jmean/"//settings%outfile, dict)
+    jmeanGLOBAL = normalise_fluence(jmeanGLOBAL, state%nphotons)
+    call write(jmeanGLOBAL, trim(fileplace)//"jmean/"//state%outfile, dict)
     print*,'write done'
 end if
 

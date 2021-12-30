@@ -2,6 +2,10 @@ module utils
 ! module provides various utility functions for simulation
 ! progress bar, var to str converters
 ! colours for pretty output
+    
+    ! use constants, only : wp
+    use iso_fortran_env, only : sp => real32, dp => real64
+
     implicit none
 
     !foreground colours
@@ -40,7 +44,7 @@ module utils
     interface colour
         module procedure colour_char
         module procedure colour_int
-        ! module procedure colour_real4
+        module procedure colour_real4
         module procedure colour_real8
     end interface
 
@@ -49,7 +53,7 @@ module utils
         module procedure str_I32
         module procedure str_I64
         module procedure str_Iarray
-        ! module procedure str_R4
+        module procedure str_R4
         module procedure str_R8
         module procedure str_R8array
         module procedure str_logical
@@ -57,9 +61,9 @@ module utils
     end interface str
 
     type :: pbar
-        integer :: iters, current_iter, time_remaing(3), time_taken(3), threads
-        real    :: percentage, start_t, start_tt, finish_t, average
-        logical :: first
+        integer       :: iters, current_iter, time_remaing(3), time_taken(3), threads
+        real(kind=dp) :: percentage, start_t, start_tt, finish_t, average
+        logical       :: first
         contains
             procedure :: progress => progress_sub
     end type pbar
@@ -71,9 +75,34 @@ module utils
     !subroutines to swap variables
     interface swap
         module procedure swap_I
-        ! module procedure swap_R4
+        module procedure swap_R4
         module procedure swap_R8
     end interface swap
+
+    !subroutines to clamp variables
+    interface clamp
+        module procedure clamp_R4
+        module procedure clamp_R8
+    end interface clamp
+
+    !subroutines to mix variables
+    interface mix
+        module procedure mix_R4
+        module procedure mix_R8
+    end interface mix
+
+    !subroutines to deg2rad variables
+    interface deg2rad
+        ! module procedure deg2rad_R4
+        module procedure deg2rad_R8
+    end interface deg2rad
+
+    !subroutines to rad2deg variables
+    interface rad2deg
+        ! module procedure rad2deg_R4
+        module procedure rad2deg_R8
+    end interface rad2deg
+
 
     interface
         function c_chdir(path) bind(C, name="chdir")
@@ -92,13 +121,14 @@ module utils
 
     contains
 
-        pure real function lerp(t, v1, v2)
+        pure function lerp(t, v1, v2) result(res)
 
             implicit none
 
-            real, intent(IN) :: v1, v2, t
+            real(kind=dp) :: res
+            real(kind=dp), intent(IN) :: v1, v2, t
 
-            lerp = (1.-t)*v1+t*v2
+            res = (1._dp - t) * v1 + t * v2
 
         end function lerp
 
@@ -138,7 +168,7 @@ module utils
             class(pbar) :: this
             integer           :: width
             character(len=52) :: line
-            real              :: time
+            real(kind=dp)     :: time
 
 !$omp critical
             if(.not. this%first)then
@@ -147,13 +177,13 @@ module utils
                 time = this%average / real(this%threads * this%current_iter)
                 time = time * (this%iters - this%current_iter)
                 this%time_remaing(1) = floor(time / (60*60))
-                this%time_remaing(2) = floor(mod(time / 60, 60.))
-                this%time_remaing(3) = int(mod(time, 60.))
+                this%time_remaing(2) = floor(mod(time / 60, 60._dp))
+                this%time_remaing(3) = int(mod(time, 60._dp))
 
                 time = (this%finish_t - this%start_tt) / this%threads
                 this%time_taken(1) = floor(time / (60*60))
-                this%time_taken(2) = floor(mod(time / 60, 60.))
-                this%time_taken(3) = int(mod(time, 60.))
+                this%time_taken(2) = floor(mod(time / 60, 60._dp))
+                this%time_taken(3) = int(mod(time, 60._dp))
             else    
                 this%first = .false.
                 call cpu_time(this%start_tt)
@@ -162,14 +192,14 @@ module utils
 
             this%current_iter = this%current_iter + 1
             if(this%current_iter <= this%iters)then
-                this%percentage = 100.*real(this%current_iter) / real(this%iters)
+                this%percentage = 100._dp*real(this%current_iter) / real(this%iters)
 
-                width = int(this%percentage/ 2.)
+                width = int(this%percentage/ 2._dp)
                 line = "[" // repeat("#", width) // repeat(" ", 50 - width) // "]"
 
                 write(unit=output_unit,fmt='(A)',advance="no") start//"1000D"//line//" "//str(int(this%percentage),3)//"%  ["//&
                 str(this%time_taken)//"<"//str(this%time_remaing)//"]"
-                if(this%percentage >= 100.)write(unit=output_unit,fmt='(A)')new_line("a")
+                if(this%percentage >= 100._dp)write(unit=output_unit,fmt='(A)')new_line("a")
                 flush(output_unit)
             end if
 !$omp end critical
@@ -178,31 +208,58 @@ module utils
         end subroutine progress_sub
 
 
-        pure real function rad2deg(angle)
+        pure function rad2deg_R4(angle) result(res)
 
             use constants, only : PI
 
             implicit none
 
-            real, intent(IN) :: angle
+            real(kind=sp), intent(IN) :: angle
+            real(kind=sp) :: res
 
-            rad2deg = angle/PI*180.
+            res = angle/PI*180._sp
 
-        end function rad2deg
+        end function rad2deg_R4
 
-
-        pure real function deg2rad(angle)
+        pure function rad2deg_R8(angle) result(res)
 
             use constants, only : PI
 
             implicit none
 
-            real, intent(IN) :: angle
+            real(kind=dp), intent(IN) :: angle
+            real(kind=dp) :: res
 
-            deg2rad = angle*PI/180.
+            res = angle/PI*180._dp
 
-        end function deg2rad
+        end function rad2deg_R8
 
+
+        ! pure function deg2rad_R4(angle) result(res)
+
+        !     use constants, only : PI
+
+        !     implicit none
+
+        !     real(kind=sp), intent(IN) :: angle
+        !     real(kind=sp) :: res
+
+        !     res = angle*PI/180._sp
+
+        ! end function deg2rad_R4
+
+        pure function deg2rad_R8(angle) result(res)
+
+            use constants, only : PI
+
+            implicit none
+
+            real(kind=dp), intent(IN) :: angle
+            real(kind=dp) :: res
+
+            res = angle*PI/180._dp
+
+        end function deg2rad_R8
 
         subroutine chdir(path, error)
 
@@ -219,31 +276,62 @@ module utils
             if(present(error))error = err
         end subroutine chdir
 
-        pure real function clamp(val, lo, hi)
+        pure function clamp_R4(val, lo, hi) result(res)
 
             implicit none
 
-            real, intent(IN) :: val, hi, lo
+            real(kind=dp) :: res
+            real(kind=dp), intent(IN) :: val, hi, lo
 
             if(val < lo)then
-                clamp = lo
+                res = lo
             elseif(val > hi)then
-                clamp = hi
+                res = hi
             else
-                clamp = val
+                res = val
             end if
 
-        end function clamp
+        end function clamp_R4
 
-        pure real function mix(x, y, a)
+        pure function clamp_R8(val, lo, hi) result(res)
 
             implicit none
 
-            real, intent(IN) :: x, y, a
+            real(kind=sp) :: res
+            real(kind=sp), intent(IN) :: val, hi, lo
 
-            mix = x*(1. - a) + y*a
+            if(val < lo)then
+                res = lo
+            elseif(val > hi)then
+                res = hi
+            else
+                res = val
+            end if
 
-        end function mix
+        end function clamp_R8
+
+        pure function mix_R4(x, y, a) result(res)
+
+            implicit none
+
+            real(kind=sp) :: res
+            real(kind=sp), intent(IN) :: x, y, a
+
+            res = x*(1._sp - a) + y*a
+
+        end function mix_R4
+
+        pure function mix_R8(x, y, a) result(res)
+
+            implicit none
+
+            real(kind=dp) :: res
+            real(kind=dp), intent(IN) :: x, y, a
+
+            res = x*(1._dp - a) + y*a
+
+        end function mix_R8
+
 
         subroutine swap_I(a, b)
 
@@ -255,32 +343,35 @@ module utils
             tmp = a
             a = b
             b = tmp
+
         end subroutine swap_I
 
 
-        ! subroutine swap_R4(a, b)
+        subroutine swap_R4(a, b)
 
-        !     implicit none
+            implicit none
 
-        !     real, intent(INOUT) :: a, b
-        !     real :: tmp
+            real(kind=sp), intent(INOUT) :: a, b
+            real(kind=sp) :: tmp
 
-        !     tmp = a
-        !     a = b
-        !     b = tmp
-        ! end subroutine swap_R4
+            tmp = a
+            a = b
+            b = tmp
+
+        end subroutine swap_R4
 
 
         subroutine swap_R8(a, b)
 
             implicit none
 
-            double precision, intent(INOUT) :: a, b
-            double precision :: tmp
+            real(kind=dp), intent(INOUT) :: a, b
+            real(kind=dp) :: tmp
 
             tmp = a
             a = b
             b = tmp
+
         end subroutine swap_R8
 
 
@@ -374,25 +465,25 @@ module utils
         end function str_iarray
 
 
-        ! function str_R4(i)
+        function str_R4(i)
 
-        !     implicit none
+            implicit none
 
-        !     real, intent(IN) :: i
+            real(kind=sp), intent(IN) :: i
 
-        !     character(len=:), allocatable :: str_R4
-        !     character(len=100) :: string
+            character(len=:), allocatable :: str_R4
+            character(len=100) :: string
 
-        !     write(string,'(f100.8)') I
+            write(string,'(f100.8)') I
 
-        !     str_R4 = trim(adjustl(string))
-        ! end function str_r4
+            str_R4 = trim(adjustl(string))
+        end function str_r4
 
         function str_R8(i, len)
 
             implicit none
 
-            double precision,  intent(IN) :: i
+            real(kind=dp),  intent(IN) :: i
             integer, optional, intent(IN) :: len
 
             character(len=:), allocatable :: str_R8
@@ -413,7 +504,7 @@ module utils
 
             implicit none
 
-            double precision,  intent(IN) :: a(:)
+            real(kind=dp),     intent(IN) :: a(:)
             integer,           intent(IN) :: width
 
             character(len=:), allocatable :: str_R8array
@@ -521,39 +612,39 @@ module utils
         end function colour_int
 
 
-        ! function colour_real4(inte, fmt1, fmt2, fmt3, fmt4, fmt5) result(colourised)
+        function colour_real4(inte, fmt1, fmt2, fmt3, fmt4, fmt5) result(colourised)
 
-        !     implicit none
+            implicit none
 
-        !     real,                   intent(IN) :: inte
-        !     character(*), optional, intent(IN) :: fmt1, fmt2, fmt3, fmt4, fmt5
+            real(kind=sp),          intent(IN) :: inte
+            character(*), optional, intent(IN) :: fmt1, fmt2, fmt3, fmt4, fmt5
 
-        !     character(len=:), allocatable :: colourised, string
-        !     character(len=50)             :: tmp
+            character(len=:), allocatable :: colourised, string
+            character(len=50)             :: tmp
 
-        !     write(tmp,'(F50.8)') inte
-        !     string = trim(adjustl(tmp))
-        !     colourised = trim(adjustl(string))
+            write(tmp,'(F50.8)') inte
+            string = trim(adjustl(tmp))
+            colourised = trim(adjustl(string))
 
-        !     if(present(fmt1) .and. present(fmt2) .and. present(fmt3) .and. present(fmt4) .and. present(fmt5))then
-        !         colourised = start//fmt1//';'//fmt2//';'//fmt3//';'//fmt4//';'//fmt5//'m'//string//achar(27)//end
-        !     elseif(present(fmt1) .and. present(fmt2) .and. present(fmt3) .and. present(fmt4))then
-        !         colourised = start//fmt1//';'//fmt2//';'//fmt3//';'//fmt4//'m'//string//achar(27)//end
-        !     elseif(present(fmt1) .and. present(fmt2) .and. present(fmt3))then
-        !         colourised = start//fmt1//';'//fmt2//';'//fmt3//'m'//string//achar(27)//end
-        !     elseif(present(fmt1) .and. present(fmt2))then
-        !         colourised = start//fmt1//';'//fmt2//'m'//string//achar(27)//end
-        !     elseif(present(fmt1))then
-        !         colourised = start//fmt1//'m'//string//achar(27)//end
-        !     end if
-        ! end function colour_real4
+            if(present(fmt1) .and. present(fmt2) .and. present(fmt3) .and. present(fmt4) .and. present(fmt5))then
+                colourised = start//fmt1//';'//fmt2//';'//fmt3//';'//fmt4//';'//fmt5//'m'//string//achar(27)//end
+            elseif(present(fmt1) .and. present(fmt2) .and. present(fmt3) .and. present(fmt4))then
+                colourised = start//fmt1//';'//fmt2//';'//fmt3//';'//fmt4//'m'//string//achar(27)//end
+            elseif(present(fmt1) .and. present(fmt2) .and. present(fmt3))then
+                colourised = start//fmt1//';'//fmt2//';'//fmt3//'m'//string//achar(27)//end
+            elseif(present(fmt1) .and. present(fmt2))then
+                colourised = start//fmt1//';'//fmt2//'m'//string//achar(27)//end
+            elseif(present(fmt1))then
+                colourised = start//fmt1//'m'//string//achar(27)//end
+            end if
+        end function colour_real4
 
 
         function colour_real8(inte, fmt1, fmt2, fmt3, fmt4, fmt5) result(colourised)
 
             implicit none
 
-            double precision,       intent(IN) :: inte
+            real(kind=dp),          intent(IN) :: inte
             character(*), optional, intent(IN) :: fmt1, fmt2, fmt3, fmt4, fmt5
 
             character(len=:), allocatable :: colourised, string

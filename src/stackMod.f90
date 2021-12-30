@@ -1,5 +1,7 @@
 module stackMod
 
+    use constants, only : wp
+
     implicit none
 
     type :: istack
@@ -17,7 +19,7 @@ module stackMod
 
 
     type :: rstack
-        real, allocatable :: data(:) ! istack
+        real(kind=wp), allocatable :: data(:) ! istack
         integer              :: size = 0
         contains
             procedure :: pop   => rpop_fn
@@ -181,7 +183,7 @@ module stackMod
         
         class(rstack) :: this
 
-        real :: tmp
+        real(kind=wp) :: tmp
 
         do while(.not. this%empty())
             tmp = this%pop()
@@ -189,34 +191,36 @@ module stackMod
 
     end subroutine rzero_sub
 
-    real function rpop_fn(this)
+    function rpop_fn(this) result(res)
     ! pop top enrty off rstack
         implicit none
 
         class(rstack) :: this
+        real(kind=wp) :: res
 
         if(this%size == 0 .or. .not. allocated(this%data))then
             !if nothing in rstack send back garbage data
-            rpop_fn = -99.
+            res = -99._wp
             return
         end if
-        rpop_fn = this%data(this%size)
+        res = this%data(this%size)
         this%size = this%size - 1
 
     end function rpop_fn
 
 
-    real function rpeek_fn(this)
+    function rpeek_fn(this) result(res)
 
         implicit none
 
         class(rstack) :: this
+        real(kind=wp) :: res
 
         if(this%size == 0 .or. .not. allocated(this%data))then
-            rpeek_fn = -99.
+            res = -99._wp
             return
         end if
-        rpeek_fn = this%data(this%size)
+        res = this%data(this%size)
 
     end function rpeek_fn
 
@@ -236,8 +240,8 @@ module stackMod
 
         class(rstack) :: this
 
-        real, intent(IN)  :: pt
-        real, allocatable :: tmp(:)
+        real(kind=wp), intent(IN)  :: pt
+        real(kind=wp), allocatable :: tmp(:)
 
         if(.not. allocated(this%data))then
             ! Allocate space if not yet done

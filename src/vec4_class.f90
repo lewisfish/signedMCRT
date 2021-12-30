@@ -1,8 +1,10 @@
 Module vec4_class
 
+    use constants, only : wp
+
     !not fully implmented vec4 class
     type :: vec4
-        real :: x, y, z, p
+        real(kind=wp) :: x, y, z, p
         contains
 
         generic   :: operator(.dot.) => vec_dot_vec
@@ -70,8 +72,8 @@ Module vec4_class
 
             implicit none
 
-            class(vec4), intent(IN) :: a
-            real,        intent(IN) :: b
+            class(vec4),     intent(IN) :: a
+            real(kind=wp),   intent(IN) :: b
 
             vec_add_scal = vec4(a%x + b, a%y + b, a%z + b, a%p + b)
 
@@ -82,8 +84,8 @@ Module vec4_class
 
             implicit none
 
-            class(vec4), intent(IN) :: b
-            real,          intent(IN) :: a
+            class(vec4),   intent(IN) :: b
+            real(kind=wp), intent(IN) :: a
 
             scal_add_vec = vec4(b%x + a, b%y + a, b%z + a,  b%p + a)
 
@@ -94,8 +96,8 @@ Module vec4_class
 
             implicit none
 
-            class(vec4), intent(IN) :: a
-            real,          intent(IN) :: b
+            class(vec4),   intent(IN) :: a
+            real(kind=wp), intent(IN) :: b
 
             vec_minus_scal = vec4(a%x - b, a%y - b, a%z - b, a%p - b)
 
@@ -106,8 +108,8 @@ Module vec4_class
 
             implicit none
 
-            class(vec4), intent(IN) :: b
-            real,          intent(IN) :: a
+            class(vec4),   intent(IN) :: b
+            real(kind=wp), intent(IN) :: a
 
             scal_minus_vec = vec4(b%x - a, b%y - a, b%z - a, b%p - a)
 
@@ -132,7 +134,7 @@ Module vec4_class
 
             class(vec4), intent(IN) :: a
             type(vec4),  intent(IN) :: b
-            real :: dot
+            real(kind=wp) :: dot
 
             dot = (a%x * b%x) + (a%y * b%y) + (a%z * b%z) + (a%p * b%p)
 
@@ -154,8 +156,8 @@ Module vec4_class
 
             implicit none
 
-            class(vec4), intent(IN) :: a
-            real,          intent(IN) :: b
+            class(vec4),   intent(IN) :: a
+            real(kind=wp), intent(IN) :: b
 
             vec_mult_scal = vec4(a%x * b, a%y * b, a%z * b, a%p * b)
 
@@ -166,8 +168,8 @@ Module vec4_class
 
             implicit none
 
-            class(vec4), intent(IN) :: b
-            real,          intent(IN) :: a
+            class(vec4),   intent(IN) :: b
+            real(kind=wp), intent(IN) :: a
 
             scal_mult_vec = vec4(a * b%x, a * b%y, a * b%z, a * b%p)
 
@@ -178,8 +180,8 @@ Module vec4_class
 
             implicit none
 
-            class(vec4), intent(IN) :: a
-            real,         intent(IN) :: b
+            class(vec4),   intent(IN) :: a
+            real(kind=wp), intent(IN) :: b
 
             vec_div_scal_r4 = vec4(a%x / b, a%y / b, a%z / b, a%p / b)
 
@@ -192,7 +194,7 @@ Module vec4_class
             class(vec4), intent(IN) :: a
             integer,       intent(IN) :: b
 
-            vec_div_scal_int = vec4(a%x / real(b), a%y / real(b), a%z / real(b), a%p / real(b))
+            vec_div_scal_int = vec4(a%x / real(b, kind=wp), a%y / real(b, kind=wp), a%z / real(b, kind=wp), a%p / real(b, kind=wp))
 
         end function vec_div_scal_int
 
@@ -203,7 +205,7 @@ Module vec4_class
 
             class(vec4) :: this
 
-            real :: tmp
+            real(kind=wp) :: tmp
 
             tmp = sqrt(this%x**2 + this%y**2 + this%z**2 + this%p**2)
             magnitude_fn = this / tmp
