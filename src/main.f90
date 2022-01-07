@@ -11,7 +11,7 @@ program mcpolar
 !shared data
 use photonMod
 use iarray
-use random, only : ran2, init_rng, ranu
+use random,    only : ran2, init_rng, ranu
 use constants, only : fileplace
 
 !subroutines
@@ -27,14 +27,14 @@ use dict_mod
 
 implicit none
 
-type(photon)     :: packet
-type(cart_grid)  :: grid
-type(settings_t) :: settings
-integer          :: j, i
-double precision :: nscatt
-real             :: ran, start, time_taken
-real, allocatable:: ds(:)
-type(pbar)       :: bar
+type(photon)      :: packet
+type(cart_grid)   :: grid
+type(settings_t)  :: settings
+integer           :: j, i
+double precision  :: nscatt
+real              :: ran, start, time_taken
+real, allocatable :: ds(:)
+type(pbar)        :: bar
 
 type(container), allocatable :: array(:)
 ! mpi/mp variables
@@ -45,25 +45,7 @@ type(dict_t) :: dict
 nscatt = 0.
 call init_rng(spread(123456789+0, 1, 8), fwd=.true.)
 
-optprop = 0.
-focus = 0.
-! open(newunit=u,file='/home/lewis/postdoc/signedMCRT/res/optprops.params',status='old')
-!     read(u,*) optprop(1)
-!     read(u,*) optprop(2)
-!     read(u,*) optprop(3)
-!     read(u,*) optprop(4)
-!     read(u,*) optprop(5)
-!     read(u,*) focus
-! close(u)
-
-dict = dict_t(9)
-call dict%add_entry("focus", focus)
-call dict%add_entry("musb", optprop(1))
-call dict%add_entry("muab", optprop(2))
-call dict%add_entry("musc", optprop(3))
-call dict%add_entry("muac", optprop(4))
-call dict%add_entry("hgg", optprop(5))
-
+dict = dict_t(3)
 
 call setup_simulation(grid, packet, array, settings, dict)
 if(settings%render_bool)then

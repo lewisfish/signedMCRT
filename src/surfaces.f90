@@ -220,25 +220,31 @@ module surfaces
 
     end function solveQuadratic
 
-    subroutine reflect_refract(I, N, n1, n2, rflag)
 
+
+    subroutine reflect_refract(I, N, n1, n2, rflag)
+    ! wrapper routine for fresnel calculation
+    !
+    !
         use random, only : ran2
+        use vector_class
 
         implicit none
 
-        type(vector), intent(INOUT) :: I
-        type(vector), intent(INOUT) :: N
-        real,         intent(IN)    :: n1, n2
-        logical,      intent(OUT)   :: rflag
+        type(vector), intent(INOUT) :: I !incident vector
+        type(vector), intent(INOUT) :: N ! normal vector
+        real,         intent(IN)    :: n1, n2 !refractive indcies
+        logical,      intent(OUT)   :: rflag !reflection flag
 
         rflag = .FALSE.
-        ! print*,fresnel(I, N, n1, n2)
-        ! if(ran2() <= fresnel(I, N, n1, n2))then
-        !     call reflect(I, N)
-        !     rflag = .true.
-        ! else
+
+        !draw random number, if less than fresnel coefficents, then reflect, else refract
+        if(ran2() <= fresnel(I, N, n1, n2))then
+            call reflect(I, N)
+            rflag = .true.
+        else
             call refract(I, N, n1/n2)
-        ! end if
+        end if
 
     end subroutine reflect_refract
 
@@ -247,11 +253,12 @@ module surfaces
     !   get vector of reflected photon
     !
     !
+        use vector_class
 
         implicit none
 
-        type(vector), intent(INOUT) :: I
-        type(vector), intent(IN)    :: N
+        type(vector), intent(INOUT) :: I ! incident vector
+        type(vector), intent(IN)    :: N ! normal vector
 
         type(vector) :: R
 
@@ -265,6 +272,7 @@ module surfaces
     !   get vector of refracted photon
     !
     !
+        use vector_class
 
         implicit none
 
@@ -284,8 +292,7 @@ module surfaces
         else
             Ntmp = (-1.) * N
         end if
-
-        c2 = sqrt(1.d0 - (eta)**2 * (1.d0 - c1**2))
+        c2 = sqrt(1. - (eta)**2 * (1.-c1**2))
 
         T = eta*I + (eta * c1 - c2) * Ntmp 
 
@@ -298,11 +305,12 @@ module surfaces
     !   calculates the fresnel coefficents
     !
     !
+        use vector_class
         use ieee_arithmetic, only : ieee_is_nan
 
         implicit none
 
-        real, intent(IN)         :: n1, n2
+        real,         intent(IN) :: n1, n2
         type(vector), intent(IN) :: I, N
 
         real ::  costt, sintt, sint2, cost2, tir, f1, f2
@@ -324,10 +332,7 @@ module surfaces
             f2 = abs((n1*cost2 - n2*costt) / (n1*cost2 + n2*costt))**2
 
             tir = 0.5 * (f1 + f2)
-            if(ieee_is_nan(tir) .or. tir > 1. .or. tir < 0.)then
-                ! print*,'TIR: ', tir, f1, f2, costt,sintt,cost2,sint2
-                tir = 1.
-            end if
+        if(ieee_is_nan(tir) .or. tir > 1. .or. tir < 0.)print*,'TIR: ', tir, f1, f2, costt,sintt,cost2,sint2
             return
         end if
     end function fresnel
