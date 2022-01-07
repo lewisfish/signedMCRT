@@ -10,12 +10,15 @@ module parse_mod
 
     contains
 
-    subroutine parse_params(filename)
+    subroutine parse_params(filename, dict)
     
+        use dict_mod
+
         implicit none
     
-        character(*), intent(IN) :: filename
-    
+        character(*), intent(IN)    :: filename
+        type(dict_t), intent(INOUT) :: dict
+        
         type(toml_table), allocatable :: table
 
         integer :: u
@@ -25,7 +28,7 @@ module parse_mod
         
         call parse_source(table)
         call parse_grid(table)
-        call parse_geomtry(table)
+        call parse_geometry(table, dict)
         call parse_output(table)
         call parse_simulation(table)
 
@@ -47,7 +50,7 @@ module parse_mod
         if(associated(child))then
             call get_value(child, "name", state%source, "point")
             call get_value(child, "nphotons", state%nphotons, 1000000)
-            call get_value(child, "direction", dir, [0._wp, 0._wp, -1._wp])
+            ! call get_value(child, "direction", dir, [0._wp, 0._wp, -1._wp])
         else
             error stop "Need source table in input param file"
         end if
@@ -84,25 +87,30 @@ module parse_mod
 
     end subroutine parse_grid
 
-    subroutine parse_geomtry(table)
+    subroutine parse_geometry(table, dict)
 
+        use dict_mod
         use sim_state_mod, only : state
-
+        
         implicit none
         
         type(toml_table), intent(INOUT) :: table
-
+        type(dict_t),     intent(IN)    :: dict
+        
         type(toml_table), pointer :: child
+        real(kind=wp)             :: tau
 
-        call get_value(table, "geomtry", child)
+        call get_value(table, "geometry", child)
 
         if(associated(child))then
             call get_value(child, "geom_name", state%experiment, "sphere")
+            call get_value(child, "tau", tau, 10._wp)
+            call dict%add_entry("tau", tau)
         else
-            error stop "Need geomtry table in input param file"
+            error stop "Need geometry table in input param file"
         end if
 
-    end subroutine parse_geomtry
+    end subroutine parse_geometry
 
     subroutine parse_output(table)
 

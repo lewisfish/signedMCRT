@@ -9,20 +9,20 @@ module inttau2
 
     contains   
 
-    subroutine tauint2(packet, sdfs_array)
+    subroutine tauint2(grid, packet, sdfs_array)
     ! optical depth integration subroutine
     ! Moves photons to interaction location
     ! Calculated is any reflection or refraction happens whilst moving
     !
-        use random, only : ran2
-        use photonMod
-        use sdfs
-        use sim_state_mod, only : state
-
+        use random,       only : ran2
+        use photonMod,    only : photon
+        use gridMod,      only : cart_grid
         use vector_class, only : vector
+        use sdfs
    
         implicit none
 
+        type(cart_grid), intent(IN)    :: grid
         type(photon),    intent(INOUT) :: packet
         type(container), intent(IN)    :: sdfs_array(:)
 
@@ -32,6 +32,7 @@ module inttau2
         type(vector)  :: pos, dir, oldpos, N
         logical       :: rflag
 
+        !setup temp variables
         pos = packet%pos
         oldpos = pos
         dir = vector(packet%nxp, packet%nyp, packet%nzp)
@@ -41,10 +42,12 @@ module inttau2
         do i = 1, size(ds)
             ds(i) = abs(sdfs_array(i)%p%evaluate(pos))
         end do
-        ! packet%cnts = packet%cnts + size(ds)
+        packet%cnts = packet%cnts + size(ds)
         d_sdf = minval(ds)
 
+        !round off distance
         eps = 1e-8_wp
+        !get random tau
         tau = -log(ran2())
         taurun = 0.
 
@@ -54,10 +57,10 @@ module inttau2
             do while(d_sdf > eps)
                 t_sdf = d_sdf * sdfs_array(packet%layer)%p%kappa
                 if(taurun + t_sdf <= tau)then
-                    !move full distance to sdf
+                    !move full distance to sdf surface
                     taurun = taurun + t_sdf
                     oldpos = pos
-                    call update_jmean(oldpos, dir, d_sdf, packet, sdfs_array(packet%layer)%p%mua)
+                    call update_jmean(grid, oldpos, dir, d_sdf, packet)
                     pos = pos + d_sdf * dir
                     dtot = dtot + d_sdf
                 else
@@ -67,7 +70,7 @@ module inttau2
                     taurun = tau
                     oldpos = pos
                     pos = pos + d_sdf * dir
-                    call update_jmean(oldpos, dir, d_sdf, packet, sdfs_array(packet%layer)%p%mua)
+                    call update_jmean(grid, oldpos, dir, d_sdf, packet)
                     exit
                 end if
                 ! get distance to nearest sdf
@@ -85,6 +88,7 @@ module inttau2
                 end if
             end do
 
+            !exit early if conditions met
             if(taurun >= tau .or. packet%tflag)then
                 exit
             end if
@@ -165,31 +169,36 @@ module inttau2
         packet%cost = dir%z
         packet%sint = sqrt(1._wp - packet%cost**2)
 
-        if(abs(packet%pos%x) > state%grid%xmax)then
+        if(abs(packet%pos%x) > grid%xmax)then
             packet%tflag = .true.
         end if
-        if(abs(packet%pos%y) > state%grid%ymax)then
+        if(abs(packet%pos%y) > grid%ymax)then
             packet%tflag = .true.
         end if
-        if(abs(packet%pos%z) > state%grid%zmax)then
+        if(abs(packet%pos%z) > grid%zmax)then
             packet%tflag = .true.
         end if
     end subroutine tauint2
    
 
-    subroutine update_jmean(pos, dir, d_sdf, packet, mua)
-    ! recored fluence using path length estimators.
+    subroutine update_jmean(grid, pos, dir, d_sdf, packet)
+    ! record fluence using path length estimators. Uses voxel grid
+    ! grid stores voxel grid information (voxel walls and etc)
+    ! pos is current position with origin in centre of medium (0,0,0)
+    ! dir is the current direction (0,0,1) is up
+    ! d_sdf is the distance to travel in voxel grid
+    ! packet stores the photon related variables
 
         use vector_class
         use photonMod
-
+        use gridMod
         use iarray,        only: jmean
-        use sim_state_mod, only : state
-    
+
         implicit none
         
+        type(cart_grid), intent(IN)    :: grid
         type(vector),    intent(IN)    :: dir
-        real(kind=wp),   intent(IN)    :: d_sdf, mua
+        real(kind=wp),   intent(IN)    :: d_sdf
         type(vector),    intent(INOUT) :: pos
         type(photon),    intent(INOUT) :: packet
 
@@ -199,8 +208,8 @@ module inttau2
         real(kind=wp) :: dcell, delta=1e-8_wp, d
 
         !convert to different coordinate system. Origin is at lower left corner of fluence grid
-        old_pos = vector(pos%x+state%grid%xmax, pos%y+state%grid%ymax, pos%z+state%grid%zmax)
-        call update_voxels(old_pos, celli, cellj, cellk)
+        old_pos = vector(pos%x+grid%xmax, pos%y+grid%ymax, pos%z+grid%zmax)
+        call update_voxels(grid, old_pos, celli, cellj, cellk)
         packet%xcell = celli
         packet%ycell = cellj
         packet%zcell = cellk
@@ -209,52 +218,50 @@ module inttau2
         !if packet outside grid return
         if(celli == -1 .or. cellj == -1 .or. cellk == -1)then
             packet%tflag = .true.
-            pos = vector(old_pos%x-state%grid%xmax, old_pos%y-state%grid%ymax, old_pos%z-state%grid%zmax)
+            pos = vector(old_pos%x-grid%xmax, old_pos%y-grid%ymax, old_pos%z-grid%zmax)
             return
         end if
         !move photon through grid updating path length estimators
         do
-            ! print*,old_pos,celli,cellj,cellk,delta,1.d-8
-            ! stop
             ldir = (/.FALSE., .FALSE., .FALSE./)
 
-            dcell = wall_dist(celli, cellj, cellk, old_pos, dir, ldir)
+            dcell = wall_dist(grid, celli, cellj, cellk, old_pos, dir, ldir)
             if(d + dcell > d_sdf)then
                 dcell = d_sdf - d
                 d = d_sdf
+! needs to be atomic so dont write to same array address with more than 1 thread at a time
 !$omp atomic
-                jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell!*mua!real(packet%cnts)
-                ! packet%cnts = 0
-                call update_pos(old_pos, celli, cellj, cellk, dcell, .false., dir, ldir, delta)
+                jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell
+                call update_pos(grid, old_pos, celli, cellj, cellk, dcell, .false., dir, ldir, delta)
                 exit
             else
                 d = d + dcell
 !$omp atomic
-                jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell!*mua!real(packet%cnts)
-                ! packet%cnts = 0
-                call update_pos(old_pos, celli, cellj, cellk, dcell, .true., dir, ldir, delta)
+                jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell
+                call update_pos(grid, old_pos, celli, cellj, cellk, dcell, .true., dir, ldir, delta)
             end if
             if(celli == -1 .or. cellj == -1 .or. cellk == -1)then
                 packet%tflag = .true.
                 exit
             end if
         end do
-        pos = vector(old_pos%x-state%grid%xmax, old_pos%y-state%grid%ymax, old_pos%z-state%grid%zmax)
+        pos = vector(old_pos%x-grid%xmax, old_pos%y-grid%ymax, old_pos%z-grid%zmax)
         packet%xcell = celli
         packet%ycell = cellj
         packet%zcell = cellk
 
     end subroutine update_jmean
 
-    function wall_dist(celli, cellj, cellk, pos, dir, ldir) result(res)
+    function wall_dist(grid, celli, cellj, cellk, pos, dir, ldir) result(res)
     !funtion that returns distant to nearest wall and which wall that is (x, y, or z)
     !
     !
         use vector_class
-        use sim_state_mod, only : state
+        use gridMod
 
         implicit none
 
+        type(cart_grid), intent(IN)    :: grid
         type(vector),    intent(IN)    :: pos, dir
         logical,         intent(INOUT) :: ldir(:)
         integer,         intent(INOUT) :: celli, cellj, cellk
@@ -267,25 +274,25 @@ module inttau2
         dz = -999._wp
 
         if(dir%x > 0._wp)then
-            dx = (state%grid%xface(celli+1) - pos%x)/dir%x
+            dx = (grid%xface(celli+1) - pos%x)/dir%x
         elseif(dir%x < 0._wp)then
-            dx = (state%grid%xface(celli) - pos%x)/dir%x
+            dx = (grid%xface(celli) - pos%x)/dir%x
         elseif(dir%x == 0._wp)then
             dx = 100000._wp
         end if
 
         if(dir%y > 0._wp)then
-            dy = (state%grid%yface(cellj+1) - pos%y)/dir%y
+            dy = (grid%yface(cellj+1) - pos%y)/dir%y
         elseif(dir%y < 0._wp)then
-            dy = (state%grid%yface(cellj) - pos%y)/dir%y
+            dy = (grid%yface(cellj) - pos%y)/dir%y
         elseif(dir%y == 0._wp)then
             dy = 100000._wp
         end if
 
         if(dir%z > 0._wp)then
-            dz = (state%grid%zface(cellk+1) - pos%z)/dir%z
+            dz = (grid%zface(cellk+1) - pos%z)/dir%z
         elseif(dir%z < 0._wp)then
-            dz = (state%grid%zface(cellk) - pos%z)/dir%z
+            dz = (grid%zface(cellk) - pos%z)/dir%z
         elseif(dir%z == 0._wp)then
             dz = 100000._wp
         end if
@@ -307,16 +314,17 @@ module inttau2
    end function wall_dist
 
 
-    subroutine update_pos(pos, celli, cellj, cellk, dcell, wall_flag, dir, ldir, delta)
-    !routine that upates postions of photon and calls fresnel routines if photon leaves current voxel
+    subroutine update_pos(grid, pos, celli, cellj, cellk, dcell, wall_flag, dir, ldir, delta)
+    !routine that updates positions of photon and calls Fresnel routines if photon leaves current voxel
     !
     !
         use vector_class
-        use sim_state_mod, only : state
+        use gridMod
         use utils,         only : str
 
         implicit none
       
+        type(cart_grid), intent(IN)    :: grid
         type(vector),    intent(IN)    :: dir
         logical,         intent(IN)    :: wall_flag, ldir(:)
         real(kind=wp),   intent(IN)    :: dcell, delta
@@ -327,9 +335,9 @@ module inttau2
 
             if(ldir(1))then
                 if(dir%x > 0._wp)then
-                    pos%x = state%grid%xface(celli+1) + delta
+                    pos%x = grid%xface(celli+1) + delta
                 elseif(dir%x < 0._wp)then
-                    pos%x = state%grid%xface(celli) - delta
+                    pos%x = grid%xface(celli) - delta
                 else
                     print*,'Error in x ldir in update_pos', ldir, dir
                 end if
@@ -337,9 +345,9 @@ module inttau2
                 pos%z = pos%z + dir%z*dcell
             elseif(ldir(2))then
                 if(dir%y > 0._wp)then
-                    pos%y = state%grid%yface(cellj+1) + delta
+                    pos%y = grid%yface(cellj+1) + delta
                 elseif(dir%y < 0._wp)then
-                    pos%y = state%grid%yface(cellj) - delta
+                    pos%y = grid%yface(cellj) - delta
                 else
                     print*,'Error in y ldir in update_pos', ldir, dir
                 end if
@@ -347,9 +355,9 @@ module inttau2
                 pos%z = pos%z + dir%z*dcell
             elseif(ldir(3))then
                 if(dir%z > 0._wp)then
-                    pos%z = state%grid%zface(cellk+1) + delta
+                    pos%z = grid%zface(cellk+1) + delta
                 elseif(dir%z < 0._wp)then
-                    pos%z = state%grid%zface(cellk) - delta
+                    pos%z = grid%zface(cellk) - delta
                 else
                     print*,'Error in z ldir in update_pos', ldir, dir
                 end if
@@ -366,39 +374,43 @@ module inttau2
         end if
 
         if(wall_flag)then
-            call update_voxels(pos, celli, cellj, cellk)
+            call update_voxels(grid, pos, celli, cellj, cellk)
         end if
 
     end subroutine update_pos
 
 
-    subroutine update_voxels(pos, celli, cellj, cellk)
+    subroutine update_voxels(grid, pos, celli, cellj, cellk)
     !updates the current voxel based upon position
     !
     !
         use vector_class
-        use sim_state_mod, only : state
+        use gridmod
 
         implicit none
         
+        type(cart_grid), intent(IN)    :: grid
         type(vector),    intent(IN)    :: pos
         integer,         intent(INOUT) :: celli, cellj, cellk
 
-        celli = find(pos%x, state%grid%xface) 
-        cellj = find(pos%y, state%grid%yface)
-        cellk = find(pos%z, state%grid%zface) 
-        ! celli = floor(state%grid%nxg * (pos%x) / (2. * state%grid%xmax)) + 1
-        ! cellj = floor(state%grid%nyg * (pos%y) / (2. * state%grid%ymax)) + 1
-        ! cellk = floor(state%grid%nzg * (pos%z) / (2. * state%grid%zmax)) + 1
+        !accurate but slow
+        celli = find(pos%x, grid%xface) 
+        cellj = find(pos%y, grid%yface)
+        cellk = find(pos%z, grid%zface) 
 
-        if(celli > state%grid%nxg .or. celli < 1)celli = -1
-        if(cellj > state%grid%nyg .or. cellj < 1)cellj = -1
-        if(cellk > state%grid%nzg .or. cellk < 1)cellk = -1
+        !fast but can be inaccurate in some cases...
+        ! celli = floor(grid%nxg * (pos%x) / (2. * grid%xmax)) + 1
+        ! cellj = floor(grid%nyg * (pos%y) / (2. * grid%ymax)) + 1
+        ! cellk = floor(grid%nzg * (pos%z) / (2. * grid%zmax)) + 1
+
+        if(celli > grid%nxg .or. celli < 1)celli = -1
+        if(cellj > grid%nyg .or. cellj < 1)cellj = -1
+        if(cellk > grid%nzg .or. cellk < 1)cellk = -1
 
     end subroutine update_voxels
 
     integer function find(val, a)
-    !searchs for bracketing indicies for a value val in an array a
+    ! searches for bracketing indices for a value value in an array a
     !
     !
         implicit none
@@ -432,7 +444,7 @@ module inttau2
 
 
     subroutine reflect_refract(I, N, n1, n2, rflag)
-    ! wrapper routine for fresnel calculation
+    ! wrapper routine for Fresnel calculation
     !
     !
         use random, only : ran2
@@ -442,12 +454,12 @@ module inttau2
 
         type(vector),  intent(INOUT) :: I !incident vector
         type(vector),  intent(INOUT) :: N ! normal vector
-        real(kind=wp), intent(IN)    :: n1, n2 !refractive indcies
+        real(kind=wp), intent(IN)    :: n1, n2 !refractive indices
         logical,       intent(OUT)   :: rflag !reflection flag
 
         rflag = .FALSE.
 
-        !draw random number, if less than fresnel coefficents, then reflect, else refract
+        !draw random number, if less than Fresnel coefficients, then reflect, else refract
         if(ran2() <= fresnel(I, N, n1, n2))then
             call reflect(I, N)
             rflag = .true.
@@ -485,12 +497,11 @@ module inttau2
 
         implicit none
 
-        type(vector),  intent(INOUT) :: I
-        type(vector),  intent(IN)    :: N
-        real(kind=wp), intent(IN)    :: eta
+        type(vector), intent(INOUT) :: I   ! incident vector
+        type(vector), intent(IN)    :: N   ! normal vector
+        real(kind=wp), intent(IN)   :: eta ! ratio of refractive index coefficients
 
-        type(vector) :: T, Ntmp
-
+        type(vector)  :: T, Ntmp
         real(kind=wp) :: c1, c2
 
         Ntmp = N
@@ -511,7 +522,7 @@ module inttau2
 
 
     function fresnel(I, N, n1, n2) result (tir)
-    !   calculates the fresnel coefficents
+    !   calculates the Fresnel coefficients
     !
     !
         use vector_class

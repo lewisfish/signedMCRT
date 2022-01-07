@@ -23,13 +23,14 @@ implicit none
     contains
 
 
-        function normalise_fluence(array, nphotons) result(out)
+        function normalise_fluence(grid, array, nphotons) result(out)
         ! normalise fluence in the Lucy 1999 way
             
-            use sim_state_mod, only : state
+            use gridMod
 
             implicit none
 
+            type(cart_grid), intent(IN) :: grid
             real(kind=wp),   intent(IN) :: array(:, :, :)
             integer,         intent(IN) :: nphotons
             
@@ -38,12 +39,12 @@ implicit none
             real(kind=wp) :: xmax, ymax, zmax
             integer       :: nxg, nyg, nzg
 
-            nxg = state%grid%nxg
-            nyg = state%grid%nyg
-            nzg = state%grid%nzg
-            xmax = state%grid%xmax
-            ymax = state%grid%ymax
-            zmax = state%grid%zmax
+            nxg = grid%nxg
+            nyg = grid%nyg
+            nzg = grid%nzg
+            xmax = grid%xmax
+            ymax = grid%ymax
+            zmax = grid%zmax
 
             allocate(out(size(array, 1), size(array, 2), size(array, 3)))
 

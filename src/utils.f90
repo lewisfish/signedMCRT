@@ -483,7 +483,7 @@ module utils
 
             implicit none
 
-            real(kind=dp),  intent(IN) :: i
+            real(kind=dp),     intent(IN) :: i
             integer, optional, intent(IN) :: len
 
             character(len=:), allocatable :: str_R8

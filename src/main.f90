@@ -11,7 +11,7 @@ program mcpolar
 !shared data
 use photonMod
 use iarray
-use random, only : ran2, init_rng, ranu
+use random,    only : ran2, init_rng, ranu
 use constants, only : fileplace, wp
 
 !subroutines
@@ -22,7 +22,6 @@ use writer_mod
 use vector_class
 use sdfs
 use utils, only : pbar, str
-use dict_mod
 use parse_mod
 use sim_state_mod, only : state
 
@@ -32,42 +31,24 @@ type(photon)   :: packet
 integer        :: j, i
 real(kind=wp)  :: ran, start, time_taken, nscatt
 type(pbar)     :: bar
-real(kind=wp), allocatable:: ds(:)
-
+real(kind=wp),   allocatable :: ds(:)
 type(container), allocatable :: array(:)
+
 ! mpi/mp variables
 integer       :: id, numproc
 real(kind=wp) :: nscattGLOBAL, optprop(5), focus
 type(dict_t)  :: dict
 
-call parse_params("res/input.toml")
+dict = dict_t(4)
+call parse_params("res/input.toml", dict)
 
 nscatt = 0._wp
 call init_rng(spread(state%iseed+0, 1, 8), fwd=.true.)
 
-optprop = 0._wp
-focus = 0._wp
-! open(newunit=u,file='/home/lewis/postdoc/signedMCRT/res/optprops.params',status='old')
-!     read(u,*) optprop(1)
-!     read(u,*) optprop(2)
-!     read(u,*) optprop(3)
-!     read(u,*) optprop(4)
-!     read(u,*) optprop(5)
-!     read(u,*) focus
-! close(u)
-
-dict = dict_t(9)
-call dict%add_entry("focus", focus)
-call dict%add_entry("musb", optprop(1))
-call dict%add_entry("muab", optprop(2))
-call dict%add_entry("musc", optprop(3))
-call dict%add_entry("muac", optprop(4))
-call dict%add_entry("hgg", optprop(5))
 
 call setup_simulation(packet, array, dict)
 ! render geometry to voxel format for debugging
 call render(array, vector(state%grid%xmax, state%grid%ymax, state%grid%zmax), 200, fname=state%renderfile)
-! stop
 allocate(ds(size(array)))
 
 start = get_time()
@@ -120,7 +101,7 @@ do j = 1, state%nphotons
     packet%layer=minloc(ds,dim=1)
 
     ! Find scattering location
-    call tauint2(packet, array)
+    call tauint2(state%grid, packet, array)
     ! Photon scatters in grid until it exits (tflag=TRUE) 
     do while(.not. packet%tflag)
         ran = ran2()
@@ -133,7 +114,7 @@ do j = 1, state%nphotons
         end if
         
         !Find next scattering location
-        call tauint2(packet, array)
+        call tauint2(state%grid, packet, array)
 
     end do
 end do
@@ -165,7 +146,7 @@ if(id == 0)then
     call dict%add_entry("real_size", str(state%grid%xmax,7)//" "//str(state%grid%ymax,7)//" "//str(state%grid%zmax,7))
     call dict%add_entry("units", "cm")
 
-    jmeanGLOBAL = normalise_fluence(jmeanGLOBAL, state%nphotons)
+    jmeanGLOBAL = normalise_fluence(state%grid, jmeanGLOBAL, state%nphotons)
     call write(jmeanGLOBAL, trim(fileplace)//"jmean/"//state%outfile, dict)
     print*,'write done'
 end if

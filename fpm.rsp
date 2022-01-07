@@ -2,7 +2,7 @@
 option build --compiler gfortran-10 --flag "-cpp -ffree-line-length-none -Wno-compare-reals -g -fbacktrace -fcheck=all -fbounds-check -ffpe-trap=invalid,overflow,underflow,denormal -Wall -Wextra -pedantic -std=f2008"
 
 @run
-option run sMCRT --compiler gfortran-10 --flag "-O2 -cpp -march=native -flto -mavx -ffree-line-length-none -g -fbacktrace -fcheck=all"
+option run sMCRT --compiler gfortran-10 --flag "-O2 -cpp -march=native -flto -mavx -ffree-line-length-none"
 
 @runmp
 option run sMCRT --compiler gfortran-10 --flag "-O2 -cpp -march=native -flto -mavx -ffree-line-length-none -fopenmp"

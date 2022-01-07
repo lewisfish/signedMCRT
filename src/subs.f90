@@ -248,7 +248,7 @@ module subs
         ! setup the sphere test case from tran and jacques paper.
         !
         !
-            use sdfs, only : sphere, box, container, translate
+            use sdfs,         only : sphere, box, container, translate
             use vector_class, only : vector, invert
             use photonMod
 
@@ -498,11 +498,11 @@ module subs
             implicit none
 
             type(photon), intent(OUT) :: packet
+            type(dict_t), intent(IN)  :: dict
             type(container), allocatable :: array(:)
-            type(dict_t), intent(IN) :: dict
 
             type(sphere), target, save :: sph
-            type(box), target, save :: bbox
+            type(box),    target, save :: bbox
 
             real(kind=wp) :: mus, mua, hgg, n, tau
 
@@ -926,14 +926,30 @@ module subs
 
             implicit none
 
-            !get current working directory
+            integer :: u
+            character(len=:), allocatable :: mkdirCMD
+            logical :: dirExists
 
+            !get current working directory
             call get_environment_variable('PWD', cwd)
   
             ! get 'home' dir from cwd
             homedir = trim(cwd)
             ! get data dir
             fileplace = trim(homedir)//'/data/'
+            !check if data directory exists. if not create it
+#ifdef __GFORTRAN__
+            inquire(file=trim(fileplace)//"/.", exist=dirExists)
+#elif __INTEL_COMPILER
+            inquire(directory=trim(fileplace), exist=dirExists)
+#endif
+            if(.not. dirExists)then
+                mkdirCMD = "mkdir -p "//trim(fileplace)
+                call system(mkdirCMD)
+                mkdirCMD = "mkdir -p "//trim(fileplace)//"jmean/"
+                call system(mkdirCMD)
+            end if
+
             ! get res dir
             resdir = trim(homedir)//'/res/'
 

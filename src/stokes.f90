@@ -12,7 +12,6 @@ contains
    use constants, only : PI, TWOPI, wp
    use random,    only : ran2   
    use photonMod
-   ! use gridMod
 
    implicit none
 

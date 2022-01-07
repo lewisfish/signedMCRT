@@ -2,7 +2,6 @@ module dict_mod
 ! module provides a limited dictionary type for storing simulation parameters
 !
 !
-    
     use constants, only : wp
 
     implicit none
@@ -15,6 +14,7 @@ module dict_mod
             ! procedure :: get_value
             procedure :: get_value_str
             procedure :: get_value_real
+            procedure :: grow
     end type dict_t
 
     interface dict_t
@@ -51,9 +51,25 @@ module dict_mod
         this%dict(this%count)%key = key
         allocate(this%dict(this%count)%value, source=value)
         this%count = min(this%count + 1, size(this%dict))
+        if(this%count >= size(this%dict))call this%grow()
 
     end subroutine add_entry
 
+
+    subroutine grow(this)
+
+        implicit none
+
+        class(dict_t) :: this
+
+        type(dict_data), allocatable :: new(:)
+
+        allocate(new(2 * this%count))
+
+        new(1:this%count) = this%dict
+        call move_alloc(new, this%dict)
+
+    end subroutine grow
 
     ! function get_value(this, key)
 
