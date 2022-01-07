@@ -46,14 +46,15 @@ nscatt = 0.
 call init_rng(spread(123456789+0, 1, 8), fwd=.true.)
 
 optprop = 0.
-open(newunit=u,file='/home/lewis/postdoc/signedMCRT/res/optprops.params',status='old')
-    read(u,*) optprop(1)
-    read(u,*) optprop(2)
-    read(u,*) optprop(3)
-    read(u,*) optprop(4)
-    read(u,*) optprop(5)
-    read(u,*) focus
-close(u)
+focus = 0.
+! open(newunit=u,file='/home/lewis/postdoc/signedMCRT/res/optprops.params',status='old')
+!     read(u,*) optprop(1)
+!     read(u,*) optprop(2)
+!     read(u,*) optprop(3)
+!     read(u,*) optprop(4)
+!     read(u,*) optprop(5)
+!     read(u,*) focus
+! close(u)
 
 dict = dict_t(9)
 call dict%add_entry("focus", focus)

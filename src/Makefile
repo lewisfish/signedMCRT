@@ -16,7 +16,7 @@ endif
 PROGRAM =  mcgrid
 
 SRCS =      constants.f90 \
-		    utils.f90 \
+	        utils.f90 \
             dictsMod.f90 \
             vector_class.f90 \
             vec4_class.f90 \
@@ -26,7 +26,8 @@ SRCS =      constants.f90 \
             writer.f90 \
             sdfsMod.f90 \
             iarray.f90 \
-		    photon.f90 \
+            surfaces.f90 \
+            photon.f90 \
             subs.f90 \
             inttau2.f90 \
             stokes.f90 \
