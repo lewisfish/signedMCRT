@@ -36,7 +36,7 @@ module dict_mod
         type(dict_t) :: init_dict
 
         allocate(init_dict%dict(size))
-        init_dict%count = 1
+        init_dict%count = 0
 
     end function init_dict
 
@@ -48,10 +48,10 @@ module dict_mod
         class(*),     intent(IN) :: value
         character(*), intent(IN) :: key
 
-        this%dict(this%count)%key = key
-        allocate(this%dict(this%count)%value, source=value)
         this%count = min(this%count + 1, size(this%dict))
         if(this%count >= size(this%dict))call this%grow()
+        this%dict(this%count)%key = key
+        allocate(this%dict(this%count)%value, source=value)
 
     end subroutine add_entry
 

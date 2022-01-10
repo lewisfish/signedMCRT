@@ -7,6 +7,7 @@ copyright = "2020 Lewis McMillan"
 
 [dependencies]
 toml-f.git = "https://github.com/toml-f/toml-f"
+tev_bindings.git = "https://github.com/lewisfish/fortran_tev_bindings"
 
 [library]
 source-dir="src"

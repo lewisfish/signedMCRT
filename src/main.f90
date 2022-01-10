@@ -25,11 +25,14 @@ use utils, only : pbar, str
 use parse_mod
 use sim_state_mod, only : state
 
+use tev_mod
+
 implicit none
 
+type(tevipc)   :: tev
 type(photon)   :: packet
 integer        :: j, i
-real(kind=wp)  :: ran, start, time_taken, nscatt
+real(kind=wp)  :: ran, start, time_taken, nscatt, image(200,200,1)
 type(pbar)     :: bar
 real(kind=wp),   allocatable :: ds(:)
 type(container), allocatable :: array(:)
@@ -38,6 +41,9 @@ type(container), allocatable :: array(:)
 integer       :: id, numproc
 real(kind=wp) :: nscattGLOBAL, optprop(5), focus
 type(dict_t)  :: dict
+
+tev = tevipc()
+call tev%create_image("jmean", 200, 200, ["R"], .true.)
 
 dict = dict_t(4)
 call parse_params("res/input.toml", dict)
@@ -117,6 +123,12 @@ do j = 1, state%nphotons
         call tauint2(state%grid, packet, array)
 
     end do
+!$omp critical
+    if(id == 0 .and. mod(j,100) == 0)then
+        image = reshape(jmean(100:100,:,:), [200,200,1])
+        call tev%update_image("jmean", real(image(:,:,1:1)), ["R"], 0, 0, .true., .false.)
+    end if
+!$omp end critical
 end do
 
 #ifdef _OPENMP
