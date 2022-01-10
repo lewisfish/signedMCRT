@@ -5,7 +5,7 @@ module subs
 
     implicit none
 
-    public  :: setup_simulation, print_time, get_time
+    public  :: setup_simulation
     private :: directory, alloc_array, zarray
 
     contains
@@ -142,8 +142,10 @@ module subs
             type(extrude), allocatable, target, save :: ex(:)
             type(model), target, save :: m
             
+            type(vector)  :: a, b
             real(kind=wp) :: hgg, mus, mua, n
             integer       :: layer, i
+            logical       :: fexists
 
             packet = photon("uniform")
 
@@ -156,8 +158,8 @@ module subs
             layer = 1
 
             bbox = box(vector(10._wp, 10._wp, 2.001_wp), 0._wp, 0._wp, 0._wp, 1._wp, 2) 
-            !420
-
+            inquire(file="res/svg.f90", exist=fexists)
+            if(.not. fexists)error stop "need to generate svg.f90 and place in res/"
             include "../res/svg.f90"
 
             do i = 1, size(cnta)
@@ -528,7 +530,7 @@ module subs
 
         function setup_omg_sdf(packet) result(array)
             
-            use sdfs,      only : container, cylinder, torus, model, box, smoothunion, rotate_y, model_init, translate
+            use sdfs,      only : container, cylinder, torus, model, box, union, rotate_y, model_init, translate
             
             use vector_class, only : vector, invert
             use photonMod
@@ -634,7 +636,7 @@ module subs
             cnta(9)%p => g(4)
             cnta(10)%p => g(5)
 
-            omg_sdf = model_init(cnta, smoothunion, 0.05_wp)
+            omg_sdf = model_init(cnta, union, 0.05_wp)
 
             array(1)%p => omg_sdf ! model
             array(2)%p => boxy    ! bbox
@@ -981,38 +983,4 @@ module subs
             allocate(jmean(nxg, nyg, nzg), jmeanGLOBAL(nxg, nyg, nzg))
 
         end subroutine alloc_array
-
-
-        real function get_time()
-
-#ifdef _OPENMP
-            use omp_lib
-#endif
-            implicit none
-
-#ifdef _OPENMP
-                get_time = omp_get_wtime()
-#else
-                call cpu_time(get_time)
-#endif
-
-        end function get_time
-
-
-        subroutine print_time(time, id)
-
-            implicit none
-
-            real(kind=wp), intent(IN) :: time
-            integer,       intent(IN) :: id
-
-            if(id == 0)then
-                if(time >= 60._wp)then
-                   print*, floor((time)/60._wp),"mins", mod(time, 60._wp)/100._wp,"s"
-                else
-                   print*, 'time taken ~',time,'s'
-                end if
-            end if
-
-        end subroutine print_time
 end module subs

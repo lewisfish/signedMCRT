@@ -103,10 +103,10 @@ def write_segment(x1, x2, y1, y2, i, fh):
     if y1 == y2:
         y1 += eps
 
-    fh.write(f"a = vector({x1:.7f}d0, {y1:.7f}d0, 0.0)\n")
-    fh.write(f"b = vector({x2:.7f}d0, {y2:.7f}d0, 0.0)\n")
+    fh.write(f"a = vector({x1:.7f}_wp, {y1:.7f}_wp, 0.0_wp)\n")
+    fh.write(f"b = vector({x2:.7f}_wp, {y2:.7f}_wp, 0.0_wp)\n")
     fh.write(f"seg({i}) = segment(a, b, mus, mua, hgg, n, layer)\n")
-    fh.write(f"ex({i}) = extrude(seg({i}), .5)\n\n")
+    fh.write(f"ex({i}) = extrude(seg({i}), .5_wp)\n\n")
     i += 1
     return i
 
@@ -146,7 +146,7 @@ with open("svg.f90", "w") as fh:
                 x.append(x2)
                 y.append(y1)
                 y.append(y2)
-                # k = write_segment(x1, x2, y1, y2, k, fh)
+                k = write_segment(x1, x2, y1, y2, k, fh)
             elif isinstance(i, Move):
                 axs[1].plot(x, y)
                 x = []
@@ -166,15 +166,15 @@ with open("svg.f90", "w") as fh:
     # plt.show()
 
 
-ves, _ = read_nrrd("../data/jmean/logo.nrrd")
-img = ves[200, :, :]
-print(img.shape)
-axs[0].imshow(img[::-1, :], extent=[-1., 1., -1., 1.], aspect="auto")
-axs[0].set_xlim([-0.5638903504803154, 0.5638903504803154])
-axs[0].set_ylim([-0.5638903504803154, 0.5638903504803154])
-axs[0].set_xlabel("Distance/cm")
-axs[0].set_ylabel("Distance/cm")
-axs[1].set_xlabel("Distance/cm")
+# ves, _ = read_nrrd("../data/jmean/logo.nrrd")
+# img = ves[200, :, :]
+# print(img.shape)
+# axs[0].imshow(img[::-1, :], extent=[-1., 1., -1., 1.], aspect="auto")
+# axs[0].set_xlim([-0.5638903504803154, 0.5638903504803154])
+# axs[0].set_ylim([-0.5638903504803154, 0.5638903504803154])
+# axs[0].set_xlabel("Distance/cm")
+# axs[0].set_ylabel("Distance/cm")
+# axs[1].set_xlabel("Distance/cm")
 
-plt.savefig("crest-sdf-svg.png", dpi=100, bbox_inches="tight")
+# plt.savefig("crest-sdf-svg.png", dpi=100, bbox_inches="tight")
 # plt.show()

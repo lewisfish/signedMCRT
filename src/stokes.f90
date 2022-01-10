@@ -114,7 +114,7 @@ contains
             if(bmu == -1._wp) then
                goto 100
          end if
-         end if
+      end if
 
          packet%cost=costp*bmu+sintp*sinbt*cosi1
          if(abs(packet%cost).lt.1.) then

@@ -67,6 +67,7 @@ module photonMod
         end function init_source
 
         subroutine point(this, dict)
+        !isotropic point source
 
             use sim_state_mod, only : state
             use random,        only : ran2
@@ -78,9 +79,9 @@ module photonMod
             type(dict_t), optional, intent(IN) :: dict
             integer :: cell(3)
 
-            this%pos%x = 0._wp
-            this%pos%y = 0._wp
-            this%pos%z = 0._wp
+            this%pos%x = dict%get_value_real("pos%x")
+            this%pos%y = dict%get_value_real("pos%y")
+            this%pos%z = dict%get_value_real("pos%z")
 
             this%phi  = ran2()*twoPI
             this%cosp = cos(this%phi)

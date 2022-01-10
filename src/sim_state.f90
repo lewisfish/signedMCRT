@@ -8,11 +8,12 @@ module sim_state_mod
         integer :: nphotons, iseed
         character(len=:), allocatable :: experiment, outfile, renderfile, source
         type(cart_grid) :: grid
+        logical :: render_geom
     end type settings_t
 
     type(settings_t) :: state
 
     private
-    public :: settings_t, state    
+    public :: settings_t, state 
 
 end module sim_state_mod

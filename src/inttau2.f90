@@ -145,7 +145,6 @@ module inttau2
             !carry out refelction/refraction
             if (n1 /= n2)then
                 N = calcNormal(pos, sdfs_array(cur_layer)%p)
-                N = N%magnitude()
                 rflag = .false.
                 call reflect_refract(dir, N, n1, n2, rflag)
                 tau = -log(ran2())

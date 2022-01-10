@@ -32,10 +32,18 @@ module dict_mod
 
         implicit none
 
-        integer, intent(IN) :: size
+        integer, optional, intent(IN) :: size
         type(dict_t) :: init_dict
 
-        allocate(init_dict%dict(size))
+        integer :: default_size
+
+        if(present(size))then
+            default_size = size
+        else
+            default_size = 10
+        end if
+
+        allocate(init_dict%dict(default_size))
         init_dict%count = 0
 
     end function init_dict

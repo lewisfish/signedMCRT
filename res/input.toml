@@ -1,6 +1,6 @@
 [source]
-name = "point"
-nphotons = 10000
+name = "uniform"
+nphotons = 1000000
 
 [grid]
 nxg = 200
@@ -11,8 +11,7 @@ ymax = 1.0
 zmax = 1.0
 
 [geometry]
-geom_name = "scat_test"
-tau = 10.0
+geom_name = "logo"
 
 [output]
 fluence = "fluence.nrrd"

@@ -21,7 +21,7 @@ use stokes_mod
 use writer_mod
 use vector_class
 use sdfs
-use utils, only : pbar, str
+use utils, only : pbar, str, get_time, print_time
 use parse_mod
 use sim_state_mod, only : state
 
@@ -29,32 +29,45 @@ use tev_mod
 
 implicit none
 
+type(container), allocatable :: array(:)
 type(tevipc)   :: tev
 type(photon)   :: packet
-integer        :: j, i
-real(kind=wp)  :: ran, start, time_taken, nscatt, image(200,200,1)
+type(dict_t)   :: dict
 type(pbar)     :: bar
-real(kind=wp),   allocatable :: ds(:)
-type(container), allocatable :: array(:)
+character(len=64), allocatable :: args(:)
+real(kind=wp),     allocatable :: ds(:)
+integer       :: i, j, num_args
+real(kind=wp) :: ran, start, time_taken, nscatt, image(200,200,1)
 
 ! mpi/mp variables
 integer       :: id, numproc
 real(kind=wp) :: nscattGLOBAL
-type(dict_t)  :: dict
+
+num_args = command_argument_count()
+if(num_args == 0)then
+    allocate(args(1))
+    args(1) = "input.toml"
+else
+    allocate(args(num_args))
+    do i = 1, num_args
+        call get_command_argument(i, args(i))
+    end do
+end if
 
 tev = tevipc()
-call tev%create_image("jmean", 200, 200, ["R"], .true.)
+dict = dict_t()
 
-dict = dict_t(4)
-call parse_params("res/input.toml", dict)
+call parse_params("res/"//trim(args(1)), dict)
+call tev%create_image(state%experiment, state%grid%nxg, state%grid%nzg, ["R"], .true.)
 
 nscatt = 0._wp
 call init_rng(spread(state%iseed+0, 1, 8), fwd=.true.)
 
-
 call setup_simulation(packet, array, dict)
 ! render geometry to voxel format for debugging
-call render(array, vector(state%grid%xmax, state%grid%ymax, state%grid%zmax), 200, fname=state%renderfile)
+if(state%render_geom)then
+    call render(array, vector(state%grid%xmax, state%grid%ymax, state%grid%zmax), 200, fname=state%renderfile)
+end if
 allocate(ds(size(array)))
 
 start = get_time()
@@ -72,8 +85,8 @@ if(id == 0)then
 end if
 
 #ifdef _OPENMP
-!$omp parallel default(none) shared(array, numproc, start, state, bar, dict)&
-!$omp& private(ran, id, ds) reduction(+:nscatt) firstprivate(packet)
+!$omp parallel default(none) shared(array, numproc, start, state, bar, dict, jmean, tev)&
+!$omp& private(ran, id, ds, image) reduction(+:nscatt) firstprivate(packet)
     numproc = omp_get_num_threads()
     id = omp_get_thread_num()
 #elif MPI
@@ -157,6 +170,9 @@ if(id == 0)then
     call dict%add_entry("grid_data", 'fluence map')
     call dict%add_entry("real_size", str(state%grid%xmax,7)//" "//str(state%grid%ymax,7)//" "//str(state%grid%zmax,7))
     call dict%add_entry("units", "cm")
+    call dict%add_entry("nphotons", state%nphotons)
+    call dict%add_entry("source", state%source)
+    call dict%add_entry("experiment", state%experiment)
 
     jmeanGLOBAL = normalise_fluence(state%grid, jmeanGLOBAL, state%nphotons)
     call write(jmeanGLOBAL, trim(fileplace)//"jmean/"//state%outfile, dict)

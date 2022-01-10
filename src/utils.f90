@@ -93,13 +93,13 @@ module utils
 
     !subroutines to deg2rad variables
     interface deg2rad
-        ! module procedure deg2rad_R4
+        module procedure deg2rad_R4
         module procedure deg2rad_R8
     end interface deg2rad
 
     !subroutines to rad2deg variables
     interface rad2deg
-        ! module procedure rad2deg_R4
+        module procedure rad2deg_R4
         module procedure rad2deg_R8
     end interface rad2deg
 
@@ -115,7 +115,7 @@ module utils
     end interface
 
     private
-    public :: str, swap, colour, mem_free, chdir, mix, clamp, rad2deg, deg2rad, lerp
+    public :: str, swap, colour, mem_free, chdir, mix, clamp, rad2deg, deg2rad, lerp, get_time, print_time
     public :: bold, italic, underline, strikethrough, black, red, green, yellow, blue, magenta, cyan, white
     public :: black_b, red_b, green_b, yellow_b, blue_b, magenta_b, cyan_b, white_b, pbar
 
@@ -235,18 +235,18 @@ module utils
         end function rad2deg_R8
 
 
-        ! pure function deg2rad_R4(angle) result(res)
+        pure function deg2rad_R4(angle) result(res)
 
-        !     use constants, only : PI
+            use constants, only : PI
 
-        !     implicit none
+            implicit none
 
-        !     real(kind=sp), intent(IN) :: angle
-        !     real(kind=sp) :: res
+            real(kind=sp), intent(IN) :: angle
+            real(kind=sp) :: res
 
-        !     res = angle*PI/180._sp
+            res = angle*PI/180._sp
 
-        ! end function deg2rad_R4
+        end function deg2rad_R4
 
         pure function deg2rad_R8(angle) result(res)
 
@@ -465,18 +465,24 @@ module utils
         end function str_iarray
 
 
-        function str_R4(i)
+        function str_R4(i, len)
 
             implicit none
 
             real(kind=sp), intent(IN) :: i
+            integer, optional, intent(IN) :: len
 
             character(len=:), allocatable :: str_R4
             character(len=100) :: string
 
             write(string,'(f100.8)') I
 
-            str_R4 = trim(adjustl(string))
+            if(present(len))then
+                str_R4 = trim(adjustl(string))
+                str_R4 = trim(adjustl(str_R4(:len)))
+            else
+                str_R4 = trim(adjustl(string))
+            end if
         end function str_r4
 
         function str_R8(i, len)
@@ -688,4 +694,39 @@ module utils
             
             mem_free = i * 1024_int64 !convert from Kib to b 
         end function mem_free
+
+        real function get_time()
+
+#ifdef _OPENMP
+            use omp_lib
+#endif
+            implicit none
+
+#ifdef _OPENMP
+                get_time = omp_get_wtime()
+#else
+                call cpu_time(get_time)
+#endif
+
+        end function get_time
+
+        subroutine print_time(time, id)
+
+            use constants, only : wp
+
+            implicit none
+
+            real(kind=wp), intent(IN) :: time
+            integer,       intent(IN) :: id
+
+            if(id == 0)then
+                if(time >= 60._wp)then
+                   print*, floor((time)/60._wp),"mins", mod(time, 60._wp)/100._wp,"s"
+                else
+                   print*, 'time taken ~',time,'s'
+                end if
+            end if
+
+        end subroutine print_time
+
 end module utils

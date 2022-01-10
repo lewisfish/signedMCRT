@@ -26,7 +26,7 @@ module parse_mod
         open(newunit=u, file=trim(filename))
         call toml_parse(table, u)
         
-        call parse_source(table)
+        call parse_source(table, dict)
         call parse_grid(table)
         call parse_geometry(table, dict)
         call parse_output(table)
@@ -34,23 +34,56 @@ module parse_mod
 
     end subroutine parse_params
     
-    subroutine parse_source(table)
+    subroutine parse_source(table, dict)
 
+        use dict_mod
         use sim_state_mod, only : state
 
         implicit none
         
         type(toml_table), intent(INOUT) :: table
+        type(dict_t),     intent(INOUT) :: dict
 
         type(toml_table), pointer :: child
-        real(kind=wp) :: dir(3)
+        type(toml_array), pointer :: children
+
+        real(kind=wp) :: dir(3), pos(3)
+        integer :: i, nlen
+        character(len=1) :: axis(3)
+
+        axis = ["x", "y", "z"]
 
         call get_value(table, "source", child)
 
         if(associated(child))then
             call get_value(child, "name", state%source, "point")
             call get_value(child, "nphotons", state%nphotons, 1000000)
-            ! call get_value(child, "direction", dir, [0._wp, 0._wp, -1._wp])
+
+            call get_value(child, "position", children, requested=.false.)
+            if(associated(children))then
+                nlen = len(children)
+                if(nlen < 3)then
+                    error stop "Need a vector of size 3 for position."
+                end if
+                do i = 1, len(children)
+                    call get_value(children, i, pos(i))
+                    call dict%add_entry("pos%"//axis(i), pos(i))
+                end do
+            end if
+
+            children => null()
+            
+            call get_value(child, "direction", children, requested=.false.)
+            if(associated(children))then
+                nlen = len(children)
+                if(nlen < 3)then
+                    error stop "Need a vector of size 3 for direction."
+                end if
+                do i = 1, len(children)
+                    call get_value(children, i, dir(i))
+                    call dict%add_entry("dir%"//axis(i), dir(i))
+                end do
+            end if
         else
             error stop "Need source table in input param file"
         end if
@@ -127,6 +160,7 @@ module parse_mod
         if(associated(child))then
             call get_value(child, "fluence", state%outfile, "fluence.nrrd")
             call get_value(child, "render", state%renderfile, "geom_render.nrrd")
+            call get_value(child, "render_geom", state%render_geom, .false.)
         else
             error stop "Need output table in input param file"
         end if
