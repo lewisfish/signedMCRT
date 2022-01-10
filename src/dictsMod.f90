@@ -2,6 +2,7 @@ module dict_mod
 ! module provides a limited dictionary type for storing simulation parameters
 !
 !
+    use constants, only : wp
 
     implicit none
 
@@ -10,9 +11,10 @@ module dict_mod
         integer :: count
         contains
             procedure :: add_entry
-            procedure :: get_value
+            ! procedure :: get_value
             procedure :: get_value_str
             procedure :: get_value_real
+            procedure :: grow
     end type dict_t
 
     interface dict_t
@@ -34,7 +36,7 @@ module dict_mod
         type(dict_t) :: init_dict
 
         allocate(init_dict%dict(size))
-        init_dict%count = 1
+        init_dict%count = 0
 
     end function init_dict
 
@@ -46,38 +48,54 @@ module dict_mod
         class(*),     intent(IN) :: value
         character(*), intent(IN) :: key
 
+        this%count = min(this%count + 1, size(this%dict))
+        if(this%count >= size(this%dict))call this%grow()
         this%dict(this%count)%key = key
         allocate(this%dict(this%count)%value, source=value)
-        this%count = min(this%count + 1, size(this%dict))
 
     end subroutine add_entry
 
 
-    function get_value(this, key)
+    subroutine grow(this)
 
         implicit none
 
         class(dict_t) :: this
-        character(*), intent(IN) :: key
-        class(*), allocatable :: get_value
 
-        integer :: i, pos
+        type(dict_data), allocatable :: new(:)
 
-        do i = 1, size(this%dict)
-            pos = index(this%dict(i)%key, key)
-            if(pos > 0)then
-                get_value = this%dict(i)%value
-                return
-            end if
-        end do
-        Error stop "No such key!"
+        allocate(new(2 * this%count))
 
-    end function get_value
+        new(1:this%count) = this%dict
+        call move_alloc(new, this%dict)
+
+    end subroutine grow
+
+    ! function get_value(this, key)
+
+    !     implicit none
+
+    !     class(dict_t) :: this
+    !     character(*), intent(IN) :: key
+    !     class(*), allocatable :: get_value
+
+    !     integer :: i, pos
+
+    !     do i = 1, size(this%dict)
+    !         pos = index(this%dict(i)%key, key)
+    !         if(pos > 0)then
+    !             get_value = this%dict(i)%value
+    !             return
+    !         end if
+    !     end do
+    !     Error stop "No such key!"
+
+    ! end function get_value
 
     function get_value_str(this, key)
 
         use utils, only : str
-
+        use iso_fortran_env, only : sp => real32, dp => real64
         implicit none
 
         class(dict_t) :: this
@@ -96,12 +114,12 @@ module dict_mod
                     select type (value)
                     type is (character(*))
                         get_value_str = value
-                    ! type is(real)
-                    !     get_value_str = str(dble(value))
+                    type is(real(sp))
+                        get_value_str = str(real(value, kind=sp))
                     type is(integer)
                         get_value_str = str(int(value))
-                    type is(double precision)
-                        get_value_str = str(dble(value))
+                    type is(real(dp))
+                        get_value_str = str(real(value, kind=dp))
                     type is(logical)
                         get_value_str = str(value)
                     class default
@@ -121,11 +139,11 @@ module dict_mod
         class(dict_t) :: this
         character(*), intent(IN) :: key
         class(*), allocatable :: value
-        real :: get_value_real
+        real(kind=wp) :: get_value_real
 
         integer :: i, pos
 
-        get_value_real = -99.
+        get_value_real = -99._wp
 
         !this is very inefficient, but will suffice for small dicts like intended
         !if a large dict is required then will need to use hash tables I think...
@@ -137,9 +155,9 @@ module dict_mod
                     type is (character(*))
                         error stop "cant convert string to real"
                     type is(integer)
-                        get_value_real = real(value)
-                    type is(double precision)
-                        get_value_real = dble(value)
+                        get_value_real = real(value,kind=wp)
+                    type is(real(wp))
+                        get_value_real = real(value,kind=wp)
                     type is(logical)
                         error stop "cant convert logical to real"                        
                     class default

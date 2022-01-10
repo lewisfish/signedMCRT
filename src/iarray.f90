@@ -2,7 +2,10 @@ MODULE iarray
 !
 !  Contains all array var names.
 !
+
+    use constants, only : wp
+
     implicit none
 
-    real, allocatable :: jmean(:,:,:), jmeanGLOBAL(:,:,:)
+    real(kind=wp), allocatable :: jmean(:,:,:), jmeanGLOBAL(:,:,:)
 end MODULE iarray

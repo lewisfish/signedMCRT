@@ -1,9 +1,11 @@
 module mat_class
-
+    
+    use constants, only : wp
+    
     !not fully implmented matix class
     !minimum implmented for neural sdf type
     type :: mat
-        real :: vals(4, 4)
+        real(kind=wp) :: vals(4, 4)
         contains
 
         generic   :: operator(/)     => mat_div_scal
@@ -38,7 +40,7 @@ contains
 
         implicit none
 
-        real :: array(16)
+        real(kind=wp) :: array(16)
         integer :: i, cnt
 
         cnt = 1
@@ -56,8 +58,8 @@ contains
 
         implicit none
 
-        class(mat), intent(IN) :: a
-        real,       intent(IN) :: b
+        class(mat),    intent(IN) :: a
+        real(kind=wp), intent(IN) :: b
 
         mat_add_scal%vals = a%vals + b
 
@@ -68,8 +70,8 @@ contains
 
         implicit none
 
-        class(mat), intent(IN) :: b
-        real,       intent(IN) :: a
+        class(mat),    intent(IN) :: b
+        real(kind=wp), intent(IN) :: a
 
         scal_add_mat%vals = b%vals + a
 
@@ -80,8 +82,8 @@ contains
 
         implicit none
 
-        class(mat), intent(IN) :: a
-        real,       intent(IN) :: b
+        class(mat),    intent(IN) :: a
+        real(kind=wp), intent(IN) :: b
 
         mat_minus_scal%vals = a%vals - b
 
@@ -91,8 +93,8 @@ contains
 
         implicit none
 
-        class(mat), intent(IN) :: a
-        real,       intent(IN) :: b
+        class(mat),    intent(IN) :: a
+        real(kind=wp), intent(IN) :: b
 
         mat_div_scal%vals = a%vals / b
 
@@ -102,8 +104,8 @@ contains
 
         implicit none
 
-        class(mat), intent(IN) :: a
-        real,       intent(IN) :: b
+        class(mat),    intent(IN) :: a
+        real(kind=wp), intent(IN) :: b
 
         mat_mult_scal%vals = a%vals * b
 
@@ -113,8 +115,8 @@ contains
 
         implicit none
 
-        class(mat), intent(IN) :: b
-        real,       intent(IN) :: a
+        class(mat),    intent(IN) :: b
+        real(kind=wp), intent(IN) :: a
 
         scal_mult_mat%vals = b%vals * a
 
@@ -129,7 +131,7 @@ contains
         class(mat), intent(IN) :: a
         type(vec4), intent(IN) :: b
 
-        real :: tmp(4)
+        real(kind=wp) :: tmp(4)
 
         tmp = matmul(a%vals, [b%x, b%y, b%z, b%p])
         mat_mult_mat = vec4(tmp(1), tmp(2), tmp(3), tmp(4))
@@ -147,7 +149,7 @@ end module mat_class
 
 !     implicit none
     
-!     real :: array(16)
+!     real(kind=wp) :: array(16)
 !     type(mat) :: m
 !     type(vec4) :: v4
 

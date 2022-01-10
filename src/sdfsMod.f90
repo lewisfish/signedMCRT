@@ -5,6 +5,7 @@ module sdfs
 !   https://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm
 !
     use vector_class
+    use constants, only : wp
 
     implicit none
 
@@ -13,27 +14,29 @@ module sdfs
     ! provides deferred evaluation func to get distance to shape
     ! and gives the transform and optical prperties.
     ! Layer is an important bookeeping integer.
-        real :: mus, mua, kappa, albedo, hgg, g2, n
-        real :: transform(4, 4)
+        real(kind=wp) :: mus, mua, kappa, albedo, hgg, g2, n
+        real(kind=wp) :: transform(4, 4)
         integer :: layer
         contains
         procedure(evalInterface), deferred :: evaluate
     end type sdf
 
     abstract interface
-        real function evalInterface(this, pos)
+        function evalInterface(this, pos) result(res)
             use vector_class
+            use constants, only : wp
             import sdf
             implicit none
             class(sdf) :: this
             type(vector), intent(IN) :: pos
+            real(kind=wp) :: res
         end function evalInterface
     end interface
 
 
 
     type, extends(sdf) :: sphere
-        real :: radius
+        real(kind=wp) :: radius
         contains
         procedure :: evaluate => eval_sphere
     end type sphere
@@ -44,8 +47,8 @@ module sdfs
 
 
     type, extends(sdf) :: cylinder
-        real         :: radius
-        type(vector) :: a, b
+        real(kind=wp) :: radius
+        type(vector)  :: a, b
         contains
         procedure :: evaluate => eval_cylinder
     end type cylinder
@@ -68,7 +71,7 @@ module sdfs
 
 
     type, extends(sdf) :: torus
-        real :: oradius, iradius
+        real(kind=wp) :: oradius, iradius
         contains
         procedure :: evaluate => eval_torus
     end type torus
@@ -79,7 +82,7 @@ module sdfs
 
 
     type, extends(sdf) :: triprisim
-        real :: h1, h2
+        real(kind=wp) :: h1, h2
         contains
         procedure :: evaluate => eval_triprisim
     end type triprisim
@@ -90,8 +93,8 @@ module sdfs
 
 
     type, extends(sdf) :: cone
-        type(vector) :: a, b
-        real         :: ra, rb
+        type(vector)  :: a, b
+        real(kind=wp) :: ra, rb
         contains
         procedure :: evaluate => eval_cone
     end type cone
@@ -101,8 +104,8 @@ module sdfs
     end interface cone
 
     type, extends(sdf) :: capsule
-        type(vector) :: a, b
-        real         :: r
+        type(vector)  :: a, b
+        real(kind=wp) :: r
         contains
         procedure :: evaluate => eval_capsule
     end type capsule
@@ -132,7 +135,7 @@ module sdfs
     end interface segment
 
     type, extends(sdf) :: moon
-        real :: d, ra, rb
+        real(kind=wp) :: d, ra, rb
         contains
         procedure :: evaluate => eval_moon
     end type moon
@@ -152,9 +155,9 @@ module sdfs
 
 
     type, extends(sdf) :: model
-        type(container), allocatable  :: array(:)
+        type(container), allocatable   :: array(:)
         procedure(op), nopass, pointer :: func
-        real :: k
+        real(kind=wp) :: k
         contains
         procedure :: evaluate => eval_model
     end type model
@@ -171,7 +174,7 @@ module sdfs
 
 
     type, extends(sdf) :: twist
-        real :: k
+        real(kind=wp) :: k
         class(sdf), pointer :: prim
         contains
         procedure :: evaluate => eval_twist
@@ -193,7 +196,7 @@ module sdfs
     end interface displacement
 
     type, extends(sdf) :: bend
-        real :: k
+        real(kind=wp) :: k
         class(sdf), pointer :: prim
         contains
         procedure :: evaluate => eval_bend
@@ -215,7 +218,7 @@ module sdfs
     end interface elongate
 
     type, extends(sdf) :: repeat
-        real :: c
+        real(kind=wp) :: c
         type(vector) :: la, lb
         class(sdf), pointer :: prim
         contains
@@ -227,7 +230,7 @@ module sdfs
     end interface repeat
 
     type, extends(sdf) :: extrude
-        real :: h
+        real(kind=wp) :: h
         class(sdf), pointer :: prim
         contains
         procedure :: evaluate => eval_extrude
@@ -240,17 +243,21 @@ module sdfs
 
 
     abstract interface
-        real function op(d1, d2, k)
+        function op(d1, d2, k) result(res)
+            use constants, only : wp
             implicit none
-            real, intent(IN) :: d1, d2, k
+            real(kind=wp), intent(IN) :: d1, d2, k
+            real(kind=wp) :: res
         end function op
     end interface
 
     abstract interface
-        real function primitive(pos)
+        function primitive(pos) result(res)
             use vector_class, only : vector
+            use constants,    only : wp
             implicit none
             type(vector), intent(IN) :: pos
+            real(kind=wp) :: res
         end function primitive
     end interface
 
@@ -278,12 +285,12 @@ module sdfs
 
             type(segment) :: out
 
-            type(vector),   intent(IN) :: a, b
-            real,           intent(IN) :: mus, mua, hgg, n
-            integer,        intent(IN) :: layer
-            real, optional, intent(IN) :: transform(4, 4)
+            type(vector),            intent(IN) :: a, b
+            real(kind=wp),           intent(IN) :: mus, mua, hgg, n
+            integer,                 intent(IN) :: layer
+            real(kind=wp), optional, intent(IN) :: transform(4, 4)
 
-            real :: t(4, 4)
+            real(kind=wp) :: t(4, 4)
 
             if(present(transform))then
                 t = transform
@@ -300,7 +307,7 @@ module sdfs
             out%mus = mus
             out%mua = mua
             out%kappa = mus + mua
-            if(out%mua < 1d-9)then
+            if(out%mua < 1e-9_wp)then
                 out%albedo = 1.
             else
                 out%albedo = mus / out%kappa
@@ -311,21 +318,22 @@ module sdfs
 
         end function segment_init
 
-        real function eval_segment(this, pos)
+        function eval_segment(this, pos) result(res)
 
             implicit none
 
             class(segment) :: this
             type(vector), intent(IN) :: pos
+            real(kind=wp) :: res
 
             type(vector) :: p
 
             p = pos .dot. this%transform
-            eval_segment = segment_fn(p, this%a, this%b) - 0.1d0
+            res = segment_fn(p, this%a, this%b) - 0.1_wp
 
         end function eval_segment
 
-        real function segment_fn(p, a, b)
+        function segment_fn(p, a, b) result(res)
             !p = pos
             !a = pt1
             !b = pt2
@@ -336,18 +344,16 @@ module sdfs
             implicit none
 
             type(vector), intent(IN) :: p, a, b
+            real(kind=wp) :: res
 
-            type(vector) :: pa, ba
-            real :: h
+            type(vector)  :: pa, ba
+            real(kind=wp) :: h
            
             pa = p - a
             ba = b - a
-            ! print*,p,a
-            ! print*,pa
-            ! print*," "
-            h = clamp((pa .dot. ba) / (ba .dot. ba), 0.0, 1.0)
+            h = clamp((pa .dot. ba) / (ba .dot. ba), 0.0_wp, 1.0_wp)
 
-            segment_fn = length(pa - ba*h)
+            res = length(pa - ba*h)
 
         end function segment_fn
 
@@ -358,11 +364,11 @@ module sdfs
         
             type(neural) :: out
             
-            real,           intent(IN) :: mus, mua, hgg, n
-            integer,        intent(IN) :: layer
-            real, optional, intent(IN) :: transform(4, 4)
+            real(kind=wp),           intent(IN) :: mus, mua, hgg, n
+            integer,                 intent(IN) :: layer
+            real(kind=wp), optional, intent(IN) :: transform(4, 4)
 
-            real :: t(4, 4)
+            real(kind=wp) :: t(4, 4)
 
             if(present(transform))then
                 t = transform
@@ -376,8 +382,8 @@ module sdfs
             out%mus = mus
             out%mua = mua
             out%kappa = mus + mua
-            if(out%mua < 1d-9)then
-                out%albedo = 1.
+            if(out%mua < 1e-9_wp)then
+                out%albedo = 1._wp
             else
                 out%albedo = mus / out%kappa
             end if
@@ -389,7 +395,7 @@ module sdfs
 
 
 
-real function eval_neural(this, pos) result(out)
+function eval_neural(this, pos) result(out)
 ! this function is generated using code. do not edit
     use vec4_class
     use mat_class
@@ -398,6 +404,7 @@ real function eval_neural(this, pos) result(out)
 
     class(neural) :: this
     type(vector), intent(IN) :: pos
+    real(kind=wp) :: out
 
     type(vec4) :: f0_0, f0_1, f0_2, f0_3, f1_0, f1_1, f1_2, f1_3, f2_0, f2_1, f2_2, f2_3
  
@@ -405,46 +412,46 @@ f0_0=sin(pos%y*vec4(-2.845,2.169,-3.165,-3.379)+pos%z*vec4(-1.938,2.632,-1.872,3
 f0_1=sin(pos%y*vec4(-.870,-.224,-3.854,-2.134)+pos%z*vec4(-1.474,-2.259,4.302,2.238)+pos%x*vec4(1.576,-.826,1.014,2.511)+vec4(.639,-.425,6.931,7.475))
 f0_2=sin(pos%y*vec4(-2.161,1.539,-3.024,1.739)+pos%z*vec4(-3.388,.743,-3.374,-.536)+pos%x*vec4(3.843,-3.060,3.127,1.533)+vec4(1.916,-2.519,-.403,-1.918))
 f0_3=sin(pos%y*vec4(.076,1.427,-2.403,-.442)+pos%z*vec4(3.012,1.584,-3.421,1.513)+pos%x*vec4(.061,-3.592,-.935,.125)+vec4(7.654,-.949,-7.044,4.319))
-f1_0=sin(mat([.230,.244,-.196,-.230,-.303,.187,.122,-.410,.388,-.741,.731,.031,-.999,-.044,.107,.171])*f0_0+&
-   mat([.141,-.542,-.726,-.280,-.445,-.038,-.397,.348,-.086,.413,.544,.298,-.075,.122,-.315,.293])*f0_1+&
-   mat([.329,-.106,-.690,.012,-.073,-.862,.381,.628,.378,-.012,-.137,-.071,.580,.060,-1.094,.652])*f0_2+&
-   mat([.616,.363,.211,-.366,-.396,.388,-.090,.217,.479,-.339,-.039,-.132,.176,.223,.312,.082])*f0_3+&
-   vec4(-2.491,3.220,2.193,2.989))/1.0+f0_0
-f1_1=sin(mat([.137,.498,.156,.391,-.059,.084,-.182,-.027,.650,.302,.676,-.202,-.488,.297,-.136,-.366])*f0_0+&
-   mat([.211,.210,-.557,.021,.808,-.041,-.726,.028,.003,-.012,-.280,-.539,-.624,.261,.262,-.123])*f0_1+&
-   mat([-.220,-.208,.211,-.740,-.009,-.103,.741,-.820,-.312,.074,.432,-.258,.390,-.249,.375,.169])*f0_2+&
-   mat([-.085,-.105,.309,.291,-.476,-.764,.048,-.148,-.318,.182,-.170,-.220,-1.041,-.116,-1.077,.565])*f0_3+&
-   vec4(1.529,2.058,-.449,-1.700))/1.0+f0_1
-f1_2=sin(mat([.385,.698,-.630,-.482,-.099,-.552,.173,-.148,-.711,-.721,.342,.079,-.470,-.177,.011,-.117])*f0_0+&
-   mat([.834,-.758,.162,.761,-.348,.367,.375,.721,.731,.078,.024,.329,.340,-.429,-.006,.084])*f0_1+&
-   mat([.277,.015,-.449,-.100,-.223,-.897,.623,-.004,.049,-.371,.040,-.200,.367,.221,-.063,.665])*f0_2+&
-   mat([1.595,.428,.417,.268,-.241,.145,.141,-.185,.430,-.096,.521,.109,-.239,.770,-.100,-.128])*f0_3+&
-   vec4(-1.674,2.261,-2.165,-3.244))/1.0+f0_2
-f1_3=sin(mat([.228,-.315,.459,.085,-.060,-.070,-.217,-.605,-.217,-.237,.400,.358,.198,-.722,-.062,-.805])*f0_0+&
-   mat([.108,.313,.793,-.378,-.168,-.350,.504,.664,.251,-.058,.087,-.405,.068,.077,.148,-.741])*f0_1+&
-   mat([.324,-.130,.018,.100,-.658,.087,-.077,-.082,.101,-.103,-.132,.159,-.117,-.563,-.606,-.278])*f0_2+&
-   mat([.181,.584,.390,-.498,.096,-.461,-.324,.573,-.261,.849,-.012,.017,-.289,.578,.161,-1.158])*f0_3+&
-   vec4(-.938,-.744,2.675,1.662))/1.0+f0_3
-f2_0=sin(mat([-.165,-.648,-.274,-.443,.307,-.478,-.204,-.103,-.017,1.027,.680,.228,-.121,.419,.137,-.253])*f1_0+&
-   mat([-.252,.249,.450,-.249,-1.085,-.292,.609,.047,-.999,-.082,-.005,-.836,-.356,.411,-.402,.699])*f1_1+&
-   mat([-.103,-.218,-.000,-.639,-.057,.447,-.502,-.505,-.298,.029,-.363,-.607,.116,-.942,2.064,.363])*f1_2+&
-   mat([.394,.030,.070,1.402,-.552,-.391,.255,-.733,-.102,.263,-.291,.190,.489,.614,.683,.061])*f1_3+&
-   vec4(-.896,.069,3.048,2.889))/1.4+f1_0
-f2_1=sin(mat([.553,-.627,-.284,-1.032,-.524,.294,-.078,-.128,.100,.112,.089,.318,.560,.407,-.317,-1.634])*f1_0+&
-   mat([.024,.420,.599,.063,-.317,.728,.197,-1.037,.425,-.035,-.240,-1.530,-.246,.333,.209,-1.455])*f1_1+&
-   mat([.514,-.095,.139,-.551,-.225,-.067,.568,-.958,.038,.161,-.057,-.871,.468,-.633,.440,1.798])*f1_2+&
-   mat([.185,-.798,.206,.941,1.032,-.016,.629,-.416,.026,-.777,.206,-.360,-.456,.463,1.117,.883])*f1_3+&
-   vec4(2.594,2.602,-4.067,.754))/1.4+f1_1
-f2_2=sin(mat([.601,.096,-.071,.363,-1.159,-.053,.049,-.140,.056,.701,-.047,-.031,1.257,-.421,-.360,-1.596])*f1_0+&
-   mat([.357,.525,-.130,-.001,-.643,-.206,.237,-.837,.813,-.308,.407,-.157,1.845,.737,-.374,.390])*f1_1+&
-   mat([-.569,.109,.476,-.377,.124,.171,-.100,-.606,-.560,.414,.176,.483,-2.082,-.375,.928,.125])*f1_2+&
-   mat([-.599,.549,-.414,.642,-.525,.025,.385,-.797,1.270,.342,-.068,.965,-1.026,-.177,.890,.156])*f1_3+&
-   vec4(-4.226,1.935,3.830,-2.055))/1.4+f1_2
-f2_3=sin(mat([.463,1.053,.008,-.354,-.124,-.566,-.734,.673,.970,-.193,.377,.283,-.481,-1.345,.024,.687])*f1_0+&
-   mat([-.358,-.069,.358,.373,.745,-.056,.054,1.070,-.459,-.404,-.654,.665,-.400,.127,.422,.202])*f1_1+&
-   mat([.255,-.513,-.741,-.345,-.404,.188,.118,.486,.783,.610,-.790,-.099,-.555,-3.111,-1.241,-.215])*f1_2+&
-   mat([.776,.131,.035,.434,.355,-2.543,-.158,-.140,.454,1.154,.156,.543,.555,-.726,.369,-1.032])*f1_3+&
-   vec4(1.108,.703,-.637,.098))/1.4+f1_3
+f1_0=sin(mat([.230_wp,.244_wp,-.196_wp,-.230_wp,-.303_wp,.187_wp,.122_wp,-.410_wp,.388_wp,-.741_wp,.731_wp,.031_wp,-.999_wp,-.044_wp,.107_wp,.171_wp])*f0_0+&
+   mat([.141_wp,-.542_wp,-.726_wp,-.280_wp,-.445_wp,-.038_wp,-.397_wp,.348_wp,-.086_wp,.413_wp,.544_wp,.298_wp,-.075_wp,.122_wp,-.315_wp,.293_wp])*f0_1+&
+   mat([.329_wp,-.106_wp,-.690_wp,.012_wp,-.073_wp,-.862_wp,.381_wp,.628_wp,.378_wp,-.012_wp,-.137_wp,-.071_wp,.580_wp,.060_wp,-1.094_wp,.652_wp])*f0_2+&
+   mat([.616_wp,.363_wp,.211_wp,-.366_wp,-.396_wp,.388_wp,-.090_wp,.217_wp,.479_wp,-.339_wp,-.039_wp,-.132_wp,.176_wp,.223_wp,.312_wp,.082_wp])*f0_3+&
+   vec4(-2.491,3.220,2.193,2.989))/1.0_wp+f0_0
+f1_1=sin(mat([.137_wp,.498_wp,.156_wp,.391_wp,-.059_wp,.084_wp,-.182_wp,-.027_wp,.650_wp,.302_wp,.676_wp,-.202_wp,-.488_wp,.297_wp,-.136_wp,-.366_wp])*f0_0+&
+   mat([.211_wp,.210_wp,-.557_wp,.021_wp,.808_wp,-.041_wp,-.726_wp,.028_wp,.003_wp,-.012_wp,-.280_wp,-.539_wp,-.624_wp,.261_wp,.262_wp,-.123_wp])*f0_1+&
+   mat([-.220_wp,-.208_wp,.211_wp,-.740_wp,-.009_wp,-.103_wp,.741_wp,-.820_wp,-.312_wp,.074_wp,.432_wp,-.258_wp,.390_wp,-.249_wp,.375_wp,.169_wp])*f0_2+&
+   mat([-.085_wp,-.105_wp,.309_wp,.291_wp,-.476_wp,-.764_wp,.048_wp,-.148_wp,-.318_wp,.182_wp,-.170_wp,-.220_wp,-1.041_wp,-.116_wp,-1.077_wp,.565_wp])*f0_3+&
+   vec4(1.529_wp,2.058_wp,-.449_wp,-1.700_wp))/1.0_wp+f0_1
+f1_2=sin(mat([.385_wp,.698_wp,-.630_wp,-.482_wp,-.099_wp,-.552_wp,.173_wp,-.148_wp,-.711_wp,-.721_wp,.342_wp,.079_wp,-.470_wp,-.177_wp,.011_wp,-.117_wp])*f0_0+&
+   mat([.834_wp,-.758_wp,.162_wp,.761_wp,-.348_wp,.367_wp,.375_wp,.721_wp,.731_wp,.078_wp,.024_wp,.329_wp,.340_wp,-.429_wp,-.006_wp,.084_wp])*f0_1+&
+   mat([.277_wp,.015_wp,-.449_wp,-.100_wp,-.223_wp,-.897_wp,.623_wp,-.004_wp,.049_wp,-.371_wp,.040_wp,-.200_wp,.367_wp,.221_wp,-.063_wp,.665_wp])*f0_2+&
+   mat([1.595_wp,.428_wp,.417_wp,.268_wp,-.241_wp,.145_wp,.141_wp,-.185_wp,.430_wp,-.096_wp,.521_wp,.109_wp,-.239_wp,.770_wp,-.100_wp,-.128_wp])*f0_3+&
+   vec4(-1.674_wp,2.261_wp,-2.165_wp,-3.244_wp))/1.0_wp+f0_2
+f1_3=sin(mat([.228_wp,-.315_wp,.459_wp,.085_wp,-.060_wp,-.070_wp,-.217_wp,-.605_wp,-.217_wp,-.237_wp,.400_wp,.358_wp,.198_wp,-.722_wp,-.062_wp,-.805_wp])*f0_0+&
+   mat([.108_wp,.313_wp,.793_wp,-.378_wp,-.168_wp,-.350_wp,.504_wp,.664_wp,.251_wp,-.058_wp,.087_wp,-.405_wp,.068_wp,.077_wp,.148_wp,-.741_wp])*f0_1+&
+   mat([.324_wp,-.130_wp,.018_wp,.100_wp,-.658_wp,.087_wp,-.077_wp,-.082_wp,.101_wp,-.103_wp,-.132_wp,.159_wp,-.117_wp,-.563_wp,-.606_wp,-.278_wp])*f0_2+&
+   mat([.181_wp,.584_wp,.390_wp,-.498_wp,.096_wp,-.461_wp,-.324_wp,.573_wp,-.261_wp,.849_wp,-.012_wp,.017_wp,-.289_wp,.578_wp,.161_wp,-1.158_wp])*f0_3+&
+   vec4(-.938_wp,-.744_wp,2.675_wp,1.662_wp))/1.0_wp+f0_3
+f2_0=sin(mat([-.165_wp,-.648_wp,-.274_wp,-.443_wp,.307_wp,-.478_wp,-.204_wp,-.103_wp,-.017_wp,1.027_wp,.680_wp,.228_wp,-.121_wp,.419_wp,.137_wp,-.253_wp])*f1_0+&
+   mat([-.252_wp,.249_wp,.450_wp,-.249_wp,-1.085_wp,-.292_wp,.609_wp,.047_wp,-.999_wp,-.082_wp,-.005_wp,-.836_wp,-.356_wp,.411_wp,-.402_wp,.699_wp])*f1_1+&
+   mat([-.103_wp,-.218_wp,-.000_wp,-.639_wp,-.057_wp,.447_wp,-.502_wp,-.505_wp,-.298_wp,.029_wp,-.363_wp,-.607_wp,.116_wp,-.942_wp,2.064_wp,.363_wp])*f1_2+&
+   mat([.394_wp,.030_wp,.070_wp,1.402_wp,-.552_wp,-.391_wp,.255_wp,-.733_wp,-.102_wp,.263_wp,-.291_wp,.190_wp,.489_wp,.614_wp,.683_wp,.061_wp])*f1_3+&
+   vec4(-.896_wp,.069_wp,3.048_wp,2.889_wp))/1.4_wp+f1_0
+f2_1=sin(mat([.553_wp,-.627_wp,-.284_wp,-1.032_wp,-.524_wp,.294_wp,-.078_wp,-.128_wp,.100_wp,.112_wp,.089_wp,.318_wp,.560_wp,.407_wp,-.317_wp,-1.634_wp])*f1_0+&
+   mat([.024_wp,.420_wp,.599_wp,.063_wp,-.317_wp,.728_wp,.197_wp,-1.037_wp,.425_wp,-.035_wp,-.240_wp,-1.530_wp,-.246_wp,.333_wp,.209_wp,-1.455_wp])*f1_1+&
+   mat([.514_wp,-.095_wp,.139_wp,-.551_wp,-.225_wp,-.067_wp,.568_wp,-.958_wp,.038_wp,.161_wp,-.057_wp,-.871_wp,.468_wp,-.633_wp,.440_wp,1.798_wp])*f1_2+&
+   mat([.185_wp,-.798_wp,.206_wp,.941_wp,1.032_wp,-.016_wp,.629_wp,-.416_wp,.026_wp,-.777_wp,.206_wp,-.360_wp,-.456_wp,.463_wp,1.117_wp,.883_wp])*f1_3+&
+   vec4(2.594_wp,2.602_wp,-4.067_wp,.754_wp))/1.4_wp+f1_1
+f2_2=sin(mat([.601_wp,.096_wp,-.071_wp,.363_wp,-1.159_wp,-.053_wp,.049_wp,-.140_wp,.056_wp,.701_wp,-.047_wp,-.031_wp,1.257_wp,-.421_wp,-.360_wp,-1.596_wp])*f1_0+&
+   mat([.357_wp,.525_wp,-.130_wp,-.001_wp,-.643_wp,-.206_wp,.237_wp,-.837_wp,.813_wp,-.308_wp,.407_wp,-.157_wp,1.845_wp,.737_wp,-.374_wp,.390_wp])*f1_1+&
+   mat([-.569_wp,.109_wp,.476_wp,-.377_wp,.124_wp,.171_wp,-.100_wp,-.606_wp,-.560_wp,.414_wp,.176_wp,.483_wp,-2.082_wp,-.375_wp,.928_wp,.125_wp])*f1_2+&
+   mat([-.599_wp,.549_wp,-.414_wp,.642_wp,-.525_wp,.025_wp,.385_wp,-.797_wp,1.270_wp,.342_wp,-.068_wp,.965_wp,-1.026_wp,-.177_wp,.890_wp,.156_wp])*f1_3+&
+   vec4(-4.226_wp,1.935_wp,3.830_wp,-2.055_wp))/1.4_wp+f1_2
+f2_3=sin(mat([.463_wp,1.053_wp,.008_wp,-.354_wp,-.124_wp,-.566_wp,-.734_wp,.673_wp,.970_wp,-.193_wp,.377_wp,.283_wp,-.481_wp,-1.345_wp,.024_wp,.687_wp])*f1_0+&
+   mat([-.358_wp,-.069_wp,.358_wp,.373_wp,.745_wp,-.056_wp,.054_wp,1.070_wp,-.459_wp,-.404_wp,-.654_wp,.665_wp,-.400_wp,.127_wp,.422_wp,.202_wp])*f1_1+&
+   mat([.255_wp,-.513_wp,-.741_wp,-.345_wp,-.404_wp,.188_wp,.118_wp,.486_wp,.783_wp,.610_wp,-.790_wp,-.099_wp,-.555_wp,-3.111_wp,-1.241_wp,-.215_wp])*f1_2+&
+   mat([.776_wp,.131_wp,.035_wp,.434_wp,.355_wp,-2.543_wp,-.158_wp,-.140_wp,.454_wp,1.154_wp,.156_wp,.543_wp,.555_wp,-.726_wp,.369_wp,-1.032_wp])*f1_3+&
+   vec4(1.108_wp,.703_wp,-.637_wp,.098_wp))/1.4_wp+f1_3
 out= (f2_0.dot.vec4(-.041,-.048,-.054,.034))+&
     (f2_1.dot.vec4(.066,.103,.066,-.022))+&
     (f2_2.dot.vec4(.011,.059,-.092,.064))+&
@@ -460,14 +467,14 @@ end function eval_neural
             type(vector), intent(IN) :: p
             class(sdf) :: obj
 
-            real :: h
+            real(kind=wp) :: h
             type(vector) :: xyy, yyx, yxy, xxx
 
-            h = 1d-10
-            xyy = vector(1., -1., -1.)
-            yyx = vector(-1., -1., 1.)
-            yxy = vector(-1., 1., -1.)
-            xxx = vector(1., 1., 1.)
+            h = 1e-10_wp
+            xyy = vector(1._wp, -1._wp, -1._wp)
+            yyx = vector(-1._wp, -1._wp, 1._wp)
+            yxy = vector(-1._wp, 1._wp, -1._wp)
+            xxx = vector(1._wp, 1._wp, 1._wp)
 
             calcNormal = xyy*obj%evaluate(p + xyy*h) +  &
                          yyx*obj%evaluate(p + yyx*h) +  &
@@ -485,15 +492,15 @@ end function eval_neural
             type(model) :: out
 
             procedure(op) :: func
-            type(container), intent(IN) :: array(:)
-            real, optional,  intent(IN) :: kopt
+            type(container),          intent(IN) :: array(:)
+            real(kind=wp), optional,  intent(IN) :: kopt
 
             out%array = array
             out%func => func
             if(present(kopt))then
                 out%k = kopt
             else
-                out%k = 0.
+                out%k = 0._wp
             end if
 
             associate(member => array(1)%p)
@@ -509,18 +516,19 @@ end function eval_neural
 
         end function model_init
 
-        real function eval_model(this, pos)
+        function eval_model(this, pos) result(res)
 
             implicit none
 
             class(model) :: this
             type(vector), intent(IN) :: pos
+            real(kind=wp) :: res
 
             integer :: i
 
-            eval_model = this%array(1)%p%evaluate(pos)
+            res = this%array(1)%p%evaluate(pos)
             do i = 2, size(this%array)
-                eval_model = this%func(eval_model, this%array(i)%p%evaluate(pos), this%k)
+                res = this%func(res, this%array(i)%p%evaluate(pos), this%k)
             end do
 
         end function eval_model
@@ -532,12 +540,12 @@ end function eval_neural
         
             type(cylinder) :: out
             
-            real,           intent(IN) :: radius, mus, mua, hgg, n
-            integer,        intent(IN) :: layer
-            type(vector),   intent(IN) :: a, b
-            real, optional, intent(IN) :: transform(4, 4)
+            real(kind=wp),           intent(IN) :: radius, mus, mua, hgg, n
+            integer,                 intent(IN) :: layer
+            type(vector),            intent(IN) :: a, b
+            real(kind=wp), optional, intent(IN) :: transform(4, 4)
 
-            real :: t(4, 4)
+            real(kind=wp) :: t(4, 4)
 
             if(present(transform))then
                 t = transform
@@ -554,8 +562,8 @@ end function eval_neural
             out%mus = mus
             out%mua = mua
             out%kappa = mus + mua
-            if(out%mua < 1d-9)then
-                out%albedo = 1.
+            if(out%mua < 1e-9_wp)then
+                out%albedo = 1._wp
             else
                 out%albedo = mus / out%kappa
             end if
@@ -565,21 +573,22 @@ end function eval_neural
 
         end function cylinder_init
 
-        real function eval_cylinder(this, pos)
+        function eval_cylinder(this, pos) result(res)
 
             implicit none
 
             class(cylinder) :: this
             type(vector), intent(IN) :: pos
+            real(kind=wp) :: res
 
             type(vector) :: p
 
             p = pos .dot. this%transform
-            eval_cylinder = cylinder_fn(p, this%a, this%b, this%radius)
+            res = cylinder_fn(p, this%a, this%b, this%radius)
 
         end function eval_cylinder
 
-        real function cylinder_fn(p, a, b, r)
+        function cylinder_fn(p, a, b, r) result(res)
             !p = pos
             !a = pt1
             !b = pt2
@@ -587,35 +596,36 @@ end function eval_neural
             !draws cylinder along the axis between 2 points a and b
             implicit none
 
-            type(vector), intent(IN) :: p, a, b
-            real,         intent(IN) :: r
+            type(vector),  intent(IN) :: p, a, b
+            real(kind=wp), intent(IN) :: r
+            real(kind=wp) :: res
 
-            type(vector) :: ba, pa
-            real :: x, y, x2, y2, d, baba, paba
+            type(vector)  :: ba, pa
+            real(kind=wp) :: x, y, x2, y2, d, baba, paba
 
             ba = b - a
             pa = p - a
             baba = ba .dot. ba
             paba = pa .dot. ba
             x = length(pa * baba - ba*paba) - r*baba
-            y = abs(paba - baba*.5) - baba*.5
+            y = abs(paba - baba*.5_wp) - baba*.5_wp
             x2 = x**2
             y2 = (y**2)*baba
-            if(max(x, y) < 0.)then
+            if(max(x, y) < 0._wp)then
                 d = -min(x2, y2)
             else
-                if(x > 0. .and. y > 0.)then
+                if(x > 0._wp .and. y > 0._wp)then
                     d = x2 + y2
-                elseif(x > 0.)then
+                elseif(x > 0._wp)then
                     d = x2
-                elseif(y > 0)then
+                elseif(y > 0._wp)then
                     d = y2
                 else
-                    d = 0.
+                    d = 0._wp
                 end if
             end if
 
-            cylinder_fn = sign(sqrt(abs(d))/baba, d)
+            res = sign(sqrt(abs(d))/baba, d)
 
         end function cylinder_fn
 
@@ -626,12 +636,12 @@ end function eval_neural
         
             type(box) :: out
             
-            type(vector),   intent(IN) :: lengths
-            real,           intent(IN) :: mus, mua, hgg, n
-            integer,        intent(IN) :: layer
-            real, optional, intent(in) :: transform(4, 4)
+            type(vector),            intent(IN) :: lengths
+            real(kind=wp),           intent(IN) :: mus, mua, hgg, n
+            integer,                 intent(IN) :: layer
+            real(kind=wp), optional, intent(in) :: transform(4, 4)
 
-            real :: t(4, 4)
+            real(kind=wp) :: t(4, 4)
 
             if(present(transform))then
                 t = transform
@@ -639,15 +649,15 @@ end function eval_neural
                 t = identity()
             end if
 
-            out%lengths = .5*lengths! as only half lengths
+            out%lengths = .5_wp*lengths! as only half lengths
             out%layer = layer
             out%transform = t
 
             out%mus = mus
             out%mua = mua
             out%kappa = mus + mua
-            if(out%mua < 1d-9)then
-                out%albedo = 1.
+            if(out%mua < 1e-9_wp)then
+                out%albedo = 1._wp
             else
                 out%albedo = mus / out%kappa
             end if
@@ -663,57 +673,59 @@ end function eval_neural
         
             type(box) :: out
             
-            type(vector),   intent(IN) :: lengths
-            real,           intent(IN) :: mus, mua, hgg, n
-            integer,        intent(IN) :: layer
-            real, optional, intent(in) :: transform(4, 4)
+            type(vector),            intent(IN) :: lengths
+            real(kind=wp),           intent(IN) :: mus, mua, hgg, n
+            integer,                 intent(IN) :: layer
+            real(kind=wp), optional, intent(in) :: transform(4, 4)
 
             out = box_init(lengths, mus, mua, hgg, n, layer, transform)
 
         end function box_init_vec
 
-        function box_init_scal(length, mus, mua, hgg, n, layer, transform) result(out)
+        function box_init_scal(length, mus, mua, hgg, n, layer, transform) result(res)
         
             implicit none
         
-            type(box) :: out
+            type(box) :: res
             
-            real,           intent(IN) :: length, mus, mua, hgg, n
-            integer,        intent(IN) :: layer
-            real, optional, intent(in) :: transform(4, 4)
+            real(kind=wp),           intent(IN) :: length, mus, mua, hgg, n
+            integer,                 intent(IN) :: layer
+            real(kind=wp), optional, intent(in) :: transform(4, 4)
 
             type(vector) :: lengths
 
             lengths = vector(length, length, length)
 
-            out = box_init(lengths, mus, mua, hgg, n, layer, transform)
+            res = box_init(lengths, mus, mua, hgg, n, layer, transform)
 
         end function box_init_scal
 
-        real function eval_box(this, pos)
+        function eval_box(this, pos) result(res)
 
             implicit none
 
             class(box) :: this
             type(vector), intent(IN) :: pos
+            real(kind=wp) :: res
 
             type(vector) :: p
 
             p = pos .dot. this%transform
-            eval_box = box_fn(p, this%lengths)
+            res = box_fn(p, this%lengths)
 
         end function eval_box
 
-        real function box_fn(p, b)
+        function box_fn(p, b) result(res)
 
             implicit none
 
             type(vector), intent(IN) :: p, b
+            real(kind=wp) :: res
 
             type(vector) :: q
 
             q = abs(p) - b
-            box_fn = length(max(q, 0.)) + min(max(q%x, max(q%y, q%z)), 0.)
+            res = length(max(q, 0._wp)) + min(max(q%x, max(q%y, q%z)), 0._wp)
 
         end function box_fn
 
@@ -725,11 +737,11 @@ end function eval_neural
         
             type(sphere) :: out
             
-            real,            intent(IN) :: radius, mus, mua, hgg, n
-            integer,         intent(IN) :: layer
-            real,  optional, intent(IN) :: transform(4, 4)
+            real(kind=wp),           intent(IN) :: radius, mus, mua, hgg, n
+            integer,                 intent(IN) :: layer
+            real(kind=wp), optional, intent(IN) :: transform(4, 4)
 
-            real :: t(4, 4)
+            real(kind=wp) :: t(4, 4)
 
             if(present(transform))then
                 t = transform
@@ -745,8 +757,8 @@ end function eval_neural
             out%mus = mus
             out%mua = mua
             out%kappa = mus + mua
-            if(out%mua < 1d-9)then
-                out%albedo = 1.
+            if(out%mua < 1e-9_wp)then
+                out%albedo = 1._wp
             else
                 out%albedo = mus / out%kappa
             end if
@@ -756,28 +768,30 @@ end function eval_neural
 
         end function sphere_init
 
-        real function eval_sphere(this, pos)
+        function eval_sphere(this, pos) result(res)
 
             implicit none
 
             class(sphere) :: this
             type(vector), intent(IN) :: pos
+            real(kind=wp) :: res
 
             type(vector) :: p
 
             p = pos .dot. this%transform
-            eval_sphere = sphere_fn(p, this%radius)
+            res = sphere_fn(p, this%radius)
 
         end function eval_sphere
 
-        real function sphere_fn(p, c)
+        function sphere_fn(p, c) result(res)
 
             implicit none
 
-            type(vector), intent(IN) :: p
-            real,         intent(IN) :: c
+            type(vector),  intent(IN) :: p
+            real(kind=wp), intent(IN) :: c
+            real(kind=wp) :: res
 
-            sphere_fn = sqrt(p%x**2+p%y**2+p%z**2) - c
+            res = sqrt(p%x**2+p%y**2+p%z**2) - c
 
         end function sphere_fn
 
@@ -788,11 +802,11 @@ end function eval_neural
         
             type(torus) :: out
             
-            real,            intent(IN) :: oradius, iradius, mus, mua, hgg, n
-            integer,         intent(IN) :: layer
-            real,  optional, intent(IN) :: transform(4, 4)
+            real(kind=wp),           intent(IN) :: oradius, iradius, mus, mua, hgg, n
+            integer,                 intent(IN) :: layer
+            real(kind=wp), optional, intent(IN) :: transform(4, 4)
 
-            real :: t(4, 4)
+            real(kind=wp) :: t(4, 4)
 
             if(present(transform))then
                 t = transform
@@ -808,8 +822,8 @@ end function eval_neural
             out%mus = mus
             out%mua = mua
             out%kappa = mus + mua
-            if(out%mua < 1d-9)then
-                out%albedo = 1.
+            if(out%mua < 1e-9_wp)then
+                out%albedo = 1._wp
             else
                 out%albedo = mus / out%kappa
             end if
@@ -819,31 +833,33 @@ end function eval_neural
 
         end function torus_init
 
-        real function eval_torus(this, pos)
+        function eval_torus(this, pos) result(res)
 
             implicit none
 
             class(torus) :: this
             type(vector), intent(IN) :: pos
+            real(kind=wp) :: res
 
             type(vector) :: p
 
             p = pos .dot. this%transform
-            eval_torus = torus_fn(p, this%oradius, this%iradius)
+            res = torus_fn(p, this%oradius, this%iradius)
 
         end function eval_torus
 
-        real function torus_fn(p, or, ir)
+        function torus_fn(p, or, ir) result(res)
 
             implicit none
 
-            type(vector), intent(IN) :: p
-            real,         intent(IN) :: or, ir
+            type(vector),  intent(IN) :: p
+            real(kind=wp), intent(IN) :: or, ir
+            real(kind=wp) :: res
 
             type(vector) :: q
 
-            q = vector(length(vector(p%x, 0., p%z)) - or, p%y, 0.)
-            torus_fn = length(q) - ir
+            q = vector(length(vector(p%x, 0._wp, p%z)) - or, p%y, 0._wp)
+            res = length(q) - ir
 
         end function torus_fn
 
@@ -856,11 +872,11 @@ end function eval_neural
         
             type(triprisim) :: out
             
-            real,            intent(IN) :: h1, h2, mus, mua, hgg, n
-            integer,         intent(IN) :: layer
-            real,  optional, intent(IN) :: transform(4, 4)
+            real(kind=wp),           intent(IN) :: h1, h2, mus, mua, hgg, n
+            integer,                 intent(IN) :: layer
+            real(kind=wp), optional, intent(IN) :: transform(4, 4)
 
-            real :: t(4, 4)
+            real(kind=wp) :: t(4, 4)
 
             if(present(transform))then
                 t = transform
@@ -876,8 +892,8 @@ end function eval_neural
             out%mus = mus
             out%mua = mua
             out%kappa = mus + mua
-            if(out%mua < 1d-9)then
-                out%albedo = 1.
+            if(out%mua < 1e-9_wp)then
+                out%albedo = 1._wp
             else
                 out%albedo = mus / out%kappa
             end if
@@ -887,31 +903,33 @@ end function eval_neural
 
         end function triprisim_init
 
-        real function eval_triprisim(this, pos)
+        function eval_triprisim(this, pos) result(res)
 
             implicit none
 
             class(triprisim) :: this
             type(vector), intent(IN) :: pos
+            real(kind=wp) :: res
 
             type(vector) :: p
 
             p = pos .dot. this%transform
-            eval_triprisim = triprisim_fn(p, this%h1, this%h2)
+            res = triprisim_fn(p, this%h1, this%h2)
 
         end function eval_triprisim
 
-        real function triprisim_fn(p, h1, h2)
+        function triprisim_fn(p, h1, h2) result(res)
 
             implicit none
 
-            type(vector), intent(IN) :: p
-            real,         intent(IN) :: h1, h2
+            type(vector),  intent(IN) :: p
+            real(kind=wp), intent(IN) :: h1, h2
+            real(kind=wp) :: res
 
             type(vector) :: q
 
             q = abs(p)
-            triprisim_fn = max(q%z - h2, max(q%x*.866025 + p%y*.5, -p%y) - h1*.5) 
+            res = max(q%z - h2, max(q%x*.866025_wp + p%y*.5_wp, -p%y) - h1*.5_wp) 
 
         end function triprisim_fn
 
@@ -921,12 +939,12 @@ end function eval_neural
         
             type(cone) :: out
             
-            type(vector),    intent(IN) :: a, b
-            real,            intent(IN) :: ra, rb, mus, mua, hgg, n
-            integer,         intent(IN) :: layer
-            real,  optional, intent(IN) :: transform(4, 4)
+            type(vector),            intent(IN) :: a, b
+            real(kind=wp),           intent(IN) :: ra, rb, mus, mua, hgg, n
+            integer,                 intent(IN) :: layer
+            real(kind=wp), optional, intent(IN) :: transform(4, 4)
 
-            real :: t(4, 4)
+            real(kind=wp) :: t(4, 4)
 
             if(present(transform))then
                 t = transform
@@ -944,8 +962,8 @@ end function eval_neural
             out%mus = mus
             out%mua = mua
             out%kappa = mus + mua
-            if(out%mua < 1d-9)then
-                out%albedo = 1.
+            if(out%mua < 1e-9_wp)then
+                out%albedo = 1._wp
             else
                 out%albedo = mus / out%kappa
             end if
@@ -955,52 +973,54 @@ end function eval_neural
 
         end function cone_init
 
-        real function eval_cone(this, pos)
+        function eval_cone(this, pos) result(res)
 
             implicit none
 
             class(cone) :: this
             type(vector), intent(IN) :: pos
+            real(kind=wp) :: res
 
             type(vector) :: p
 
             p = pos .dot. this%transform
-            eval_cone = cone_fn(p, this%a, this%b, this%ra, this%rb)
+            res = cone_fn(p, this%a, this%b, this%ra, this%rb)
 
         end function eval_cone
 
-        real function cone_fn(p, a, b, ra, rb)
+        function cone_fn(p, a, b, ra, rb) result(res)
 
             use utils, only : clamp
 
             implicit none
 
-            type(vector), intent(IN) :: p, a, b
-            real,         intent(IN) :: ra, rb
+            type(vector),  intent(IN) :: p, a, b
+            real(kind=wp), intent(IN) :: ra, rb
+            real(kind=wp) :: res
 
-            real :: rba, baba, papa, paba, x, cax, cay, k, f, cbx, cby, s
+            real(kind=wp) :: rba, baba, papa, paba, x, cax, cay, k, f, cbx, cby, s
 
             rba = rb - ra
             baba = (b-a) .dot. (b-a)
             papa = (p-a) .dot. (p-a)
             paba =  ((p-a) .dot. (b-a))/ baba
             x = sqrt(papa - baba*paba**2)
-            if(paba < 0.5)then
-                cax = max(0., x - ra)
+            if(paba < 0.5_wp)then
+                cax = max(0._wp, x - ra)
             else
-                cax = max(0., x - rb)
+                cax = max(0._wp, x - rb)
             end if
-            cay = abs(paba - 0.5) - .5
+            cay = abs(paba - 0.5_wp) - .5_wp
             k = rba**2 + baba
-            f = clamp((rba * (x - ra) + paba*baba) / k, 0., 1.)
+            f = clamp((rba * (x - ra) + paba*baba) / k, 0._wp, 1._wp)
             cbx = x - ra - f*rba
             cby = paba - f
-            if(cbx < 0. .and. cay <0.)then
-                s = -1.
+            if(cbx < 0._wp .and. cay < 0._wp)then
+                s = -1._wp
             else
-                s = 1.
+                s = 1._wp
             end if 
-            cone_fn = s * sqrt(min(cax**2 + baba*cay**2, cbx**2 + baba*cby**2)) 
+            res = s * sqrt(min(cax**2 + baba*cay**2, cbx**2 + baba*cby**2)) 
 
         end function cone_fn
 
@@ -1010,12 +1030,12 @@ end function eval_neural
         
             type(capsule) :: out
             
-            type(vector),    intent(IN) :: a, b
-            real,            intent(IN) :: r, mus, mua, hgg, n
-            integer,         intent(IN) :: layer
-            real,  optional, intent(IN) :: transform(4, 4)
+            type(vector),            intent(IN) :: a, b
+            real(kind=wp),           intent(IN) :: r, mus, mua, hgg, n
+            integer,                 intent(IN) :: layer
+            real(kind=wp), optional, intent(IN) :: transform(4, 4)
 
-            real :: t(4, 4)
+            real(kind=wp) :: t(4, 4)
 
             if(present(transform))then
                 t = transform
@@ -1032,8 +1052,8 @@ end function eval_neural
             out%mus = mus
             out%mua = mua
             out%kappa = mus + mua
-            if(out%mua < 1d-9)then
-                out%albedo = 1.
+            if(out%mua < 1e-9_wp)then
+                out%albedo = 1._wp
             else
                 out%albedo = mus / out%kappa
             end if
@@ -1043,36 +1063,38 @@ end function eval_neural
 
         end function capsule_init
 
-        real function eval_capsule(this, pos)
+        function eval_capsule(this, pos) result(res)
 
             implicit none
 
             class(capsule) :: this
             type(vector), intent(IN) :: pos
+            real(kind=wp) :: res
 
             type(vector) :: p
 
             p = pos .dot. this%transform
-            eval_capsule = capsule_fn(p, this%a, this%b, this%r)
+            res = capsule_fn(p, this%a, this%b, this%r)
 
         end function eval_capsule
 
-        real function capsule_fn(p, a, b, r)
+        function capsule_fn(p, a, b, r) result(res)
 
             use utils, only : clamp
 
             implicit none
 
-            type(vector), intent(IN) :: p, a, b
-            real,         intent(IN) :: r
+            type(vector),  intent(IN) :: p, a, b
+            real(kind=wp), intent(IN) :: r
+            real(kind=wp) :: res
 
             type(vector) :: pa, ba
-            real :: h
+            real(kind=wp) :: h
 
             pa = p - a
             ba = b - a
-            h = clamp((pa .dot. ba) / (ba .dot. ba), 0., 1.)
-            capsule_fn = length(pa - ba*h) - r
+            h = clamp((pa .dot. ba) / (ba .dot. ba), 0._wp, 1._wp)
+            res = length(pa - ba*h) - r
 
         end function capsule_fn
 
@@ -1083,12 +1105,12 @@ end function eval_neural
         
             type(plane) :: out
             
-            type(vector),    intent(IN) :: a
-            real,            intent(IN) :: mus, mua, hgg, n
-            integer,         intent(IN) :: layer
-            real,  optional, intent(IN) :: transform(4, 4)
+            type(vector),             intent(IN) :: a
+            real(kind=wp),            intent(IN) :: mus, mua, hgg, n
+            integer,                  intent(IN) :: layer
+            real(kind=wp),  optional, intent(IN) :: transform(4, 4)
 
-            real :: t(4, 4)
+            real(kind=wp) :: t(4, 4)
 
             if(present(transform))then
                 t = transform
@@ -1103,8 +1125,8 @@ end function eval_neural
             out%mus = mus
             out%mua = mua
             out%kappa = mus + mua
-            if(out%mua < 1d-9)then
-                out%albedo = 1.
+            if(out%mua < 1e-9_wp)then
+                out%albedo = 1._wp
             else
                 out%albedo = mus / out%kappa
             end if
@@ -1114,30 +1136,32 @@ end function eval_neural
 
         end function plane_init
 
-        real function eval_plane(this, pos)
+        function eval_plane(this, pos) result(res)
 
             implicit none
 
             class(plane) :: this
             type(vector), intent(IN) :: pos
+            real(kind=wp) :: res
 
             type(vector) :: p
 
             p = pos .dot. this%transform
-            eval_plane = plane_fn(p, this%a)
+            res = plane_fn(p, this%a)
 
         end function eval_plane
 
-        real function plane_fn(p, n)
+        function plane_fn(p, n) result(res)
 
             use utils, only : clamp
 
             implicit none
 
             type(vector), intent(IN) :: p, n
+            real(kind=wp) :: res
 
             !n must be normalised
-            plane_fn = (p .dot. n)
+            res = (p .dot. n)
 
         end function plane_fn
 
@@ -1148,11 +1172,11 @@ end function eval_neural
         
             type(moon) :: out
             
-            real,            intent(IN) :: d, ra, rb, mus, mua, hgg, n
-            integer,         intent(IN) :: layer
-            real,  optional, intent(IN) :: transform(4, 4)
+            real(kind=wp),            intent(IN) :: d, ra, rb, mus, mua, hgg, n
+            integer,                  intent(IN) :: layer
+            real(kind=wp),  optional, intent(IN) :: transform(4, 4)
 
-            real :: t(4, 4)
+            real(kind=wp) :: t(4, 4)
 
             if(present(transform))then
                 t = transform
@@ -1169,8 +1193,8 @@ end function eval_neural
             out%mus = mus
             out%mua = mua
             out%kappa = mus + mua
-            if(out%mua < 1d-9)then
-                out%albedo = 1.
+            if(out%mua < 1e-9_wp)then
+                out%albedo = 1._wp
             else
                 out%albedo = mus / out%kappa
             end if
@@ -1180,42 +1204,44 @@ end function eval_neural
 
         end function moon_init
 
-        real function eval_moon(this, pos)
+        function eval_moon(this, pos) result(res)
 
             implicit none
 
             class(moon) :: this
             type(vector), intent(IN) :: pos
+            real(kind=wp) :: res
 
             type(vector) :: p
 
             p = pos .dot. this%transform
-            eval_moon = moon_fn(p, this%d, this%ra, this%rb)
+            res = moon_fn(p, this%d, this%ra, this%rb)
 
         end function eval_moon
 
-        real function moon_fn(p, d, ra, rb)
+        function moon_fn(p, d, ra, rb) result(res)
 
             use utils, only : clamp
 
             implicit none
 
-            type(vector), intent(IN) :: p
-            real, intent(IN) :: d, ra, rb
+            type(vector),  intent(IN) :: p
+            real(kind=wp), intent(IN) :: d, ra, rb
+            real(kind=wp) :: res
 
-            type(vector) :: pos
-            real :: a, b, ra2, rb2, d2
+            type(vector)  :: pos
+            real(kind=wp) :: a, b, ra2, rb2, d2
 
-            pos = vector(p%x, abs(p%y), 0.)
+            pos = vector(p%x, abs(p%y), 0._wp)
             ra2 = ra*ra
             rb2 = rb*rb
             d2 = d*d
-            a = (ra2 - rb2 + d2) / (2.*d)
-            b = sqrt(max(ra2 - a**2, 0.))
-            if(d*(pos%x*b - pos%y*a) > d2*max(b - pos%y, 0.))then
-                moon_fn = length(pos - vector(a, b, 0.))
+            a = (ra2 - rb2 + d2) / (2._wp*d)
+            b = sqrt(max(ra2 - a**2, 0._wp))
+            if(d*(pos%x*b - pos%y*a) > d2*max(b - pos%y, 0._wp))then
+                res = length(pos - vector(a, b, 0._wp))
             else
-                moon_fn = max(-length(pos) - ra, length(pos - vector(d, 0., 0.)) - rb)
+                res = max(-length(pos) - ra, length(pos - vector(d, 0._wp, 0._wp)) - rb)
             end if
 
         end function moon_fn
@@ -1228,58 +1254,63 @@ end function eval_neural
 
             type(vector), intent(IN) :: o
 
-            real :: out(4, 4)
+            real(kind=wp) :: out(4, 4)
 
-            out(:, 1) = [1., 0., 0., o%x] 
-            out(:, 2) = [0., 1., 0., o%y] 
-            out(:, 3) = [0., 0., 1., o%z] 
-            out(:, 4) = [0., 0., 0., 1.] 
+            out(:, 1) = [1._wp, 0._wp, 0._wp, o%x] 
+            out(:, 2) = [0._wp, 1._wp, 0._wp, o%y] 
+            out(:, 3) = [0._wp, 0._wp, 1._wp, o%z] 
+            out(:, 4) = [0._wp, 0._wp, 0._wp, 1._wp] 
 
         end function translate
 
-        real function union(d1, d2, k)
+        function union(d1, d2, k) result(res)
 
             implicit none
 
-            real, intent(IN) :: d1, d2, k
+            real(kind=wp), intent(IN) :: d1, d2, k
+            real(kind=wp) :: res
 
-            union = min(d1, d2)
+            res = min(d1, d2)
         end function union
 
 
-        real function SmoothUnion(d1, d2, k)
+        function SmoothUnion(d1, d2, k) result(res)
 
             use utils, only : mix, clamp
 
             implicit none
 
-            real, intent(IN) :: d1, d2, k
-            real :: h
+            real(kind=wp), intent(IN) :: d1, d2, k
+            real(kind=wp) :: res
 
-            h = max(k - abs(d1 - d2), 0.) / k
-            SmoothUnion = min(d1, d2) - h*h*h*k*(1./6.)
+            real(kind=wp) :: h
+
+            h = max(k - abs(d1 - d2), 0._wp) / k
+            res = min(d1, d2) - h*h*h*k*(1._wp/6._wp)
             ! h = clamp(0.5 +.5*(d2-d1)/k, 0., 1.)
             ! SmoothUnion = mix(d2, d1, h) - k*h*(1.-h)
 
         end function SmoothUnion
 
-        real function subtraction(d1, d2, k)
+        function subtraction(d1, d2, k) result(res)
 
             implicit none
 
-            real, intent(IN) :: d1, d2, k
+            real(kind=wp), intent(IN) :: d1, d2, k
+            real(kind=wp) :: res
 
-            subtraction = max(-d1, d2)
+            res = max(-d1, d2)
 
         end function subtraction
 
-        real function intersection(d1, d2, k)
+        function intersection(d1, d2, k) result(res)
 
             implicit none
 
-            real, intent(IN) :: d1, d2, k
+            real(kind=wp), intent(IN) :: d1, d2, k
+            real(kind=wp) :: res
 
-            intersection = max(d1, d2)
+            res = max(d1, d2)
 
         end function intersection
 
@@ -1305,18 +1336,19 @@ end function eval_neural
 
             end function elongate_init
 
-        real function eval_elongate(this, pos)
+        function eval_elongate(this, pos) result(res)
 
             implicit none
 
             class(elongate) :: this
             type(vector), intent(IN) :: pos
+            real(kind=wp) :: res
 
-            eval_elongate = elongate_fn(pos, this%size, this%prim)
+            res = elongate_fn(pos, this%size, this%prim)
 
         end function eval_elongate
 
-        real function elongate_fn(p, size, prim)
+        function elongate_fn(p, size, prim) result(res)
 
             implicit none
 
@@ -1324,14 +1356,15 @@ end function eval_neural
 
             type(vector), intent(IN) :: size
             type(vector), intent(IN) :: p
+            real(kind=wp) :: res
 
-            real :: w
+            real(kind=wp) :: w
             type(vector) :: q
 
             q = abs(p) - size
-            w = min(max(q%x, max(q%y, q%z)), 0.)
+            w = min(max(q%x, max(q%y, q%z)), 0._wp)
 
-            elongate_fn = prim%evaluate(max(q, 0.)) + w
+            res = prim%evaluate(max(q, 0._wp)) + w
 
         end function elongate_fn
 
@@ -1339,7 +1372,7 @@ end function eval_neural
 
             implicit none
 
-            real, intent(IN) :: k
+            real(kind=wp), intent(IN) :: k
             class(sdf), target :: prim
 
             out%k = k
@@ -1357,27 +1390,29 @@ end function eval_neural
 
             end function bend_init
 
-        real function eval_bend(this, pos)
+        function eval_bend(this, pos) result(res)
 
             implicit none
 
             class(bend) :: this
             type(vector), intent(IN) :: pos
+            real(kind=wp) :: res
 
-            eval_bend = bend_fn(pos, this%k, this%prim)
+            res = bend_fn(pos, this%k, this%prim)
 
         end function eval_bend
 
-        real function bend_fn(p, k, prim)
+        function bend_fn(p, k, prim) result(res)
 
             implicit none
 
             class(sdf) :: prim
 
-            real, intent(IN)         :: k
-            type(vector), intent(IN) :: p
+            real(kind=wp), intent(IN) :: k
+            type(vector),  intent(IN) :: p
+            real(kind=wp) :: res
 
-            real :: c, s, x2, y2, z2
+            real(kind=wp) :: c, s, x2, y2, z2
 
             c = cos(k * p%x)
             s = sin(k * p%x)
@@ -1385,7 +1420,7 @@ end function eval_neural
             y2 = s * p%x + c * p%y
             z2 = p%z
 
-            bend_fn = prim%evaluate(vector(x2, y2, z2))
+            res = prim%evaluate(vector(x2, y2, z2))
 
         end function bend_fn
 
@@ -1411,32 +1446,33 @@ end function eval_neural
 
             end function displacement_init
 
-        real function eval_disp(this, pos)
+        function eval_disp(this, pos) result(res)
 
             implicit none
 
             class(displacement) :: this
             type(vector), intent(IN) :: pos
+            real(kind=wp) :: res
 
-            eval_disp = displacement_fn(pos, this%prim, this%func)
-
+            res = displacement_fn(pos, this%prim, this%func)
 
         end function eval_disp
 
-        real function displacement_fn(p, prim, disp)
+        function displacement_fn(p, prim, disp) result(res)
 
             implicit none
 
             class(sdf) :: prim
             procedure(primitive) :: disp
             type(vector), intent(IN) :: p
+            real(kind=wp) :: res
 
-            real :: d1, d2
+            real(kind=wp) :: d1, d2
 
             d1 = prim%evaluate(p)
             d2 = disp(p)
 
-            displacement_fn = d1 + d2
+            res = d1 + d2
 
         end function displacement_fn
 
@@ -1461,26 +1497,28 @@ end function eval_neural
 
             end function twist_init
 
-        real function eval_twist(this, pos)
+        function eval_twist(this, pos) result(res)
 
             implicit none
 
             class(twist) :: this
             type(vector), intent(IN) :: pos
+            real(kind=wp) :: res
 
-            eval_twist = twist_fn(pos, this%k, this%prim)
+            res = twist_fn(pos, this%k, this%prim)
 
         end function eval_twist
 
-        real function twist_fn(p, k, prim)
+        function twist_fn(p, k, prim) result(res)
 
             implicit none
 
             class(sdf) :: prim
-            type(vector), intent(IN) :: p
-            real,         intent(IN) :: k
+            type(vector),  intent(IN) :: p
+            real(kind=wp), intent(IN) :: k
+            real(kind=wp) :: res
 
-            real :: c, s, x2, y2, z2
+            real(kind=wp) :: c, s, x2, y2, z2
 
             c = cos(k * p%z)
             s = sin(k * p%z)
@@ -1488,7 +1526,7 @@ end function eval_neural
             y2 = s*p%x + c*p%y
             z2 = p%z
 
-            twist_fn = prim%evaluate(vector(x2, y2, z2))
+            res = prim%evaluate(vector(x2, y2, z2))
 
         end function twist_fn
 
@@ -1498,8 +1536,8 @@ end function eval_neural
             implicit none
 
             class(sdf), target :: prim
-            type(vector), intent(IN) :: la, lb
-            real,         intent(IN) :: c
+            type(vector),  intent(IN) :: la, lb
+            real(kind=wp), intent(IN) :: c
 
             out%c = c
             out%la = la
@@ -1518,31 +1556,33 @@ end function eval_neural
 
             end function repeat_init
 
-        real function eval_repeat(this, pos)
+        function eval_repeat(this, pos) result(res)
 
             implicit none
 
             class(repeat) :: this
             type(vector), intent(IN) :: pos
+            real(kind=wp) :: res
 
-            eval_repeat = repeat_fn(pos, this%c, this%la, this%lb, this%prim)
+            res = repeat_fn(pos, this%c, this%la, this%lb, this%prim)
 
         end function eval_repeat
 
-        real function repeat_fn(p, c, la, lb, prim)
+        function repeat_fn(p, c, la, lb, prim) result(res)
 
             use vector_class
 
             implicit none
 
             class(sdf) :: prim
-            type(vector), intent(IN) :: p, la, lb
-            real,         intent(IN) :: c
+            type(vector),  intent(IN) :: p, la, lb
+            real(kind=wp), intent(IN) :: c
+            real(kind=wp) :: res
 
             type(vector) :: q
 
             q = p - c*clamp_vec(nint(p/c), la, lb)
-            repeat_fn = prim%evaluate(q)
+            res = prim%evaluate(q)
 
         end function repeat_fn
 
@@ -1551,7 +1591,7 @@ end function eval_neural
             implicit none
 
             class(sdf), target :: prim
-            real, intent(IN)   :: h
+            real(kind=wp), intent(IN)   :: h
 
             out%h = h
             out%prim => prim
@@ -1568,32 +1608,34 @@ end function eval_neural
 
         end function extrude_init
 
-        real function eval_extrude(this, pos)
+        function eval_extrude(this, pos) result(res)
 
             implicit none
 
             class(extrude) :: this
             type(vector), intent(IN) :: pos
+            real(kind=wp) :: res
 
-            eval_extrude = extrude_fn(pos, this%h, this%prim)
+            res = extrude_fn(pos, this%h, this%prim)
 
         end function eval_extrude
 
 
-        real function extrude_fn(p, h, prim)
+        function extrude_fn(p, h, prim) result(res)
 
             implicit none
 
             class(sdf) :: prim
-            type(vector), intent(IN) :: p
-            real,         intent(IN) :: h
+            type(vector),  intent(IN) :: p
+            real(kind=wp), intent(IN) :: h
+            real(kind=wp) :: res
 
-            type(vector) :: w
-            real :: d
+            type(vector)  :: w
+            real(kind=wp) :: d
 
             d = prim%evaluate(p)
-            w = vector(d, abs(p%z) - h, 0.)
-            extrude_fn = min(max(w%x, w%y), 0.) + length(max(w, 0.))
+            w = vector(d, abs(p%z) - h, 0._wp)
+            res = min(max(w%x, w%y), 0._wp) + length(max(w, 0._wp))
 
         end function extrude_fn
 
@@ -1605,17 +1647,18 @@ end function eval_neural
 
             implicit none
             
-            real, intent(IN) :: angle
-            real :: r(4, 4), c, s, a
+            real(kind=wp), intent(IN) :: angle
+            
+            real(kind=wp) :: r(4, 4), c, s, a
 
             a = deg2rad(angle)
             c = cos(a)
             s = sin(a)
 
-            r(:, 1) = [1., 0., 0., 0.]
-            r(:, 2) = [0., c,  s,  0.]
-            r(:, 3) = [0.,-s,  c,  0.]
-            r(:, 4) = [0., 0., 0., 1.]
+            r(:, 1) = [1._wp, 0._wp, 0._wp, 0._wp]
+            r(:, 2) = [0._wp, c,  s,  0._wp]
+            r(:, 3) = [0._wp,-s,  c,  0._wp]
+            r(:, 4) = [0._wp, 0._wp, 0._wp, 1._wp]
 
         end function rotate_x
 
@@ -1625,17 +1668,18 @@ end function eval_neural
 
             implicit none
             
-            real, intent(IN) :: angle
-            real :: r(4, 4), c, s, a
+            real(kind=wp), intent(IN) :: angle
+
+            real(kind=wp) :: r(4, 4), c, s, a
 
             a = deg2rad(angle)
             c = cos(a)
             s = sin(a)
 
-            r(:, 1) = [c,  0., -s,  0.]
-            r(:, 2) = [0., 1.,  0., 0.]
-            r(:, 3) = [s,  0.,  c,  0.]
-            r(:, 4) = [0., 0.,  0., 1.]
+            r(:, 1) = [c,  0._wp, -s,  0._wp]
+            r(:, 2) = [0._wp, 1._wp,  0._wp, 0._wp]
+            r(:, 3) = [s,  0._wp,  c,  0._wp]
+            r(:, 4) = [0._wp, 0._wp,  0._wp, 1._wp]
 
         end function rotate_y
 
@@ -1645,17 +1689,18 @@ end function eval_neural
 
             implicit none
             
-            real, intent(IN) :: angle
-            real :: r(4, 4), c, s, a
+            real(kind=wp), intent(IN) :: angle
+
+            real(kind=wp) :: r(4, 4), c, s, a
 
             a = deg2rad(angle)
             c = cos(a)
             s = sin(a)
 
-            r(:, 1) = [c, -s,  0., 0.]
-            r(:, 2) = [s,  c,  0., 0.]
-            r(:, 3) = [0., 0., 1., 0.]
-            r(:, 4) = [0., 0., 0., 1.]
+            r(:, 1) = [c, -s,  0._wp, 0._wp]
+            r(:, 2) = [s,  c,  0._wp, 0._wp]
+            r(:, 3) = [0._wp, 0._wp, 1._wp, 0._wp]
+            r(:, 4) = [0._wp, 0._wp, 0._wp, 1._wp]
 
         end function rotate_z
 
@@ -1663,12 +1708,12 @@ end function eval_neural
             
             implicit none
             
-            real :: r(4, 4)
+            real(kind=wp) :: r(4, 4)
 
-            r(:, 1) = [1., 0., 0., 0.]
-            r(:, 2) = [0., 1., 0., 0.]
-            r(:, 3) = [0., 0., 1., 0.]
-            r(:, 4) = [0., 0., 0., 1.]
+            r(:, 1) = [1._wp, 0._wp, 0._wp, 0._wp]
+            r(:, 2) = [0._wp, 1._wp, 0._wp, 0._wp]
+            r(:, 3) = [0._wp, 0._wp, 1._wp, 0._wp]
+            r(:, 4) = [0._wp, 0._wp, 0._wp, 1._wp]
 
         end function identity
 
@@ -1686,11 +1731,11 @@ end function eval_neural
             type(vector),           intent(IN) :: extent
             character(*), optional, intent(IN) :: fname
 
-            type(vector)      :: pos, wid
-            integer           :: i, j, k, u, ns, id
-            real              :: x, y, z, ds(size(cnt)-1)
-            real, allocatable :: image(:, :, :)
-            type(pbar)        :: bar
+            type(vector)               :: pos, wid
+            integer                    :: i, j, k, u, ns, id
+            real(kind=wp)              :: x, y, z, ds(size(cnt)-1)
+            real(kind=wp), allocatable :: image(:, :, :)
+            type(pbar)                 :: bar
 
             character(len=:), allocatable  :: filename
 
@@ -1701,7 +1746,7 @@ end function eval_neural
             end if
             ns = int(samples / 2)
             allocate(image(samples, samples, samples))
-            wid = extent/real(ns)
+            wid = extent/real(ns, kind=wp)
             bar = pbar(samples)
 !$omp parallel default(none) shared(cnt, ns, wid, image, samples, bar)&
 !$omp private(i, x, y, z, pos, j, k, u, ds, id)
@@ -1714,15 +1759,15 @@ end function eval_neural
                     do k = 1, samples
                         z = (k-ns) * wid%z
                         pos = vector(x, y, z)
-                        ds = 0.
+                        ds = 0._wp
                         do u = 1, size(ds)
                             ds(u) = cnt(u)%p%evaluate(pos)
                         end do
 
-                        if(all(ds > 0.))then
+                        if(all(ds > 0._wp))then
                             id=0.
                         else
-                            if(maxval(ds) < 0.)then
+                            if(maxval(ds) < 0._wp)then
                                 id = cnt(maxloc(ds,dim=1))%p%layer
                             else
                                 id = cnt(minloc(ds,dim=1))%p%layer
@@ -1731,7 +1776,7 @@ end function eval_neural
                         if(minval(ds) > 0)then
                             id = 0
                         else
-                            id =  minval(ds)!minloc(ds, dim=1)
+                            id = minloc(ds, dim=1)
                         end if
                         image(i, j, k) = minval(ds)!id
                     end do

@@ -1,5 +1,7 @@
 module constants
-!
+
+    use iso_fortran_env, only : real32, real64
+
 ! Module containing constants:
 !         PI, TWOPI
 !         and the vars for the filepaths.
@@ -9,7 +11,9 @@ module constants
 !         fileplace is the data folder directory
     implicit none
 
-    real,    parameter :: PI=4.*atan(1.), TWOPI=2.*PI
-    character(len=255) :: cwd, homedir, fileplace, resdir
+    integer,          parameter :: wp = real64 !can change this to real32 if need be
+    real(kind=wp),    parameter :: PI=4._wp*atan(1._wp), TWOPI=2._wp*PI
+    character(len=255)          :: cwd, homedir, fileplace, resdir
+
 
 end module constants

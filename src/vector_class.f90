@@ -2,8 +2,10 @@ Module vector_class
 ! module contains full vector class implmentation
 !
 !
+    use constants, only : wp
+
     type :: vector
-        real :: x, y, z
+        real(kind=wp)  :: x, y, z
         contains
 
         procedure :: magnitude       => magnitude_fn
@@ -61,7 +63,7 @@ Module vector_class
 
             type(vector), intent(IN) :: this, lo, hi
 
-            real :: x, y, z
+            real(kind=wp) :: x, y, z
 
             x = clamp(this%x, lo%x, hi%x)
             y = clamp(this%y, lo%y, hi%y)
@@ -78,7 +80,7 @@ Module vector_class
 
             type(vector), intent(IN) :: this
 
-            nint_vec = vector(real(nint(this%x)), real(nint(this%y)), real(nint(this%z)))
+            nint_vec = vector(real(nint(this%x), kind=wp), real(nint(this%y), kind=wp), real(nint(this%z), kind=wp))
 
         end function nint_vec
 
@@ -96,8 +98,8 @@ Module vector_class
 
             implicit none
 
-            type(vector), intent(IN) :: this
-            real, intent(IN) :: val
+            type(vector),  intent(IN) :: this
+            real(kind=wp), intent(IN) :: val
 
             max_vec = vector(max(this%x, val), max(this%y, val), max(this%z, val))
 
@@ -107,8 +109,8 @@ Module vector_class
 
             implicit none
 
-            type(vector), intent(IN) :: this
-            real, intent(IN) :: val
+            type(vector),  intent(IN) :: this
+            real(kind=wp), intent(IN) :: val
 
             min_fn = vector(min(this%x, val), min(this%y, val), min(this%z, val))
 
@@ -131,7 +133,7 @@ Module vector_class
             implicit none
 
             class(vector), intent(IN) :: a
-            real,          intent(IN) :: b
+            real(kind=wp), intent(IN) :: b
 
             vec_add_scal = vector(a%x + b, a%y + b, a%z + b)
 
@@ -143,7 +145,7 @@ Module vector_class
             implicit none
 
             class(vector), intent(IN) :: b
-            real,          intent(IN) :: a
+            real(kind=wp), intent(IN) :: a
 
             scal_add_vec = vector(b%x + a, b%y + a, b%z + a)
 
@@ -155,7 +157,7 @@ Module vector_class
             implicit none
 
             class(vector), intent(IN) :: a
-            real,          intent(IN) :: b
+            real(kind=wp), intent(IN) :: b
 
             vec_minus_scal = vector(a%x - b, a%y - b, a%z - b)
 
@@ -167,7 +169,7 @@ Module vector_class
             implicit none
 
             class(vector), intent(IN) :: b
-            real,          intent(IN) :: a
+            real(kind=wp), intent(IN) :: a
 
             scal_minus_vec = vector(b%x - a, b%y - a, b%z - a)
 
@@ -192,7 +194,7 @@ Module vector_class
 
             class(vector), intent(IN) :: a
             type(vector),  intent(IN) :: b
-            real :: dot
+            real(kind=wp) :: dot
 
             dot = (a%x * b%x) + (a%y * b%y) + (a%z * b%z)
 
@@ -203,7 +205,7 @@ Module vector_class
             implicit none
 
             class(vector), intent(IN) :: a
-            real,          intent(IN) :: b(4, 4)
+            real(kind=wp), intent(IN) :: b(4, 4)
             type(vector) :: dot
 
             dot%x = b(1, 1)*a%x + b(2, 1)*a%y + b(3, 1)*a%z + b(4, 1)*1.
@@ -229,7 +231,7 @@ Module vector_class
             implicit none
 
             class(vector), intent(IN) :: a
-            real,          intent(IN) :: b
+            real(kind=wp), intent(IN) :: b
 
             vec_mult_scal = vector(a%x * b, a%y * b, a%z * b)
 
@@ -241,7 +243,7 @@ Module vector_class
             implicit none
 
             class(vector), intent(IN) :: b
-            real,          intent(IN) :: a
+            real(kind=wp), intent(IN) :: a
 
             scal_mult_vec = vector(a * b%x, a * b%y, a * b%z)
 
@@ -253,7 +255,7 @@ Module vector_class
             implicit none
 
             class(vector), intent(IN) :: a
-            real,         intent(IN) :: b
+            real(kind=wp), intent(IN) :: b
 
             vec_div_scal_r4 = vector(a%x / b, a%y / b, a%z / b)
 
@@ -266,7 +268,7 @@ Module vector_class
             class(vector), intent(IN) :: a
             integer,       intent(IN) :: b
 
-            vec_div_scal_int = vector(a%x / real(b), a%y / real(b), a%z / real(b))
+            vec_div_scal_int = vector(a%x / real(b, kind=wp), a%y / real(b, kind=wp), a%z / real(b, kind=wp))
 
         end function vec_div_scal_int
 
@@ -277,7 +279,7 @@ Module vector_class
 
             class(vector) :: this
 
-            real :: tmp
+            real(kind=wp) :: tmp
 
             tmp = sqrt(this%x**2 + this%y**2 + this%z**2)
             magnitude_fn = this / tmp
@@ -309,10 +311,10 @@ Module vector_class
     pure function invert(A) result(B)
         !! from http://fortranwiki.org/fortran/show/Matrix+inversion
         !! Performs a direct calculation of the inverse of a 4×4 matrix.
-        real, intent(in) :: A(4,4)   !! Matrix
+        real(kind=wp), intent(in) :: A(4,4)   !! Matrix
 
-        real             :: B(4,4)   !! Inverse matrix
-        real             :: detinv
+        real(kind=wp) :: B(4,4)   !! Inverse matrix
+        real(kind=wp) :: detinv
 
     ! Calculate the inverse determinant of the matrix
     detinv = &

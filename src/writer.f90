@@ -2,9 +2,8 @@ module writer_mod
 ! module provides output routines in raw binary and .nrrd formats
 !
 !
-
-    use gridmod
-    use utils, only : str
+    use constants, only : wp
+    use utils,     only : str
     use dict_mod
 
 implicit none
@@ -24,18 +23,21 @@ implicit none
     contains
 
 
-        function normalise_fluence(array, grid, nphotons) result(out)
+        function normalise_fluence(grid, array, nphotons) result(out)
         ! normalise fluence in the Lucy 1999 way
+            
+            use gridMod
+
             implicit none
 
-            real,            intent(IN) :: array(:, :, :)
             type(cart_grid), intent(IN) :: grid
+            real(kind=wp),   intent(IN) :: array(:, :, :)
             integer,         intent(IN) :: nphotons
             
-            real, allocatable :: out(:, :, :)
+            real(kind=wp), allocatable :: out(:, :, :)
 
-            real    :: xmax, ymax, zmax
-            integer :: nxg, nyg, nzg
+            real(kind=wp) :: xmax, ymax, zmax
+            integer       :: nxg, nyg, nzg
 
             nxg = grid%nxg
             nyg = grid%nyg
@@ -46,7 +48,7 @@ implicit none
 
             allocate(out(size(array, 1), size(array, 2), size(array, 3)))
 
-            out  = array * ((2.*xmax*2.*ymax)/(nphotons * (2. * xmax / nxg) * (2. * ymax / nyg) * (2. * zmax / nzg)))
+            out  = array * ((2._wp*xmax*2._wp*ymax)/(nphotons * (2._wp * xmax / nxg) * (2._wp * ymax / nyg) * (2._wp * zmax / nzg)))
 
         end function normalise_fluence
 
@@ -55,8 +57,8 @@ implicit none
         ! routine automatically selects which way to write ouresults based upon file extension
             implicit none
         
-            real,                 intent(IN) :: array(:,:,:)
-            character(*),         intent(IN) :: filename
+            real(kind=wp),          intent(IN) :: array(:,:,:)
+            character(*),           intent(IN) :: filename
             type(dict_t), optional, intent(IN) :: dicts
 
             integer :: pos
@@ -83,7 +85,6 @@ implicit none
                 return
             end if
 
-
             error stop "File type not supported!"
 
         end subroutine write
@@ -92,8 +93,8 @@ implicit none
 
             implicit none
 
-            real,         intent(IN) :: array(:, :, :)
-            character(*), intent(IN) :: filename
+            real(kind=wp), intent(IN) :: array(:, :, :)
+            character(*),  intent(IN) :: filename
 
             integer :: u
             character(len=:), allocatable :: file
@@ -173,7 +174,7 @@ implicit none
             implicit none
         
             character(*),           intent(IN) :: filename
-            real,                   intent(IN) :: array(:, :, :)
+            real(kind=wp),          intent(IN) :: array(:, :, :)
             type(dict_t), optional, intent(IN) :: dicts
 
             character(len=64) :: key
@@ -187,6 +188,7 @@ implicit none
             end if
 
             open(newunit=u,file=file,form="formatted")
+            !to do fix precision
             call write_hdr(u, [size(array, 1), size(array, 2), size(array, 3)], "double")
 
             if(present(dicts))then
