@@ -39,7 +39,7 @@ type(container), allocatable :: array(:)
 
 ! mpi/mp variables
 integer       :: id, numproc
-real(kind=wp) :: nscattGLOBAL, optprop(5), focus
+real(kind=wp) :: nscattGLOBAL
 type(dict_t)  :: dict
 
 tev = tevipc()

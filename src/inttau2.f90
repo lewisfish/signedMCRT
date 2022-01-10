@@ -18,6 +18,7 @@ module inttau2
         use photonMod,    only : photon
         use gridMod,      only : cart_grid
         use vector_class, only : vector
+        use surfaces,     only : reflect_refract
         use sdfs
    
         implicit none

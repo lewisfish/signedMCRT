@@ -926,7 +926,6 @@ module subs
 
             implicit none
 
-            integer :: u
             character(len=:), allocatable :: mkdirCMD
             logical :: dirExists
 
@@ -945,9 +944,9 @@ module subs
 #endif
             if(.not. dirExists)then
                 mkdirCMD = "mkdir -p "//trim(fileplace)
-                call system(mkdirCMD)
+                call execute_command_line(mkdirCMD)
                 mkdirCMD = "mkdir -p "//trim(fileplace)//"jmean/"
-                call system(mkdirCMD)
+                call execute_command_line(mkdirCMD)
             end if
 
             ! get res dir
