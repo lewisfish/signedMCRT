@@ -54,7 +54,9 @@ else
     end do
 end if
 
+!init TEV link
 tev = tevipc()
+!init dictionary
 dict = dict_t()
 
 call parse_params("res/"//trim(args(1)), dict)

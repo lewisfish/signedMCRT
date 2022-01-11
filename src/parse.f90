@@ -50,6 +50,7 @@ module parse_mod
         real(kind=wp) :: dir(3), pos(3)
         integer :: i, nlen
         character(len=1) :: axis(3)
+        character(len=:), allocatable :: direction
 
         axis = ["x", "y", "z"]
 
@@ -69,12 +70,20 @@ module parse_mod
                     call get_value(children, i, pos(i))
                     call dict%add_entry("pos%"//axis(i), pos(i))
                 end do
+            else
+                if(state%source == "point")then
+                    pos = [0._wp, 0._wp, 0._wp]
+                    call dict%add_entry("pos%x", pos(1))
+                    call dict%add_entry("pos%y", pos(2))
+                    call dict%add_entry("pos%z", pos(3))
+                end if
             end if
 
             children => null()
             
             call get_value(child, "direction", children, requested=.false.)
             if(associated(children))then
+                if(state%source == "uniform")error stop "Source uniform cant have vector direction!"
                 nlen = len(children)
                 if(nlen < 3)then
                     error stop "Need a vector of size 3 for direction."
@@ -83,6 +92,8 @@ module parse_mod
                     call get_value(children, i, dir(i))
                     call dict%add_entry("dir%"//axis(i), dir(i))
                 end do
+            else
+                call get_value(child, "direction", direction, "-z")
             end if
         else
             error stop "Need source table in input param file"

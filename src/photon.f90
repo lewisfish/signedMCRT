@@ -121,7 +121,6 @@ module photonMod
             real(kind=wp) :: dist
             integer       :: cell(3)
 
-
             targ = vector(0._wp,0._wp,0._wp)
 
             this%pos%x = ranu(-state%grid%xmax, state%grid%xmax)
@@ -167,13 +166,15 @@ module photonMod
             class(photon) :: this
             type(dict_t), optional, intent(IN) :: dict
 
-            integer :: val, cell(3)
+            integer :: cell(3)
+            character(len=2) :: dir
 
-            val = 1
-            if(val == 1)then
-                ! -ive z 
-                this%pos%x = ranu(-state%grid%xmax+1e-3_wp, state%grid%xmax-1e-3_wp)
-                this%pos%y = ranu(-state%grid%ymax+1e-3_wp, state%grid%ymax-1e-3_wp)
+            dir = dict%get_value_str("dir")
+
+            select case(dir)
+            case("-z")
+                this%pos%x = ranu(-state%grid%xmax, state%grid%xmax)
+                this%pos%y = ranu(-state%grid%ymax, state%grid%ymax)
                 this%pos%z = state%grid%zmax-1e-8_wp
 
                 this%phi  = 0._wp
@@ -181,10 +182,9 @@ module photonMod
                 this%sinp = 0._wp
                 this%cost = -1._wp
                 this%sint = 0._wp
-            elseif(val == 2)then
-                ! +ive z 
-                this%pos%x = ranu(-state%grid%xmax+1e-3_wp, state%grid%xmax-1e-3_wp)
-                this%pos%y = ranu(-state%grid%ymax+1e-3_wp, state%grid%ymax-1e-3_wp)
+            case("+z")
+                this%pos%x = ranu(-state%grid%xmax, state%grid%xmax)
+                this%pos%y = ranu(-state%grid%ymax, state%grid%ymax)
                 this%pos%z = -state%grid%zmax + 1e-8_wp
 
                 this%phi  = 0._wp
@@ -193,51 +193,49 @@ module photonMod
                 this%cost = 1._wp
                 this%sint = 0._wp
 
-            elseif(val == 3)then
-                ! -ive x
+            case("-x")
                 this%pos%x = state%grid%xmax-1e-8_wp
-                this%pos%y = ranu(-state%grid%ymax+1e-3_wp, state%grid%ymax-1e-3_wp)
-                this%pos%z = ranu(-state%grid%zmax+1e-3_wp, state%grid%zmax-1e-3_wp)
+                this%pos%y = ranu(-state%grid%ymax, state%grid%ymax)
+                this%pos%z = ranu(-state%grid%zmax, state%grid%zmax)
 
                 this%phi  = 0._wp
                 this%cosp = 1._wp
                 this%sinp = 0._wp
                 this%cost = 0._wp
                 this%sint = -1._wp
-            elseif(val == 4)then
-                ! +ive x
+            case("+x")
                 this%pos%x = -state%grid%xmax+1e-8_wp
-                this%pos%y = ranu(-state%grid%ymax+1e-3_wp, state%grid%ymax-1e-3_wp)
-                this%pos%z = ranu(-state%grid%zmax+1e-3_wp, state%grid%zmax-1e-3_wp)
+                this%pos%y = ranu(-state%grid%ymax, state%grid%ymax)
+                this%pos%z = ranu(-state%grid%zmax, state%grid%zmax)
 
                 this%phi  = 0._wp
                 this%cosp = 1._wp
                 this%sinp = 0._wp
                 this%cost = 0._wp
                 this%sint = 1._wp
-            elseif(val == 5)then
-                ! -ive y
-                this%pos%x = ranu(-state%grid%xmax+1e-3_wp, state%grid%xmax-1e-3_wp)
+            case("-y")
+                this%pos%x = ranu(-state%grid%xmax, state%grid%xmax)
                 this%pos%y = state%grid%xmax-1e-8_wp
-                this%pos%z = ranu(-state%grid%zmax+1e-3_wp, state%grid%zmax-1e-3_wp)
+                this%pos%z = ranu(-state%grid%zmax, state%grid%zmax)
 
                 this%phi  = 0._wp
                 this%cosp = 0._wp
                 this%sinp = -1._wp
                 this%cost = 0._wp
                 this%sint = 1._wp
-            elseif(val == 6)then
-                ! +ive y
-                this%pos%x = ranu(-state%grid%xmax+1e-3_wp, state%grid%xmax-1e-3_wp)
+            case("+y")
+                this%pos%x = ranu(-state%grid%xmax, state%grid%xmax)
                 this%pos%y = -state%grid%xmax+1e-8_wp
-                this%pos%z = ranu(-state%grid%zmax+1e-3_wp, state%grid%zmax-1e-3_wp)
+                this%pos%z = ranu(-state%grid%zmax, state%grid%zmax)
 
                 this%phi  = 0._wp
                 this%cosp = 0._wp
                 this%sinp = 1._wp
                 this%cost = 0._wp
                 this%sint = 1._wp
-            end if
+            case default
+                error stop "No such direction for uniform source"
+            end select
 
             this%nxp = this%sint * this%cosp
             this%nyp = this%sint * this%sinp
