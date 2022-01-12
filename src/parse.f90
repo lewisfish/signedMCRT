@@ -10,15 +10,17 @@ module parse_mod
 
     contains
 
-    subroutine parse_params(filename, dict)
+    subroutine parse_params(filename, packet, dict)
     
-        use dict_mod
+        use fhash, only : fhash_tbl_t
+        use photonmod
 
         implicit none
     
-        character(*), intent(IN)    :: filename
-        type(dict_t), intent(INOUT) :: dict
-        
+        character(*),      intent(IN)    :: filename
+        type(fhash_tbl_t), intent(INOUT) :: dict
+        type(photon),      intent(OUT)   :: packet
+
         type(toml_table), allocatable :: table
 
         integer :: u
@@ -26,7 +28,7 @@ module parse_mod
         open(newunit=u, file=trim(filename))
         call toml_parse(table, u)
         
-        call parse_source(table, dict)
+        call parse_source(table, packet, dict)
         call parse_grid(table)
         call parse_geometry(table, dict)
         call parse_output(table)
@@ -34,15 +36,17 @@ module parse_mod
 
     end subroutine parse_params
     
-    subroutine parse_source(table, dict)
+    subroutine parse_source(table, packet, dict)
 
-        use dict_mod
+        use fhash, only : fhash_tbl_t, key=>fhash_key
         use sim_state_mod, only : state
+        use photonmod
 
         implicit none
         
-        type(toml_table), intent(INOUT) :: table
-        type(dict_t),     intent(INOUT) :: dict
+        type(toml_table),  intent(INOUT) :: table
+        type(fhash_tbl_t), intent(INOUT) :: dict
+        type(photon),      intent(OUT)   :: packet
 
         type(toml_table), pointer :: child
         type(toml_array), pointer :: children
@@ -68,14 +72,14 @@ module parse_mod
                 end if
                 do i = 1, len(children)
                     call get_value(children, i, pos(i))
-                    call dict%add_entry("pos%"//axis(i), pos(i))
+                    call dict%set(key("pos"//axis(i)), value=pos(i))
                 end do
             else
                 if(state%source == "point")then
                     pos = [0._wp, 0._wp, 0._wp]
-                    call dict%add_entry("pos%x", pos(1))
-                    call dict%add_entry("pos%y", pos(2))
-                    call dict%add_entry("pos%z", pos(3))
+                    call dict%set(key("pos%x"), value=pos(1))
+                    call dict%set(key("pos%y"), value=pos(2))
+                    call dict%set(key("pos%z"), value=pos(3))
                 end if
             end if
 
@@ -90,14 +94,17 @@ module parse_mod
                 end if
                 do i = 1, len(children)
                     call get_value(children, i, dir(i))
-                    call dict%add_entry("dir%"//axis(i), dir(i))
+                    call dict%set(key("dir%"//axis(i)), value=dir(i))
                 end do
             else
                 call get_value(child, "direction", direction, "-z")
+                call dict%set(key("dir"), value=direction)
             end if
         else
             error stop "Need source table in input param file"
         end if
+
+        packet = photon(state%source)
 
     end subroutine parse_source
 
@@ -133,13 +140,13 @@ module parse_mod
 
     subroutine parse_geometry(table, dict)
 
-        use dict_mod
+        use fhash,         only : fhash_tbl_t, key=>fhash_key
         use sim_state_mod, only : state
         
         implicit none
         
-        type(toml_table), intent(INOUT) :: table
-        type(dict_t),     intent(IN)    :: dict
+        type(toml_table),  intent(INOUT) :: table
+        type(fhash_tbl_t), intent(INOUT)    :: dict
         
         type(toml_table), pointer :: child
         real(kind=wp)             :: tau
@@ -149,7 +156,7 @@ module parse_mod
         if(associated(child))then
             call get_value(child, "geom_name", state%experiment, "sphere")
             call get_value(child, "tau", tau, 10._wp)
-            call dict%add_entry("tau", tau)
+            call dict%set(key("tau"), value=tau)
         else
             error stop "Need geometry table in input param file"
         end if

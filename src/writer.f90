@@ -4,7 +4,6 @@ module writer_mod
 !
     use constants, only : wp
     use utils,     only : str
-    use dict_mod
 
 implicit none
 
@@ -53,20 +52,22 @@ implicit none
         end function normalise_fluence
 
 
-        subroutine write(array, filename, dicts)
+        subroutine write(array, filename, dict)
         ! routine automatically selects which way to write ouresults based upon file extension
+            use fhash,        only : fhash_tbl_t
+
             implicit none
         
             real(kind=wp),          intent(IN) :: array(:,:,:)
             character(*),           intent(IN) :: filename
-            type(dict_t), optional, intent(IN) :: dicts
+            type(fhash_tbl_t), optional, intent(INOUT) :: dict
 
             integer :: pos
             
             pos = index(filename, ".nrrd")
             if(pos > 0)then
-                if(present(dicts))then
-                    call nrrd_write(array, filename, dicts)
+                if(present(dict))then
+                    call nrrd_write(array, filename, dict)
                 else
                     call nrrd_write(array, filename)
                 end if
@@ -169,17 +170,27 @@ implicit none
 
         end subroutine write_hdr
 
-        subroutine write_3d_r8_nrrd(array, filename, dicts)
+        subroutine write_3d_r8_nrrd(array, filename, dict)
             
+            use fhash,           only : fhash_tbl_t, key=>fhash_tbl_t, fhash_key_t
+            use iso_fortran_env, only : int32, int64, real32, real64
+
             implicit none
         
-            character(*),           intent(IN) :: filename
-            real(kind=wp),          intent(IN) :: array(:, :, :)
-            type(dict_t), optional, intent(IN) :: dicts
+            character(*),                intent(IN)    :: filename
+            real(kind=wp),               intent(IN)    :: array(:, :, :)
+            type(fhash_tbl_t), optional, intent(INOUT) :: dict
 
-            character(len=64) :: key
-            character(len=:), allocatable :: file
-            integer :: u, i
+            class(fhash_key_t), pointer   :: keyd
+            character(len=:), allocatable :: key_out, file, type_str
+            integer :: u, i, stat
+
+            integer(kind=int32) :: val_i32
+            integer(kind=int64) :: val_i64
+            real(kind=real32)   :: val_r32
+            real(kind=real64)   :: val_r64
+            character(len=:), allocatable :: val_char
+            logical :: val_bool
 
             if(check_file(filename))then
                 file = get_new_file_name(filename)
@@ -191,13 +202,34 @@ implicit none
             !to do fix precision
             call write_hdr(u, [size(array, 1), size(array, 2), size(array, 3)], "double")
 
-            if(present(dicts))then
-                do i = 1, dicts%count
-                    key = trim(dicts%dict(i)%key)
-                    write(u, "(A)")trim(key)//": "//dicts%get_value_str(trim(key))
+            if(present(dict))then
+                do
+                    call dict%next(keyd, key_out, type_str, stat)
+                    if(stat < 0)exit
+                    select case(type_str)
+                        case("integer32")
+                            call dict%get(keyd, val_i32)
+                            write(u, "(A)")trim(key_out)//": "//str(val_i32)
+                        case("integer64")
+                            call dict%get(keyd, val_i64)
+                            write(u, "(A)")trim(key_out)//": "//str(val_i64)
+                        case("real32")
+                            call dict%get(keyd, val_r32)
+                            write(u, "(A)")trim(key_out)//": "//str(val_r32)
+                        case("real64")
+                            call dict%get(keyd, val_r64)
+                            write(u, "(A)")trim(key_out)//": "//str(val_r64)
+                        case("character*")
+                            call dict%get(keyd, val_char)
+                            write(u, "(A)")trim(key_out)//": "//val_char
+                        case("logical")
+                            call dict%get(keyd, val_bool)
+                            write(u, "(A)")trim(key_out)//": "//str(val_bool)
+                        case default
+                            continue
+                    end select
                 end do
             end if
-
             write(u,"(A)")new_line("C")
             close(u)
             open(newunit=u,file=file,access="stream",form="unformatted",position="append")

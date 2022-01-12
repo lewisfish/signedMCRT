@@ -1,7 +1,6 @@
 module subs
 
     use constants, only : wp
-    use dict_mod
 
     implicit none
 
@@ -10,21 +9,20 @@ module subs
 
     contains
 
-        subroutine setup_simulation(packet, sdfarray, dict)
+        subroutine setup_simulation(sdfarray, dict)
         ! Read in parameters
         ! Setup up various simulation parameters and routines
         !
-            use sdfs,      only : container
-
-            use photonMod
             use vector_class
+            use sdfs,          only : container
+            use fhash,         only : fhash_tbl_t
             use sim_state_mod, only : settings => state
+
 
             implicit none
 
-            type(dict_t),    optional,    intent(IN)  :: dict
+            type(fhash_tbl_t),  optional, intent(IN)  :: dict
             type(container), allocatable, intent(OUT) :: sdfarray(:)
-            type(photon),                 intent(OUT) :: packet
 
             !set directory paths
             call directory
@@ -36,31 +34,31 @@ module subs
             ! setup geometry using SDFs
             select case(settings%experiment)
                 case("logo")
-                    sdfarray = setup_logo(packet)
+                    sdfarray = setup_logo()
                 case("neural")
-                    sdfarray = setup_neural_sdf(packet)
+                    sdfarray = setup_neural_sdf()
                 case("omg")
-                    sdfarray = setup_omg_sdf(packet)
+                    sdfarray = setup_omg_sdf()
                 case("scat_test")
-                    sdfarray = setup_scat_test(packet, dict)
+                    sdfarray = setup_scat_test(dict)
                 case("fresnel_test")
-                    sdfarray = setup_fresnel_test(packet)
+                    sdfarray = setup_fresnel_test()
                 case("skin")
-                    sdfarray = setup_skin_model(packet)
+                    sdfarray = setup_skin_model()
                 case("interior")
-                    sdfarray = interior_test(packet)
+                    sdfarray = interior_test()
                 case("exterior")
-                    sdfarray = exterior_test(packet)
+                    sdfarray = exterior_test()
                 case("sphere")
-                    sdfarray = setup_sphere(packet)
+                    sdfarray = setup_sphere()
                 case("exp")
-                    sdfarray = setup_exp(packet, dict)
+                    sdfarray = setup_exp(dict)
                 case("jacques")
-                    sdfarray = setup_jacques(packet)
+                    sdfarray = setup_jacques()
                 case("vessels")
-                    sdfarray = get_vessels(packet)
+                    sdfarray = get_vessels()
                 case("lens")
-                    sdfarray = lens_test_setup(packet)
+                    sdfarray = lens_test_setup()
                 case default
                     error stop "no such routine"
             end select
@@ -68,15 +66,13 @@ module subs
         end subroutine setup_simulation
 
 
-        function lens_test_setup(packet) result(array)
+        function lens_test_setup() result(array)
         !create lens geometry from tran and Jacques interpolated normals approach paper
             use sdfs, only : sphere, container, box, model, intersection, model_init, translate
             use vector_class, only : vector, invert
-            use photonMod
 
             implicit none
 
-            type(photon), intent(OUT) :: packet
 
             type(container),target, save :: cnta(2)
             type(container) :: array(2)
@@ -88,7 +84,7 @@ module subs
             real(kind=wp) :: hgg, mus, mua, n1, n2, t(4,4)
             integer       :: layer, i
 
-            packet = photon("uniform")
+            ! packet = photon("uniform")
 
             mus = 0._wp
             mua = 1.e-17_wp
@@ -124,17 +120,15 @@ module subs
         end function lens_test_setup
 
 
-        function setup_logo(packet) result(array)
+        function setup_logo() result(array)
         ! setup uni crest geometry
         !
         !
             use vector_class
-            use photonMod
             use sdfs, only : container, box, segment, extrude, model, union, model_init
 
             implicit none
 
-            type(photon), intent(OUT) :: packet
 
             type(container), allocatable :: cnta(:), array(:)
             type(box),     target, save :: bbox
@@ -147,7 +141,7 @@ module subs
             integer       :: layer, i
             logical       :: fexists
 
-            packet = photon("uniform")
+            ! packet = photon("uniform")
 
             allocate(array(2), cnta(725), seg(725), ex(725))
 
@@ -177,17 +171,14 @@ module subs
         end function setup_logo
 
 
-        function setup_neural_sdf(packet) result(array)
+        function setup_neural_sdf() result(array)
         ! Setup up neural SDF geometry
         !
         !
             use vector_class
-            use photonMod
             use sdfs, only : container, box, neural
 
             implicit none
-
-            type(photon), intent(OUT) :: packet
 
             type(container)         :: array(2)
             type(box), target, save :: bbox
@@ -195,7 +186,7 @@ module subs
             
             real(kind=wp) :: hgg
 
-            packet = photon("point")
+            ! packet = photon("point")
 
             hgg = 0.9_wp
 
@@ -212,22 +203,19 @@ module subs
         end function setup_neural_sdf
 
 
-        function setup_jacques(packet) result(array)
+        function setup_jacques() result(array)
         ! setup the classic jacques test geometry
 
             use sdfs, only : container, box
             use vector_class
-            use photonMod
 
             implicit none
-
-            type(photon), intent(OUT) :: packet
 
             type(container)         :: array(2)
             type(box), target, save :: medium, bbox
             real(kind=wp)           :: hgg
 
-            packet = photon("uniform")
+            ! packet = photon("uniform")
 
             hgg = 0.9_wp
 
@@ -246,18 +234,15 @@ module subs
 
         end function setup_jacques
 
-        function setup_sphere(packet) result(array)
+        function setup_sphere() result(array)
         ! setup the sphere test case from tran and jacques paper.
         !
         !
             use sdfs,         only : sphere, box, container, translate
             use vector_class, only : vector, invert
-            use photonMod
 
             implicit none
             
-            type(photon), intent(OUT) :: packet
-
             type(container), allocatable :: array(:)
             type(sphere),   target, save :: sph
             type(box),      target, save :: bbox
@@ -265,7 +250,7 @@ module subs
             real(kind=wp) :: mus, mua, n, hgg, t(4, 4)
             type(vector)  :: a
 
-            packet = photon("uniform")
+            ! packet = photon("uniform")
             
             mus = 0._wp; mua = 1.e-17_wp; hgg = 0._wp; n = 1._wp;
             bbox = box(2._wp, mus, mua, hgg, n, 2)
@@ -288,16 +273,13 @@ module subs
         end function setup_sphere
 
 
-        function interior_test(packet) result(array)
+        function interior_test() result(array)
 
             use sdfs, only : container, model, union, sphere, box, translate, model_init
             
             use vector_class
-            use photonMod
 
             implicit none
-
-            type(photon), intent(OUT) :: packet
 
             type(container) :: array(1), cnta(3)
             type(sphere), target, save :: sph
@@ -306,7 +288,7 @@ module subs
 
             real(kind=wp) :: t(4, 4)
 
-            packet = photon("point")
+            ! packet = photon("point")
 
             bbox = box(2._wp, 0._wp, 0._wp, 0._wp, 1._wp, 2)
 
@@ -337,16 +319,13 @@ module subs
         end function interior_test
 
 
-        function exterior_test(packet) result(array)
+        function exterior_test() result(array)
 
             use sdfs, only : container, moon, box, translate
             
             use vector_class
-            use photonMod
 
             implicit none
-
-            type(photon), intent(OUT) :: packet
 
             type(container) :: array(1)
             ! type(sphere), target, save :: sph
@@ -357,7 +336,7 @@ module subs
             real(kind=wp) :: t(4, 4)
             ! integer :: i
 
-            packet = photon("point")
+            ! packet = photon("point")
 ! d, ra, rb, mus, mua, hgg, n, layer, transform
             t = invert(translate(vector(-0.4_wp-1.0_wp, .3_wp, 0._wp)))
 
@@ -398,7 +377,7 @@ module subs
         end function exterior_test
 
 
-        function setup_exp(packet, dict) result(array)
+        function setup_exp(dict) result(array)
         ! Setup experimental geometry from Georgies paper. i.e a glass bottle with contents
         !
         !
@@ -406,12 +385,12 @@ module subs
             use utils, only : deg2rad
 
             use vector_class, only : vector, invert
-            use photonMod
+            use fhash,        only : fhash_tbl_t, key=>fhash_key
+
 
             implicit none
 
-            type(photon), intent(OUT) :: packet
-            type(dict_t), intent(IN)  :: dict
+            type(fhash_tbl_t), intent(IN)  :: dict
 
             type(container), allocatable :: array(:)
             ! type(cylinder), target, save :: cyl(2)
@@ -420,13 +399,13 @@ module subs
             type(vector)  :: a, b
             real(kind=wp) :: n, t(4, 4), optprop(5)
 
-            packet = photon("annulus")
+            ! packet = photon("annulus")
 
-            optprop(1) = dict%get_value_real("musb")
-            optprop(2) = dict%get_value_real("muab")
-            optprop(3) = dict%get_value_real("musc")
-            optprop(4) = dict%get_value_real("muac")
-            optprop(5) = dict%get_value_real("hgg")
+            call dict%get(key("musb"), optprop(1))
+            call dict%get(key("muab"), optprop(2))
+            call dict%get(key("musc"), optprop(3))
+            call dict%get(key("muac"), optprop(4))
+            call dict%get(key("hgg"), optprop(5))
 
             n = 1._wp
 
@@ -455,15 +434,12 @@ module subs
         end function setup_exp
 
 
-        function setup_fresnel_test(packet) result(array)
+        function setup_fresnel_test() result(array)
 
             use sdfs, only : container, box
             use vector_class
-            use photonMod
 
             implicit none
-
-            type(photon), intent(OUT) :: packet
 
             type(container), allocatable :: array(:)
             type(box), target, save :: bbox, fibre
@@ -471,7 +447,7 @@ module subs
             integer       :: layer
             real(kind=wp) :: mus, mua, hgg, n
 
-            packet = photon("uniform")
+            ! packet = photon("uniform")
 
             layer = 1
             n = 1._wp
@@ -491,16 +467,16 @@ module subs
 
         end function setup_fresnel_test
 
-        function setup_scat_test(packet, dict) result(array)
+        function setup_scat_test(dict) result(array)
 
-            use sdfs, only : container, sphere, box
+            use sdfs,  only : container, sphere, box
+            use fhash, only : fhash_tbl_t, key=>fhash_key
+
             use vector_class
-            use photonMod
 
             implicit none
 
-            type(photon), intent(OUT) :: packet
-            type(dict_t), intent(IN)  :: dict
+            type(fhash_tbl_t), intent(IN)  :: dict
             type(container), allocatable :: array(:)
 
             type(sphere), target, save :: sph
@@ -508,8 +484,8 @@ module subs
 
             real(kind=wp) :: mus, mua, hgg, n, tau
 
-            tau = dict%get_value_real("tau")
-            packet = photon("point")
+            call dict%get(key("tau"), tau)
+            ! packet = photon("point")
 
             n = 1._wp
             hgg = 0._wp
@@ -528,16 +504,13 @@ module subs
 
         end function setup_scat_test
 
-        function setup_omg_sdf(packet) result(array)
+        function setup_omg_sdf() result(array)
             
             use sdfs,      only : container, cylinder, torus, model, box, union, rotate_y, model_init, translate
             
             use vector_class, only : vector, invert
-            use photonMod
 
             implicit none
-
-            type(photon), intent(OUT) :: packet
 
             type(container), allocatable :: array(:)
 
@@ -551,7 +524,7 @@ module subs
             real(kind=wp) :: t(4, 4), mus, mua, hgg, n
             integer       :: j, layer
 
-            packet = photon("uniform")
+            ! packet = photon("uniform")
 
             mus = 10._wp
             mua = 0.16_wp
@@ -644,15 +617,13 @@ module subs
         end function setup_omg_sdf
 
 
-        function get_vessels(packet) result(array)
+        function get_vessels() result(array)
 
             use sdfs, only : container, model, capsule, model_init, union, box, union
-            use photonMod
             use vector_class, only : vector, invert
 
             implicit none
 
-            type(photon) :: packet
             type(container), allocatable :: array(:), cnta(:)
             type(model), target, save :: vessels
             type(capsule), allocatable, target, save :: cyls(:)
@@ -666,7 +637,7 @@ module subs
             real(kind=wp) :: musd, muad, gd, nd
             type(vector) :: a, b
 
-            packet = photon("uniform")
+            ! packet = photon("uniform")
             ! mua, mus, g, n]
             !MCmatlab: an open-source, user-friendly, MATLAB-integrated three-dimensional Monte Carlo light transport solver with heat diffusion and tissue damage
             muav = 231._wp
@@ -767,16 +738,13 @@ module subs
         end function get_vessels
 
 
-        function setup_skin_model(packet) result(array)
+        function setup_skin_model() result(array)
 
             use sdfs, only : container, model, capsule, box, translate, model_init, smoothunion
 
             use vector_class, only : vector, invert
-            use photonMod
 
             implicit none
-
-            type(photon), intent(OUT) :: packet
 
             type(container), allocatable :: array(:), cnta(:)
 
@@ -790,7 +758,7 @@ module subs
             real(kind=wp) :: mus_b, mua_b, hgg_b, n_b
             type(vector)  :: a, b, c
 
-            packet = photon("uniform")
+            ! packet = photon("uniform")
 
             n = 1.e0_wp
             hgg = 1.e0_wp

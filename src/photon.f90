@@ -2,7 +2,6 @@ module photonMod
     
     use constants, only : wp
     use vector_class
-    use dict_mod
 
     implicit none
     
@@ -29,11 +28,11 @@ module photonMod
     abstract interface
         subroutine generic_emit(this, dict)
             
-            use dict_mod
+            use fhash, only : fhash_tbl_t
 
             import :: photon
             class(photon) :: this
-            type(dict_t), optional, intent(IN) :: dict
+            type(fhash_tbl_t), optional, intent(IN) :: dict
 
         end subroutine generic_emit
     end interface
@@ -72,16 +71,17 @@ module photonMod
             use sim_state_mod, only : state
             use random,        only : ran2
             use constants,     only : twoPI
+            use fhash,         only : fhash_tbl_t, key=>fhash_key
 
             implicit none
         
             class(photon) :: this
-            type(dict_t), optional, intent(IN) :: dict
+            type(fhash_tbl_t), optional, intent(IN) :: dict
             integer :: cell(3)
 
-            this%pos%x = dict%get_value_real("pos%x")
-            this%pos%y = dict%get_value_real("pos%y")
-            this%pos%z = dict%get_value_real("pos%z")
+            call dict%get(key("pos%x"), this%pos%x)
+            call dict%get(key("pos%y"), this%pos%y)
+            call dict%get(key("pos%z"), this%pos%z)
 
             this%phi  = ran2()*twoPI
             this%cosp = cos(this%phi)
@@ -111,11 +111,12 @@ module photonMod
             use sim_state_mod, only : state
             use utils,         only : deg2rad
             use vector_class,  only : length
+            use fhash,         only : fhash_tbl_t
 
             implicit none
 
             class(photon) :: this
-            type(dict_t), optional, intent(IN) :: dict
+            type(fhash_tbl_t), optional, intent(IN) :: dict
 
             type(vector)  :: targ, dir
             real(kind=wp) :: dist
@@ -160,17 +161,17 @@ module photonMod
 
             use random,        only : ranu, ran2, randint
             use sim_state_mod, only : state
+            use fhash,         only : fhash_tbl_t, key=>fhash_key
 
             implicit none
 
             class(photon) :: this
-            type(dict_t), optional, intent(IN) :: dict
+            type(fhash_tbl_t), optional, intent(IN) :: dict
 
             integer :: cell(3)
-            character(len=2) :: dir
+            character(len=:),allocatable :: dir
 
-            dir = dict%get_value_str("dir")
-
+            call dict%get(key("dir"), dir)
             select case(dir)
             case("-z")
                 this%pos%x = ranu(-state%grid%xmax, state%grid%xmax)
@@ -257,11 +258,12 @@ module photonMod
 
             use random,        only : ranu
             use sim_state_mod, only : state
+            use fhash,         only : fhash_tbl_t
 
             implicit none
 
             class(photon) :: this
-            type(dict_t), optional, intent(IN) :: dict
+            type(fhash_tbl_t), optional, intent(IN) :: dict
 
             integer :: cell(3)
 

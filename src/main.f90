@@ -26,22 +26,29 @@ use parse_mod
 use sim_state_mod, only : state
 
 use tev_mod
+use fhash, only : fhash_tbl_t, key=>fhash_key, fhash_key_t
 
 implicit none
 
 type(container), allocatable :: array(:)
 type(tevipc)   :: tev
 type(photon)   :: packet
-type(dict_t)   :: dict
+type(fhash_tbl_t)   :: dict
 type(pbar)     :: bar
 character(len=64), allocatable :: args(:)
+
 real(kind=wp),     allocatable :: ds(:)
 integer       :: i, j, num_args
-real(kind=wp) :: ran, start, time_taken, nscatt, image(200,200,1)
+real(kind=wp) :: ran, start, time_taken, nscatt
+real(kind=wp), allocatable :: image(:,:,:)
 
 ! mpi/mp variables
 integer       :: id, numproc
 real(kind=wp) :: nscattGLOBAL
+
+dict = fhash_tbl_t()
+
+allocate(image(200,200,1))
 
 num_args = command_argument_count()
 if(num_args == 0)then
@@ -56,16 +63,15 @@ end if
 
 !init TEV link
 tev = tevipc()
-!init dictionary
-dict = dict_t()
 
-call parse_params("res/"//trim(args(1)), dict)
+call parse_params("res/"//trim(args(1)), packet, dict)
 call tev%create_image(state%experiment, state%grid%nxg, state%grid%nzg, ["R"], .true.)
+
 
 nscatt = 0._wp
 call init_rng(spread(state%iseed+0, 1, 8), fwd=.true.)
 
-call setup_simulation(packet, array, dict)
+call setup_simulation(array, dict)
 ! render geometry to voxel format for debugging
 if(state%render_geom)then
     call render(array, vector(state%grid%xmax, state%grid%ymax, state%grid%zmax), 200, fname=state%renderfile)
@@ -87,7 +93,7 @@ if(id == 0)then
 end if
 
 #ifdef _OPENMP
-!$omp parallel default(none) shared(array, numproc, start, state, bar, dict, jmean, tev)&
+!$omp parallel default(none) shared(dict, array, numproc, start, state, bar, jmean, tev)&
 !$omp& private(ran, id, ds, image) reduction(+:nscatt) firstprivate(packet)
     numproc = omp_get_num_threads()
     id = omp_get_thread_num()
@@ -111,7 +117,7 @@ bar = pbar(state%nphotons/ 10000)
 do j = 1, state%nphotons
     if(mod(j, 10000) == 0)call bar%progress()
 
-    ! Release photon from point source 
+    ! Release photon from point source
     call packet%emit(dict)
 
     packet%id = id
@@ -141,7 +147,7 @@ do j = 1, state%nphotons
 !$omp critical
     if(id == 0 .and. mod(j,100) == 0)then
         image = reshape(jmean(100:100,:,:), [200,200,1])
-        call tev%update_image("jmean", real(image(:,:,1:1)), ["R"], 0, 0, .true., .false.)
+        call tev%update_image(state%experiment, real(image(:,:,1:1)), ["R"], 0, 0, .true., .false.)
     end if
 !$omp end critical
 end do
@@ -169,12 +175,13 @@ if(id == 0)then
 #endif
     !write out files
     !create dict to store metadata and nrrd hdr info
-    call dict%add_entry("grid_data", 'fluence map')
-    call dict%add_entry("real_size", str(state%grid%xmax,7)//" "//str(state%grid%ymax,7)//" "//str(state%grid%zmax,7))
-    call dict%add_entry("units", "cm")
-    call dict%add_entry("nphotons", state%nphotons)
-    call dict%add_entry("source", state%source)
-    call dict%add_entry("experiment", state%experiment)
+    call dict%set(key("grid_data"), value="fluence map")
+    call dict%set(key("real_size"), value=str(state%grid%xmax,7)//" "//str(state%grid%ymax,7)//" "//str(state%grid%zmax,7))    
+    call dict%set(key("units"), value="cm")
+    call dict%set(key("nphotons"), value=state%nphotons)
+    call dict%set(key("source"), value=state%source)
+    call dict%set(key("experiment"), value=state%experiment)
+
 
     jmeanGLOBAL = normalise_fluence(state%grid, jmeanGLOBAL, state%nphotons)
     call write(jmeanGLOBAL, trim(fileplace)//"jmean/"//state%outfile, dict)
