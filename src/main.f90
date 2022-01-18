@@ -61,12 +61,15 @@ else
     end do
 end if
 
-!init TEV link
-tev = tevipc()
 
 call parse_params("res/"//trim(args(1)), packet, dict)
-call tev%close_image(state%experiment)
-call tev%create_image(state%experiment, state%grid%nxg, state%grid%nzg, ["R"], .true.)
+
+if(state%tev)then
+    !init TEV link
+    tev = tevipc()
+    call tev%close_image(state%experiment)
+    call tev%create_image(state%experiment, state%grid%nxg, state%grid%nzg, ["R"], .true.)
+end if
 
 nscatt = 0._wp
 call init_rng(spread(state%iseed+0, 1, 8), fwd=.true.)
@@ -145,10 +148,12 @@ do j = 1, state%nphotons
 
     end do
     if(id == 0 .and. mod(j,1000) == 0)then
+        if(state%tev)then
 !$omp critical
-        image = reshape(jmean(100:100,:,:), [200,200,1])
-        call tev%update_image(state%experiment, real(image(:,:,1:1)), ["R"], 0, 0, .true., .false.)
+            image = reshape(jmean(100:100,:,:), [200,200,1])
+            call tev%update_image(state%experiment, real(image(:,:,1:1)), ["R"], 0, 0, .true., .false.)
 !$omp end critical
+        end if
     end if
 end do
 

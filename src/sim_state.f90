@@ -8,7 +8,7 @@ module sim_state_mod
         integer :: nphotons, iseed
         character(len=:), allocatable :: experiment, outfile, renderfile, source
         type(cart_grid) :: grid
-        logical :: render_geom
+        logical :: render_geom, tev
     end type settings_t
 
     type(settings_t) :: state

@@ -215,6 +215,8 @@ module parse_mod
 
         if(associated(child))then
             call get_value(child, "seed", state%iseed, 123456789)
+            call get_value(child, "tev", state%tev, .false.)
+
         else
             error stop "Need simulation table in input param file"
         end if
