@@ -65,8 +65,8 @@ end if
 tev = tevipc()
 
 call parse_params("res/"//trim(args(1)), packet, dict)
+call tev%close_image(state%experiment)
 call tev%create_image(state%experiment, state%grid%nxg, state%grid%nzg, ["R"], .true.)
-
 
 nscatt = 0._wp
 call init_rng(spread(state%iseed+0, 1, 8), fwd=.true.)
@@ -144,12 +144,12 @@ do j = 1, state%nphotons
         call tauint2(state%grid, packet, array)
 
     end do
+    if(id == 0 .and. mod(j,1000) == 0)then
 !$omp critical
-    if(id == 0 .and. mod(j,100) == 0)then
         image = reshape(jmean(100:100,:,:), [200,200,1])
         call tev%update_image(state%experiment, real(image(:,:,1:1)), ["R"], 0, 0, .true., .false.)
-    end if
 !$omp end critical
+    end if
 end do
 
 #ifdef _OPENMP
@@ -177,7 +177,6 @@ if(id == 0)then
     !create dict to store metadata and nrrd hdr info
     call dict%set(key("grid_data"), value="fluence map")
     call dict%set(key("real_size"), value=str(state%grid%xmax,7)//" "//str(state%grid%ymax,7)//" "//str(state%grid%zmax,7))    
-    call dict%set(key("units"), value="cm")
     call dict%set(key("nphotons"), value=state%nphotons)
     call dict%set(key("source"), value=state%source)
     call dict%set(key("experiment"), value=state%experiment)

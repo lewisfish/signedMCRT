@@ -1,0 +1,24 @@
+[source]
+name = "uniform"
+nphotons = 1000000
+direction = "-z"
+
+[grid]
+nxg = 200
+nyg = 200
+nzg = 200
+xmax = 0.05
+ymax = 0.05
+zmax = 0.05
+units = "cm"
+
+[geometry]
+geom_name = "skin"
+
+[output]
+fluence = "skin.nrrd"
+render = "geom_render.nrrd"
+render_geom = true
+
+[simulation]
+iseed = 123456789

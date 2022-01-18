@@ -1,0 +1,27 @@
+[source]
+name = "annulus"
+nphotons = 1000000
+
+[grid]
+nxg = 200
+nyg = 200
+nzg = 200
+xmax = 1.55
+ymax = 1.55
+zmax = 1.55
+
+[geometry]
+geom_name = "exp"
+musb = 10.0
+muab = 10.01
+musc = 10.0
+muac = 10.01
+hgg = 10.7
+
+[output]
+fluence = "fluence.nrrd"
+render = "geom_render.nrrd"
+render_geom = true
+
+[simulation]
+iseed = 123456789

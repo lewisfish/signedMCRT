@@ -41,14 +41,8 @@ module subs
                     sdfarray = setup_omg_sdf()
                 case("scat_test")
                     sdfarray = setup_scat_test(dict)
-                case("fresnel_test")
-                    sdfarray = setup_fresnel_test()
                 case("skin")
                     sdfarray = setup_skin_model()
-                case("interior")
-                    sdfarray = interior_test()
-                case("exterior")
-                    sdfarray = exterior_test()
                 case("sphere")
                     sdfarray = setup_sphere()
                 case("exp")
@@ -83,8 +77,6 @@ module subs
             type(vector)  :: a, b
             real(kind=wp) :: hgg, mus, mua, n1, n2, t(4,4)
             integer       :: layer, i
-
-            ! packet = photon("uniform")
 
             mus = 0._wp
             mua = 1.e-17_wp
@@ -141,8 +133,6 @@ module subs
             integer       :: layer, i
             logical       :: fexists
 
-            ! packet = photon("uniform")
-
             allocate(array(2), cnta(725), seg(725), ex(725))
 
             mus = 10._wp
@@ -186,8 +176,6 @@ module subs
             
             real(kind=wp) :: hgg
 
-            ! packet = photon("point")
-
             hgg = 0.9_wp
 
             bbox = box(vector(10._wp, 10._wp, 2.001_wp), 0._wp, 0._wp, 0._wp, 1._wp, 2) 
@@ -214,8 +202,6 @@ module subs
             type(container)         :: array(2)
             type(box), target, save :: medium, bbox
             real(kind=wp)           :: hgg
-
-            ! packet = photon("uniform")
 
             hgg = 0.9_wp
 
@@ -406,7 +392,6 @@ module subs
             call dict%get(key("musc"), optprop(3))
             call dict%get(key("muac"), optprop(4))
             call dict%get(key("hgg"), optprop(5))
-
             n = 1._wp
 
             a = vector(-10._wp, 0._wp, 0._wp)
@@ -433,40 +418,6 @@ module subs
             array(2)%p => bbox
         end function setup_exp
 
-
-        function setup_fresnel_test() result(array)
-
-            use sdfs, only : container, box
-            use vector_class
-
-            implicit none
-
-            type(container), allocatable :: array(:)
-            type(box), target, save :: bbox, fibre
-
-            integer       :: layer
-            real(kind=wp) :: mus, mua, hgg, n
-
-            ! packet = photon("uniform")
-
-            layer = 1
-            n = 1._wp
-            hgg = 0._wp
-            mua = .1_wp
-            mus = 0._wp
-
-            fibre = box(1._wp, mus, mua, hgg, 1.5_wp, layer)
-            bbox  = box(2._wp, mus, mua, hgg, n, 2)
-
-            allocate(array(2))
-            allocate(array(1)%p, source=fibre)
-            allocate(array(2)%p, source=bbox)
-
-            array(1)%p => fibre
-            array(2)%p => bbox
-
-        end function setup_fresnel_test
-
         function setup_scat_test(dict) result(array)
 
             use sdfs,  only : container, sphere, box
@@ -485,7 +436,6 @@ module subs
             real(kind=wp) :: mus, mua, hgg, n, tau
 
             call dict%get(key("tau"), tau)
-            ! packet = photon("point")
 
             n = 1._wp
             hgg = 0._wp
@@ -523,8 +473,6 @@ module subs
             type(vector)  :: a, b
             real(kind=wp) :: t(4, 4), mus, mua, hgg, n
             integer       :: j, layer
-
-            ! packet = photon("uniform")
 
             mus = 10._wp
             mua = 0.16_wp
@@ -757,8 +705,6 @@ module subs
             real(kind=wp) :: mus_epi, mus_derm, mua_epi, mua_derm, n_epi, n_derm, hgg_epi, hgg_derm
             real(kind=wp) :: mus_b, mua_b, hgg_b, n_b
             type(vector)  :: a, b, c
-
-            ! packet = photon("uniform")
 
             n = 1.e0_wp
             hgg = 1.e0_wp

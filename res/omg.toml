@@ -1,0 +1,23 @@
+[source]
+name = "uniform"
+nphotons = 1000000
+direction = "-y"
+
+[grid]
+nxg = 200
+nyg = 200
+nzg = 200
+xmax = 1.0
+ymax = 1.0
+zmax = 1.0
+
+[geometry]
+geom_name = "omg"
+
+[output]
+fluence = "omg.nrrd"
+render = "omg_render.nrrd"
+render_geom = true
+
+[simulation]
+iseed = 123456789

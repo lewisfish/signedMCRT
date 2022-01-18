@@ -29,7 +29,7 @@ module parse_mod
         call toml_parse(table, u)
         
         call parse_source(table, packet, dict)
-        call parse_grid(table)
+        call parse_grid(table, dict)
         call parse_geometry(table, dict)
         call parse_output(table)
         call parse_simulation(table)
@@ -108,18 +108,21 @@ module parse_mod
 
     end subroutine parse_source
 
-    subroutine parse_grid(table)
+    subroutine parse_grid(table, dict)
 
         use sim_state_mod, only : state
         use gridMod,       only : init_grid 
+        use fhash,         only : fhash_tbl_t, key=>fhash_key
 
         implicit none
         
-        type(toml_table), intent(INOUT) :: table
+        type(toml_table),  intent(INOUT) :: table
+        type(fhash_tbl_t), intent(INOUT) :: dict
 
-        type(toml_table), pointer :: child
-        integer                   :: nxg, nyg, nzg
-        real(kind=wp)             :: xmax, ymax, zmax
+        type(toml_table), pointer     :: child
+        integer                       :: nxg, nyg, nzg
+        real(kind=wp)                 :: xmax, ymax, zmax
+        character(len=:), allocatable :: units
 
         call get_value(table, "grid", child)
 
@@ -130,6 +133,8 @@ module parse_mod
             call get_value(child, "xmax", xmax, 1.0_wp)
             call get_value(child, "ymax", ymax, 1.0_wp)
             call get_value(child, "zmax", zmax, 1.0_wp)
+            call get_value(child, "units", units, "cm")
+            call dict%set(key("units"), value=units)
         else
             error stop "Need grid table in input param file"
         end if
@@ -149,7 +154,7 @@ module parse_mod
         type(fhash_tbl_t), intent(INOUT)    :: dict
         
         type(toml_table), pointer :: child
-        real(kind=wp)             :: tau
+        real(kind=wp)             :: tau, musb, musc, muab, muac, hgg
 
         call get_value(table, "geometry", child)
 
@@ -157,6 +162,17 @@ module parse_mod
             call get_value(child, "geom_name", state%experiment, "sphere")
             call get_value(child, "tau", tau, 10._wp)
             call dict%set(key("tau"), value=tau)
+
+            call get_value(child, "musb", musb, 0.0_wp)
+            call dict%set(key("musb"), value=musb)
+            call get_value(child, "muab", muab, 0.01_wp)
+            call dict%set(key("muab"), value=muab)
+            call get_value(child, "musc", musc, 0.0_wp)
+            call dict%set(key("musc"), value=musc)
+            call get_value(child, "muac", muac, 0.01_wp)
+            call dict%set(key("muac"), value=muac)
+            call get_value(child, "hgg", hgg, 0.7_wp)
+            call dict%set(key("hgg"), value=hgg)
         else
             error stop "Need geometry table in input param file"
         end if

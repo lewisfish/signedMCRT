@@ -1,0 +1,23 @@
+[source]
+name = "point"
+nphotons = 1000000
+position = [0.0, 0.0, 0.0]
+
+[grid]
+nxg = 200
+nyg = 200
+nzg = 200
+xmax = 1.0
+ymax = 1.0
+zmax = 1.0
+
+[geometry]
+geom_name = "neural"
+
+[output]
+fluence = "fluence.nrrd"
+render = "geom_render.nrrd"
+render_geom = true
+
+[simulation]
+iseed = 123456789

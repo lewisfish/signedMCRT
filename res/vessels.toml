@@ -1,0 +1,23 @@
+[source]
+name = "uniform"
+nphotons = 100000
+direction = "-z"
+
+[grid]
+nxg = 200
+nyg = 200
+nzg = 200
+xmax = 0.16
+ymax = 0.09
+zmax = 0.13
+
+[geometry]
+geom_name = "vessels"
+
+[output]
+fluence = "vessels.nrrd"
+render = "vessels_render.nrrd"
+render_geom = false
+
+[simulation]
+iseed = 123456789
