@@ -5,7 +5,7 @@ module sim_state_mod
     implicit none
     
     type :: settings_t
-        integer :: nphotons, iseed
+        integer :: nphotons, iseed, render_size
         character(len=:), allocatable :: experiment, outfile, renderfile, source
         type(cart_grid) :: grid
         logical :: render_geom, tev

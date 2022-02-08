@@ -53,11 +53,142 @@ module subs
                     sdfarray = get_vessels()
                 case("lens")
                     sdfarray = lens_test_setup()
+                case("blobby")
+                    sdfarray = blobby()
+                case("sphere_scene")
+                    sdfarray = setup_sphere_scene(dict)
                 case default
                     error stop "no such routine"
             end select
 
         end subroutine setup_simulation
+
+
+        function setup_sphere_scene(dict) result(array)
+
+            use sdfs,         only : container, sphere, box, translate
+            use fhash,        only : fhash_tbl_t, key=>fhash_key
+            use random,       only : ranu
+            use vector_class, only : vector, invert
+
+            implicit none
+
+            type(fhash_tbl_t), intent(in) :: dict
+            type(container), allocatable :: array(:)
+            
+            type(sphere), target, save, allocatable :: sphs(:)
+            type(box),    target, save :: bbox
+            integer :: num_spheres, i
+            real(kind=wp) :: t(4,4), mus, mua, hgg, n, radius
+            type(vector) :: pos
+
+            call dict%get(key("num_spheres"), num_spheres)
+            allocate(sphs(num_spheres+1))
+
+            mus = 1e-17_wp
+            mua = 1e-17_wp
+            hgg = 0.0_wp
+            n   = 1.0_wp
+            bbox = box(2._wp, mus, mua, hgg, n, num_spheres+1)
+
+            do i = 1, num_spheres
+                radius = ranu(0.001_wp, 0.25_wp)
+                pos = vector(ranu(-1._wp+radius, 1._wp-radius), ranu(-1._wp+radius, 1._wp-radius), ranu(-1._wp+radius, 1._wp-radius))
+                t = invert(translate(pos))
+                mus = ranu(1._wp, 50._wp)
+                mua = ranu(0.01_wp, 1._wp)
+                hgg = 0.9_wp
+                n = 1.37_wp
+                sphs(i) = sphere(radius, mus, mua, hgg, n, i, transform=t)
+            end do
+
+            allocate(array(num_spheres+1))
+            do i = 1, num_spheres
+                allocate(array(i)%p, source=sphs(i))
+                array(i)%p => sphs(i)
+            end do
+            
+            allocate(array(num_spheres+1)%p, source=bbox)
+            array(num_spheres+1)%p => bbox
+
+        end function setup_sphere_scene
+
+        function blobby() result(array)
+            
+            use sdfs, only : box, capsule, sphere, translate, rotate_x, rotate_y, rotate_z, container, model, smoothunion, model_init
+            use vector_class, only : vector, invert
+
+            implicit none
+            
+            type(container), allocatable :: array(:)
+            type(container), target, save, allocatable :: cnta(:)
+            type(sphere), target, save :: sph(7)
+            type(capsule), target, save :: cap(3)
+            type(box), target, save :: boxy
+            type(model), target, save :: m
+            type(vector) :: a, b
+            real(kind=wp) :: t(4,4)
+            real(kind=wp) :: mus, mua, hgg,n 
+            integer :: layer, i
+            
+            mua = 0.1_wp
+            mus = 10._wp
+            n = 1.3_wp
+            layer = 1
+
+            sph(1) = sphere(1.5_wp, mus, mua, hgg, n, layer)
+
+            a = vector(0._wp, 0._wp, 3._wp)
+            t = invert(translate(a))
+            sph(2) = sphere(0.75_wp, mus, mua, hgg, n, layer, transform=t)
+            b = vector(0._wp, 0._wp, -3._wp)
+            t = invert(translate(b))
+            sph(3) = sphere(0.75_wp, mus, mua, hgg, n, layer, transform=t)
+
+            a = vector(0._wp, 3._wp, 0._wp)
+            t = invert(translate(a))
+            sph(4) = sphere(0.75_wp, mus, mua, hgg, n, layer, transform=t)
+            b = vector(0._wp, -3._wp, 0._wp)
+            t = invert(translate(b))
+            sph(5) = sphere(0.75_wp, mus, mua, hgg, n, layer, transform=t)
+
+            a = vector(3._wp, 0._wp, 0._wp)
+            t = invert(translate(a))
+            sph(6) = sphere(0.75_wp, mus, mua, hgg, n, layer, transform=t)
+            b = vector(-3._wp, 0._wp, 0._wp)
+            t = invert(translate(b))
+            sph(7) = sphere(0.75_wp, mus, mua, hgg, n, layer, transform=t)
+
+
+            a = vector(0._wp, 0._wp, -3._wp)
+            b = vector(0._wp, 0._wp, 3._wp)
+            cap(1) = capsule(a, b, 0.5_wp, mus, mua, hgg, n, layer)
+            a = vector(-3._wp, 0._wp, 0._wp)
+            b = vector(3._wp, 0._wp, 0._wp)
+            cap(2) = capsule(a, b, 0.5_wp, mus, mua, hgg, n, layer)
+            a = vector(0._wp, -3._wp, 0._wp)
+            b = vector(0._wp, 3._wp, 0._wp)
+            cap(3) = capsule(a, b, 0.5_wp, mus, mua, hgg, n, layer)
+
+            boxy = box(10._wp, 0.0_wp, 1.e-17_wp, 0.0_wp, n=1.0_wp, layer=2)
+
+            allocate(array(2), cnta(10))
+            do i = 1, 7
+                allocate(cnta(i)%p, source=sph(i))
+                cnta(i)%p => sph(i)
+            end do
+            
+            do i = 1, 3
+                allocate(cnta(i+7)%p, source=cap(i))
+                cnta(i+7)%p => cap(i)
+            end do
+            m = model_init(cnta, SmoothUnion, 0.5_wp)
+
+            allocate(array(1)%p, source=m)
+            array(1)%p => m
+            allocate(array(2)%p, source=boxy)
+            array(2)%p => boxy
+        end function blobby
 
 
         function lens_test_setup() result(array)
@@ -442,7 +573,7 @@ module subs
             mua = 1e-17_wp
             mus = tau
 
-            sph = sphere(1._wp, mus, mua, hgg, n, 1)
+            sph = sphere(1._wp, mus, 1.5_wp, hgg, n, 1)
             bbox = box(2._wp, 0._wp, mua, hgg, n, 2)
 
             allocate(array(2))

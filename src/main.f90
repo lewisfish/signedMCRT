@@ -22,25 +22,24 @@ use writer_mod
 use vector_class
 use sdfs
 use utils, only : pbar, str, get_time, print_time
+use tev_mod
 use parse_mod
 use sim_state_mod, only : state
 
-use tev_mod
 use fhash, only : fhash_tbl_t, key=>fhash_key, fhash_key_t
 
 implicit none
 
-type(container), allocatable :: array(:)
-type(tevipc)   :: tev
-type(photon)   :: packet
-type(fhash_tbl_t)   :: dict
-type(pbar)     :: bar
+type(container),   allocatable :: array(:)
 character(len=64), allocatable :: args(:)
+type(tevipc)      :: tev
+type(photon)      :: packet
+type(fhash_tbl_t) :: dict
+type(pbar)        :: bar
 
-real(kind=wp),     allocatable :: ds(:)
-integer       :: i, j, num_args
+real(kind=wp), allocatable :: distances(:), image(:,:,:)
 real(kind=wp) :: ran, start, time_taken, nscatt
-real(kind=wp), allocatable :: image(:,:,:)
+integer       :: i, j, num_args
 
 ! mpi/mp variables
 integer       :: id, numproc
@@ -48,7 +47,6 @@ real(kind=wp) :: nscattGLOBAL
 
 dict = fhash_tbl_t()
 
-allocate(image(200,200,1))
 
 num_args = command_argument_count()
 if(num_args == 0)then
@@ -63,6 +61,7 @@ end if
 
 
 call parse_params("res/"//trim(args(1)), packet, dict)
+allocate(image(state%grid%nxg,state%grid%nzg,1))
 
 if(state%tev)then
     !init TEV link
@@ -77,9 +76,10 @@ call init_rng(spread(state%iseed+0, 1, 8), fwd=.true.)
 call setup_simulation(array, dict)
 ! render geometry to voxel format for debugging
 if(state%render_geom)then
-    call render(array, vector(state%grid%xmax, state%grid%ymax, state%grid%zmax), 200, fname=state%renderfile)
+    call render(array, vector(state%grid%xmax, state%grid%ymax, state%grid%zmax), state%render_size, fname=state%renderfile)
+
 end if
-allocate(ds(size(array)))
+allocate(distances(size(array)))
 
 start = get_time()
 id = 0
@@ -97,7 +97,7 @@ end if
 
 #ifdef _OPENMP
 !$omp parallel default(none) shared(dict, array, numproc, start, state, bar, jmean, tev)&
-!$omp& private(ran, id, ds, image) reduction(+:nscatt) firstprivate(packet)
+!$omp& private(ran, id, distances, image) reduction(+:nscatt) firstprivate(packet)
     numproc = omp_get_num_threads()
     id = omp_get_thread_num()
 #elif MPI
@@ -124,34 +124,34 @@ do j = 1, state%nphotons
     call packet%emit(dict)
 
     packet%id = id
-    ds = 0._wp
-    do i = 1, size(ds)
-        ds(i) = array(i)%p%evaluate(packet%pos)
+    distances = 0._wp
+    do i = 1, size(distances)
+        distances(i) = array(i)%p%evaluate(packet%pos)
     end do
-    packet%layer=minloc(ds,dim=1)
+    packet%layer=minloc(distances,dim=1)
 
     ! Find scattering location
     call tauint2(state%grid, packet, array)
-    ! Photon scatters in grid until it exits (tflag=TRUE) 
+    ! Photon scatters in grid until it exits (tflag=TRUE)
     do while(.not. packet%tflag)
         ran = ran2()
         if(ran < array(packet%layer)%p%albedo)then!interacts with tissue
             call stokes(packet, array(packet%layer)%p%hgg, array(packet%layer)%p%g2)
-            nscatt = nscatt + 1
+            nscatt = nscatt + 1            
         else
             packet%tflag = .true.
             exit
         end if
         
-        !Find next scattering location
+        ! !Find next scattering location
         call tauint2(state%grid, packet, array)
-
+        
     end do
     if(id == 0 .and. mod(j,1000) == 0)then
         if(state%tev)then
 !$omp critical
-            image = reshape(jmean(100:100,:,:), [200,200,1])
-            call tev%update_image(state%experiment, real(image(:,:,1:1)), ["R"], 0, 0, .true., .false.)
+            image = reshape(jmean(150:150,:,:), [state%grid%nxg,state%grid%nzg,1])
+            call tev%update_image(state%experiment, real(image(:,:,1:1)), ["R"], 0, 0, .false., .false.)
 !$omp end critical
         end if
     end if
@@ -185,7 +185,6 @@ if(id == 0)then
     call dict%set(key("nphotons"), value=state%nphotons)
     call dict%set(key("source"), value=state%source)
     call dict%set(key("experiment"), value=state%experiment)
-
 
     jmeanGLOBAL = normalise_fluence(state%grid, jmeanGLOBAL, state%nphotons)
     call write(jmeanGLOBAL, trim(fileplace)//"jmean/"//state%outfile, dict)

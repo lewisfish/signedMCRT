@@ -57,6 +57,8 @@ module parse_mod
         character(len=:), allocatable :: direction
 
         axis = ["x", "y", "z"]
+        pos = 0._wp
+        dir = 0._wp
 
         call get_value(table, "source", child)
 
@@ -72,7 +74,7 @@ module parse_mod
                 end if
                 do i = 1, len(children)
                     call get_value(children, i, pos(i))
-                    call dict%set(key("pos"//axis(i)), value=pos(i))
+                    call dict%set(key("pos%"//axis(i)), value=pos(i))
                 end do
             else
                 if(state%source == "point")then
@@ -155,6 +157,7 @@ module parse_mod
         
         type(toml_table), pointer :: child
         real(kind=wp)             :: tau, musb, musc, muab, muac, hgg
+        integer                   :: num_spheres
 
         call get_value(table, "geometry", child)
 
@@ -162,6 +165,9 @@ module parse_mod
             call get_value(child, "geom_name", state%experiment, "sphere")
             call get_value(child, "tau", tau, 10._wp)
             call dict%set(key("tau"), value=tau)
+
+            call get_value(child, "num_spheres", num_spheres, 10)
+            call dict%set(key("num_spheres"), value=num_spheres)
 
             call get_value(child, "musb", musb, 0.0_wp)
             call dict%set(key("musb"), value=musb)
@@ -195,6 +201,7 @@ module parse_mod
             call get_value(child, "fluence", state%outfile, "fluence.nrrd")
             call get_value(child, "render", state%renderfile, "geom_render.nrrd")
             call get_value(child, "render_geom", state%render_geom, .false.)
+            call get_value(child, "render_size", state%render_size, 200)
         else
             error stop "Need output table in input param file"
         end if

@@ -381,7 +381,7 @@ module inttau2
 
 
     subroutine update_voxels(grid, pos, celli, cellj, cellk)
-    !updates the current voxel based upon position
+    ! updates the current voxel based upon position
     !
     !
         use vector_class

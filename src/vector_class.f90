@@ -54,7 +54,6 @@ Module vector_class
 
     contains
 
-
         type(vector) function clamp_vec(this, lo, hi)
 
             use utils, only : clamp

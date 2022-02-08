@@ -52,7 +52,7 @@ implicit none
         end function normalise_fluence
 
 
-        subroutine write(array, filename, dict)
+        subroutine write(array, filename, dict, overwrite)
         ! routine automatically selects which way to write ouresults based upon file extension
             use fhash,        only : fhash_tbl_t
 
@@ -61,28 +61,36 @@ implicit none
             real(kind=wp),          intent(IN) :: array(:,:,:)
             character(*),           intent(IN) :: filename
             type(fhash_tbl_t), optional, intent(INOUT) :: dict
+            logical,           optional, intent(IN) :: overwrite
 
+            Logical :: over_write
             integer :: pos
             
+            if(present(overwrite))then
+                over_write = overwrite
+            else
+                over_write = .false.
+            end if
+
             pos = index(filename, ".nrrd")
             if(pos > 0)then
                 if(present(dict))then
-                    call nrrd_write(array, filename, dict)
+                    call nrrd_write(array, filename, over_write, dict)
                 else
-                    call nrrd_write(array, filename)
+                    call nrrd_write(array, filename, over_write)
                 end if
                 return
             end if
 
             pos = index(filename, ".raw")
             if(pos > 0)then
-                call raw_write(array, filename)
+                call raw_write(array, filename, over_write)
                 return
             end if
 
             pos = index(filename, ".dat")
             if(pos > 0)then
-                call raw_write(array, filename)
+                call raw_write(array, filename, over_write)
                 return
             end if
 
@@ -90,17 +98,18 @@ implicit none
 
         end subroutine write
 
-        subroutine write_3d_r8_raw(array, filename)
+        subroutine write_3d_r8_raw(array, filename, overwrite)
 
             implicit none
 
             real(kind=wp), intent(IN) :: array(:, :, :)
             character(*),  intent(IN) :: filename
+            logical,       intent(IN) :: overwrite
 
             integer :: u
             character(len=:), allocatable :: file
 
-            if(check_file(filename))then
+            if(check_file(filename) .and. .not. overwrite)then
                 file = get_new_file_name(filename)
             else
                 file = filename
@@ -170,7 +179,7 @@ implicit none
 
         end subroutine write_hdr
 
-        subroutine write_3d_r8_nrrd(array, filename, dict)
+        subroutine write_3d_r8_nrrd(array, filename, overwrite, dict)
             
             use fhash,           only : fhash_tbl_t, key=>fhash_tbl_t, fhash_key_t
             use iso_fortran_env, only : int32, int64, real32, real64
@@ -180,6 +189,7 @@ implicit none
             character(*),                intent(IN)    :: filename
             real(kind=wp),               intent(IN)    :: array(:, :, :)
             type(fhash_tbl_t), optional, intent(INOUT) :: dict
+            logical,                     intent(IN) :: overwrite
 
             class(fhash_key_t), pointer   :: keyd
             character(len=:), allocatable :: key_out, file, type_str
@@ -192,7 +202,7 @@ implicit none
             character(len=:), allocatable :: val_char
             logical :: val_bool
 
-            if(check_file(filename))then
+            if(check_file(filename) .and. .not. overwrite)then
                 file = get_new_file_name(filename)
             else
                 file = filename

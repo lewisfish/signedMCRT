@@ -1,23 +1,25 @@
 [source]
-name = "uniform"
-nphotons = 1000000
-direction = "-z"
+name='uniform'
+nphotons=1000000
+directions='-z'
 
 [grid]
-nxg = 200
-nyg = 200
-nzg = 200
-xmax = 1.0
-ymax = 1.0
-zmax = 1.0
+nxg=200
+nyg=200
+nzg=200
+xmax=1.0
+ymax=1.0
+zmax=1.0
 
 [geometry]
-geom_name = "sphere"
+geom_name='sphere_scene'
+num_spheres=512
 
 [output]
-fluence = "sphere.nrrd"
-render = "sphere_render.nrrd"
-render_geom = true
+fluence='sphere_scene_512.nrrd'
+render_geom=false
 
 [simulation]
-iseed = 123456789
+iseed=123456789
+tev=false
+
