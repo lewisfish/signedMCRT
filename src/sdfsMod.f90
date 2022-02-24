@@ -1784,6 +1784,6 @@ end function eval_neural
             end do
 !$OMP end  do
 !$OMP end parallel
-            call write(image, trim(fileplace)//filename)
+            call write(image, trim(fileplace)//filename, overwrite=.true.)
         end subroutine render
 end module sdfs

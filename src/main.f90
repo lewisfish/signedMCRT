@@ -114,7 +114,8 @@ if(id == 0)print("(a,I3.1,a)"),'Photons now running on', numproc,' cores.'
 call init_rng(spread(123456789+id, 1, 8), fwd=.true.)
 
 
-bar = pbar(state%nphotons/ 10000)
+bar = pbar(state%nphotons/ 10)
+!$OMP BARRIER
 !$OMP do
 !loop over photons 
 do j = 1, state%nphotons
@@ -127,8 +128,9 @@ do j = 1, state%nphotons
     distances = 0._wp
     do i = 1, size(distances)
         distances(i) = array(i)%p%evaluate(packet%pos)
+        if(distances(i) > 0._wp)distances(i)=-999.0_wp
     end do
-    packet%layer=minloc(distances,dim=1)
+    packet%layer=minloc(abs(distances),dim=1)
 
     ! Find scattering location
     call tauint2(state%grid, packet, array)

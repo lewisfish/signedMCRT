@@ -54,19 +54,21 @@ implicit none
 
         subroutine write(array, filename, dict, overwrite)
         ! routine automatically selects which way to write ouresults based upon file extension
-            use fhash,        only : fhash_tbl_t
+            use fhash,        only : fhash_tbl_t, key=>fhash_key
 
             implicit none
         
             real(kind=wp),          intent(IN) :: array(:,:,:)
             character(*),           intent(IN) :: filename
             type(fhash_tbl_t), optional, intent(INOUT) :: dict
-            logical,           optional, intent(IN) :: overwrite
+            logical, optional, intent(IN) :: overwrite
 
             Logical :: over_write
             integer :: pos
             
-            if(present(overwrite))then
+            if(present(dict))then
+                call dict%get(key("overwrite"), over_write)
+            elseif(present(overwrite))then
                 over_write = overwrite
             else
                 over_write = .false.

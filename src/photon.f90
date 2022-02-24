@@ -170,79 +170,38 @@ module photonMod
             class(photon) :: this
             type(fhash_tbl_t), optional, intent(IN) :: dict
 
-            integer :: cell(3)
-            character(len=:),allocatable :: dir
+            integer      :: cell(3)
+            type(vector) :: pos1, pos2, pos3
+            real         :: rx, ry
 
-            call dict%get(key("dir"), dir)
-            select case(dir)
-            case("-z")
-                this%pos%x = ranu(-state%grid%xmax, state%grid%xmax)
-                this%pos%y = ranu(-state%grid%ymax, state%grid%ymax)
-                this%pos%z = state%grid%zmax-1e-8_wp
+            call dict%get(key("dir%x"), this%nxp)
+            call dict%get(key("dir%y"), this%nyp)
+            call dict%get(key("dir%z"), this%nzp)
 
-                this%phi  = 0._wp
-                this%cosp = 1._wp
-                this%sinp = 0._wp
-                this%cost = -1._wp
-                this%sint = 0._wp
-            case("+z")
-                this%pos%x = ranu(-state%grid%xmax, state%grid%xmax)
-                this%pos%y = ranu(-state%grid%ymax, state%grid%ymax)
-                this%pos%z = -state%grid%zmax + 1e-8_wp
+            this%cost = this%nzp
+            this%sint = sqrt(1._wp - this%cost**2)
 
-                this%phi  = 0._wp
-                this%cosp = 1._wp
-                this%sinp = 0._wp
-                this%cost = 1._wp
-                this%sint = 0._wp
+            this%phi = atan2(this%nyp, this%nxp)
+            this%cosp = cos(this%phi)
+            this%sinp = sin(this%phi)
 
-            case("-x")
-                this%pos%x = state%grid%xmax-1e-8_wp
-                this%pos%y = ranu(-state%grid%ymax, state%grid%ymax)
-                this%pos%z = ranu(-state%grid%zmax, state%grid%zmax)
+            call dict%get(key("pos1%x"), pos1%x)
+            call dict%get(key("pos1%y"), pos1%y)
+            call dict%get(key("pos1%z"), pos1%z)
 
-                this%phi  = 0._wp
-                this%cosp = 1._wp
-                this%sinp = 0._wp
-                this%cost = 0._wp
-                this%sint = -1._wp
-            case("+x")
-                this%pos%x = -state%grid%xmax+1e-8_wp
-                this%pos%y = ranu(-state%grid%ymax, state%grid%ymax)
-                this%pos%z = ranu(-state%grid%zmax, state%grid%zmax)
+            call dict%get(key("pos2%x"), pos2%x)
+            call dict%get(key("pos2%y"), pos2%y)
+            call dict%get(key("pos2%z"), pos2%z)
 
-                this%phi  = 0._wp
-                this%cosp = 1._wp
-                this%sinp = 0._wp
-                this%cost = 0._wp
-                this%sint = 1._wp
-            case("-y")
-                this%pos%x = ranu(-state%grid%xmax, state%grid%xmax)
-                this%pos%y = state%grid%xmax-1e-8_wp
-                this%pos%z = ranu(-state%grid%zmax, state%grid%zmax)
+            call dict%get(key("pos3%x"), pos3%x)
+            call dict%get(key("pos3%y"), pos3%y)
+            call dict%get(key("pos3%z"), pos3%z)
 
-                this%phi  = 0._wp
-                this%cosp = 0._wp
-                this%sinp = -1._wp
-                this%cost = 0._wp
-                this%sint = 1._wp
-            case("+y")
-                this%pos%x = ranu(-state%grid%xmax, state%grid%xmax)
-                this%pos%y = -state%grid%xmax+1e-8_wp
-                this%pos%z = ranu(-state%grid%zmax, state%grid%zmax)
-
-                this%phi  = 0._wp
-                this%cosp = 0._wp
-                this%sinp = 1._wp
-                this%cost = 0._wp
-                this%sint = 1._wp
-            case default
-                error stop "No such direction for uniform source"
-            end select
-
-            this%nxp = this%sint * this%cosp
-            this%nyp = this%sint * this%sinp
-            this%nzp = this%cost
+            rx = ran2()
+            ry = ran2()
+            this%pos%x = pos1%x + rx * pos2%x + ry * pos3%x
+            this%pos%y = pos1%y + rx * pos2%y + ry * pos3%y
+            this%pos%z = pos1%z + rx * pos2%z + ry * pos3%z
 
             this%tflag = .false.
             this%cnts = 0
@@ -273,15 +232,15 @@ module photonMod
             call dict%get(key("pos%y"), this%pos%y)
             call dict%get(key("pos%z"), this%pos%z)
 
-            this%phi = 0._wp
-            this%cosp = 0._wp
-            this%sinp = 0._wp     
-            this%cost = -1._wp
-            this%sint =  0._wp
+            call dict%get(key("dir%x"), this%nxp)
+            call dict%get(key("dir%y"), this%nyp)
+            call dict%get(key("dir%z"), this%nzp)
 
-            this%nxp = this%sint * this%cosp  
-            this%nyp = this%sint * this%sinp
-            this%nzp = this%cost
+            this%phi = atan2(this%nyp, this%nxp)
+            this%cosp = cos(this%phi)
+            this%sinp = sin(this%phi)
+            this%cost = this%nzp
+            this%sint = sqrt(1._wp - this%cost**2)
 
             this%tflag = .false.
 
@@ -290,7 +249,6 @@ module photonMod
             this%xcell = cell(1)
             this%ycell = cell(2)
             this%zcell = cell(3)
-
         end subroutine pencil
         
         subroutine annulus(this, dict)

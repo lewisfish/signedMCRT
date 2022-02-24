@@ -43,7 +43,7 @@ module subs
                     sdfarray = setup_scat_test(dict)
                 case("skin")
                     sdfarray = setup_skin_model()
-                case("sphere")
+                case("aptran")
                     sdfarray = setup_sphere()
                 case("exp")
                     sdfarray = setup_exp(dict)
@@ -362,30 +362,28 @@ module subs
             
             type(container), allocatable :: array(:)
             type(sphere),   target, save :: sph
-            type(box),      target, save :: bbox
+            type(box),      target, save :: bbox(2)
 
             real(kind=wp) :: mus, mua, n, hgg, t(4, 4)
             type(vector)  :: a
-
-            ! packet = photon("uniform")
             
             mus = 0._wp; mua = 1.e-17_wp; hgg = 0._wp; n = 1._wp;
-            bbox = box(2._wp, mus, mua, hgg, n, 2)
-            ! bbox(2) = box(2.01_wp, mus, 10000000._wp, hgg, n, 2)
+            bbox(1) = box(2._wp, mus, mua, hgg, n, 2)
+            bbox(2) = box(2.01_wp, mus, 10000000._wp, hgg, n, 3)
 
-            mus = 0._wp; mua = 1.e-17_wp; hgg = .0_wp; n = 1.46_wp;
+            mus = 0._wp; mua = 1.e-17_wp; hgg = 0._wp; n = 1.33_wp;
             a = vector(.5_wp, 0._wp, -1._wp)
             t = invert(translate(a))
             sph = sphere(1._wp, mus, mua, hgg, n, 1, transform=t)
 
-            allocate(array(2))
+            allocate(array(3))
             allocate(array(1)%p, source=sph)
-            allocate(array(2)%p, source=bbox)
-            ! allocate(array(3)%p, source=bbox(2))
+            allocate(array(2)%p, source=bbox(1))
+            allocate(array(3)%p, source=bbox(2))
 
             array(1)%p => sph
-            array(2)%p => bbox!(1)
-            ! array(3)%p => bbox(2)
+            array(2)%p => bbox(1)
+            array(3)%p => bbox(2)
 
         end function setup_sphere
 

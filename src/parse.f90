@@ -31,7 +31,7 @@ module parse_mod
         call parse_source(table, packet, dict)
         call parse_grid(table, dict)
         call parse_geometry(table, dict)
-        call parse_output(table)
+        call parse_output(table, dict)
         call parse_simulation(table)
 
     end subroutine parse_params
@@ -51,7 +51,7 @@ module parse_mod
         type(toml_table), pointer :: child
         type(toml_array), pointer :: children
 
-        real(kind=wp) :: dir(3), pos(3)
+        real(kind=wp) :: dir(3), pos(3), corners(3, 3)
         integer :: i, nlen
         character(len=1) :: axis(3)
         character(len=:), allocatable :: direction
@@ -59,6 +59,10 @@ module parse_mod
         axis = ["x", "y", "z"]
         pos = 0._wp
         dir = 0._wp
+        corners = reshape((/ -1._wp, -1._wp, 1._wp, &
+                              2._wp,  0._wp, 0._wp, &
+                              0._wp,  2._wp, 0._wp /), &
+                           shape(corners), order=[2, 1])
 
         call get_value(table, "source", child)
 
@@ -89,7 +93,6 @@ module parse_mod
             
             call get_value(child, "direction", children, requested=.false.)
             if(associated(children))then
-                if(state%source == "uniform")error stop "Source uniform cant have vector direction!"
                 nlen = len(children)
                 if(nlen < 3)then
                     error stop "Need a vector of size 3 for direction."
@@ -99,9 +102,55 @@ module parse_mod
                     call dict%set(key("dir%"//axis(i)), value=dir(i))
                 end do
             else
+                if(state%source == "uniform")error stop "Source uniform cant have character direction!"
                 call get_value(child, "direction", direction, "-z")
                 call dict%set(key("dir"), value=direction)
             end if
+
+            children => null()
+            
+            call get_value(child, "point1", children, requested=.false.)
+            if(associated(children))then
+                nlen = len(children)
+                if(nlen < 3)then
+                    error stop "Need a Matrix row of size 3 for points."
+                end if
+                do i = 1, len(children)
+                    call get_value(children, i, corners(i, 1))
+                    call dict%set(key("pos1%"//axis(i)), value=corners(i,1))
+                end do
+            else
+                if(state%source == "uniform")error stop "Source Uniform needs to have point1 variable!"
+            end if
+
+            call get_value(child, "point2", children, requested=.false.)
+            if(associated(children))then
+                nlen = len(children)
+                if(nlen < 3)then
+                    error stop "Need a Matrix row of size 3 for points."
+                end if
+                do i = 1, len(children)
+                    call get_value(children, i, corners(i, 2))
+                    call dict%set(key("pos2%"//axis(i)), value=corners(i,2))
+                end do
+            else
+                if(state%source == "uniform")error stop "Source Uniform needs to have point2 variable!"
+            end if
+
+            call get_value(child, "point3", children, requested=.false.)
+            if(associated(children))then
+                nlen = len(children)
+                if(nlen < 3)then
+                    error stop "Need a Matrix row of size 3 for points."
+                end if
+                do i = 1, len(children)
+                    call get_value(children, i, corners(i, 3))
+                    call dict%set(key("pos3%"//axis(i)), value=corners(i,3))
+                end do
+            else
+                if(state%source == "uniform")error stop "Source Uniform needs to have point3 variable!"
+            end if
+
         else
             error stop "Need source table in input param file"
         end if
@@ -153,7 +202,7 @@ module parse_mod
         implicit none
         
         type(toml_table),  intent(INOUT) :: table
-        type(fhash_tbl_t), intent(INOUT)    :: dict
+        type(fhash_tbl_t), intent(INOUT) :: dict
         
         type(toml_table), pointer :: child
         real(kind=wp)             :: tau, musb, musc, muab, muac, hgg
@@ -185,15 +234,18 @@ module parse_mod
 
     end subroutine parse_geometry
 
-    subroutine parse_output(table)
+    subroutine parse_output(table, dict)
 
         use sim_state_mod, only : state
+        use fhash,         only : fhash_tbl_t, key=>fhash_key
 
         implicit none
         
-        type(toml_table), intent(INOUT) :: table
+        type(toml_table),  intent(INOUT) :: table
+        type(fhash_tbl_t), intent(INOUT) :: dict
 
         type(toml_table), pointer :: child
+        logical :: overwrite
 
         call get_value(table, "output", child)
 
@@ -202,6 +254,8 @@ module parse_mod
             call get_value(child, "render", state%renderfile, "geom_render.nrrd")
             call get_value(child, "render_geom", state%render_geom, .false.)
             call get_value(child, "render_size", state%render_size, 200)
+            call get_value(child, "overwrite", overwrite, .false.)
+            call dict%set(key("overwrite"), value=overwrite)
         else
             error stop "Need output table in input param file"
         end if
