@@ -24,13 +24,13 @@ Data created with this code can be found at: https://doi.org/10.5281/zenodo.5780
 ## Example of SDF models produced by signedMCRT
 
 SDF of University of St Andrews crest. SVG of crest was simplfied in Inkscape and then exported using svg.f90 to line segments and assiagned optical properties before being illuminated uniformly by light.
-![Image of SDF model of university crest](https://github.com/lewisfish/signedMCRT/raw/main/crest-sdf-svg.png)
+![Image of SDF model of university crest](https://github.com/lewisfish/signedMCRT/raw/main/images/crest-sdf-svg.png)
 
 Comparison of voxel and SDF models of a glass bottle with scattering contents. The voxel model exhibts un-physical reflections and refractions.
-![Comparison of light distrbution in voxel and SDF bottle](https://github.com/lewisfish/signedMCRT/raw/main/georgie_compare_sdf_vs_voxel.png)
+![Comparison of light distrbution in voxel and SDF bottle](https://github.com/lewisfish/signedMCRT/raw/main/images/georgie_compare_sdf_vs_voxel.png)
 
 Comparison of voxel, interpolated surface normals, and SDFs model of a sphere being illuminated by a tophat laser beam.
-![Comparison of sMCRT to voxel and smoothed surface normal method](https://github.com/lewisfish/signedMCRT/raw/main/sdf_vs_voxel_sphere%20(1).png)
+![Comparison of sMCRT to voxel and smoothed surface normal method](https://github.com/lewisfish/signedMCRT/raw/main/images/sdf_vs_voxel_sphere%20(1).png)
 
 ## SDF information
 List of SDF functions
