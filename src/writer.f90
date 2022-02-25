@@ -185,6 +185,7 @@ implicit none
             
             use fhash,           only : fhash_tbl_t, key=>fhash_tbl_t, fhash_key_t
             use iso_fortran_env, only : int32, int64, real32, real64
+            use utils, only : str
 
             implicit none
         
@@ -195,7 +196,7 @@ implicit none
 
             class(fhash_key_t), pointer   :: keyd
             character(len=:), allocatable :: key_out, file, type_str
-            integer :: u, i, stat
+            integer :: u, stat
 
             integer(kind=int32) :: val_i32
             integer(kind=int64) :: val_i64

@@ -170,9 +170,9 @@ module photonMod
             class(photon) :: this
             type(fhash_tbl_t), optional, intent(IN) :: dict
 
-            integer      :: cell(3)
-            type(vector) :: pos1, pos2, pos3
-            real         :: rx, ry
+            integer        :: cell(3)
+            type(vector)   :: pos1, pos2, pos3
+            real(kind=wp) :: rx, ry
 
             call dict%get(key("dir%x"), this%nxp)
             call dict%get(key("dir%y"), this%nyp)

@@ -46,8 +46,6 @@ integer       :: id, numproc
 real(kind=wp) :: nscattGLOBAL
 
 dict = fhash_tbl_t()
-
-
 num_args = command_argument_count()
 if(num_args == 0)then
     allocate(args(1))
@@ -77,8 +75,8 @@ call setup_simulation(array, dict)
 ! render geometry to voxel format for debugging
 if(state%render_geom)then
     call render(array, vector(state%grid%xmax, state%grid%ymax, state%grid%zmax), state%render_size, fname=state%renderfile)
-
 end if
+
 allocate(distances(size(array)))
 
 start = get_time()
@@ -119,7 +117,7 @@ bar = pbar(state%nphotons/ 10)
 !$OMP do
 !loop over photons 
 do j = 1, state%nphotons
-    if(mod(j, 10000) == 0)call bar%progress()
+    if(mod(j, 10) == 0)call bar%progress()
 
     ! Release photon from point source
     call packet%emit(dict)
@@ -139,20 +137,20 @@ do j = 1, state%nphotons
         ran = ran2()
         if(ran < array(packet%layer)%p%albedo)then!interacts with tissue
             call stokes(packet, array(packet%layer)%p%hgg, array(packet%layer)%p%g2)
-            nscatt = nscatt + 1            
+            nscatt = nscatt + 1
         else
             packet%tflag = .true.
             exit
         end if
-        
         ! !Find next scattering location
         call tauint2(state%grid, packet, array)
         
     end do
+        
     if(id == 0 .and. mod(j,1000) == 0)then
         if(state%tev)then
 !$omp critical
-            image = reshape(jmean(150:150,:,:), [state%grid%nxg,state%grid%nzg,1])
+            image = reshape(jmean(:,100:100,:), [state%grid%nxg,state%grid%nzg,1])
             call tev%update_image(state%experiment, real(image(:,:,1:1)), ["R"], 0, 0, .false., .false.)
 !$omp end critical
         end if
@@ -195,7 +193,6 @@ end if
 
 time_taken = get_time() - start
 call print_time(time_taken, id)
-
 #ifdef MPI
     call MPI_Finalize()
 #endif

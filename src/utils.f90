@@ -36,8 +36,8 @@ module utils
                                    strikethrough = '09'
 
     !ANSI control characters                               
-    character(len=2), parameter :: start = achar(27)//'['
-    character(len=3), parameter :: end = '[0m'
+    character(len=2), parameter :: start_code = achar(27)//'['
+    character(len=3), parameter :: end_code = '[0m'
 
 
     !functions to add colour to output via ANSI colour codes
@@ -102,7 +102,6 @@ module utils
         module procedure rad2deg_R4
         module procedure rad2deg_R8
     end interface rad2deg
-
 
     interface
         function c_chdir(path) bind(C, name="chdir")
@@ -197,7 +196,7 @@ module utils
                 width = int(this%percentage/ 2._dp)
                 line = "[" // repeat("#", width) // repeat(" ", 50 - width) // "]"
 
-                write(unit=output_unit,fmt='(A)',advance="no") start//"1000D"//line//" "//str(int(this%percentage),3)//"%  ["//&
+                write(unit=output_unit,fmt='(A)',advance="no") start_code//"1000D"//line//" "//str(int(this%percentage),3)//"%  ["//&
                 str(this%time_taken)//"<"//str(this%time_remaing)//"]"
                 if(this%percentage >= 100._dp)write(unit=output_unit,fmt='(A)')new_line("a")
                 flush(output_unit)
@@ -217,7 +216,7 @@ module utils
             real(kind=sp), intent(IN) :: angle
             real(kind=sp) :: res
 
-            res = angle/PI*180._sp
+            res = angle/real(PI,kind=sp)*180._sp
 
         end function rad2deg_R4
 
@@ -577,15 +576,15 @@ module utils
             colourised = string
 
             if(present(fmt1) .and. present(fmt2) .and. present(fmt3) .and. present(fmt4) .and. present(fmt5))then
-                colourised = start//fmt1//';'//fmt2//';'//fmt3//';'//fmt4//';'//fmt5//'m'//string//achar(27)//end
+                colourised = start_code//fmt1//';'//fmt2//';'//fmt3//';'//fmt4//';'//fmt5//'m'//string//achar(27)//end_code
             elseif(present(fmt1) .and. present(fmt2) .and. present(fmt3) .and. present(fmt4))then
-                colourised = start//fmt1//';'//fmt2//';'//fmt3//';'//fmt4//'m'//string//achar(27)//end
+                colourised = start_code//fmt1//';'//fmt2//';'//fmt3//';'//fmt4//'m'//string//achar(27)//end_code
             elseif(present(fmt1) .and. present(fmt2) .and. present(fmt3))then
-                colourised = start//fmt1//';'//fmt2//';'//fmt3//'m'//string//achar(27)//end
+                colourised = start_code//fmt1//';'//fmt2//';'//fmt3//'m'//string//achar(27)//end_code
             elseif(present(fmt1) .and. present(fmt2))then
-                colourised = start//fmt1//';'//fmt2//'m'//string//achar(27)//end
+                colourised = start_code//fmt1//';'//fmt2//'m'//string//achar(27)//end_code
             elseif(present(fmt1))then
-                colourised = start//fmt1//'m'//string//achar(27)//end
+                colourised = start_code//fmt1//'m'//string//achar(27)//end_code
             end if
         end function colour_char
 
@@ -605,15 +604,15 @@ module utils
             colourised = trim(adjustl(string))
 
             if(present(fmt1) .and. present(fmt2) .and. present(fmt3) .and. present(fmt4) .and. present(fmt5))then
-                colourised = start//fmt1//';'//fmt2//';'//fmt3//';'//fmt4//';'//fmt5//'m'//string//achar(27)//end
+                colourised = start_code//fmt1//';'//fmt2//';'//fmt3//';'//fmt4//';'//fmt5//'m'//string//achar(27)//end_code
             elseif(present(fmt1) .and. present(fmt2) .and. present(fmt3) .and. present(fmt4))then
-                colourised = start//fmt1//';'//fmt2//';'//fmt3//';'//fmt4//'m'//string//achar(27)//end
+                colourised = start_code//fmt1//';'//fmt2//';'//fmt3//';'//fmt4//'m'//string//achar(27)//end_code
             elseif(present(fmt1) .and. present(fmt2) .and. present(fmt3))then
-                colourised = start//fmt1//';'//fmt2//';'//fmt3//'m'//string//achar(27)//end
+                colourised = start_code//fmt1//';'//fmt2//';'//fmt3//'m'//string//achar(27)//end_code
             elseif(present(fmt1) .and. present(fmt2))then
-                colourised = start//fmt1//';'//fmt2//'m'//string//achar(27)//end
+                colourised = start_code//fmt1//';'//fmt2//'m'//string//achar(27)//end_code
             elseif(present(fmt1))then
-                colourised = start//fmt1//'m'//string//achar(27)//end
+                colourised = start_code//fmt1//'m'//string//achar(27)//end_code
             end if
         end function colour_int
 
@@ -633,15 +632,15 @@ module utils
             colourised = trim(adjustl(string))
 
             if(present(fmt1) .and. present(fmt2) .and. present(fmt3) .and. present(fmt4) .and. present(fmt5))then
-                colourised = start//fmt1//';'//fmt2//';'//fmt3//';'//fmt4//';'//fmt5//'m'//string//achar(27)//end
+                colourised = start_code//fmt1//';'//fmt2//';'//fmt3//';'//fmt4//';'//fmt5//'m'//string//achar(27)//end_code
             elseif(present(fmt1) .and. present(fmt2) .and. present(fmt3) .and. present(fmt4))then
-                colourised = start//fmt1//';'//fmt2//';'//fmt3//';'//fmt4//'m'//string//achar(27)//end
+                colourised = start_code//fmt1//';'//fmt2//';'//fmt3//';'//fmt4//'m'//string//achar(27)//end_code
             elseif(present(fmt1) .and. present(fmt2) .and. present(fmt3))then
-                colourised = start//fmt1//';'//fmt2//';'//fmt3//'m'//string//achar(27)//end
+                colourised = start_code//fmt1//';'//fmt2//';'//fmt3//'m'//string//achar(27)//end_code
             elseif(present(fmt1) .and. present(fmt2))then
-                colourised = start//fmt1//';'//fmt2//'m'//string//achar(27)//end
+                colourised = start_code//fmt1//';'//fmt2//'m'//string//achar(27)//end_code
             elseif(present(fmt1))then
-                colourised = start//fmt1//'m'//string//achar(27)//end
+                colourised = start_code//fmt1//'m'//string//achar(27)//end_code
             end if
         end function colour_real4
 
@@ -661,15 +660,15 @@ module utils
             colourised = trim(adjustl(string))
 
             if(present(fmt1) .and. present(fmt2) .and. present(fmt3) .and. present(fmt4) .and. present(fmt5))then
-                colourised = start//fmt1//';'//fmt2//';'//fmt3//';'//fmt4//';'//fmt5//'m'//string//achar(27)//end
+                colourised = start_code//fmt1//';'//fmt2//';'//fmt3//';'//fmt4//';'//fmt5//'m'//string//achar(27)//end_code
             elseif(present(fmt1) .and. present(fmt2) .and. present(fmt3) .and. present(fmt4))then
-                colourised = start//fmt1//';'//fmt2//';'//fmt3//';'//fmt4//'m'//string//achar(27)//end
+                colourised = start_code//fmt1//';'//fmt2//';'//fmt3//';'//fmt4//'m'//string//achar(27)//end_code
             elseif(present(fmt1) .and. present(fmt2) .and. present(fmt3))then
-                colourised = start//fmt1//';'//fmt2//';'//fmt3//'m'//string//achar(27)//end
+                colourised = start_code//fmt1//';'//fmt2//';'//fmt3//'m'//string//achar(27)//end_code
             elseif(present(fmt1) .and. present(fmt2))then
-                colourised = start//fmt1//';'//fmt2//'m'//string//achar(27)//end
+                colourised = start_code//fmt1//';'//fmt2//'m'//string//achar(27)//end_code
             elseif(present(fmt1))then
-                colourised = start//fmt1//'m'//string//achar(27)//end
+                colourised = start_code//fmt1//'m'//string//achar(27)//end_code
             end if
         end function colour_real8
 

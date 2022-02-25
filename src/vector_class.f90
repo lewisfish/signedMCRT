@@ -286,7 +286,7 @@ Module vector_class
         end function magnitude_fn
 
 
-        real function length(this)
+        real(kind=wp) function length(this)
 
             implicit none
 

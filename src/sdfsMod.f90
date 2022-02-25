@@ -667,36 +667,36 @@ end function eval_neural
 
         end function box_init
 
-        function box_init_vec(lengths, mus, mua, hgg, n, layer, transform) result(out)
+        function box_init_vec(widths, mus, mua, hgg, n, layer, transform) result(out)
         
             implicit none
         
             type(box) :: out
             
-            type(vector),            intent(IN) :: lengths
+            type(vector),            intent(IN) :: widths
             real(kind=wp),           intent(IN) :: mus, mua, hgg, n
             integer,                 intent(IN) :: layer
             real(kind=wp), optional, intent(in) :: transform(4, 4)
 
-            out = box_init(lengths, mus, mua, hgg, n, layer, transform)
+            out = box_init(widths, mus, mua, hgg, n, layer, transform)
 
         end function box_init_vec
 
-        function box_init_scal(length, mus, mua, hgg, n, layer, transform) result(res)
+        function box_init_scal(width, mus, mua, hgg, n, layer, transform) result(res)
         
             implicit none
         
             type(box) :: res
             
-            real(kind=wp),           intent(IN) :: length, mus, mua, hgg, n
+            real(kind=wp),           intent(IN) :: width, mus, mua, hgg, n
             integer,                 intent(IN) :: layer
             real(kind=wp), optional, intent(in) :: transform(4, 4)
 
-            type(vector) :: lengths
+            type(vector) :: widths
 
-            lengths = vector(length, length, length)
+            widths = vector(width, width, width)
 
-            res = box_init(lengths, mus, mua, hgg, n, layer, transform)
+            res = box_init(widths, mus, mua, hgg, n, layer, transform)
 
         end function box_init_scal
 
@@ -1744,7 +1744,7 @@ end function eval_neural
             else
                 filename = "model.dat"
             end if
-            ns = int(samples / 2)
+            ns = nint(samples / 2._wp)
             allocate(image(samples, samples, samples))
             wid = extent/real(ns, kind=wp)
             bar = pbar(samples)
