@@ -1,6 +1,6 @@
 module surfaces
 
-    use vector_class, only : vector
+    use vector_class
     use constants,    only : wp
 
     implicit none
@@ -228,7 +228,6 @@ module surfaces
     !
     !
         use random, only : ran2
-        use vector_class
 
         implicit none
 
@@ -254,7 +253,6 @@ module surfaces
     !   get vector of reflected photon
     !
     !
-        use vector_class
 
         implicit none
 
@@ -273,7 +271,6 @@ module surfaces
     !   get vector of refracted photon
     !
     !
-        use vector_class
 
         implicit none
 
@@ -305,7 +302,6 @@ module surfaces
     !   calculates the fresnel coefficents
     !
     !
-        use vector_class
         use ieee_arithmetic, only : ieee_is_nan
 
         implicit none
