@@ -29,7 +29,7 @@ module inttau2
 
         real(kind=wp) :: tau, d_sdf, t_sdf, taurun, ds(size(sdfs_array)), dstmp(size(sdfs_array))
         real(kind=wp) :: eps, dtot, signs(size(sdfs_array)), n1, n2
-        integer       :: i, cur_layer, oldlayer
+        integer       :: i, cur_layer, oldlayer, new_layer
         type(vector)  :: pos, dir, oldpos, N
         logical       :: rflag
 
@@ -138,19 +138,25 @@ module inttau2
 
             !check for fresnel reflection
             n1 = sdfs_array(cur_layer)%p%n
-            oldlayer = cur_layer
-            cur_layer = minloc(signs,dim=1)
-            n2 = sdfs_array(cur_layer)%p%n
+            new_layer = minloc(signs,dim=1)
+            n2 = sdfs_array(new_layer)%p%n
 
             !carry out refelction/refraction
             if (n1 /= n2)then
-                N = calcNormal(pos, sdfs_array(cur_layer)%p)
+                !get correct sdf normal
+                oldlayer=maxloc(dstmp,dim=1)
+                N = calcNormal(pos, sdfs_array(oldlayer)%p)
+
                 rflag = .false.
                 call reflect_refract(dir, N, n1, n2, rflag)
+
                 tau = -log(ran2())
                 taurun = 0._wp
-                if(rflag)then
-                    cur_layer = oldlayer
+                if(.not.rflag)then
+                    cur_layer = new_layer
+                else
+                    !reflect so incremtn bounce counter
+                    packet%bounces = packet%bounces + 1
                 end if
             end if
             packet%layer = cur_layer

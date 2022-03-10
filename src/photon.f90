@@ -15,7 +15,7 @@ module photonMod
         logical       :: tflag                        ! Is photon dead?
         integer       :: layer                        ! id of sdf the packet is inside
         integer       :: id                           ! thread running packet
-        integer       :: cnts                         !  number of sdf evals.
+        integer       :: cnts, bounces                !  number of sdf evals.
 
         procedure(generic_emit), pointer :: emit => null()
 
@@ -96,6 +96,7 @@ module photonMod
 
             this%tflag  = .false.
             this%cnts   = 0
+            this%bounces = 0
             this%layer  = 1
 
             ! Linear Grid 
@@ -148,6 +149,8 @@ module photonMod
             this%nzp = this%cost
 
             this%tflag = .false.
+            this%bounces = 0
+            this%cnts = 0
 
             ! Linear Grid 
             cell = state%grid%get_voxel(this%pos)
@@ -205,6 +208,7 @@ module photonMod
 
             this%tflag = .false.
             this%cnts = 0
+            this%bounces = 0
 
             ! Linear Grid 
             cell = state%grid%get_voxel(this%pos)
@@ -243,6 +247,8 @@ module photonMod
             this%sint = sqrt(1._wp - this%cost**2)
 
             this%tflag = .false.
+            this%bounces = 0
+            this%cnts = 0
 
             ! Linear Grid 
             cell = state%grid%get_voxel(this%pos)
@@ -335,6 +341,7 @@ module photonMod
             this%tflag = .false.
             this%layer = 3
             this%cnts = 0
+            this%bounces = 0
 
             !teleport to just inside medium
             this%pos%z = state%grid%zmax - 1e-8_wp

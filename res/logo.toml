@@ -1,7 +1,10 @@
 [source]
 name = "uniform"
 nphotons = 1000000
-direction = "-z"
+point1=[-1.0, -1.0, 0.99999]
+point2=[2.0, 0.0, 0.0]
+point3=[0.0, 2.0, 0.0]
+direction=[0.0, 0.0, -1.0]
 
 [grid]
 nxg = 200
@@ -18,6 +21,8 @@ geom_name = "logo"
 fluence = "logo.nrrd"
 render = "logo_render.nrrd"
 render_geom = false
+overwrite=true
 
 [simulation]
 iseed = 123456789
+tev=true

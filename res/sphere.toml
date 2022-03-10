@@ -13,10 +13,10 @@ zmax=1.0
 
 [geometry]
 geom_name='sphere_scene'
-num_spheres=512
+num_spheres=4000
 
 [output]
-fluence='sphere_scene_512.nrrd'
+fluence='sphere_scene_4000.nrrd'
 render_geom=false
 
 [simulation]

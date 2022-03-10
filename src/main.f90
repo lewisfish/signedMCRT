@@ -65,11 +65,11 @@ if(state%tev)then
     !init TEV link
     tev = tevipc()
     call tev%close_image(state%experiment)
-    call tev%create_image(state%experiment, state%grid%nxg, state%grid%nzg, ["R"], .true.)
+    call tev%create_image(state%experiment, state%grid%nxg, state%grid%nzg, ["I", "J", "K"], .true.)
 end if
 
 nscatt = 0._wp
-call init_rng(spread(state%iseed+0, 1, 8), fwd=.true.)
+! call init_rng(spread(state%iseed+0, 1, 8), fwd=.true.)
 
 call setup_simulation(array, dict)
 ! render geometry to voxel format for debugging
@@ -98,6 +98,7 @@ end if
 !$omp& private(ran, id, distances, image) reduction(+:nscatt) firstprivate(packet)
     numproc = omp_get_num_threads()
     id = omp_get_thread_num()
+    if(numproc > state%nphotons)print*,"Warning, simulation may be underministic due to low photon count!"
 #elif MPI
     !nothing
 #else
@@ -106,10 +107,8 @@ end if
 #endif
 if(id == 0)print("(a,I3.1,a)"),'Photons now running on', numproc,' cores.'
 
-!init photon object
-
 ! set seed for rnd generator. id to change seed for each process
-call init_rng(spread(123456789+id, 1, 8), fwd=.true.)
+call init_rng(spread(state%iseed+id, 1, 8), fwd=.true.)
 
 
 bar = pbar(state%nphotons/ 10)
@@ -151,10 +150,17 @@ do j = 1, state%nphotons
         if(state%tev)then
 !$omp critical
             image = reshape(jmean(:,100:100,:), [state%grid%nxg,state%grid%nzg,1])
-            call tev%update_image(state%experiment, real(image(:,:,1:1)), ["R"], 0, 0, .false., .false.)
+            call tev%update_image(state%experiment, real(image(:,:,1:1)), ["I"], 0, 0, .false., .false.)
+
+            image = reshape(jmean(100:100,:,:), [state%grid%nyg,state%grid%nzg,1])
+            call tev%update_image(state%experiment, real(image(:,:,1:1)), ["J"], 0, 0, .false., .false.)
+
+            image = reshape(jmean(:,:,100:100), [state%grid%nxg,state%grid%nyg,1])
+            call tev%update_image(state%experiment, real(image(:,:,1:1)), ["K"], 0, 0, .false., .false.)
 !$omp end critical
         end if
     end if
+    ! print*," "
 end do
 
 #ifdef _OPENMP

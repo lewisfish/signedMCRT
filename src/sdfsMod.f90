@@ -153,6 +153,9 @@ module sdfs
         module procedure neural_init
     end interface neural
 
+    type :: container
+        class(sdf), pointer :: p => null()
+    end type container
 
     type, extends(sdf) :: model
         type(container), allocatable   :: array(:)
@@ -167,9 +170,6 @@ module sdfs
     end interface model
 
 
-    type :: container
-        class(sdf), pointer :: p => null()
-    end type container
 
 
 

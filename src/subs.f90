@@ -372,9 +372,9 @@ module subs
             bbox(2) = box(2.01_wp, mus, 10000000._wp, hgg, n, 3)
 
             mus = 0._wp; mua = 1.e-17_wp; hgg = 0._wp; n = 1.33_wp;
-            a = vector(.5_wp, 0._wp, -1._wp)
+            a = vector(.0_wp, 0._wp, 0._wp)
             t = invert(translate(a))
-            sph = sphere(1._wp, mus, mua, hgg, n, 1, transform=t)
+            sph = sphere(0.5_wp, mus, mua, hgg, n, 1, transform=t)
 
             allocate(array(3))
             allocate(array(1)%p, source=sph)

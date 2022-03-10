@@ -1,0 +1,29 @@
+[source]
+name='uniform'
+nphotons=10000000
+point1=[-0.25, 0.0, 0.99999]
+point2=[0.5, 0.0, 0.0]
+point3=[0.0, 0.0, 0.0]
+direction=[0.0, 0.0, -1.0]
+
+[grid]
+nxg=201
+nyg=201
+nzg=201
+xmax=1.0
+ymax=1.0
+zmax=1.0
+
+[geometry]
+geom_name='aptran'
+
+[output]
+fluence='aptran_2_bounce.nrrd'
+render="aptran_geom.nrrd"
+render_geom=false
+overwrite=true
+
+[simulation]
+iseed=123456789
+tev=false
+
