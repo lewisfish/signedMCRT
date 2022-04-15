@@ -241,6 +241,10 @@ module sdfs
     end interface extrude
 
 
+    interface render
+        module procedure render_scaler
+        module procedure render_vec
+    end interface render
 
     abstract interface
         function op(d1, d2, k) result(res)
@@ -1718,24 +1722,14 @@ end function eval_neural
         end function identity
 
 
-        subroutine render(cnt, extent, samples, fname)
-
-            use utils,     only : pbar
-            use constants, only : fileplace
-            use writer_mod
-            
+        subroutine render_vec(cnt, extent, samples, fname)
+                        
             implicit none
             
             type(container),        intent(IN) :: cnt(:)
-            integer,                intent(IN) :: samples
+            integer,                intent(IN) :: samples(3)
             type(vector),           intent(IN) :: extent
             character(*), optional, intent(IN) :: fname
-
-            type(vector)               :: pos, wid
-            integer                    :: i, j, k, u, ns, id
-            real(kind=wp)              :: x, y, z, ds(size(cnt)-1)
-            real(kind=wp), allocatable :: image(:, :, :)
-            type(pbar)                 :: bar
 
             character(len=:), allocatable  :: filename
 
@@ -1744,46 +1738,93 @@ end function eval_neural
             else
                 filename = "model.dat"
             end if
+
+            call render_sub(cnt, extent, samples, filename)
+
+        end subroutine render_vec
+
+        subroutine render_scaler(cnt, extent, sample, fname)
+
+            implicit none
+
+            type(container),        intent(IN) :: cnt(:)
+            integer,                intent(IN) :: sample
+            type(vector),           intent(IN) :: extent
+            character(*), optional, intent(IN) :: fname
+
+            character(len=:), allocatable  :: filename
+            integer :: samples(3)
+
+            if(present(fname))then
+                filename = fname
+            else
+                filename = "model.dat"
+            end if
+
+            samples = [sample, sample, sample]
+
+            call render_sub(cnt, extent, samples, filename)
+
+        end subroutine render_scaler
+
+        subroutine render_sub(cnt, extent, samples, fname)
+
+            use utils,     only : pbar
+            use constants, only : fileplace
+            use writer_mod
+            
+            implicit none
+            
+            type(container),        intent(IN) :: cnt(:)
+            integer,                intent(IN) :: samples(3)
+            type(vector),           intent(IN) :: extent
+            character(*),           intent(IN) :: fname
+
+            type(vector)               :: pos, wid
+            integer                    :: i, j, k, u, id
+            real(kind=wp)              :: x, y, z, ds(size(cnt)), ns(3)
+            real(kind=wp), allocatable :: image(:, :, :)
+            type(pbar)                 :: bar
+
             ns = nint(samples / 2._wp)
-            allocate(image(samples, samples, samples))
-            wid = extent/real(ns, kind=wp)
-            bar = pbar(samples)
+            allocate(image(samples(1), samples(2), samples(3)))
+            wid = vector(extent%x/ns(1), extent%y/ns(2), extent%z/ns(3))
+            bar = pbar(samples(1))
 !$omp parallel default(none) shared(cnt, ns, wid, image, samples, bar)&
 !$omp private(i, x, y, z, pos, j, k, u, ds, id)
 !$omp do
-            do i = 1, samples
-                call bar%progress()
-                x = (i-ns) *wid%x
-                do j = 1, samples
-                    y = (j-ns) *wid%y
-                    do k = 1, samples
-                        z = (k-ns) * wid%z
+            do i = 1, samples(1)
+                x = (i-ns(1)) *wid%x
+                do j = 1, samples(2)
+                    y = (j-ns(2)) *wid%y
+                    do k = 1, samples(3)
+                        z = (k-ns(3)) * wid%z
                         pos = vector(x, y, z)
                         ds = 0._wp
                         do u = 1, size(ds)
                             ds(u) = cnt(u)%p%evaluate(pos)
                         end do
-
+                        
                         if(all(ds > 0._wp))then
                             id=0.
                         else
-                            if(maxval(ds) < 0._wp)then
+                            if(all(ds < 0._wp))then
                                 id = cnt(maxloc(ds,dim=1))%p%layer
                             else
                                 id = cnt(minloc(ds,dim=1))%p%layer
                             end if
                         end if
-                        if(minval(ds) > 0)then
-                            id = 0
-                        else
-                            id = minloc(ds, dim=1)
-                        end if
-                        image(i, j, k) = minval(ds)!id
+                        ! if(id == 0._wp)then
+                        !     image(i,j,k)=-99._wp
+                        ! else
+                            image(i, j, k) = cnt(id)%p%mua
+                        ! end if
                     end do
                 end do
+                call bar%progress()
             end do
 !$OMP end  do
 !$OMP end parallel
-            call write(image, trim(fileplace)//filename, overwrite=.true.)
-        end subroutine render
+            call write(image, trim(fileplace)//fname, overwrite=.true.)
+        end subroutine render_sub
 end module sdfs

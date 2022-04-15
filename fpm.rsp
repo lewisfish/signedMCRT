@@ -9,3 +9,15 @@ option run sMCRT --compiler gfortran-10 --flag "-O2 -cpp -march=native -flto -ma
 
 @debug
 option run sMCRT --compiler gfortran-10 --flag "-O2 -cpp -march=native -flto -mavx -ffree-line-length-none -g -fbacktrace -fcheck=all -fbounds-check -ffpe-trap=invalid,overflow,underflow,denormal"
+
+@test
+option test --compiler gfortran-10 --flag "-O2 -cpp -march=native -flto -mavx -ffree-line-length-none"
+
+@runnv
+option run sMCRT --compiler nvfortran --flag "-fast -cpp -Mbackslash"
+
+@runifort
+option run sMCRT --compiler ifort --flag "-O2 -cpp -xHost -ipo -assume byterecl"
+
+@runifortdebug
+option run sMCRT --compiler ifort --flag "-O2 -cpp -xHost -ipo -assume byterecl -g -debug -traceback -CB -CU -CA -fpe0 -warn all -stand f08"

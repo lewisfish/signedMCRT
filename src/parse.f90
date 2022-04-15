@@ -245,7 +245,9 @@ module parse_mod
         type(fhash_tbl_t), intent(INOUT) :: dict
 
         type(toml_table), pointer :: child
+        type(toml_array), pointer :: children
         logical :: overwrite
+        integer :: i, nlen
 
         call get_value(table, "output", child)
 
@@ -253,7 +255,21 @@ module parse_mod
             call get_value(child, "fluence", state%outfile, "fluence.nrrd")
             call get_value(child, "render", state%renderfile, "geom_render.nrrd")
             call get_value(child, "render_geom", state%render_geom, .false.)
-            call get_value(child, "render_size", state%render_size, 200)
+            
+
+            call get_value(child, "render_size", children, requested=.false.)
+            if(associated(children))then
+                nlen = len(children)
+                if(nlen < 3)then
+                    error stop "Need a vector of size 3 for redner_size."
+                end if
+                do i = 1, len(children)
+                    call get_value(children, i, state%render_size(i))
+                end do
+            else
+                state%render_size = [200, 200, 200]
+            end if
+
             call get_value(child, "overwrite", overwrite, .false.)
             call dict%set(key("overwrite"), value=overwrite)
         else
