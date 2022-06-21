@@ -29,8 +29,8 @@ SDF of University of St Andrews crest. SVG of crest was simplfied in Inkscape an
 Comparison of voxel and SDF models of a glass bottle with scattering contents. The voxel model exhibts un-physical reflections and refractions.
 ![Comparison of light distrbution in voxel and SDF bottle](https://github.com/lewisfish/signedMCRT/raw/main/images/georgie_compare_sdf_vs_voxel.png)
 
-Comparison of voxel, interpolated surface normals, and SDFs model of a sphere being illuminated by a tophat laser beam.
-![Comparison of sMCRT to voxel and smoothed surface normal method](https://github.com/lewisfish/signedMCRT/raw/main/images/sdf_vs_voxel_sphere%20(1).png)
+Comparison of voxel interpolated surface normals, mesh based Monte Carlo (MMC), and SDFs model of a sphere being illuminated by a tophat laser beam.
+![Comparison of sMCRT to voxel and smoothed surface normal method](https://github.com/lewisfish/signedMCRT/raw/main/images/sdf_vs_mmc_aptran%20(1).png)
 
 ## SDF information
 List of SDF functions
