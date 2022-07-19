@@ -57,6 +57,8 @@ module subs
                     sdfarray = blobby()
                 case("sphere_scene")
                     sdfarray = setup_sphere_scene(dict)
+                ! case("dalek")
+                !     sdfarray = dalek_start()
                 case default
                     error stop "no such routine"
             end select
@@ -64,6 +66,31 @@ module subs
         end subroutine setup_simulation
 
 
+        ! function dalek_start() result(array)
+
+        !     use sdfs, only : container, box
+        !     use models, only : dalek
+        !     use vector_class
+
+        !     implicit none
+
+        !     type(box), target, save :: bbox
+        !     type(container), allocatable :: array(:)
+
+        !     type(dalek), target, save :: d
+        !               !mus, mua, hgg, n, layer, transform
+        !     d = dalek(10._wp, 0.02_wp, 0.0_wp, 1._wp, 1)
+        !     bbox = box(5.001_wp, 0.0_wp, 0.0_wp, 0.0_wp, 1._wp, 2)
+
+        !     allocate(array(2))
+        !     allocate(array(1)%p, source=d)
+        !     allocate(array(2)%p, source=bbox)
+
+        !     array(1)%p => d
+        !     array(2)%p => bbox
+
+
+        ! end function dalek_start
         function setup_sphere_scene(dict) result(array)
 
             use sdfs,         only : container, sphere, box, translate

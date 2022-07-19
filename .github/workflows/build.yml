@@ -40,4 +40,4 @@ jobs:
 
     - name: Build and compile
       if: ${{ contains(matrix.build, 'fpm') }}
-      run: fpm @run
+      run: fpm @build
