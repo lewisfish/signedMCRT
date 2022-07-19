@@ -134,6 +134,16 @@ module sdfs
         module procedure segment_init
     end interface segment
 
+    type, extends(sdf) :: egg
+        real(kind=wp) :: r1, r2, h
+        contains
+        procedure :: evaluate => eval_egg
+    end type egg
+
+    interface egg
+        module procedure egg_init
+    end interface egg
+
     type, extends(sdf) :: moon
         real(kind=wp) :: d, ra, rb
         contains
@@ -240,6 +250,16 @@ module sdfs
         module procedure extrude_init
     end interface extrude
 
+    type, extends(sdf) :: revolution
+        real(kind=wp) :: o
+        class(sdf), pointer :: prim
+        contains
+        procedure :: evaluate => eval_revolution
+    end type revolution
+
+    interface revolution
+        module procedure revolution_init
+    end interface revolution
 
     interface render
         module procedure render_scaler
@@ -268,7 +288,7 @@ module sdfs
     private
     ! shapes
     public :: sdf, cylinder, sphere, box, torus, cone, triprisim
-    public :: capsule, plane, moon, neural, segment
+    public :: capsule, plane, moon, neural, segment, egg
     ! meta
     public :: model, container
     ! boolean ops
@@ -276,7 +296,7 @@ module sdfs
     ! move ops
     public :: rotate_x, rotate_y, rotate_z, identity, translate
     ! deform ops
-    public :: displacement, bend, twist, elongate, repeat, extrude
+    public :: displacement, bend, twist, elongate, repeat, extrude, revolution
     ! utility funcs
     public :: calcNormal, model_init, render
 
@@ -1250,6 +1270,90 @@ end function eval_neural
 
         end function moon_fn
 
+        function egg_init(r1, r2, h, mus, mua, hgg, n, layer, transform) result(out)
+
+            implicit none
+        
+            type(egg) :: out
+            
+            real(kind=wp),            intent(IN) :: r1, r2, h, mus, mua, hgg, n
+            integer,                  intent(IN) :: layer
+            real(kind=wp),  optional, intent(IN) :: transform(4, 4)
+
+            real(kind=wp) :: t(4, 4)
+
+            if(present(transform))then
+                t = transform
+            else
+                t = identity()
+            end if
+
+            out%h = h
+            out%r1 = r1
+            out%r2 = r2
+            out%layer = layer
+            out%transform = t
+
+            out%mus = mus
+            out%mua = mua
+            out%kappa = mus + mua
+            if(out%mua < 1e-9_wp)then
+                out%albedo = 1._wp
+            else
+                out%albedo = mus / out%kappa
+            end if
+            out%hgg = hgg
+            out%g2 = hgg**2
+            out%n = n
+
+        end function egg_init
+
+
+        function eval_egg(this, pos) result(res)
+
+            implicit none
+
+            class(egg) :: this
+            type(vector), intent(IN) :: pos
+            real(kind=wp) :: res
+
+            type(vector) :: p
+
+            p = pos .dot. this%transform
+            res = egg_fn(p, this%r1, this%r2, this%h)
+
+        end function eval_egg
+
+        function egg_fn(p, r1, r2, h) result(res)
+
+            use utils, only : clamp
+
+            implicit none
+
+            type(vector),  intent(IN) :: p
+            real(kind=wp), intent(IN) :: r1, r2, h
+            real(kind=wp) :: res
+
+            real(kind=wp) :: r, l, h_in
+            type(vector) :: p_in
+
+            p_in = p
+
+            p_in%x = abs(p%x)
+            r = r1 - r2
+            h_in = h + r
+            l = (h_in**2 - r**2) / (2._wp * r)
+
+            if(p_in%y <= 0._wp)then
+                res = length(p_in) - r1
+            else
+                if((p_in%y - h_in) * l > p_in%x*h_in)then
+                    res = length(p_in - vector(0._wp, h_in, 0._wp)) - ((r1+l) - length(vector(h_in,l, 0._wp)))
+                else
+                    res = length(p_in + vector(l, 0._wp, 0._wp)) - (r1+l)
+                end if
+            end if
+        end function egg_fn
 
 
         function translate(o) result(out)
@@ -1642,6 +1746,55 @@ end function eval_neural
             res = min(max(w%x, w%y), 0._wp) + length(max(w, 0._wp))
 
         end function extrude_fn
+
+        type(revolution) function revolution_init(prim, o) result(out)
+
+            implicit none
+
+            class(sdf), target :: prim
+            real(kind=wp), intent(IN) :: o
+
+            out%o = o
+            out%prim => prim
+
+            out%mus = prim%mus
+            out%mua = prim%mua
+            out%hgg = prim%hgg
+            out%g2 = prim%g2
+            out%n = prim%n
+            out%kappa = prim%kappa
+            out%albedo = prim%kappa
+            out%layer = prim%layer
+            out%transform = identity()
+
+            end function revolution_init
+
+        function eval_revolution(this, pos) result(res)
+
+            implicit none
+
+            class(revolution) :: this
+            type(vector), intent(IN) :: pos
+            real(kind=wp) :: res
+
+            res = revolution_fn(pos, this%o, this%prim)
+
+        end function eval_revolution
+
+        real function revolution_fn(p, o, prim) result(res)
+
+            class(sdf) :: prim
+            type(vector), intent(IN) :: p
+            real(kind=wp), intent(IN) :: o
+
+            type(vector) :: pxz, q
+
+            pxz = vector(p%x, p%z, 0._wp)
+
+            q = vector(length(pxz) - o, p%y, 0._wp)
+            res = prim%evaluate(q)
+
+        end function revolution_fn
 
 
 

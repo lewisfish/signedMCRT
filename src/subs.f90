@@ -57,6 +57,8 @@ module subs
                     sdfarray = blobby()
                 case("sphere_scene")
                     sdfarray = setup_sphere_scene(dict)
+                case("test_egg")
+                    sdfarray = setup_egg()
                 ! case("dalek")
                 !     sdfarray = dalek_start()
                 case default
@@ -65,6 +67,36 @@ module subs
 
         end subroutine setup_simulation
 
+
+        function setup_egg() result(array)
+
+            use sdfs, only : container, egg, box, revolution
+            use vector_class
+
+            type(container), allocatable :: array(:)
+            type(egg), target, save :: egg_t
+            type(box), target, save :: bbox
+            type(revolution), target, save :: rev_t
+
+            real(kind=wp) :: r1, r2, h
+
+            r1 = 3._wp
+            r2 = 3._wp * sqrt(2._wp - sqrt(2._wp))
+            h = r2
+
+            egg_t = egg(r1, r2, h, 10.0_wp, 10.0_wp, 0.0_wp, 1._wp, 1)
+            rev_t = revolution(egg_t, .2_wp)
+            bbox = box(20.001_wp, 0.0_wp, 0.0_wp, 0.0_wp, 1._wp, 2)
+
+            allocate(array(2))
+            allocate(array(1)%p, source=rev_t)
+            allocate(array(2)%p, source=bbox)
+
+            array(1)%p => rev_t
+            array(2)%p => bbox
+
+
+        end function setup_egg
 
         ! function dalek_start() result(array)
 
