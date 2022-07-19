@@ -6,7 +6,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
         gcc_v: [9, 10, 11] # Version of GFortran we want to use.
         build: [fpm]
         include:
@@ -53,7 +53,7 @@ jobs:
       strategy:
         fail-fast: false
         matrix:
-          os: [ubuntu-latest, macos-latest]
+          os: [ubuntu-latest]
           fc: [ifort]
           cc: [icc]
           cxx: [icpc]
