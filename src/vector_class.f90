@@ -8,17 +8,20 @@ Module vector_class
         real(kind=wp)  :: x, y, z
         contains
 
-        procedure :: magnitude       => magnitude_fn
-        procedure :: print           => print_sub
-        procedure :: length          => length
-        generic   :: operator(.dot.) => vec_dot_vec, vec_dot_mat
-        generic   :: operator(/)     => vec_div_scal_r4, vec_div_scal_int
-        generic   :: operator(*)     => vec_mult_vec, vec_mult_scal, scal_mult_vec
-        generic   :: operator(+)     => vec_add_vec, vec_add_scal, scal_add_vec
-        generic   :: operator(-)     => vec_minus_vec, vec_minus_scal, scal_minus_vec
+        procedure :: magnitude         => magnitude_fn
+        procedure :: print             => print_sub
+        procedure :: length            => length
+        generic   :: operator(.dot.)   => vec_dot_vec, vec_dot_mat
+        generic   :: operator(.cross.) => vec_cross_vec
+        generic   :: operator(/)       => vec_div_scal_r4, vec_div_scal_int
+        generic   :: operator(*)       => vec_mult_vec, vec_mult_scal, scal_mult_vec
+        generic   :: operator(+)       => vec_add_vec, vec_add_scal, scal_add_vec
+        generic   :: operator(-)       => vec_minus_vec, vec_minus_scal, scal_minus_vec
 
         procedure, pass(a), private :: vec_dot_vec
         procedure, pass(a), private :: vec_dot_mat
+
+        procedure, pass(a), private :: vec_cross_vec
 
         procedure, pass(a), private :: vec_div_scal_r4
         procedure, pass(a), private :: vec_div_scal_int
@@ -212,6 +215,18 @@ Module vector_class
             dot%z = b(1, 3)*a%x + b(2, 3)*a%y + b(3, 3)*a%z + b(4, 3)*1.
 
         end function vec_dot_mat
+
+        function vec_cross_vec(a, b) result(cross)
+
+            class(vector), intent(in) :: a
+            type(vector),  intent(in) :: b
+            type(vector) :: cross
+
+            cross%x = a%y*b%z - a%z*b%y
+            cross%y = a%x*b%z - a%z*b%x
+            cross%z = a%x*b%y - a%y*b%x
+
+        end function vec_cross_vec
 
         type(vector) function vec_mult_vec(a, b)
 

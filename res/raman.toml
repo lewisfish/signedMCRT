@@ -1,0 +1,27 @@
+[source]
+name='pencil'
+nphotons=100000
+position=[0.0, 0.0, 9.999]
+direction=[0.0, 0.0, -1.0]
+
+[grid]
+nxg=200
+nyg=200
+nzg=200
+xmax=10.0
+ymax=10.0
+zmax=10.0
+
+[geometry]
+geom_name='raman_test'
+
+[output]
+fluence='raman.nrrd'
+render="raman.nrrd"
+render_geom=false
+overwrite=true
+
+[simulation]
+iseed=123456789
+tev=false
+

@@ -5,3 +5,9 @@ bin/*
 *mcgrid*
 data/*
 figs/*
+figs_new/*
+*.sublime*
+*.txt
+a.out
+*.zip
+*.stl

@@ -261,10 +261,23 @@ module sdfs
         module procedure revolution_init
     end interface revolution
 
+    type, extends(sdf) :: onion
+        real(kind=wp) :: thickness
+        class(sdf), pointer :: prim
+        contains
+        procedure :: evaluate => eval_onion
+    end type onion
+
+    interface onion
+        module procedure onion_init
+    end interface onion
+
     interface render
         module procedure render_scaler
         module procedure render_vec
     end interface render
+
+
 
     abstract interface
         function op(d1, d2, k) result(res)
@@ -296,7 +309,7 @@ module sdfs
     ! move ops
     public :: rotate_x, rotate_y, rotate_z, identity, translate
     ! deform ops
-    public :: displacement, bend, twist, elongate, repeat, extrude, revolution
+    public :: displacement, bend, twist, elongate, repeat, extrude, revolution, onion
     ! utility funcs
     public :: calcNormal, model_init, render
 
@@ -1271,9 +1284,10 @@ end function eval_neural
         end function moon_fn
 
         function egg_init(r1, r2, h, mus, mua, hgg, n, layer, transform) result(out)
-
-            implicit none
-        
+        ! makes a Moss egg. https://www.shadertoy.com/view/WsjfRt
+        ! R1 controls "fatness" of the egg. Actually controls the base circle radius.
+        ! R2 contorls the pointiness of the egg. Actually controls radius of top circle.
+        ! h controls the height of the egg. Actually controls y position of top circle.
             type(egg) :: out
             
             real(kind=wp),            intent(IN) :: r1, r2, h, mus, mua, hgg, n
@@ -1325,10 +1339,8 @@ end function eval_neural
         end function eval_egg
 
         function egg_fn(p, r1, r2, h) result(res)
-
+        !https://www.shadertoy.com/view/WsjfRt
             use utils, only : clamp
-
-            implicit none
 
             type(vector),  intent(IN) :: p
             real(kind=wp), intent(IN) :: r1, r2, h
@@ -1795,6 +1807,51 @@ end function eval_neural
             res = prim%evaluate(q)
 
         end function revolution_fn
+
+
+        type(onion) function onion_init(prim, thickness) result(out)
+
+        implicit none
+
+        class(sdf), target :: prim
+        real(kind=wp), intent(IN) :: thickness
+
+        out%thickness = thickness
+        out%prim => prim
+
+        out%mus = prim%mus
+        out%mua = prim%mua
+        out%hgg = prim%hgg
+        out%g2 = prim%g2
+        out%n = prim%n
+        out%kappa = prim%kappa
+        out%albedo = prim%kappa
+        out%layer = prim%layer
+        out%transform = identity()
+
+        end function onion_init
+
+    function eval_onion(this, pos) result(res)
+
+        implicit none
+
+        class(onion) :: this
+        type(vector), intent(IN) :: pos
+        real(kind=wp) :: res
+
+        res = onion_fn(pos, this%thickness, this%prim)
+
+    end function eval_onion
+
+    real function onion_fn(p, thickness, prim) result(res)
+
+        class(sdf) :: prim
+        type(vector), intent(IN) :: p
+        real(kind=wp), intent(IN) :: thickness
+
+        res = abs(prim%evaluate(p)) - thickness
+
+    end function onion_fn
 
 
 

@@ -27,7 +27,6 @@ module mat_class
 
     end type mat
 
-
     interface mat
         module procedure mat_init
     end interface mat
@@ -50,7 +49,6 @@ contains
             mat_init%vals(:, i) = array(cnt:cnt+3)
             cnt = cnt + 4
         end do 
-
 
     end function mat_init
 

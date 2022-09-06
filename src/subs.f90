@@ -17,9 +17,7 @@ module subs
             use sdfs,          only : container
             use fhash,         only : fhash_tbl_t
             use sim_state_mod, only : settings => state
-
-
-            implicit none
+            
 
             type(fhash_tbl_t),  optional, intent(IN)  :: dict
             type(container), allocatable, intent(OUT) :: sdfarray(:)
@@ -59,6 +57,8 @@ module subs
                     sdfarray = setup_sphere_scene(dict)
                 case("test_egg")
                     sdfarray = setup_egg()
+                case("raman_test")
+                    sdfarray = raman_test()
                 ! case("dalek")
                 !     sdfarray = dalek_start()
                 case default
@@ -67,36 +67,89 @@ module subs
 
         end subroutine setup_simulation
 
-
-        function setup_egg() result(array)
-
-            use sdfs, only : container, egg, box, revolution
+        function raman_test() result(array)
+            
+            use sdfs, only : container, box
             use vector_class
 
             type(container), allocatable :: array(:)
-            type(egg), target, save :: egg_t
+        
+            type(box), target, save :: bbox, sample
+            real(kind=wp) :: hgg, mus, mua, n
+            integer       :: layer
+
+            n = 1._wp
+            mua = 1._wp
+            mus = 1._wp
+            hgg = 0._wp
+            layer = 1
+
+            sample = box(20._wp, mus, mua, hgg, n, layer)
+            layer = 2
+            mus = 0.0_wp
+            mua = 100._wp
+            bbox = box(20.001_wp, mus, mua, hgg, n, layer)
+            
+            allocate(array(2))
+            allocate(array(1)%p, source=sample)
+            allocate(array(2)%p, source=bbox)
+
+            array(1)%p => sample
+            array(2)%p => bbox
+
+        end function raman_test
+
+
+        function setup_egg() result(array)
+
+            use sdfs, only : container, egg, box, revolution, onion, sphere
+            use vector_class
+
+            type(container), allocatable :: array(:)
+            type(egg), target, save :: shell_2D, albumen_2D
             type(box), target, save :: bbox
-            type(revolution), target, save :: rev_t
+            type(revolution), target, save :: shell_3D, albumen
+            type(onion), target, save :: shell
+            type(sphere), target, save :: yolk
 
             real(kind=wp) :: r1, r2, h
-
+            
             r1 = 3._wp
             r2 = 3._wp * sqrt(2._wp - sqrt(2._wp))
             h = r2
+            
+            !width = 42mm
+            !height = 62mm
 
-            egg_t = egg(r1, r2, h, 10.0_wp, 10.0_wp, 0.0_wp, 1._wp, 1)
-            rev_t = revolution(egg_t, .2_wp)
-            bbox = box(20.001_wp, 0.0_wp, 0.0_wp, 0.0_wp, 1._wp, 2)
+            !shell
+            shell_2D = egg(r1, r2, h, 100.0_wp, 10.0_wp, 0.0_wp, 1.37_wp, 2)
+            shell_3D = revolution(shell_2D, .2_wp)
+            shell = onion(shell_3D, .2_wp)
 
-            allocate(array(2))
-            allocate(array(1)%p, source=rev_t)
-            allocate(array(2)%p, source=bbox)
+            !albumen
+            albumen_2D = egg(r1-.2_wp, r2, h, 1._wp, 0._wp, 0._wp, 1.37_wp, 3)
+            albumen = revolution(albumen_2D, .2_wp)
 
-            array(1)%p => rev_t
-            array(2)%p => bbox
+            !yolk
+            yolk = sphere(1.5_wp, 10._wp, 1._wp, .9_wp, 1.37_wp, 1)
 
+            !bounding box
+            bbox = box(20.001_wp, 0.0_wp, 0.0_wp, 0.0_wp, 1._wp, 4)
+            
+            allocate(array(4))
+            
+            allocate(array(1)%p, source=yolk)
+            allocate(array(2)%p, source=albumen)
+            allocate(array(3)%p, source=shell)
+            allocate(array(4)%p, source=bbox)
+            
+            array(1)%p => yolk
+            array(2)%p => albumen
+            array(3)%p => shell
+            array(4)%p => bbox
 
         end function setup_egg
+
 
         ! function dalek_start() result(array)
 
@@ -104,7 +157,7 @@ module subs
         !     use models, only : dalek
         !     use vector_class
 
-        !     implicit none
+        !
 
         !     type(box), target, save :: bbox
         !     type(container), allocatable :: array(:)
@@ -123,14 +176,13 @@ module subs
 
 
         ! end function dalek_start
+
         function setup_sphere_scene(dict) result(array)
 
             use sdfs,         only : container, sphere, box, translate
             use fhash,        only : fhash_tbl_t, key=>fhash_key
             use random,       only : ranu
             use vector_class, only : vector, invert
-
-            implicit none
 
             type(fhash_tbl_t), intent(in) :: dict
             type(container), allocatable :: array(:)
@@ -176,8 +228,6 @@ module subs
             
             use sdfs, only : box, capsule, sphere, translate, rotate_x, rotate_y, rotate_z, container, model, smoothunion, model_init
             use vector_class, only : vector, invert
-
-            implicit none
             
             type(container), allocatable :: array(:)
             type(container), target, save, allocatable :: cnta(:)
@@ -255,8 +305,6 @@ module subs
             use sdfs, only : sphere, container, box, model, intersection, model_init, translate
             use vector_class, only : vector, invert
 
-            implicit none
-
 
             type(container),target, save :: cnta(2)
             type(container) :: array(2)
@@ -309,8 +357,6 @@ module subs
             use vector_class
             use sdfs, only : container, box, segment, extrude, model, union, model_init
 
-            implicit none
-
 
             type(container), allocatable :: cnta(:), array(:)
             type(box),     target, save :: bbox
@@ -358,8 +404,6 @@ module subs
             use vector_class
             use sdfs, only : container, box, neural
 
-            implicit none
-
             type(container)         :: array(2)
             type(box), target, save :: bbox
             type(neural), target, save :: neu
@@ -386,8 +430,6 @@ module subs
 
             use sdfs, only : container, box
             use vector_class
-
-            implicit none
 
             type(container)         :: array(2)
             type(box), target, save :: medium, bbox
@@ -416,8 +458,6 @@ module subs
         !
             use sdfs,         only : sphere, box, container, translate
             use vector_class, only : vector, invert
-
-            implicit none
             
             type(container), allocatable :: array(:)
             type(sphere),   target, save :: sph
@@ -452,8 +492,6 @@ module subs
             use sdfs, only : container, model, union, sphere, box, translate, model_init
             
             use vector_class
-
-            implicit none
 
             type(container) :: array(1), cnta(3)
             type(sphere), target, save :: sph
@@ -498,8 +536,6 @@ module subs
             use sdfs, only : container, moon, box, translate
             
             use vector_class
-
-            implicit none
 
             type(container) :: array(1)
             ! type(sphere), target, save :: sph
@@ -562,8 +598,6 @@ module subs
             use fhash,        only : fhash_tbl_t, key=>fhash_key
 
 
-            implicit none
-
             type(fhash_tbl_t), intent(IN)  :: dict
 
             type(container), allocatable :: array(:)
@@ -613,8 +647,6 @@ module subs
 
             use vector_class
 
-            implicit none
-
             type(fhash_tbl_t), intent(IN)  :: dict
             type(container), allocatable :: array(:)
 
@@ -647,8 +679,6 @@ module subs
             use sdfs,      only : container, cylinder, torus, model, box, union, rotate_y, model_init, translate
             
             use vector_class, only : vector, invert
-
-            implicit none
 
             type(container), allocatable :: array(:)
 
@@ -757,8 +787,6 @@ module subs
 
             use sdfs, only : container, model, capsule, model_init, union, box, union
             use vector_class, only : vector, invert
-
-            implicit none
 
             type(container), allocatable :: array(:), cnta(:)
             type(model), target, save :: vessels
