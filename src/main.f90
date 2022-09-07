@@ -15,6 +15,7 @@ use random,    only : ran2, init_rng, ranu
 use constants, only : fileplace, wp
 
 !subroutines
+use detector_mod
 use subs
 use inttau2
 use stokes_mod
@@ -31,6 +32,7 @@ use fhash, only : fhash_tbl_t, key=>fhash_key, fhash_key_t
 implicit none
 
 type(container),   allocatable :: array(:)
+type(dect_array),  allocatable :: dects(:)
 character(len=64), allocatable :: args(:)
 type(tevipc)      :: tev
 type(photon)      :: packet
@@ -58,7 +60,7 @@ else
 end if
 
 
-call parse_params("res/"//trim(args(1)), packet, dict)
+call parse_params("res/"//trim(args(1)), packet, dects, dict)
 allocate(image(state%grid%nxg,state%grid%nzg,1))
 
 if(state%tev)then

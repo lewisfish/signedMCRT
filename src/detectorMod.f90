@@ -44,6 +44,9 @@ module detector_mod
         end function checkHitInterface
     end interface
 
+    type :: dect_array
+        class(detector), pointer :: p => null()
+    end type dect_array
 
     type, extends(detector) :: circle_dect
         real(kind=wp) :: radius

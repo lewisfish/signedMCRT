@@ -10,33 +10,169 @@ module parse_mod
 
     contains
 
-    subroutine parse_params(filename, packet, dict)
+    subroutine parse_params(filename, packet, dects, dict)
     
         use fhash, only : fhash_tbl_t
         use photonmod
+        use detector_mod, only : dect_array
 
         implicit none
     
         character(*),      intent(IN)    :: filename
         type(fhash_tbl_t), intent(INOUT) :: dict
         type(photon),      intent(OUT)   :: packet
+        type(dect_array), allocatable, intent(out) :: dects(:)
 
         type(toml_table), allocatable :: table
+        type(toml_context) :: context
+        type(toml_error), allocatable :: error
 
-        integer :: u
+        call toml_load(table, trim(filename), context=context, error=error)
+        if(allocated(error))then
+            print'(a)',error%message
+            stop 1
+        end if
 
-        open(newunit=u, file=trim(filename))
-        call toml_parse(table, u)
-        
-        call parse_source(table, packet, dict)
+        call parse_source(table, packet, dict, context)
         call parse_grid(table, dict)
         call parse_geometry(table, dict)
+        call parse_detectors(table, dects, context)
         call parse_output(table, dict)
         call parse_simulation(table)
 
     end subroutine parse_params
     
-    subroutine parse_source(table, packet, dict)
+    subroutine parse_detectors(table, dects, context)
+
+        use detector_mod
+
+        type(toml_table) :: table
+        type(dect_array), allocatable :: dects(:)
+        type(toml_context), intent(in) :: context
+
+        type(toml_array), pointer :: array
+        type(toml_table), pointer :: child
+        character(len=:), allocatable :: dect_type
+        type(circle_dect), target, save, allocatable :: dect_c(:)
+        type(annulus_dect), target, save, allocatable :: dect_a(:)
+        real(kind=wp) :: value 
+        integer :: i, c_counter, a_counter, j, origin
+
+        c_counter = 0
+        a_counter = 0
+        call get_value(table, "detectors", array)
+        allocate(dects(len(array)))
+
+        do i = 1, len(array)
+            call get_value(array, i, child)
+            call get_value(child, "type", dect_type, origin=origin)
+            select case(dect_type)
+            case default
+                print'(a)',context%report("Invalid detector type. Valid types are [circle, annulus]", origin, "expected valid detector type")
+                stop 1
+            case("circle")
+                c_counter = c_counter + 1
+            case("annulus")
+                a_counter = a_counter + 1
+            end select
+        end do
+
+        if(c_counter > 0)allocate(dect_c(c_counter))
+        if(a_counter > 0)allocate(dect_a(a_counter))
+        c_counter = 1
+        a_counter = 1
+        do i = 1, len(array)
+            call get_value(array, i, child)
+            call get_value(child, "type", dect_type)
+            select case(dect_type)
+            case("circle")
+                call handle_circle_dect(child, dect_c, c_counter)
+            case("annulus")
+                call handle_annulus_dect(child, dect_a, a_counter, context)
+            end select
+        end do
+
+        do i = 1, c_counter-1
+            allocate(dects(i)%p, source=dect_c(i))
+            dects(i)%p => dect_c(i)
+        end do
+
+        do j = 1, a_counter-1
+            allocate(dects(j+i-1)%p, source=dect_a(j))
+            dects(j+i-1)%p => dect_a(j)
+        end do
+
+    end subroutine parse_detectors
+
+
+    subroutine handle_circle_dect(child, dects, counts)
+
+        use detector_mod
+
+        type(toml_table), pointer, intent(in)    :: child
+        type(circle_dect),         intent(inout) :: dects(:)
+        integer,                   intent(inout) :: counts
+
+        integer :: layer, nbins, j
+        real(kind=wp) :: maxval, radius
+        real(kind=wp), allocatable :: tmp(:)
+        type(toml_array), pointer  :: arr
+        type(vector) :: pos
+
+        call get_value(child, "position", arr)
+        if (associated(arr))then
+            allocate(tmp(len(arr)))
+            do j = 1, len(arr)
+                call get_value(arr, j, tmp(j))
+            end do
+            pos = vector(tmp(1), tmp(2), tmp(3))
+            end if
+        call get_value(child, "layer", layer, 1)
+        call get_value(child, "radius", radius)
+        call get_value(child, "nbins", nbins, 100)
+        call get_value(child, "maxval", maxval, 100._wp)
+        dects(counts) = circle_dect(pos, layer, radius, nbins, maxval)
+        counts = counts + 1
+
+    end subroutine handle_circle_dect
+
+    subroutine handle_annulus_dect(child, dects, counts, context)
+
+        use detector_mod
+
+        type(toml_table), pointer, intent(in)    :: child
+        type(annulus_dect),        intent(inout) :: dects(:)
+        integer,                   intent(inout) :: counts
+        type(toml_context),        intent(in) :: context
+
+        integer :: layer, nbins, j, origin
+        real(kind=wp) :: maxval, radius1, radius2
+        real(kind=wp), allocatable :: tmp(:)
+        type(toml_array), pointer  :: arr
+        type(vector) :: pos
+
+        call get_value(child, "position", arr)
+        if (associated(arr))then
+            allocate(tmp(len(arr)))
+            do j = 1, len(arr)
+                call get_value(arr, j, tmp(j))
+            end do
+            pos = vector(tmp(1), tmp(2), tmp(3))
+            end if
+        call get_value(child, "layer", layer, 1)
+        call get_value(child, "radius1", radius1)
+        call get_value(child, "radius2", radius2, origin=origin)
+        if(radius2 <= radius1)then
+            print'(a)',context%report("Radii are invalid", origin, "Expected radius2 > radius 1")
+            stop 1
+        end if
+            call get_value(child, "nbins", nbins, 100)
+        call get_value(child, "maxval", maxval, 100._wp)
+        dects(counts) = annulus_dect(pos, layer, radius1, radius2, nbins, maxval)
+        counts = counts + 1
+    end subroutine handle_annulus_dect
+
+    subroutine parse_source(table, packet, dict, context)
 
         use fhash, only : fhash_tbl_t, key=>fhash_key
         use sim_state_mod, only : state
@@ -47,12 +183,13 @@ module parse_mod
         type(toml_table),  intent(INOUT) :: table
         type(fhash_tbl_t), intent(INOUT) :: dict
         type(photon),      intent(OUT)   :: packet
+        type(toml_context) :: context
 
         type(toml_table), pointer :: child
         type(toml_array), pointer :: children
 
         real(kind=wp) :: dir(3), pos(3), corners(3, 3)
-        integer :: i, nlen
+        integer :: i, nlen, origin
         character(len=1) :: axis(3)
         character(len=:), allocatable :: direction
 
@@ -65,16 +202,16 @@ module parse_mod
                            shape(corners), order=[2, 1])
 
         call get_value(table, "source", child)
-
         if(associated(child))then
             call get_value(child, "name", state%source, "point")
             call get_value(child, "nphotons", state%nphotons, 1000000)
 
-            call get_value(child, "position", children, requested=.false.)
+            call get_value(child, "position", children, requested=.false., origin=origin)
             if(associated(children))then
                 nlen = len(children)
                 if(nlen < 3)then
-                    error stop "Need a vector of size 3 for position."
+                    print'(a)',context%report("Need a vector of size 3 for position", origin, "expected vector of size 3")
+                    stop 1
                 end if
                 do i = 1, len(children)
                     call get_value(children, i, pos(i))
@@ -91,29 +228,34 @@ module parse_mod
 
             children => null()
             
-            call get_value(child, "direction", children, requested=.false.)
+            call get_value(child, "direction", children, requested=.false., origin=origin)
             if(associated(children))then
                 nlen = len(children)
                 if(nlen < 3)then
-                    error stop "Need a vector of size 3 for direction."
+                    print'(a)',context%report("Need a vector of size 3 for direction", origin, "expected vector of size 3")
+                    stop 1
                 end if
                 do i = 1, len(children)
                     call get_value(children, i, dir(i))
                     call dict%set(key("dir%"//axis(i)), value=dir(i))
                 end do
             else
-                if(state%source == "uniform")error stop "Source uniform cant have character direction!"
-                call get_value(child, "direction", direction, "-z")
+                if(state%source == "uniform")then
+                    print'(a)',context%report("Uniform source needs vector direction", origin, "expected vector of size 3")
+                    stop 1
+                end if
+                    call get_value(child, "direction", direction, "-z")
                 call dict%set(key("dir"), value=direction)
             end if
 
             children => null()
             
-            call get_value(child, "point1", children, requested=.false.)
+            call get_value(child, "point1", children, requested=.false., origin=origin)
             if(associated(children))then
                 nlen = len(children)
                 if(nlen < 3)then
-                    error stop "Need a Matrix row of size 3 for points."
+                    print'(a)',context%report("Need a matrix row for points", origin, "expected matrix row of size 3")
+                    stop 1
                 end if
                 do i = 1, len(children)
                     call get_value(children, i, corners(i, 1))
@@ -152,7 +294,8 @@ module parse_mod
             end if
 
         else
-            error stop "Need source table in input param file"
+            print'(a)',context%report("Simulation needs Source table", origin, "Missing source table")
+            stop 1
         end if
 
         packet = photon(state%source)
@@ -261,7 +404,7 @@ module parse_mod
             if(associated(children))then
                 nlen = len(children)
                 if(nlen < 3)then
-                    error stop "Need a vector of size 3 for redner_size."
+                    error stop "Need a vector of size 3 for render_size."
                 end if
                 do i = 1, len(children)
                     call get_value(children, i, state%render_size(i))
