@@ -16,6 +16,7 @@ module photonMod
         integer       :: layer                        ! id of sdf the packet is inside
         integer       :: id                           ! thread running packet
         integer       :: cnts, bounces                !  number of sdf evals.
+        real(kind=wp) :: weight, step
 
         procedure(generic_emit), pointer :: emit => null()
 
@@ -23,6 +24,7 @@ module photonMod
 
     interface photon
         module procedure init_source
+        module procedure init_photon
     end interface photon
 
     abstract interface
@@ -42,9 +44,34 @@ module photonMod
 
     contains
         
-        type(photon) function init_source(choice)
+        type(photon) function init_photon(val)
 
-            implicit none
+            real(kind=wp), intent(in) :: val
+
+            init_photon%pos = vector(val, val, val)
+            init_photon%nxp = val
+            init_photon%nyp = val
+            init_photon%nzp = val
+            init_photon%sint = val
+            init_photon%cost = val
+            init_photon%sinp = val
+            init_photon%cosp = val
+            init_photon%phi = val
+            init_photon%wavelength = val
+            init_photon%zcell = int(val)
+            init_photon%ycell = int(val)
+            init_photon%zcell = int(val)
+            init_photon%tflag = .true.
+            init_photon%layer = int(val)
+            init_photon%id = int(val)
+            init_photon%cnts = int(val)
+            init_photon%bounces = int(val)
+            init_photon%weight = val
+            init_photon%step = val 
+
+        end function init_photon
+
+        type(photon) function init_source(choice)
 
             character(*), intent(IN) :: choice
 
@@ -67,7 +94,6 @@ module photonMod
 
         end function init_source
 
-
         subroutine circular(this, dict)
             ! circular source
     
@@ -75,7 +101,7 @@ module photonMod
                 use random,        only : ran2
                 use constants,     only : twoPI
                 use fhash,         only : fhash_tbl_t, key=>fhash_key
-                use sdfs, only : rotmat, rotationAlign
+                use sdfs,          only : rotationAlign
                 use vector_class
 
                 implicit none
@@ -85,7 +111,7 @@ module photonMod
                 
                 type(vector) :: pos, b
                 integer :: cell(3)
-                real(kind=wp) :: t(4,4), radius,r,theta
+                real(kind=wp) :: t(4,4), radius, r, theta
     
                 call dict%get(key("pos%x"), value=this%pos%x)
                 call dict%get(key("pos%y"), value=this%pos%y)
@@ -156,6 +182,7 @@ module photonMod
             this%cnts   = 0
             this%bounces = 0
             this%layer  = 1
+            this%weight = 1.0_wp
 
             ! Linear Grid 
             cell = state%grid%get_voxel(this%pos)
@@ -209,6 +236,7 @@ module photonMod
             this%tflag = .false.
             this%bounces = 0
             this%cnts = 0
+            this%weight = 1.0_wp
 
             ! Linear Grid 
             cell = state%grid%get_voxel(this%pos)
@@ -267,6 +295,7 @@ module photonMod
             this%tflag = .false.
             this%cnts = 0
             this%bounces = 0
+            this%weight = 1.0_wp
 
             ! Linear Grid 
             cell = state%grid%get_voxel(this%pos)
@@ -307,6 +336,7 @@ module photonMod
             this%tflag = .false.
             this%bounces = 0
             this%cnts = 0
+            this%weight = 1.0_wp
 
             ! Linear Grid 
             cell = state%grid%get_voxel(this%pos)
@@ -400,6 +430,7 @@ module photonMod
             this%layer = 3
             this%cnts = 0
             this%bounces = 0
+            this%weight = 1.0_wp
 
             !teleport to just inside medium
             this%pos%z = state%grid%zmax - 1e-8_wp
