@@ -307,11 +307,11 @@ module sdfs
     ! boolean ops
     public :: union, intersection, subtraction, SmoothUnion, op
     ! move ops
-    public :: rotate_x, rotate_y, rotate_z, identity, translate
+    public :: rotate_x, rotate_y, rotate_z, identity, translate, rotationAlign
     ! deform ops
     public :: displacement, bend, twist, elongate, repeat, extrude, revolution, onion
     ! utility funcs
-    public :: calcNormal, model_init, render
+    public :: calcNormal, model_init, render, skewSymm
 
     contains
 
@@ -1918,10 +1918,30 @@ end function eval_neural
 
         end function rotate_z
 
+        
+        ! https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula
+        ! https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d
+        function rotationAlign(a, b) result(res)
+
+            type(vector), intent(in) :: a, b
+
+            type(vector)  :: v
+            real(kind=wp) :: c, k, res(4, 4)
+
+            v = a .cross. b
+            c = a .dot. b
+            k = 1._wp / (1._wp+c)
+
+            res(:, 1) = [v%x*v%x*k + c,     v%y*v%x*k - v%z,    v%z*v%x*k + v%y, 0._wp]
+            res(:, 2) = [v%x*v%y*k + v%z,   v%y*v%y*k + c,      v%z*v%y*k - v%x, 0._wp]
+            res(:, 3) = [v%x*v%z*K - v%y,   v%y*v%z*k + v%x,    v%z*v%z*k + c  , 0._wp]
+            res(:, 4) = [0._wp, 0._wp, 0._wp, 1._wp]
+
+        end function rotationAlign
+
+
         function identity() result(r)
-            
-            implicit none
-            
+                        
             real(kind=wp) :: r(4, 4)
 
             r(:, 1) = [1._wp, 0._wp, 0._wp, 0._wp]
@@ -1932,10 +1952,20 @@ end function eval_neural
         end function identity
 
 
+        function skewSymm(a) result(out)
+
+            type(vector), intent(in) :: a
+            real(kind=wp) :: out(4,4)
+
+            out(:, 1) = [0._wp, -a%z, a%y, 0._wp]
+            out(:, 2) = [a%z, 0._wp, -a%x, 0._wp]
+            out(:, 3) = [-a%y, a%x, 0._wp, 0._wp]
+            out(:, 4) = [0._wp, 0._wp, 0._wp, 0._wp]
+
+        end function skewSymm
+
         subroutine render_vec(cnt, extent, samples, fname)
-                        
-            implicit none
-            
+                                    
             type(container),        intent(IN) :: cnt(:)
             integer,                intent(IN) :: samples(3)
             type(vector),           intent(IN) :: extent
