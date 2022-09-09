@@ -1690,9 +1690,7 @@ end function eval_neural
 
         function repeat_fn(p, c, la, lb, prim) result(res)
 
-            use vector_class
-
-            implicit none
+            use utils
 
             class(sdf) :: prim
             type(vector),  intent(IN) :: p, la, lb
@@ -1701,7 +1699,7 @@ end function eval_neural
 
             type(vector) :: q
 
-            q = p - c*clamp_vec(nint(p/c), la, lb)
+            q = p - c*clamp(nint(p/c), la, lb)
             res = prim%evaluate(q)
 
         end function repeat_fn
@@ -2065,6 +2063,6 @@ end function eval_neural
             end do
 !$OMP end  do
 !$OMP end parallel
-            call write(image, trim(fileplace)//fname, overwrite=.true.)
+            call write_fluence(image, trim(fileplace)//fname, overwrite=.true.)
         end subroutine render_sub
 end module sdfs

@@ -9,24 +9,27 @@ program mcpolar
 #endif
 
 !shared data
-use photonMod
 use iarray
 use random,    only : ran2, init_rng, ranu
 use constants, only : fileplace, wp
 
 !subroutines
-use detector_mod
+use sdfs
 use subs
 use inttau2
+use stackMod
+use parse_mod
+use photonMod
 use stokes_mod
 use writer_mod
+use detector_mod
 use vector_class
-use sdfs
-use utils, only : pbar, str, get_time, print_time
-use tev_mod
-use parse_mod
 use sim_state_mod, only : state
+use string_utils,  only : str
+use utils,         only : pbar, get_time, print_time
 
+!external deps
+use tev_mod
 use fhash, only : fhash_tbl_t, key=>fhash_key, fhash_key_t
 
 implicit none
@@ -38,6 +41,8 @@ type(tevipc)      :: tev
 type(photon)      :: packet
 type(fhash_tbl_t) :: dict
 type(pbar)        :: bar
+type(hit_t)       :: hpoint
+type(vector)      :: dir
 
 real(kind=wp), allocatable :: distances(:), image(:,:,:)
 real(kind=wp) :: ran, start, time_taken, nscatt
@@ -96,8 +101,9 @@ if(id == 0)then
 end if
 
 #ifdef _OPENMP
-!$omp parallel default(none) shared(dict, array, numproc, start, state, bar, jmean, tev)&
-!$omp& private(ran, id, distances, image) reduction(+:nscatt) firstprivate(packet)
+!is state%seed private, i dont think so...
+!$omp parallel default(none) shared(dict, array, numproc, start, state, bar, jmean, tev, threshold, chance, dects)&
+!$omp& private(ran, id, distances, image, absorb, hpoint, dir) reduction(+:nscatt) firstprivate(packet)
     numproc = omp_get_num_threads()
     id = omp_get_thread_num()
     if(numproc > state%nphotons)print*,"Warning, simulation may be underministic due to low photon count!"
@@ -133,6 +139,11 @@ do j = 1, state%nphotons
 
     ! Find scattering location
     call tauint2(state%grid, packet, array)
+    dir = vector(packet%nxp, packet%nyp, packet%nzp)
+    hpoint = hit_t(packet%pos, dir, 1._wp, packet%layer)
+    do i = 1, size(dects)
+        call dects(i)%p%record_hit(hpoint)
+    end do
     ! Photon scatters in grid until it exits (tflag=TRUE)
     do while(.not. packet%tflag)
         ran = ran2()
@@ -145,7 +156,11 @@ do j = 1, state%nphotons
         end if
         ! !Find next scattering location
         call tauint2(state%grid, packet, array)
-        
+        dir = vector(packet%nxp, packet%nyp, packet%nzp)
+        hpoint = hit_t(packet%pos, dir, 1._wp, packet%layer)
+        do i = 1, size(dects)
+                call dects(i)%p%record_hit(hpoint)
+        end do
     end do
         
     if(id == 0 .and. mod(j,1000) == 0)then
@@ -195,9 +210,10 @@ if(id == 0)then
     call dict%set(key("experiment"), value=state%experiment)
 
     jmeanGLOBAL = normalise_fluence(state%grid, jmeanGLOBAL, state%nphotons)
-    call write(jmeanGLOBAL, trim(fileplace)//"jmean/"//state%outfile, dict)
+    call write_fluence(jmeanGLOBAL, trim(fileplace)//"jmean/"//state%outfile, dict)
     print*,'write done'
 end if
+call write_detected_photons(dects)
 
 time_taken = get_time() - start
 call print_time(time_taken, id)

@@ -48,18 +48,6 @@ module utils
         module procedure colour_real8
     end interface
 
-    !functions to turn variables into strings
-    interface str
-        module procedure str_I32
-        module procedure str_I64
-        module procedure str_Iarray
-        module procedure str_R4
-        module procedure str_R8
-        module procedure str_R8array
-        module procedure str_logical
-        module procedure str_logicalarray
-    end interface str
-
     type :: pbar
         integer       :: iters, current_iter, time_remaing(3), time_taken(3), threads
         real(kind=dp) :: percentage, start_t, start_tt, finish_t, average
@@ -83,6 +71,7 @@ module utils
     interface clamp
         module procedure clamp_R4
         module procedure clamp_R8
+        module procedure clamp_vector
     end interface clamp
 
     !subroutines to mix variables
@@ -114,7 +103,7 @@ module utils
     end interface
 
     private
-    public :: str, swap, colour, mem_free, chdir, mix, clamp, rad2deg, deg2rad, lerp, get_time, print_time
+    public :: swap, colour, mem_free, chdir, mix, clamp, rad2deg, deg2rad, lerp, get_time, print_time
     public :: bold, italic, underline, strikethrough, black, red, green, yellow, blue, magenta, cyan, white
     public :: black_b, red_b, green_b, yellow_b, blue_b, magenta_b, cyan_b, white_b, pbar
 
@@ -161,8 +150,7 @@ module utils
         subroutine progress_sub(this)
 
             use iso_fortran_env, only : output_unit
-
-            implicit none
+            use string_utils, only : str
 
             class(pbar) :: this
             integer           :: width
@@ -309,6 +297,23 @@ module utils
 
         end function clamp_R8
 
+        function clamp_vector(this, lo, hi)
+
+            use vector_class
+
+            type(vector), intent(IN) :: this, lo, hi
+            type(vector) :: clamp_vector
+
+            real(kind=dp) :: x, y, z
+
+            x = clamp(this%x, lo%x, hi%x)
+            y = clamp(this%y, lo%y, hi%y)
+            z = clamp(this%z, lo%z, hi%z)
+
+            clamp_vector = vector(x, y, z)
+
+        end function clamp_vector
+
         pure function mix_R4(x, y, a) result(res)
 
             implicit none
@@ -372,197 +377,6 @@ module utils
             b = tmp
 
         end subroutine swap_R8
-
-
-        function str_I32(i, len)
-
-            use iso_fortran_env, only : Int32
-
-            implicit none
-
-            integer(int32),    intent(IN)    :: i
-            integer, optional, intent(IN) :: len
-
-            character(len=:), allocatable :: str_I32
-            character(len=100) :: string
-            integer            :: lentmp, lenuse
-
-            write(string,'(I100.1)') I
-
-            if(present(len))then
-                lentmp = len_trim(adjustl(string))
-                lenuse = len
-
-                if(len >= lentmp)then
-                    str_I32 = repeat("0", lenuse - lentmp)//trim(adjustl(string))
-                else
-                    str_I32 = trim(adjustl(string))
-                    str_I32 = trim(adjustl(str_I32(:len)))                        
-                end if
-            else
-                str_I32 = trim(adjustl(string))
-            end if
-        end function str_I32
-
-
-        function str_I64(i, len)
-
-            use iso_fortran_env, only : Int64
-
-            implicit none
-
-            integer(int64),    intent(IN)    :: i
-            integer, optional, intent(IN) :: len
-
-            character(len=:), allocatable :: str_I64
-            character(len=100) :: string
-            integer            :: lentmp, lenuse
-
-            write(string,'(I100.1)') I
-
-            if(present(len))then
-                lentmp = len_trim(adjustl(string))
-                lenuse = len
-
-                if(len >= lentmp)then
-                    str_I64 = repeat("0", lenuse - lentmp)//trim(adjustl(string))
-                else
-                    str_I64 = trim(adjustl(string))
-                    str_I64 = trim(adjustl(str_I64(:len)))                        
-                end if
-            else
-                str_I64 = trim(adjustl(string))
-            end if
-        end function str_I64
-
-
-        function str_iarray(i)
-
-            implicit none
-
-            integer, intent(IN) :: i(:)
-
-            character(len=:), allocatable :: str_iarray
-            character(len=100) :: string
-            integer :: k, j, length
-
-            length = 3*size(i)-1
-            str_iarray = repeat(" ", length)
-
-            k = 1
-            do j = 1, size(i)
-                write(string,'(I2.2)') I(j)
-                if(j == 1)then
-                    str_iarray(k:k+2) = trim(adjustl(string))
-                    k = k + 2
-                else
-                    str_iarray(k:k+2) = ':'//trim(adjustl(string))
-                    k = k + 3
-                end if
-            end do
-
-        end function str_iarray
-
-
-        function str_R4(i, len)
-
-            implicit none
-
-            real(kind=sp), intent(IN) :: i
-            integer, optional, intent(IN) :: len
-
-            character(len=:), allocatable :: str_R4
-            character(len=100) :: string
-
-            write(string,'(f100.8)') I
-
-            if(present(len))then
-                str_R4 = trim(adjustl(string))
-                str_R4 = trim(adjustl(str_R4(:len)))
-            else
-                str_R4 = trim(adjustl(string))
-            end if
-        end function str_r4
-
-        function str_R8(i, len)
-
-            implicit none
-
-            real(kind=dp),     intent(IN) :: i
-            integer, optional, intent(IN) :: len
-
-            character(len=:), allocatable :: str_R8
-            character(len=100) :: string
-
-            write(string,'(f100.16)') I
-
-            if(present(len))then
-                str_R8 = trim(adjustl(string))
-                str_R8 = trim(adjustl(str_R8(:len)))
-            else
-                str_R8 = trim(adjustl(string))
-            end if
-        end function str_R8
-
-
-        function str_R8array(a, width)
-
-            implicit none
-
-            real(kind=dp),     intent(IN) :: a(:)
-            integer,           intent(IN) :: width
-
-            character(len=:), allocatable :: str_R8array
-            integer :: i, length, lens(size(a)), k
-
-            length = 0
-            lens = 0
-            do i = 1, size(a)
-                lens(i) = len(str_R8(a(i), width))
-                length = length + lens(i)
-            end do
-            length = length + size(a)
-
-            str_R8array = repeat(" ", length)
-            k = 1
-            do i = 1, size(a)
-                str_R8array(k:k+lens(i)) = str_R8(a(i), width)//" "
-                k = k + lens(i)+1
-            end do
-        end function str_R8array
-
-
-        function str_logical(a)
-
-            implicit none
-
-            logical, intent(IN) :: a
-
-            character(len=:), allocatable :: str_logical
-            character(len=100) :: string
-
-            write(string,'(L1)') a
-            str_logical = trim(adjustl(string))
-
-        end function str_logical
-
-
-        function str_logicalarray(a)
-
-            implicit none
-
-            logical, intent(IN) :: a(:)
-
-            character(len=:), allocatable :: str_logicalarray
-            character(len=100) :: string
-            integer :: i
-
-            do i = 1, size(a)
-                write(string,'(L1)') a(i)
-                str_logicalarray = str_logicalarray//' '//trim(adjustl(string))
-            end do
-
-        end function str_logicalarray
 
 
         function colour_char(string, fmt1, fmt2, fmt3, fmt4, fmt5) result(colourised)

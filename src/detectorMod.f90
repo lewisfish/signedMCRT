@@ -122,7 +122,12 @@ contains
         out%nbins = nbins + 1
         out%radius = radius
         allocate(out%data(out%nbins))
-        out%bin_wid = maxval / real(nbins, kind=wp)
+        out%data = 0.0_wp
+        if(nbins == 0)then
+            out%bin_wid = 0._wp
+        else
+            out%bin_wid = maxval / real(nbins, kind=wp)
+        end if
 
     end function init_circle_dect
 
@@ -156,8 +161,12 @@ contains
         out%r1 = r1
         out%r2 = r2
         allocate(out%data(out%nbins))
-        out%bin_wid = maxval / real(nbins, kind=wp)
-
+        out%data = 0.0_wp
+        if(nbins == 0)then
+            out%bin_wid = 0._wp
+        else
+            out%bin_wid = maxval / real(nbins, kind=wp)
+        end if
     end function init_annulus_dect
 
     logical function check_hit_annulus(this, hitpoint)

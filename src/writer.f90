@@ -2,8 +2,8 @@ module writer_mod
 ! module provides output routines in raw binary and .nrrd formats
 !
 !
-    use constants, only : wp
-    use utils,     only : str
+    use constants,    only : wp
+    use string_utils, only : str
 
 implicit none
 
@@ -17,17 +17,13 @@ implicit none
     end interface raw_write
 
     private
-    public :: raw_write, nrrd_write, normalise_fluence, write
+    public :: normalise_fluence, write_fluence, write_detected_photons
 
     contains
-
-
         function normalise_fluence(grid, array, nphotons) result(out)
         ! normalise fluence in the Lucy 1999 way
             
             use gridMod
-
-            implicit none
 
             type(cart_grid), intent(IN) :: grid
             real(kind=wp),   intent(IN) :: array(:, :, :)
@@ -52,11 +48,41 @@ implicit none
         end function normalise_fluence
 
 
-        subroutine write(array, filename, dict, overwrite)
-        ! routine automatically selects which way to write ouresults based upon file extension
-            use fhash,        only : fhash_tbl_t, key=>fhash_key
+        subroutine write_detected_photons(detectors)
 
-            implicit none
+            use detector_mod
+            use constants, only: fileplace
+
+            type(dect_array), intent(in) :: detectors(:)
+
+            integer :: i, j, u
+            character(len=:), allocatable :: hdr
+
+            do i = 1, size(detectors)
+                open(newunit=u, file=trim(fileplace)//"detectors/detector_"//str(i)//".dat")
+                associate(x => detectors(i)%p)
+                    select type(x)
+                    type is(circle_dect)
+                        hdr = "pos, layer, nbins, bin_wid, radius"//new_line("a")//str(x%pos)//","//str(x%layer)//","//str(x%nbins)//","//str(x%bin_wid)//","//str(x%radius)
+                    type is(annulus_dect)
+                        hdr = "pos, layer, nbins, bin_wid, radius1, radius2"//new_line("a")//str(x%pos)//","//str(x%layer)//","//str(x%nbins)//","//str(x%bin_wid)//","//str(x%r1)//","//str(x%r2)
+                    end select
+                end associate
+                write(u, "(a)")hdr
+                write(u, "(a)")"data:"
+                do j = 1, detectors(i)%p%nbins 
+                    write(u,"(es24.16e3)")detectors(i)%p%data(j)
+                end do
+                close(u)
+            end do
+
+        end subroutine write_detected_photons
+
+
+        subroutine write_fluence(array, filename, dict, overwrite)
+        ! routine automatically selects which way to write out results based upon file extension
+            
+            use fhash, only : fhash_tbl_t, key=>fhash_key
         
             real(kind=wp),          intent(IN) :: array(:,:,:)
             character(*),           intent(IN) :: filename
@@ -98,7 +124,7 @@ implicit none
 
             error stop "File type not supported!"
 
-        end subroutine write
+        end subroutine write_fluence
 
         subroutine write_3d_r8_raw(array, filename, overwrite)
 
@@ -185,9 +211,7 @@ implicit none
             
             use fhash,           only : fhash_tbl_t, key=>fhash_tbl_t, fhash_key_t
             use iso_fortran_env, only : int32, int64, real32, real64
-            use utils, only : str
-
-            implicit none
+            use string_utils,    only : str
         
             character(*),                intent(IN)    :: filename
             real(kind=wp),               intent(IN)    :: array(:, :, :)

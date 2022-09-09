@@ -43,7 +43,7 @@ contains
         
         type(hit_t), allocatable :: tmp(:)
 
-        if(.not. allocated(this%data))then
+        if(.not. allocated(this%data) .or. size(this%data) == 0)then
             !allocate space if not yet allocated
             allocate(this%data(block_size))
         elseif(this%size == size(this%data))then

@@ -1,14 +1,23 @@
 @build
 option build --compiler gfortran --flag "-cpp -ffree-line-length-none -Wno-compare-reals -g -fbacktrace -fcheck=all -fbounds-check -ffpe-trap=invalid,overflow,underflow,denormal -Wall -Wextra"
 
+@buildmp
+option build --compiler gfortran --flag "-fopenmp -cpp -ffree-line-length-none -Wno-compare-reals -g -fbacktrace -fcheck=all -fbounds-check -ffpe-trap=invalid,overflow,underflow,denormal -Wall -Wextra"
+
+
 @run
 option run sMCRT --compiler gfortran --flag "-O2 -cpp -march=native -flto -mavx -ffree-line-length-none"
 
 @runmp
 option run sMCRT --compiler gfortran --flag "-O2 -cpp -march=native -flto -mavx -ffree-line-length-none -fopenmp"
 
+
 @debug
 option run sMCRT --compiler gfortran --flag "-O2 -cpp -march=native -flto -mavx -ffree-line-length-none -g -fbacktrace -fcheck=all -fbounds-check -ffpe-trap=invalid,overflow,underflow,denormal"
+
+@debugmp
+option run sMCRT --compiler gfortran --flag "-fopenmp -O2 -cpp -march=native -flto -mavx -ffree-line-length-none -g -fbacktrace -fcheck=all -fbounds-check -ffpe-trap=invalid,overflow,underflow,denormal"
+
 
 @test
 option test --compiler gfortran --flag "-O2 -cpp -march=native -flto -mavx -ffree-line-length-none"

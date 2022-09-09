@@ -41,7 +41,7 @@ Module vector_class
     end type vector
 
     private
-    public :: magnitude, vector, print, abs, length, max, invert, nint, clamp_vec
+    public :: magnitude, vector, print, abs, length, max, invert, nint
 
     interface nint
         module procedure nint_vec
@@ -56,25 +56,6 @@ Module vector_class
     end interface max
 
     contains
-
-        type(vector) function clamp_vec(this, lo, hi)
-
-            use utils, only : clamp
-
-            implicit none
-
-            type(vector), intent(IN) :: this, lo, hi
-
-            real(kind=wp) :: x, y, z
-
-            x = clamp(this%x, lo%x, hi%x)
-            y = clamp(this%y, lo%y, hi%y)
-            z = clamp(this%z, lo%z, hi%z)
-
-            clamp_vec = vector(x, y, z)
-
-        end function clamp_vec
-
 
         type(vector) function nint_vec(this)
 
