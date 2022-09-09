@@ -188,7 +188,7 @@ module parse_mod
         type(toml_table), pointer :: child
         type(toml_array), pointer :: children
 
-        real(kind=wp) :: dir(3), pos(3), corners(3, 3)
+        real(kind=wp) :: dir(3), pos(3), corners(3, 3), radius
         integer :: i, nlen, origin
         character(len=1) :: axis(3)
         character(len=:), allocatable :: direction
@@ -201,7 +201,7 @@ module parse_mod
                               0._wp,  2._wp, 0._wp /), &
                            shape(corners), order=[2, 1])
 
-        call get_value(table, "source", child)
+        call get_value(table, "source", child, requested=.false.)
         if(associated(child))then
             call get_value(child, "name", state%source, "point")
             call get_value(child, "nphotons", state%nphotons, 1000000)
@@ -235,6 +235,9 @@ module parse_mod
                     print'(a)',context%report("Need a vector of size 3 for direction", origin, "expected vector of size 3")
                     stop 1
                 end if
+                if(state%source == "circular")then
+                    print'(a)',context%report("Direction not yet fully implmented for source type Circular. Results may not be accurate!", origin, level=toml_level%warning)
+                end if
                 do i = 1, len(children)
                     call get_value(children, i, dir(i))
                     call dict%set(key("dir%"//axis(i)), value=dir(i))
@@ -262,36 +265,49 @@ module parse_mod
                     call dict%set(key("pos1%"//axis(i)), value=corners(i,1))
                 end do
             else
-                if(state%source == "uniform")error stop "Source Uniform needs to have point1 variable!"
+                if(state%source == "uniform")then
+                    print'(a)',context%report("Uniform source requires point1 variable", origin, "expected point1 variable")
+                    stop 1
+                end if
             end if
 
-            call get_value(child, "point2", children, requested=.false.)
+            call get_value(child, "point2", children, requested=.false., origin=origin)
             if(associated(children))then
                 nlen = len(children)
                 if(nlen < 3)then
-                    error stop "Need a Matrix row of size 3 for points."
+                    print'(a)',context%report("Need a matrix row for points", origin, "expected matrix row of size 3")
+                    stop 1
                 end if
                 do i = 1, len(children)
                     call get_value(children, i, corners(i, 2))
                     call dict%set(key("pos2%"//axis(i)), value=corners(i,2))
                 end do
             else
-                if(state%source == "uniform")error stop "Source Uniform needs to have point2 variable!"
+                if(state%source == "uniform")then
+                    print'(a)',context%report("Uniform source requires point2 variable", origin, "expected point2 variable")
+                    stop 1
+                end if
             end if
 
-            call get_value(child, "point3", children, requested=.false.)
+            call get_value(child, "point3", children, requested=.false., origin=origin)
             if(associated(children))then
                 nlen = len(children)
                 if(nlen < 3)then
-                    error stop "Need a Matrix row of size 3 for points."
+                    print'(a)',context%report("Need a matrix row for points", origin, "expected matrix row of size 3")
+                    stop 1
                 end if
                 do i = 1, len(children)
                     call get_value(children, i, corners(i, 3))
                     call dict%set(key("pos3%"//axis(i)), value=corners(i,3))
                 end do
             else
-                if(state%source == "uniform")error stop "Source Uniform needs to have point3 variable!"
+                if(state%source == "uniform")then
+                    print'(a)',context%report("Uniform source requires point3 variable", origin, "expected point3 variable")
+                    stop 1
+                end if
             end if
+            call get_value(child, "radius", radius)
+            call dict%set(key("radius"), value=radius)
 
         else
             print'(a)',context%report("Simulation needs Source table", origin, "Missing source table")

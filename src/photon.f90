@@ -58,12 +58,70 @@ module photonMod
                 init_source%emit => focus
             elseif(choice == "point")then
                 init_source%emit => point
+            elseif(choice == "circular")then
+                init_source%emit => circular
             else
                 error stop "No such source!"
             end if
 
 
         end function init_source
+
+
+        subroutine circular(this, dict)
+            ! circular source
+    
+                use sim_state_mod, only : state
+                use random,        only : ran2
+                use constants,     only : twoPI
+                use fhash,         only : fhash_tbl_t, key=>fhash_key
+                use sdfs, only : rotmat, rotationAlign
+                use vector_class
+
+                implicit none
+            
+                class(photon) :: this
+                type(fhash_tbl_t), optional, intent(IN) :: dict
+                
+                type(vector) :: pos, b
+                integer :: cell(3)
+                real(kind=wp) :: t(4,4), radius,r,theta
+    
+                call dict%get(key("pos%x"), value=this%pos%x)
+                call dict%get(key("pos%y"), value=this%pos%y)
+                call dict%get(key("pos%z"), value=this%pos%z)
+    
+                call dict%get(key("dir%x"), this%nxp)
+                call dict%get(key("dir%y"), this%nyp)
+                call dict%get(key("dir%z"), this%nzp)
+        
+                call dict%get(key("radius"), radius)
+
+                r = radius * sqrt(ran2())
+                theta = ran2() * TWOPI
+                this%pos%x = this%pos%x + r * cos(theta)
+                this%pos%y = this%pos%y + r * sin(theta)
+
+                ! b = vector(this%nxp, this%nyp, this%nzp)
+                ! b = b%magnitude()
+                ! t = rotmat(vector(0._wp,0._wp,-1._wp), b)
+
+                ! pos = this%pos .dot. t
+
+                this%tflag  = .false.
+                this%cnts   = 0
+                this%bounces = 0
+                this%layer  = 1
+                this%weight = 1.0_wp
+    
+                ! Linear Grid 
+                cell = state%grid%get_voxel(this%pos)
+                this%xcell = cell(1)
+                this%ycell = cell(2)
+                this%zcell = cell(3)
+            
+            end subroutine circular
+
 
         subroutine point(this, dict)
         !isotropic point source

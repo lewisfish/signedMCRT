@@ -12,9 +12,9 @@ module detector_mod
     end type hit_t
 
     !only needed if using a stack to init with a single null value
-    ! interface hit
-        ! module procedure hit_init
-    ! end interface hit
+    interface hit_t
+        module procedure hit_init
+    end interface hit_t
 
 
     type, abstract :: detector
@@ -70,6 +70,17 @@ module detector_mod
     end interface annulus_dect
 contains
     
+    type(hit_t) function hit_init(val)
+
+        real(kind=wp), intent(in) :: val
+        type(vector) :: tmp
+
+        tmp = vector(val, val, val)
+
+        hit_init = hit_t(tmp, tmp, val, int(val))
+
+    end function hit_init
+
     integer function get_bin_fn(this, value)
 
         class(detector), intent(IN) :: this
@@ -104,14 +115,6 @@ contains
         real(kind=wp), intent(IN) :: radius, maxval
 
         type(circle_dect) :: out
-
-        ! https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula
-        ! https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d
-        ! v = vector(0._wp, 0._wp, 1._wp) .cross. normal
-        ! s = v .dot. v
-        ! c = vector(0._wp, 0._wp, 1._wp) .dot. normal
-        ! vx = skewSymm(v)
-        ! t = identity() + vx + (vx .dot. vx) * (1._wp / (1._wp + c))
 
         out%pos = pos
         out%layer = layer
