@@ -14,6 +14,8 @@ Only tested on Linux. May run on Mac, but unlikly to run on Windows without some
 
 To run the code you can use:
   - The [fortran package manager](https://fpm.fortran-lang.org/en/index.html) by running; fpm @run
+
+See [this](config.md) for instructions on what settings the toml config file can configure.
   
 ## Publication
 The code in this repo forms the basis for the following publication:
