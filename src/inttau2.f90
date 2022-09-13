@@ -326,7 +326,7 @@ module inttau2
     !
         use vector_class
         use gridMod
-        use utils,         only : str
+        use string_utils, only : str
 
         implicit none
       
