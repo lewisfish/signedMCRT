@@ -70,9 +70,9 @@ implicit none
                 end associate
                 write(u, "(a)")hdr
                 write(u, "(a)")"data:"
-                do j = 1, detectors(i)%p%nbins 
-                    write(u,"(es24.16e3)")detectors(i)%p%data(j)
-                end do
+                ! do j = 1, detectors(i)%p%nbins 
+                    ! write(u,"(es24.16e3)")detectors(i)%p%data(j)
+                ! end do
                 close(u)
             end do
 
