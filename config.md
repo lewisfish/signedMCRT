@@ -21,13 +21,13 @@ This table defines the parameters for the light source used in the simulation it
 
 | Parameter | Type | Default | Notes |
 |:---------:|:----:|:-------:|:-----:|
-| nxg | integer | - | 200 | Number of voxel in x direction |
-| nyg | integer | - | 200 | Number of voxel in y direction |
-| nyg | integer | - | 200 | Number of voxel in z direction |
-| xmax | float | - | 1.0 | Half size of simulated medium in x direction |
-| ymax | float | - | 1.0 | Half size of simulated medium in y direction |
-| zmax | float | - | 1.0 | Half size of simulated medium in z direction |
-| units | string | - | cm | Units of simulation (currently need to manually adjust optical properties to account) |
+| nxg | integer | 200 | Number of voxel in x direction |
+| nyg | integer | 200 | Number of voxel in y direction |
+| nyg | integer | 200 | Number of voxel in z direction |
+| xmax | float | 1.0 | Half size of simulated medium in x direction |
+| ymax | float | 1.0 | Half size of simulated medium in y direction |
+| zmax | float | 1.0 | Half size of simulated medium in z direction |
+| units | string | cm | Units of simulation (currently need to manually adjust optical properties to account) |
 
 ## geometry
 
@@ -53,7 +53,7 @@ This table defines the parameters for the light source used in the simulation it
 | radius2 | float | - | - | Outer radius of annulus detector. Must be larger than radius1 |
 | layer | integer | - | 1 | layer to match SDF layer label |
 | nbins | integer | - | 100 | Number of bins in detector |
-| maxval | float | - | 100. | Maximum value to bin |
+| maxval | float | - | 100.0 | Maximum value to bin |
 
 ## output
 
@@ -69,5 +69,5 @@ This table defines the parameters for the light source used in the simulation it
 
 | Parameter | Type | Default | Notes |
 |:---------:|:----:|:-------:|:-----:|
-| iseed | integer | 123456789 | seed for simulation. Each thread get its own copy + threadId |
+| iseed | integer | 123456789 | seed for simulation. Each thread get its own copy + threadID |
 | tev | boolean | false | Enables TEV image viewer to display simulation as it runs. Must have opened TEV prior to launching simulation. |
