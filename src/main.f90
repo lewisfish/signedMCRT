@@ -140,7 +140,7 @@ do j = 1, state%nphotons
     ! Find scattering location
     call tauint2(state%grid, packet, array)
     dir = vector(packet%nxp, packet%nyp, packet%nzp)
-    hpoint = hit_t(packet%pos, dir, 1._wp, packet%layer)
+    hpoint = hit_t(packet%pos, dir, [1._wp, 1._wp], packet%layer)
     do i = 1, size(dects)
         call dects(i)%p%record_hit(hpoint)
     end do
@@ -157,7 +157,7 @@ do j = 1, state%nphotons
         ! !Find next scattering location
         call tauint2(state%grid, packet, array)
         dir = vector(packet%nxp, packet%nyp, packet%nzp)
-        hpoint = hit_t(packet%pos, dir, 1._wp, packet%layer)
+        hpoint = hit_t(packet%pos, dir, [1._wp, 1._wp], packet%layer)
         do i = 1, size(dects)
                 call dects(i)%p%record_hit(hpoint)
         end do
@@ -211,6 +211,14 @@ if(id == 0)then
 
     jmeanGLOBAL = normalise_fluence(state%grid, jmeanGLOBAL, state%nphotons)
     call write_fluence(jmeanGLOBAL, trim(fileplace)//"jmean/"//state%outfile, dict)
+    open(newunit=j,file=trim(fileplace)//"camera.dat",form="unformatted",access="stream")
+    associate(x => dects(1)%p)
+        select type(x)
+            type is(camera)
+                write(j)x%data(:100,:100)
+        end select
+    end associate
+    close(j)
     print*,'write done'
 end if
 call write_detected_photons(dects)

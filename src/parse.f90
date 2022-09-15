@@ -2,6 +2,7 @@ module parse_mod
 
     use tomlf
     use constants, only : wp
+    use vector_class
 
     implicit none
 
@@ -55,11 +56,12 @@ module parse_mod
         character(len=:), allocatable :: dect_type
         type(circle_dect), target, save, allocatable :: dect_c(:)
         type(annulus_dect), target, save, allocatable :: dect_a(:)
-        real(kind=wp) :: value 
-        integer :: i, c_counter, a_counter, j, origin
+        type(camera), target, save, allocatable :: dect_cam(:)
+        integer :: i, c_counter, a_counter, cam_counter, j, origin, k
 
         c_counter = 0
         a_counter = 0
+        cam_counter = 0
         call get_value(table, "detectors", array)
         allocate(dects(len(array)))
 
@@ -74,21 +76,27 @@ module parse_mod
                 c_counter = c_counter + 1
             case("annulus")
                 a_counter = a_counter + 1
+            case("camera")
+                cam_counter = cam_counter + 1
             end select
         end do
 
         if(c_counter > 0)allocate(dect_c(c_counter))
         if(a_counter > 0)allocate(dect_a(a_counter))
+        if(cam_counter > 0)allocate(dect_cam(cam_counter))
         c_counter = 1
         a_counter = 1
+        cam_counter = 1
         do i = 1, len(array)
             call get_value(array, i, child)
             call get_value(child, "type", dect_type)
             select case(dect_type)
             case("circle")
-                call handle_circle_dect(child, dect_c, c_counter)
+                call handle_circle_dect(child, dect_c, c_counter, context)
             case("annulus")
                 call handle_annulus_dect(child, dect_a, a_counter, context)
+            case("camera")
+                call handle_camera(child, dect_cam, cam_counter, context)
             end select
         end do
 
@@ -102,33 +110,55 @@ module parse_mod
             dects(j+i-1)%p => dect_a(j)
         end do
 
+        do k = 1, cam_counter-1
+            allocate(dects(j+i+k-2)%p, source=dect_cam(k))
+            dects(j+i+k-2)%p => dect_cam(k)
+        end do
+
+
     end subroutine parse_detectors
 
+    subroutine handle_camera(child, dects, counts, context)
 
-    subroutine handle_circle_dect(child, dects, counts)
+        use detector_mod
+
+        type(toml_table), pointer, intent(in)    :: child
+        type(camera),              intent(inout) :: dects(:)
+        integer,                   intent(inout) :: counts
+        type(toml_context),        intent(in) :: context
+
+        integer :: layer, nbins
+        real(kind=wp) :: maxval
+        type(vector) :: p1, p2, p3
+
+        p1 = get_vector(child, "p1", context)
+        p2 = get_vector(child, "p2", context)
+        p3 = get_vector(child, "p3", context)
+ 
+        call get_value(child, "layer", layer, 1)
+        call get_value(child, "nbins", nbins, 100)
+        call get_value(child, "maxval", maxval, 100._wp)
+        dects(counts) = camera(p1, p2, p3, layer, nbins, maxval)
+        counts = counts + 1
+
+    end subroutine handle_camera
+
+    subroutine handle_circle_dect(child, dects, counts, context)
 
         use detector_mod
 
         type(toml_table), pointer, intent(in)    :: child
         type(circle_dect),         intent(inout) :: dects(:)
         integer,                   intent(inout) :: counts
+        type(toml_context),        intent(in) :: context
 
-        integer :: layer, nbins, j
+        integer :: layer, nbins
         real(kind=wp) :: maxval, radius
-        real(kind=wp), allocatable :: tmp(:)
-        type(toml_array), pointer  :: arr
         type(vector) :: pos
 
-        call get_value(child, "position", arr)
-        if (associated(arr))then
-            allocate(tmp(len(arr)))
-            do j = 1, len(arr)
-                call get_value(arr, j, tmp(j))
-            end do
-            pos = vector(tmp(1), tmp(2), tmp(3))
-            end if
+        pos = get_vector(child, "position", context)
         call get_value(child, "layer", layer, 1)
-        call get_value(child, "radius", radius)
+        call get_value(child, "radius1", radius)
         call get_value(child, "nbins", nbins, 100)
         call get_value(child, "maxval", maxval, 100._wp)
         dects(counts) = circle_dect(pos, layer, radius, nbins, maxval)
@@ -145,20 +175,11 @@ module parse_mod
         integer,                   intent(inout) :: counts
         type(toml_context),        intent(in) :: context
 
-        integer :: layer, nbins, j, origin
+        integer :: layer, nbins, origin
         real(kind=wp) :: maxval, radius1, radius2
-        real(kind=wp), allocatable :: tmp(:)
-        type(toml_array), pointer  :: arr
         type(vector) :: pos
 
-        call get_value(child, "position", arr)
-        if (associated(arr))then
-            allocate(tmp(len(arr)))
-            do j = 1, len(arr)
-                call get_value(arr, j, tmp(j))
-            end do
-            pos = vector(tmp(1), tmp(2), tmp(3))
-            end if
+        pos = get_vector(child, "position", context)
         call get_value(child, "layer", layer, 1)
         call get_value(child, "radius1", radius1)
         call get_value(child, "radius2", radius2, origin=origin)
@@ -243,7 +264,7 @@ module parse_mod
                     call dict%set(key("dir%"//axis(i)), value=dir(i))
                 end do
             else
-                if(state%source == "uniform")then
+                if(state%source == "uniform" .or. state%source == "circular")then
                     print'(a)',context%report("Uniform source needs vector direction", origin, "expected vector of size 3")
                     stop 1
                 end if
@@ -306,7 +327,7 @@ module parse_mod
                     stop 1
                 end if
             end if
-            call get_value(child, "radius", radius)
+            call get_value(child, "radius", radius, 0.5_wp)
             call dict%set(key("radius"), value=radius)
 
         else
@@ -458,4 +479,29 @@ module parse_mod
         end if
 
     end subroutine parse_simulation
+
+    type(vector) function get_vector(child, key, context)
+
+        type(toml_context),        intent(in) :: context
+        type(toml_table), pointer, intent(in) :: child
+        character(*),              intent(in) :: key
+
+        type(toml_array), pointer  :: arr
+        real(kind=wp) :: tmp(3)
+        integer :: j, origin
+
+        call get_value(child, key, arr, origin=origin)
+        if (associated(arr))then
+            if(len(arr) /= 3)then
+                print'(a)',context%report("Expected vector of size 3", origin, "Wrong vector size")
+                stop 1    
+            end if
+            do j = 1, len(arr)
+                call get_value(arr, j, tmp(j))
+            end do
+            get_vector = vector(tmp(1), tmp(2), tmp(3))
+        end if
+
+    end function get_vector
+
 end module parse_mod
