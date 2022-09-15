@@ -119,6 +119,10 @@ jobs:
           source /opt/intel/oneapi/setvars.sh
           printenv >> $GITHUB_ENV
 
+      - uses: fortran-lang/setup-fpm@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build and compile
         if: ${{ contains(matrix.build, 'fpm') }}
         run: fpm @build
