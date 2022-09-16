@@ -389,7 +389,7 @@ module photonMod
                 !https://math.stackexchange.com/a/3349448
                 normal =vector(2._wp*pos%x, 2._wp*pos%y, -2._wp*ra**2*(pos%z+height)/height**2)
                 normal = normal%magnitude()
-                call reflect_refract(dir, normal, axicon_n, 1._wp, flag)
+                call reflect_refract(dir, normal, axicon_n, 1._wp, flag, k)
                 if(.not. flag)then
                     exit
                 end if
