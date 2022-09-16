@@ -50,7 +50,10 @@ integer       :: i, j, num_args
 
 ! mpi/mp variables
 integer       :: id, numproc
-real(kind=wp) :: nscattGLOBAL
+real(kind=wp) :: nscattGLOBAL!, chance, threshold, absorb
+
+! chance = 1._wp/10._wp
+! threshold = 1e-6_wp
 
 dict = fhash_tbl_t()
 num_args = command_argument_count()
@@ -103,7 +106,7 @@ end if
 #ifdef _OPENMP
 !is state%seed private, i dont think so...
 !$omp parallel default(none) shared(dict, array, numproc, start, state, bar, jmean, tev, dects)&
-!$omp& private(ran, id, distances, image) reduction(+:nscatt) firstprivate(packet)
+!$omp& private(ran, id, distances, image, dir, hpoint) reduction(+:nscatt) firstprivate(packet)
     numproc = omp_get_num_threads()
     id = omp_get_thread_num()
     if(numproc > state%nphotons .and. id == 0)print*,"Warning, simulation may be underministic due to low photon count!"
@@ -139,11 +142,13 @@ do j = 1, state%nphotons
 
     ! Find scattering location
     call tauint2(state%grid, packet, array)
-    dir = vector(packet%nxp, packet%nyp, packet%nzp)
-    hpoint = hit_t(packet%pos, dir, [1._wp, 1._wp], packet%layer)
-    do i = 1, size(dects)
-        call dects(i)%p%record_hit(hpoint)
-    end do
+
+    ! dir = vector(packet%nxp, packet%nyp, packet%nzp)
+    ! hpoint = hit_t(packet%pos, dir, 1._wp, packet%layer)
+    ! do i = 1, size(dects)
+    !     call dects(i)%p%record_hit(hpoint)
+    ! end do
+
     ! Photon scatters in grid until it exits (tflag=TRUE)
     do while(.not. packet%tflag)
         ran = ran2()
@@ -156,13 +161,14 @@ do j = 1, state%nphotons
         end if
         ! !Find next scattering location
         call tauint2(state%grid, packet, array)
-        dir = vector(packet%nxp, packet%nyp, packet%nzp)
-        hpoint = hit_t(packet%pos, dir, [1._wp, 1._wp], packet%layer)
-        do i = 1, size(dects)
-                call dects(i)%p%record_hit(hpoint)
-        end do
     end do
-        
+
+    dir = vector(packet%nxp, packet%nyp, packet%nzp)
+    hpoint = hit_t(packet%pos, dir, 1._wp, packet%layer)
+    do i = 1, size(dects)
+        call dects(i)%p%record_hit(hpoint)
+    end do
+
     if(id == 0 .and. mod(j,1000) == 0)then
         if(state%tev)then
 !$omp critical
@@ -177,7 +183,6 @@ do j = 1, state%nphotons
 !$omp end critical
         end if
     end if
-    ! print*," "
 end do
 
 #ifdef _OPENMP
@@ -215,7 +220,7 @@ if(id == 0)then
     associate(x => dects(1)%p)
         select type(x)
             type is(camera)
-                write(j)x%data(:100,:100)
+                write(j)x%data(:x%nbinsX-1,:x%nbinsY-1)
         end select
     end associate
     close(j)
