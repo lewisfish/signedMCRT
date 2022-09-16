@@ -223,7 +223,7 @@ module surfaces
 
 
 
-    subroutine reflect_refract(I, N, n1, n2, rflag)
+    subroutine reflect_refract(I, N, n1, n2, rflag, ri)
     ! wrapper routine for fresnel calculation
     !
     !
@@ -234,12 +234,14 @@ module surfaces
         type(vector),  intent(INOUT) :: I !incident vector
         type(vector),  intent(INOUT) :: N ! normal vector
         real(kind=wp), intent(IN)    :: n1, n2 !refractive indcies
+        real(kind=wp), intent(OUT)   :: Ri
         logical,       intent(OUT)   :: rflag !reflection flag
 
         rflag = .FALSE.
 
         !draw random number, if less than fresnel coefficents, then reflect, else refract
-        if(ran2() <= fresnel(I, N, n1, n2))then
+        Ri = fresnel(I, N, n1, n2)
+        if(ran2() <= Ri)then
             call reflect(I, N)
             rflag = .true.
         else

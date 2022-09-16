@@ -188,7 +188,7 @@ module inttau2
     end subroutine tauint2
    
 
-    subroutine update_jmean(grid, pos, dir, d_sdf, packet)
+    subroutine update_jmean(grid, pos, dir, d_sdf, packet, mua)
     ! record fluence using path length estimators. Uses voxel grid
     ! grid stores voxel grid information (voxel walls and etc)
     ! pos is current position with origin in centre of medium (0,0,0)
@@ -206,13 +206,20 @@ module inttau2
         type(cart_grid), intent(IN)    :: grid
         type(vector),    intent(IN)    :: dir
         real(kind=wp),   intent(IN)    :: d_sdf
+        real(kind=wp), optional, intent(IN) :: mua
         type(vector),    intent(INOUT) :: pos
         type(photon),    intent(INOUT) :: packet
 
         type(vector)  :: old_pos
         logical       :: ldir(3)
         integer       :: celli, cellj, cellk
-        real(kind=wp) :: dcell, delta=1e-8_wp, d
+        real(kind=wp) :: dcell, delta=1e-8_wp, d, mua_real
+
+        if(present(mua))then
+            mua_real = mua
+        else
+            mua_real = 1._wp
+        end if
 
         !convert to different coordinate system. Origin is at lower left corner of fluence grid
         old_pos = vector(pos%x+grid%xmax, pos%y+grid%ymax, pos%z+grid%zmax)
@@ -238,13 +245,13 @@ module inttau2
                 d = d_sdf
 ! needs to be atomic so dont write to same array address with more than 1 thread at a time
 !$omp atomic
-                jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell
+                    jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell*mua_real
                 call update_pos(grid, old_pos, celli, cellj, cellk, dcell, .false., dir, ldir, delta)
                 exit
             else
                 d = d + dcell
 !$omp atomic
-                jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell
+                    jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell*mua_real
                 call update_pos(grid, old_pos, celli, cellj, cellk, dcell, .true., dir, ldir, delta)
             end if
             if(celli == -1 .or. cellj == -1 .or. cellk == -1)then
