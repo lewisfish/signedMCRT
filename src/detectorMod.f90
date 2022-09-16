@@ -6,16 +6,15 @@ module detector_mod
     implicit none
     
     type, public :: hit_t
-        type(vector) :: pos, dir
-        real(kind=wp), allocatable :: value(:)
-        integer :: layer
+        type(vector)  :: pos, dir
+        real(kind=wp) :: value
+        integer       :: layer
     end type hit_t
 
     !only needed if using a stack to init with a single null value
     interface hit_t
         module procedure hit_init
     end interface hit_t
-
 
     type, abstract :: detector
         ! abstract detector
@@ -24,7 +23,6 @@ module detector_mod
             private
             procedure(recordHitInterface), deferred, public :: record_hit
             procedure(checkHitInterface),  deferred :: check_hit
-            ! procedure(getBinInterface),    deferred :: get_bin
     end type detector
 
     abstract interface
@@ -111,7 +109,7 @@ contains
 
         tmp = vector(val, val, val)
 
-        hit_init = hit_t(tmp, tmp, [val], int(val))
+        hit_init = hit_t(tmp, tmp, val, int(val))
 
     end function hit_init
    
@@ -124,7 +122,7 @@ contains
         integer       :: idx
 
         if(this%check_hit(hitpoint))then
-            value = hitpoint%value(1)
+            value = hitpoint%value
             idx = min(nint(value / this%bin_wid) + 1, this%nbins)
             !$omp atomic
             this%data(idx) = this%data(idx) + 1
@@ -140,8 +138,8 @@ contains
         integer       :: idx, idy
 
         if(this%check_hit(hitpoint))then
-            x = hitpoint%pos%x + 1._wp
-            y = hitpoint%pos%y + 1._wp
+            x = hitpoint%pos%z + 7.5_wp
+            y = hitpoint%pos%y + 7.5_wp
             idx = min(int(x / this%bin_wid_x) + 1, this%nbinsX)
             idy = min(int(y / this%bin_wid_y) + 1, this%nbinsY)
             if(idx < 1)idx = this%nbinsX
@@ -229,7 +227,6 @@ contains
     end function check_hit_annulus
 ! ##########################################################################
 !                       CAMERA
-
     function init_camera(p1, p2, p3, layer, nbins, maxval) result(out)
 
         type(vector),  intent(in) :: p1, p2, p3
@@ -264,6 +261,7 @@ contains
 
     logical function check_hit_camera(this, hitpoint)
     ! https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection
+    ! TODO add optics and make camera a distance away from simulated medium? -> make these optional?
         class(camera), intent(inout) :: this
         type(hit_t),   intent(in)    :: hitpoint
 

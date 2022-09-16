@@ -41,7 +41,6 @@ module random
             else
                 ffwd = .true.
             end if
-
             call random_seed(put=seed)
 
             !fast forward rng state 100 times to avoid any potential bad seeds

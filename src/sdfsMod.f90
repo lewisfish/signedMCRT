@@ -311,7 +311,7 @@ module sdfs
     ! deform ops
     public :: displacement, bend, twist, elongate, repeat, extrude, revolution, onion
     ! utility funcs
-    public :: calcNormal, model_init, render, skewSymm
+    public :: calcNormal, model_init, render, skewSymm, rotmat
 
     contains
 
@@ -665,7 +665,6 @@ end function eval_neural
             res = sign(sqrt(abs(d))/baba, d)
 
         end function cylinder_fn
-
 
         function box_init(lengths, mus, mua, hgg, n, layer, transform) result(out)
         
@@ -1791,7 +1790,7 @@ end function eval_neural
 
         end function eval_revolution
 
-        real function revolution_fn(p, o, prim) result(res)
+        real(kind=wp) function revolution_fn(p, o, prim) result(res)
 
             class(sdf) :: prim
             type(vector), intent(IN) :: p
@@ -1829,29 +1828,27 @@ end function eval_neural
 
         end function onion_init
 
-    function eval_onion(this, pos) result(res)
+        function eval_onion(this, pos) result(res)
 
-        implicit none
+            implicit none
 
-        class(onion) :: this
-        type(vector), intent(IN) :: pos
-        real(kind=wp) :: res
+            class(onion) :: this
+            type(vector), intent(IN) :: pos
+            real(kind=wp) :: res
 
-        res = onion_fn(pos, this%thickness, this%prim)
+            res = onion_fn(pos, this%thickness, this%prim)
 
-    end function eval_onion
+        end function eval_onion
 
-    real function onion_fn(p, thickness, prim) result(res)
+        real(kind=wp) function onion_fn(p, thickness, prim) result(res)
 
-        class(sdf) :: prim
-        type(vector), intent(IN) :: p
-        real(kind=wp), intent(IN) :: thickness
+            class(sdf) :: prim
+            type(vector), intent(IN) :: p
+            real(kind=wp), intent(IN) :: thickness
 
-        res = abs(prim%evaluate(p)) - thickness
+            res = abs(prim%evaluate(p)) - thickness
 
-    end function onion_fn
-
-
+        end function onion_fn
 
         function rotate_x(angle) result(r)
         ! rotation funcs from https://inspirnathan.com/posts/54-shadertoy-tutorial-part-8/
@@ -1916,7 +1913,28 @@ end function eval_neural
 
         end function rotate_z
 
-        
+        function rotmat(axis, angle)
+        ! http://www.neilmendoza.com/glsl-rotation-about-an-arbitrary-axis/
+
+            type(vector),  intent(in) :: axis
+            real(kind=wp), intent(in) :: angle
+
+            type(vector) :: axist
+
+            real(kind=wp) :: rotmat(4, 4), s, c, oc
+
+            axist = axis%magnitude()
+            s = sqrt(1. - angle**2)
+            c = angle
+            oc = 1._wp - c
+
+            rotmat(:, 1) = [oc * axist%x * axist%x + c,           oc * axist%x * axist%y - axist%z * s,  oc * axist%z * axist%x + axist%y * s,  0.0_wp]
+            rotmat(:, 2) = [oc * axist%x * axist%y + axist%z * s,  oc * axist%y * axist%y + c,           oc * axist%y * axist%z - axist%x * s,  0.0_wp]
+            rotmat(:, 3) = [oc * axist%z * axist%x - axist%y * s,  oc * axist%y * axist%z + axist%x * s,  oc * axist%z * axist%z + c,           0.0_wp]
+            rotmat(:, 4) = [0.0_wp,                             0.0_wp,                             0.0_wp,                             1.0_wp]
+
+        end function rotmat
+
         ! https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula
         ! https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d
         function rotationAlign(a, b) result(res)
@@ -2020,7 +2038,7 @@ end function eval_neural
 
             type(vector)               :: pos, wid
             integer                    :: i, j, k, u, id
-            real(kind=wp)              :: x, y, z, ds(size(cnt)), ns(3)
+            real(kind=wp)              :: x, y, z, ds(size(cnt)), ns(3), minvalue
             real(kind=wp), allocatable :: image(:, :, :)
             type(pbar)                 :: bar
 
@@ -2029,7 +2047,7 @@ end function eval_neural
             wid = vector(extent%x/ns(1), extent%y/ns(2), extent%z/ns(3))
             bar = pbar(samples(1))
 !$omp parallel default(none) shared(cnt, ns, wid, image, samples, bar)&
-!$omp private(i, x, y, z, pos, j, k, u, ds, id)
+!$omp private(i, x, y, z, pos, j, k, u, ds, id, minvalue)
 !$omp do
             do i = 1, samples(1)
                 x = (i-ns(1)) *wid%x
@@ -2042,20 +2060,27 @@ end function eval_neural
                         do u = 1, size(ds)
                             ds(u) = cnt(u)%p%evaluate(pos)
                         end do
-                        
                         if(all(ds > 0._wp))then
-                            id=0.
+                            id=0
                         else
                             if(all(ds < 0._wp))then
                                 id = cnt(maxloc(ds,dim=1))%p%layer
                             else
-                                id = cnt(minloc(ds,dim=1))%p%layer
+                                ds = -1.*ds
+                                minvalue = 1000000._wp
+                                do u = 1, size(ds)
+                                    if(ds(u) > 0. .and. ds(u) < minvalue)then
+                                        minvalue = ds(u)
+                                        id = u
+                                    end if
+                                end do
+                                ! id = cnt(minloc(ds),dim=1))%p%layer
                             end if
                         end if
                         ! if(id == 0._wp)then
                         !     image(i,j,k)=-99._wp
                         ! else
-                            image(i, j, k) = cnt(id)%p%mua
+                            image(i, j, k) = real(id)!cnt(id)%p%mua
                         ! end if
                     end do
                 end do

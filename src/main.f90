@@ -102,11 +102,11 @@ end if
 
 #ifdef _OPENMP
 !is state%seed private, i dont think so...
-!$omp parallel default(none) shared(dict, array, numproc, start, state, bar, jmean, tev, threshold, chance, dects)&
-!$omp& private(ran, id, distances, image, absorb, hpoint, dir) reduction(+:nscatt) firstprivate(packet)
+!$omp parallel default(none) shared(dict, array, numproc, start, state, bar, jmean, tev, dects)&
+!$omp& private(ran, id, distances, image) reduction(+:nscatt) firstprivate(packet)
     numproc = omp_get_num_threads()
     id = omp_get_thread_num()
-    if(numproc > state%nphotons)print*,"Warning, simulation may be underministic due to low photon count!"
+    if(numproc > state%nphotons .and. id == 0)print*,"Warning, simulation may be underministic due to low photon count!"
 #elif MPI
     !nothing
 #else

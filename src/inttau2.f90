@@ -21,15 +21,13 @@ module inttau2
         use surfaces,     only : reflect_refract
         use sdfs
    
-        implicit none
-
-        type(cart_grid), intent(IN)    :: grid
-        type(photon),    intent(INOUT) :: packet
-        type(container), intent(IN)    :: sdfs_array(:)
+        type(cart_grid),   intent(in)    :: grid
+        type(photon),      intent(inout) :: packet
+        type(container),   intent(in)    :: sdfs_array(:)
 
         real(kind=wp) :: tau, d_sdf, t_sdf, taurun, ds(size(sdfs_array)), dstmp(size(sdfs_array))
-        real(kind=wp) :: eps, dtot, signs(size(sdfs_array)), n1, n2
-        integer       :: i, cur_layer, oldlayer, new_layer
+        real(kind=wp) :: eps, dtot, old(size(sdfs_array)), new(size(sdfs_array)), n1, n2, Ri
+        integer       :: i, oldlayer, new_layer
         type(vector)  :: pos, dir, oldpos, N
         logical       :: rflag
 
@@ -38,30 +36,29 @@ module inttau2
         oldpos = pos
         dir = vector(packet%nxp, packet%nyp, packet%nzp)
 
-        !setup sdf distance and current layer
-        ds = 0.
-        do i = 1, size(ds)
-            ds(i) = abs(sdfs_array(i)%p%evaluate(pos))
-        end do
-        packet%cnts = packet%cnts + size(ds)
-        d_sdf = minval(ds)
-
+        
         !round off distance
         eps = 1e-8_wp
         !get random tau
         tau = -log(ran2())
         taurun = 0.
-
-        cur_layer = packet%layer
         dtot = 0.
         do
+            !setup sdf distance and current layer
+            ds = 0.
+            do i = 1, size(ds)
+                ds(i) = abs(sdfs_array(i)%p%evaluate(pos))
+            end do
+            packet%cnts = packet%cnts + size(ds)
+            d_sdf = minval(ds)
+    
             do while(d_sdf > eps)
                 t_sdf = d_sdf * sdfs_array(packet%layer)%p%kappa
                 if(taurun + t_sdf <= tau)then
                     !move full distance to sdf surface
                     taurun = taurun + t_sdf
                     oldpos = pos
-                    call update_jmean(grid, oldpos, dir, d_sdf, packet)
+                    call update_jmean(grid, oldpos, dir, d_sdf, packet, sdfs_array(packet%layer)%p%mua)
                     pos = pos + d_sdf * dir
                     dtot = dtot + d_sdf
                 else
@@ -71,7 +68,7 @@ module inttau2
                     taurun = tau
                     oldpos = pos
                     pos = pos + d_sdf * dir
-                    call update_jmean(grid, oldpos, dir, d_sdf, packet)
+                    call update_jmean(grid, oldpos, dir, d_sdf, packet, sdfs_array(packet%layer)%p%mua)
                     exit
                 end if
                 ! get distance to nearest sdf
@@ -79,9 +76,9 @@ module inttau2
                 do i = 1, size(ds)
                     ds(i) = sdfs_array(i)%p%evaluate(pos)
                 end do
+                d_sdf = minval(abs(ds),dim=1)
                 packet%cnts = packet%cnts + size(ds)
 
-                d_sdf = minval(abs(ds),dim=1)
                 !check if outside all sdfs
                 if(minval(ds) >= 0._wp)then
                     packet%tflag = .true.
@@ -93,74 +90,78 @@ module inttau2
             if(taurun >= tau .or. packet%tflag)then
                 exit
             end if
-
+            
             ds = 0._wp
             do i = 1, size(ds)
                 ds(i) = sdfs_array(i)%p%evaluate(pos)
             end do
             packet%cnts = packet%cnts + size(ds)
-
+            
             dstmp = ds
             ds = abs(ds)
-
+            
             !step a bit into next sdf to get n2
             d_sdf = minval(ds) + 2._wp*eps
+            oldpos = pos
             pos = pos + d_sdf*dir
             ds = 0._wp
             do i = 1, size(ds)
                 ds(i) = sdfs_array(i)%p%evaluate(pos)
             end do
             packet%cnts = packet%cnts + size(ds)
-
-            !step back inside original sdf
-            pos = pos - d_sdf*dir
-
-            ! check going in to media i.e +ive to -ive
-            signs = 0._wp
+            
+            new = 0._wp
+            old = 0._wp
             do i = 1, size(ds)
-                if(dstmp(i) >= 0._wp .and. ds(i) < 0._wp)then
-                    signs(i) = -1._wp
-                else
-                    signs(i) = 1._wp
+                if(dstmp(i) < 0.)then
+                    old(i)=-1._wp
+                    exit
+                end if
+            end do
+            do i = 1, size(ds)
+                if(ds(i) < 0.)then
+                    new(i)=-1._wp     
+                    exit
                 end if
             end do
 
-            !if all signs +ive then do additional check to get correct layer
-            if(sum(signs) == real(size(ds), kind=wp))then
-                do i = 1, size(ds)
-                    if(dstmp(i) <= 0._wp .and. ds(i) > 0._wp .and. i /= cur_layer .or. ds(i) < 0._wp)then
-                        signs(i) = -1._wp
-                    else
-                        signs(i) = 1._wp
-                    end if
-                end do
-            end if
-
             !check for fresnel reflection
-            n1 = sdfs_array(cur_layer)%p%n
-            new_layer = minloc(signs,dim=1)
+            n1 = sdfs_array(packet%layer)%p%n
+            new_layer = minloc(new, dim=1)
             n2 = sdfs_array(new_layer)%p%n
-
             !carry out refelction/refraction
             if (n1 /= n2)then
                 !get correct sdf normal
-                oldlayer=maxloc(dstmp,dim=1)
+                if(ds(packet%layer) < 0._wp .and. ds(new_layer) < 0._wp)then
+                    oldlayer = minloc(abs([ds(packet%layer), ds(new_layer)]), dim=1)
+                elseif(dstmp(packet%layer) < 0._wp .and. dstmp(new_layer) < 0._wp)then
+                        oldlayer=maxloc([dstmp(packet%layer), dstmp(new_layer)],dim=1)
+                else
+                    error stop "This should not be reached!"
+                end if
+                if(oldlayer == 1)then
+                    oldlayer = packet%layer
+                else
+                    oldlayer = new_layer
+                end if
                 N = calcNormal(pos, sdfs_array(oldlayer)%p)
 
                 rflag = .false.
-                call reflect_refract(dir, N, n1, n2, rflag)
-
+                call reflect_refract(dir, N, n1, n2, rflag, Ri)
+                packet%weight = packet%weight * Ri
                 tau = -log(ran2())
                 taurun = 0._wp
                 if(.not.rflag)then
-                    cur_layer = new_layer
+                    packet%layer = new_layer
                 else
-                    !reflect so incremtn bounce counter
+                    !step back inside original sdf
+                    pos = oldpos
+                    !reflect so incrment bounce counter
                     packet%bounces = packet%bounces + 1
                 end if
+            else
+                packet%layer = new_layer
             end if
-            packet%layer = cur_layer
-
         end do
 
         packet%pos = pos
@@ -312,9 +313,7 @@ module inttau2
             error stop 1
         end if
 
-        if(res == dx)ldir = [.TRUE., .FALSE., .FALSE.]
-        if(res == dy)ldir = [.FALSE., .TRUE., .FALSE.]
-        if(res == dz)ldir = [.FALSE., .FALSE., .TRUE.]
+        ldir = [res == dx, res==dy, res==dz]
         if(.not.ldir(1) .and. .not.ldir(2) .and. .not.ldir(3))print*,'Error in dir flag'
       
    end function wall_dist
@@ -400,14 +399,14 @@ module inttau2
         integer,         intent(INOUT) :: celli, cellj, cellk
 
         !accurate but slow
-        celli = find(pos%x, grid%xface) 
-        cellj = find(pos%y, grid%yface)
-        cellk = find(pos%z, grid%zface) 
+        ! celli = find(pos%x, grid%xface) 
+        ! cellj = find(pos%y, grid%yface)
+        ! cellk = find(pos%z, grid%zface) 
 
         !fast but can be inaccurate in some cases...
-        ! celli = floor(grid%nxg * (pos%x) / (2. * grid%xmax)) + 1
-        ! cellj = floor(grid%nyg * (pos%y) / (2. * grid%ymax)) + 1
-        ! cellk = floor(grid%nzg * (pos%z) / (2. * grid%zmax)) + 1
+        celli = floor(grid%nxg * (pos%x) / (2. * grid%xmax)) + 1
+        cellj = floor(grid%nyg * (pos%y) / (2. * grid%ymax)) + 1
+        cellk = floor(grid%nzg * (pos%z) / (2. * grid%zmax)) + 1
 
         if(celli > grid%nxg .or. celli < 1)celli = -1
         if(cellj > grid%nyg .or. cellj < 1)cellj = -1
