@@ -1,4 +1,4 @@
-module stackMod
+module hitStack
 
     use constants,    only : wp
     use detector_mod, only : hit_t
@@ -34,7 +34,6 @@ contains
         this%size = this%size - 1
 
     end function hpop_fn
-
 
     subroutine hpush_sub(this, val)
 
@@ -90,5 +89,4 @@ contains
         this%size = 0
 
     end subroutine hzero_sub
-
-end module stackMod
+end module hitStack

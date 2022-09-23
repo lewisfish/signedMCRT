@@ -17,7 +17,7 @@ implicit none
     end interface raw_write
 
     private
-    public :: normalise_fluence, write_fluence, write_detected_photons
+    public :: normalise_fluence, write_fluence!, write_detected_photons
 
     contains
         function normalise_fluence(grid, array, nphotons) result(out)
@@ -48,52 +48,52 @@ implicit none
         end function normalise_fluence
 
 
-        subroutine write_detected_photons(detectors)
+        ! subroutine write_detected_photons(detectors)
 
-            use detector_mod
-            use constants, only: fileplace
+        !     use detector_mod
+        !     use constants, only: fileplace
 
-            type(dect_array), intent(in) :: detectors(:)
+        !     type(dect_array), intent(in) :: detectors(:)
 
-            integer :: i, j, u
-            character(len=:), allocatable :: hdr
+        !     integer :: i, j, u
+        !     character(len=:), allocatable :: hdr
 
-            do i = 1, size(detectors)
-                open(newunit=u, file=trim(fileplace)//"detectors/detector_"//str(i)//".dat")
-                associate(x => detectors(i)%p)
-                    select type(x)
-                    type is(circle_dect)
-                        hdr = "pos, layer, nbins, bin_wid, radius"//new_line("a")//str(x%pos)//","//str(x%layer)//","//str(x%nbins)//","//str(x%bin_wid)//","//str(x%radius)
-                    type is(annulus_dect)
-                        hdr = "pos, layer, nbins, bin_wid, radius1, radius2"//new_line("a")//str(x%pos)//","//str(x%layer)//","//str(x%nbins)//","//str(x%bin_wid)//","//str(x%r1)//","//str(x%r2)
-                    end select
-                end associate
-                write(u, "(a)")hdr
-                write(u, "(a)")"data:"
-                ! do j = 1, detectors(i)%p%nbins 
-                    ! write(u,"(es24.16e3)")detectors(i)%p%data(j)
-                ! end do
-                close(u)
-            end do
+        !     do i = 1, size(detectors)
+        !         open(newunit=u, file=trim(fileplace)//"detectors/detector_"//str(i)//".dat")
+        !         associate(x => detectors(i)%p)
+        !             select type(x)
+        !             type is(circle_dect)
+        !                 hdr = "pos, layer, nbins, bin_wid, radius"//new_line("a")//str(x%pos)//","//str(x%layer)//","//str(x%nbins)//","//str(x%bin_wid)//","//str(x%radius)
+        !             type is(annulus_dect)
+        !                 hdr = "pos, layer, nbins, bin_wid, radius1, radius2"//new_line("a")//str(x%pos)//","//str(x%layer)//","//str(x%nbins)//","//str(x%bin_wid)//","//str(x%r1)//","//str(x%r2)
+        !             end select
+        !         end associate
+        !         write(u, "(a)")hdr
+        !         write(u, "(a)")"data:"
+        !         ! do j = 1, detectors(i)%p%nbins 
+        !             ! write(u,"(es24.16e3)")detectors(i)%p%data(j)
+        !         ! end do
+        !         close(u)
+        !     end do
 
-        end subroutine write_detected_photons
+        ! end subroutine write_detected_photons
 
 
         subroutine write_fluence(array, filename, dict, overwrite)
         ! routine automatically selects which way to write out results based upon file extension
             
-            use fhash, only : fhash_tbl_t, key=>fhash_key
+            use tomlf, only : toml_table, get_value
         
-            real(kind=wp),          intent(IN) :: array(:,:,:)
-            character(*),           intent(IN) :: filename
-            type(fhash_tbl_t), optional, intent(INOUT) :: dict
-            logical, optional, intent(IN) :: overwrite
+            real(kind=wp),              intent(IN)    :: array(:,:,:)
+            character(*),               intent(IN)    :: filename
+            type(toml_table), optional, intent(INOUT) :: dict
+            logical,          optional, intent(IN)    :: overwrite
 
             Logical :: over_write
             integer :: pos
             
             if(present(dict))then
-                call dict%get(key("overwrite"), over_write)
+                call get_value(dict, "overwrite", over_write)
             elseif(present(overwrite))then
                 over_write = overwrite
             else
@@ -209,25 +209,18 @@ implicit none
 
         subroutine write_3d_r8_nrrd(array, filename, overwrite, dict)
             
-            use fhash,           only : fhash_tbl_t, key=>fhash_tbl_t, fhash_key_t
+            use tomlf,           only : toml_table, toml_serializer
             use iso_fortran_env, only : int32, int64, real32, real64
             use string_utils,    only : str
         
-            character(*),                intent(IN)    :: filename
-            real(kind=wp),               intent(IN)    :: array(:, :, :)
-            type(fhash_tbl_t), optional, intent(INOUT) :: dict
-            logical,                     intent(IN) :: overwrite
+            character(*),               intent(IN)    :: filename
+            real(kind=wp),              intent(IN)    :: array(:, :, :)
+            type(toml_table), optional, intent(INOUT) :: dict
+            logical,                    intent(IN)    :: overwrite
 
-            class(fhash_key_t), pointer   :: keyd
-            character(len=:), allocatable :: key_out, file, type_str
-            integer :: u, stat
-
-            integer(kind=int32) :: val_i32
-            integer(kind=int64) :: val_i64
-            real(kind=real32)   :: val_r32
-            real(kind=real64)   :: val_r64
-            character(len=:), allocatable :: val_char
-            logical :: val_bool
+            character(len=:), allocatable :: file
+            integer :: u
+            type(toml_serializer) :: ser
 
             if(check_file(filename) .and. .not. overwrite)then
                 file = get_new_file_name(filename)
@@ -240,32 +233,8 @@ implicit none
             call write_hdr(u, [size(array, 1), size(array, 2), size(array, 3)], "double")
 
             if(present(dict))then
-                do
-                    call dict%next(keyd, key_out, type_str, stat)
-                    if(stat < 0)exit
-                    select case(type_str)
-                        case("integer32")
-                            call dict%get(keyd, val_i32)
-                            write(u, "(A)")trim(key_out)//": "//str(val_i32)
-                        case("integer64")
-                            call dict%get(keyd, val_i64)
-                            write(u, "(A)")trim(key_out)//": "//str(val_i64)
-                        case("real32")
-                            call dict%get(keyd, val_r32)
-                            write(u, "(A)")trim(key_out)//": "//str(val_r32)
-                        case("real64")
-                            call dict%get(keyd, val_r64)
-                            write(u, "(A)")trim(key_out)//": "//str(val_r64)
-                        case("character*")
-                            call dict%get(keyd, val_char)
-                            write(u, "(A)")trim(key_out)//": "//val_char
-                        case("logical")
-                            call dict%get(keyd, val_bool)
-                            write(u, "(A)")trim(key_out)//": "//str(val_bool)
-                        case default
-                            continue
-                    end select
-                end do
+                ser = toml_serializer(u)
+                call dict%accept(ser)
             end if
             write(u,"(A)")new_line("C")
             close(u)

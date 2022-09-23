@@ -30,20 +30,35 @@ module photonMod
     abstract interface
         subroutine generic_emit(this, dict)
             
-            use fhash, only : fhash_tbl_t
+            use tomlf, only : toml_table, get_value
 
             import :: photon
             class(photon) :: this
-            type(fhash_tbl_t), optional, intent(IN) :: dict
+            type(toml_table), optional, intent(inout) :: dict
 
         end subroutine generic_emit
     end interface
 
+    type(photon) :: photon_origin
+
     private
-    public :: photon, init_source
+    public :: photon, init_source, set_photon
 
     contains
         
+        subroutine set_photon(pos, dir)
+
+            type(vector), intent(in) :: pos, dir
+
+            associate(p => photon_origin)
+                p%pos = pos
+                p%nxp = dir%x
+                p%nyp = dir%y
+                p%nzp = dir%z
+            end associate
+
+        end subroutine set_photon
+
         type(photon) function init_photon(val)
 
             real(kind=wp), intent(in) :: val
@@ -100,39 +115,63 @@ module photonMod
                 use sim_state_mod, only : state
                 use random,        only : ran2
                 use constants,     only : twoPI
-                use fhash,         only : fhash_tbl_t, key=>fhash_key
-                use sdfs,          only : rotationAlign
+                use tomlf,         only : toml_table, get_value
+                use sdfs,          only : rotationAlign, rotmat
                 use vector_class
-
-                implicit none
             
                 class(photon) :: this
-                type(fhash_tbl_t), optional, intent(IN) :: dict
+                type(toml_table), optional, intent(inout) :: dict
                 
-                type(vector) :: pos, b
+                type(vector) :: pos, dir, tmp, axis
                 integer :: cell(3)
-                real(kind=wp) :: t(4,4), radius, r, theta
-    
-                call dict%get(key("pos%x"), value=this%pos%x)
-                call dict%get(key("pos%y"), value=this%pos%y)
-                call dict%get(key("pos%z"), value=this%pos%z)
-    
-                call dict%get(key("dir%x"), this%nxp)
-                call dict%get(key("dir%y"), this%nyp)
-                call dict%get(key("dir%z"), this%nzp)
-        
-                call dict%get(key("radius"), radius)
+                real(kind=wp) :: t(4,4), radius, r, theta, angle
+
+                this%pos = photon_origin%pos
+                this%nxp = photon_origin%nxp
+                this%nyp = photon_origin%nyp
+                this%nzp = photon_origin%nzp
+
+                call get_value(dict, "radius", radius)
+
+                ! !https://math.stackexchange.com/a/1681815
+                dir = vector(this%nxp, this%nyp, this%nzp)
+                dir = dir%magnitude()
+
+                tmp = vector(0._wp, 0._wp, 1._wp)
+
+                axis = tmp .cross. dir
+                axis = axis%magnitude()
+                angle = (dir .dot. axis) / (length(dir) * length(axis))
+                t = rotmat(axis, angle)
+                print*,t(:,1)
+                print*,t(:,2)
+                print*,t(:,3)
+                print*,t(:,4)
+! 
+                print*," "
+                print*,"tmp ",tmp
+                print*,"dir ",dir
+                print*,"orig",this%pos
+                print*,"new ",this%pos .dot. invert(t)
+                print*,"axis",axis
+                print*,"angl",angle
+                stop
 
                 r = radius * sqrt(ran2())
                 theta = ran2() * TWOPI
+                pos = this%pos
                 this%pos%x = this%pos%x + r * cos(theta)
                 this%pos%y = this%pos%y + r * sin(theta)
 
                 ! b = vector(this%nxp, this%nyp, this%nzp)
                 ! b = b%magnitude()
                 ! t = rotmat(vector(0._wp,0._wp,-1._wp), b)
+                print*,this%pos
+                this%pos = this%pos - pos 
+                this%pos = this%pos .dot. t
+                print*,this%pos + pos
+                print*," "
 
-                ! pos = this%pos .dot. t
 
                 this%tflag  = .false.
                 this%cnts   = 0
@@ -155,18 +194,17 @@ module photonMod
             use sim_state_mod, only : state
             use random,        only : ran2
             use constants,     only : twoPI
-            use fhash,         only : fhash_tbl_t, key=>fhash_key
-
-            implicit none
+            use tomlf,         only : toml_table, get_value
         
             class(photon) :: this
-            type(fhash_tbl_t), optional, intent(IN) :: dict
+            type(toml_table), optional, intent(inout) :: dict
             
             integer :: cell(3)
 
-            call dict%get(key("pos%x"), value=this%pos%x)
-            call dict%get(key("pos%y"), value=this%pos%y)
-            call dict%get(key("pos%z"), value=this%pos%z)
+            this%pos = photon_origin%pos
+            this%nxp = photon_origin%nxp
+            this%nyp = photon_origin%nyp
+            this%nzp = photon_origin%nzp
 
             this%phi  = ran2()*twoPI
             this%cosp = cos(this%phi)
@@ -198,12 +236,10 @@ module photonMod
             use sim_state_mod, only : state
             use utils,         only : deg2rad
             use vector_class,  only : length
-            use fhash,         only : fhash_tbl_t
-
-            implicit none
+            use tomlf,         only : toml_table, get_value
 
             class(photon) :: this
-            type(fhash_tbl_t), optional, intent(IN) :: dict
+            type(toml_table), optional, intent(inout) :: dict
 
             type(vector)  :: targ, dir
             real(kind=wp) :: dist
@@ -252,20 +288,18 @@ module photonMod
         !TODO change to user defined patch inplace of whole side
             use random,        only : ranu, ran2, randint
             use sim_state_mod, only : state
-            use fhash,         only : fhash_tbl_t, key=>fhash_key
-
-            implicit none
+            use tomlf,         only : toml_table, get_value
 
             class(photon) :: this
-            type(fhash_tbl_t), optional, intent(IN) :: dict
+            type(toml_table), optional, intent(inout) :: dict
 
-            integer        :: cell(3)
-            type(vector)   :: pos1, pos2, pos3
+            integer       :: cell(3)
+            type(vector)  :: pos1, pos2, pos3
             real(kind=wp) :: rx, ry
 
-            call dict%get(key("dir%x"), this%nxp)
-            call dict%get(key("dir%y"), this%nyp)
-            call dict%get(key("dir%z"), this%nzp)
+            this%nxp = photon_origin%nxp
+            this%nyp = photon_origin%nyp
+            this%nzp = photon_origin%nzp
 
             this%cost = this%nzp
             this%sint = sqrt(1._wp - this%cost**2)
@@ -274,17 +308,17 @@ module photonMod
             this%cosp = cos(this%phi)
             this%sinp = sin(this%phi)
 
-            call dict%get(key("pos1%x"), pos1%x)
-            call dict%get(key("pos1%y"), pos1%y)
-            call dict%get(key("pos1%z"), pos1%z)
+            call get_value(dict, "pos1%x", pos1%x)
+            call get_value(dict, "pos1%y", pos1%y)
+            call get_value(dict, "pos1%z", pos1%z)
 
-            call dict%get(key("pos2%x"), pos2%x)
-            call dict%get(key("pos2%y"), pos2%y)
-            call dict%get(key("pos2%z"), pos2%z)
+            call get_value(dict, "pos2%x", pos2%x)
+            call get_value(dict, "pos2%y", pos2%y)
+            call get_value(dict, "pos2%z", pos2%z)
 
-            call dict%get(key("pos3%x"), pos3%x)
-            call dict%get(key("pos3%y"), pos3%y)
-            call dict%get(key("pos3%z"), pos3%z)
+            call get_value(dict, "pos3%x", pos3%x)
+            call get_value(dict, "pos3%y", pos3%y)
+            call get_value(dict, "pos3%z", pos3%z)
 
             rx = ran2()
             ry = ran2()
@@ -310,22 +344,19 @@ module photonMod
 
             use random,        only : ranu
             use sim_state_mod, only : state
-            use fhash,         only : fhash_tbl_t, key=>fhash_key
+            use tomlf,         only : toml_table, get_value
 
             implicit none
 
             class(photon) :: this
-            type(fhash_tbl_t), optional, intent(IN) :: dict
+            type(toml_table), optional, intent(inout) :: dict
 
             integer :: cell(3)
 
-            call dict%get(key("pos%x"), this%pos%x)
-            call dict%get(key("pos%y"), this%pos%y)
-            call dict%get(key("pos%z"), this%pos%z)
-
-            call dict%get(key("dir%x"), this%nxp)
-            call dict%get(key("dir%y"), this%nyp)
-            call dict%get(key("dir%z"), this%nzp)
+            this%pos = photon_origin%pos
+            this%nxp = photon_origin%nxp
+            this%nyp = photon_origin%nyp
+            this%nzp = photon_origin%nzp
 
             this%phi = atan2(this%nyp, this%nxp)
             this%cosp = cos(this%phi)
@@ -347,17 +378,14 @@ module photonMod
         
         subroutine annulus(this, dict)
 
-            use utils,     only : deg2rad
-            use random,    only : rang
-            use surfaces,  only : reflect_refract
+            use utils,         only : deg2rad
+            use random,        only : rang
+            use surfaces,      only : reflect_refract
             use sim_state_mod, only : state
-            use fhash,     only : fhash_tbl_t, key=>fhash_key
-
-            implicit none
+            use tomlf,         only : toml_table, get_value
 
             class(photon) :: this
-            type(fhash_tbl_t), optional, intent(IN) :: dict
-
+            type(toml_table), optional, intent(inout) :: dict
 
             real(kind=wp) :: ra, ta, alpha, Ls, beam_width, rp, da, dist
             real(kind=wp) :: tana, x, y, z, total_length, axicon_n, height, k
@@ -402,7 +430,7 @@ module photonMod
             pos%z = 4.e0_wp !f distance 40mm
             call rang(x, y, 0._wp, 5.e-4_wp)
 
-            call dict%get(key("focus"), z)!not implmented yet!
+            call get_value(dict, "focus", z)!not implmented yet!
             error stop "Not implmented focus yet!"
 
             newpos = vector(x, y, z)!.775

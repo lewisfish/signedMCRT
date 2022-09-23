@@ -30,13 +30,13 @@ use utils,         only : pbar, get_time, print_time
 
 !external deps
 use tev_mod
-use fhash, only : fhash_tbl_t, key=>fhash_key, fhash_key_t
-
+use tomlf
 implicit none
 
 type(container),   allocatable :: array(:)
 type(dect_array),  allocatable :: dects(:)
 character(len=64), allocatable :: args(:)
+type(toml_table)  :: dict
 type(tevipc)      :: tev
 type(photon)      :: packet
 type(fhash_tbl_t) :: dict
@@ -55,7 +55,7 @@ real(kind=wp) :: nscattGLOBAL!, chance, threshold, absorb
 ! chance = 1._wp/10._wp
 ! threshold = 1e-6_wp
 
-dict = fhash_tbl_t()
+dict = toml_table()
 num_args = command_argument_count()
 if(num_args == 0)then
     allocate(args(1))
@@ -208,11 +208,11 @@ if(id == 0)then
 #endif
     !write out files
     !create dict to store metadata and nrrd hdr info
-    call dict%set(key("grid_data"), value="fluence map")
-    call dict%set(key("real_size"), value=str(state%grid%xmax,7)//" "//str(state%grid%ymax,7)//" "//str(state%grid%zmax,7))    
-    call dict%set(key("nphotons"), value=state%nphotons)
-    call dict%set(key("source"), value=state%source)
-    call dict%set(key("experiment"), value=state%experiment)
+    call set_value(dict, "grid_data", "fluence map")
+    call set_value(dict, "real_size", str(state%grid%xmax,7)//" "//str(state%grid%ymax,7)//" "//str(state%grid%zmax,7))
+    call set_value(dict, "nphotons", state%nphotons)
+    call set_value(dict, "source", state%source)
+    call set_value(dict, "experiment", state%experiment)
 
     jmeanGLOBAL = normalise_fluence(state%grid, jmeanGLOBAL, state%nphotons)
     call write_fluence(jmeanGLOBAL, trim(fileplace)//"jmean/"//state%outfile, dict)

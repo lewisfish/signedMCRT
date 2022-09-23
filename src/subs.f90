@@ -1,6 +1,7 @@
 module subs
 
     use constants, only : wp
+    use tomlf
 
     implicit none
 
@@ -15,12 +16,10 @@ module subs
         !
             use vector_class
             use sdfs,          only : container
-            use fhash,         only : fhash_tbl_t
             use sim_state_mod, only : settings => state
-            
 
-            type(fhash_tbl_t),  optional, intent(IN)  :: dict
-            type(container), allocatable, intent(OUT) :: sdfarray(:)
+            type(toml_table),  optional,  intent(INOUT) :: dict
+            type(container), allocatable, intent(OUT)   :: sdfarray(:)
 
             !set directory paths
             call directory
@@ -180,11 +179,10 @@ module subs
         function setup_sphere_scene(dict) result(array)
 
             use sdfs,         only : container, sphere, box, translate
-            use fhash,        only : fhash_tbl_t, key=>fhash_key
             use random,       only : ranu
             use vector_class, only : vector, invert
 
-            type(fhash_tbl_t), intent(in) :: dict
+            type(toml_table), intent(inout) :: dict
             type(container), allocatable :: array(:)
             
             type(sphere), target, save, allocatable :: sphs(:)
@@ -193,7 +191,7 @@ module subs
             real(kind=wp) :: t(4,4), mus, mua, hgg, n, radius
             type(vector) :: pos
 
-            call dict%get(key("num_spheres"), num_spheres)
+            call get_value(dict, "num_spheres", num_spheres)
             allocate(sphs(num_spheres+1))
 
             mus = 1e-17_wp
@@ -595,10 +593,8 @@ module subs
             use utils, only : deg2rad
 
             use vector_class, only : vector, invert
-            use fhash,        only : fhash_tbl_t, key=>fhash_key
 
-
-            type(fhash_tbl_t), intent(IN)  :: dict
+            type(toml_table), intent(inout)  :: dict
 
             type(container), allocatable :: array(:)
             ! type(cylinder), target, save :: cyl(2)
@@ -609,11 +605,11 @@ module subs
 
             ! packet = photon("annulus")
 
-            call dict%get(key("musb"), optprop(1))
-            call dict%get(key("muab"), optprop(2))
-            call dict%get(key("musc"), optprop(3))
-            call dict%get(key("muac"), optprop(4))
-            call dict%get(key("hgg"), optprop(5))
+            call get_value(dict, "musb", optprop(1))
+            call get_value(dict, "muab", optprop(2))
+            call get_value(dict, "musc", optprop(3))
+            call get_value(dict, "muac", optprop(4))
+            call get_value(dict, "hgg", optprop(5))
             n = 1._wp
 
             a = vector(-10._wp, 0._wp, 0._wp)
@@ -643,11 +639,10 @@ module subs
         function setup_scat_test(dict) result(array)
 
             use sdfs,  only : container, sphere, box
-            use fhash, only : fhash_tbl_t, key=>fhash_key
 
             use vector_class
 
-            type(fhash_tbl_t), intent(IN)  :: dict
+            type(toml_table), intent(inout) :: dict
             type(container), allocatable :: array(:)
 
             type(sphere), target, save :: sph
@@ -655,14 +650,14 @@ module subs
 
             real(kind=wp) :: mus, mua, hgg, n, tau
 
-            call dict%get(key("tau"), tau)
+            call get_value(dict, "tau", tau)
 
             n = 1._wp
             hgg = 0._wp
             mua = 1e-17_wp
             mus = tau
 
-            sph = sphere(1._wp, mus, 1.5_wp, hgg, n, 1)
+            sph = sphere(1._wp, mus, mua, hgg, n, 1)
             bbox = box(2._wp, 0._wp, mua, hgg, n, 2)
 
             allocate(array(2))
@@ -676,8 +671,7 @@ module subs
 
         function setup_omg_sdf() result(array)
             
-            use sdfs,      only : container, cylinder, torus, model, box, union, rotate_y, model_init, translate
-            
+            use sdfs,         only : container, cylinder, torus, model, box, union, rotate_y, model_init, translate
             use vector_class, only : vector, invert
 
             type(container), allocatable :: array(:)
@@ -908,8 +902,6 @@ module subs
 
             use vector_class, only : vector, invert
 
-            implicit none
-
             type(container), allocatable :: array(:), cnta(:)
 
             type(capsule), target, save :: cyls(15)
@@ -1056,8 +1048,6 @@ module subs
         !   
             use constants, only : cwd, homedir, fileplace, resdir
 
-            implicit none
-
             character(len=:), allocatable :: mkdirCMD
             logical :: dirExists
 
@@ -1091,8 +1081,7 @@ module subs
 
             use iarray
 
-            !sets all arrays to zero
-            implicit none
+            !sets all arrays to zer
 
             jmean = 0._wp
             jmeanGLOBAL = 0._wp
@@ -1105,8 +1094,6 @@ module subs
         !   
         !   
             use iarray
-
-            implicit none
 
             integer, intent(IN) :: nxg, nyg, nzg
 

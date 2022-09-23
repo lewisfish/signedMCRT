@@ -13,14 +13,13 @@ module parse_mod
 
     subroutine parse_params(filename, packet, dects, dict)
     
-        use fhash, only : fhash_tbl_t
         use photonmod
         use detector_mod, only : dect_array
 
         implicit none
     
         character(*),      intent(IN)    :: filename
-        type(fhash_tbl_t), intent(INOUT) :: dict
+        type(toml_table),  intent(INOUT) :: dict
         type(photon),      intent(OUT)   :: packet
         type(dect_array), allocatable, intent(out) :: dects(:)
 
@@ -115,7 +114,6 @@ module parse_mod
             dects(j+i+k-2)%p => dect_cam(k)
         end do
 
-
     end subroutine parse_detectors
 
     subroutine handle_camera(child, dects, counts, context)
@@ -127,9 +125,9 @@ module parse_mod
         integer,                   intent(inout) :: counts
         type(toml_context),        intent(in) :: context
 
-        integer :: layer, nbins
+        integer       :: layer, nbins
         real(kind=wp) :: maxval
-        type(vector) :: p1, p2, p3
+        type(vector)  :: p1, p2, p3
 
         p1 = get_vector(child, "p1", context)
         p2 = get_vector(child, "p2", context)
@@ -152,9 +150,9 @@ module parse_mod
         integer,                   intent(inout) :: counts
         type(toml_context),        intent(in) :: context
 
-        integer :: layer, nbins
+        integer       :: layer, nbins
         real(kind=wp) :: maxval, radius
-        type(vector) :: pos
+        type(vector)  :: pos
 
         pos = get_vector(child, "position", context)
         call get_value(child, "layer", layer, 1)
@@ -175,9 +173,9 @@ module parse_mod
         integer,                   intent(inout) :: counts
         type(toml_context),        intent(in) :: context
 
-        integer :: layer, nbins, origin
+        integer       :: layer, nbins, origin
         real(kind=wp) :: maxval, radius1, radius2
-        type(vector) :: pos
+        type(vector)  :: pos
 
         pos = get_vector(child, "position", context)
         call get_value(child, "layer", layer, 1)
@@ -195,20 +193,19 @@ module parse_mod
 
     subroutine parse_source(table, packet, dict, context)
 
-        use fhash, only : fhash_tbl_t, key=>fhash_key
         use sim_state_mod, only : state
         use photonmod
 
         implicit none
         
-        type(toml_table),  intent(INOUT) :: table
-        type(fhash_tbl_t), intent(INOUT) :: dict
+        type(toml_table),  intent(INOUT) :: table, dict
         type(photon),      intent(OUT)   :: packet
         type(toml_context) :: context
 
         type(toml_table), pointer :: child
         type(toml_array), pointer :: children
 
+        type(vector) :: poss, dirr
         real(kind=wp) :: dir(3), pos(3), corners(3, 3), radius
         integer :: i, nlen, origin
         character(len=1) :: axis(3)
@@ -261,15 +258,32 @@ module parse_mod
                 end if
                 do i = 1, len(children)
                     call get_value(children, i, dir(i))
-                    call dict%set(key("dir%"//axis(i)), value=dir(i))
                 end do
+                dirr%x = dir(1)
+                dirr%y = dir(2)
+                dirr%z = dir(3)
             else
                 if(state%source == "uniform" .or. state%source == "circular")then
                     print'(a)',context%report("Uniform source needs vector direction", origin, "expected vector of size 3")
                     stop 1
                 end if
-                    call get_value(child, "direction", direction, "-z")
-                call dict%set(key("dir"), value=direction)
+                call get_value(child, "direction", direction, "-z")
+                select case(direction)
+                case("x")
+                    dirr = vector(1._wp, 0._wp, 0._wp)
+                case("-x")
+                    dirr = vector(-1._wp, 0._wp, 0._wp)                
+                case("y")
+                    dirr = vector(0._wp, 1._wp, 0._wp)
+                case("-y")
+                    dirr = vector(0._wp, -1._wp, 0._wp)
+                case("z")
+                    dirr = vector(0._wp, 0._wp, 1._wp)
+                case("-z")
+                    dirr = vector(0._wp, 0._wp, -1._wp)
+                case default
+                    error stop "fucked it!"
+                end select
             end if
 
             children => null()
@@ -283,7 +297,7 @@ module parse_mod
                 end if
                 do i = 1, len(children)
                     call get_value(children, i, corners(i, 1))
-                    call dict%set(key("pos1%"//axis(i)), value=corners(i,1))
+                    call set_value(dict, "pos1%"//axis(i), corners(i,1))
                 end do
             else
                 if(state%source == "uniform")then
@@ -301,7 +315,7 @@ module parse_mod
                 end if
                 do i = 1, len(children)
                     call get_value(children, i, corners(i, 2))
-                    call dict%set(key("pos2%"//axis(i)), value=corners(i,2))
+                    call set_value(dict, "pos2%"//axis(i), corners(i,2))
                 end do
             else
                 if(state%source == "uniform")then
@@ -319,7 +333,7 @@ module parse_mod
                 end if
                 do i = 1, len(children)
                     call get_value(children, i, corners(i, 3))
-                    call dict%set(key("pos3%"//axis(i)), value=corners(i,3))
+                    call set_value(dict, "pos3%"//axis(i), corners(i,3))
                 end do
             else
                 if(state%source == "uniform")then
@@ -328,13 +342,13 @@ module parse_mod
                 end if
             end if
             call get_value(child, "radius", radius, 0.5_wp)
-            call dict%set(key("radius"), value=radius)
-
+            call set_value(dict, "radius", radius)
         else
             print'(a)',context%report("Simulation needs Source table", origin, "Missing source table")
             stop 1
         end if
 
+        call set_photon(poss, dirr)
         packet = photon(state%source)
 
     end subroutine parse_source
@@ -343,12 +357,10 @@ module parse_mod
 
         use sim_state_mod, only : state
         use gridMod,       only : init_grid 
-        use fhash,         only : fhash_tbl_t, key=>fhash_key
 
         implicit none
         
-        type(toml_table),  intent(INOUT) :: table
-        type(fhash_tbl_t), intent(INOUT) :: dict
+        type(toml_table),  intent(INOUT) :: table, dict
 
         type(toml_table), pointer     :: child
         integer                       :: nxg, nyg, nzg
@@ -365,7 +377,7 @@ module parse_mod
             call get_value(child, "ymax", ymax, 1.0_wp)
             call get_value(child, "zmax", zmax, 1.0_wp)
             call get_value(child, "units", units, "cm")
-            call dict%set(key("units"), value=units)
+            call set_value(dict, "units", units)
         else
             error stop "Need grid table in input param file"
         end if
@@ -376,13 +388,11 @@ module parse_mod
 
     subroutine parse_geometry(table, dict)
 
-        use fhash,         only : fhash_tbl_t, key=>fhash_key
         use sim_state_mod, only : state
         
         implicit none
         
-        type(toml_table),  intent(INOUT) :: table
-        type(fhash_tbl_t), intent(INOUT) :: dict
+        type(toml_table),  intent(INOUT) :: table, dict
         
         type(toml_table), pointer :: child
         real(kind=wp)             :: tau, musb, musc, muab, muac, hgg
@@ -393,21 +403,21 @@ module parse_mod
         if(associated(child))then
             call get_value(child, "geom_name", state%experiment, "sphere")
             call get_value(child, "tau", tau, 10._wp)
-            call dict%set(key("tau"), value=tau)
+            call set_value(dict, "tau", tau)
 
             call get_value(child, "num_spheres", num_spheres, 10)
-            call dict%set(key("num_spheres"), value=num_spheres)
+            call set_value(dict, "num_spheres", num_spheres)
 
             call get_value(child, "musb", musb, 0.0_wp)
-            call dict%set(key("musb"), value=musb)
+            call set_value(dict, "musb", musb)
             call get_value(child, "muab", muab, 0.01_wp)
-            call dict%set(key("muab"), value=muab)
+            call set_value(dict, "muab", muab)
             call get_value(child, "musc", musc, 0.0_wp)
-            call dict%set(key("musc"), value=musc)
+            call set_value(dict, "musc", musc)
             call get_value(child, "muac", muac, 0.01_wp)
-            call dict%set(key("muac"), value=muac)
+            call set_value(dict, "muac", muac)
             call get_value(child, "hgg", hgg, 0.7_wp)
-            call dict%set(key("hgg"), value=hgg)
+            call set_value(dict, "hgg", hgg)
         else
             error stop "Need geometry table in input param file"
         end if
@@ -417,12 +427,8 @@ module parse_mod
     subroutine parse_output(table, dict)
 
         use sim_state_mod, only : state
-        use fhash,         only : fhash_tbl_t, key=>fhash_key
-
-        implicit none
         
-        type(toml_table),  intent(INOUT) :: table
-        type(fhash_tbl_t), intent(INOUT) :: dict
+        type(toml_table),  intent(INOUT) :: table, dict
 
         type(toml_table), pointer :: child
         type(toml_array), pointer :: children
@@ -451,7 +457,7 @@ module parse_mod
             end if
 
             call get_value(child, "overwrite", overwrite, .false.)
-            call dict%set(key("overwrite"), value=overwrite)
+            call set_value(dict, "overwrite", overwrite)
         else
             error stop "Need output table in input param file"
         end if
