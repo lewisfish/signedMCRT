@@ -17,7 +17,7 @@ use constants, only : fileplace, wp
 use sdfs
 use subs
 use inttau2
-use stackMod
+use hitStack
 use parse_mod
 use photonMod
 use stokes_mod
@@ -39,7 +39,6 @@ character(len=64), allocatable :: args(:)
 type(toml_table)  :: dict
 type(tevipc)      :: tev
 type(photon)      :: packet
-type(fhash_tbl_t) :: dict
 type(pbar)        :: bar
 type(hit_t)       :: hpoint
 type(vector)      :: dir
