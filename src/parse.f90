@@ -128,6 +128,7 @@ module parse_mod
         integer       :: layer, nbins
         real(kind=wp) :: maxval
         type(vector)  :: p1, p2, p3
+        logical       :: trackHistory
 
         p1 = get_vector(child, "p1", context)
         p2 = get_vector(child, "p2", context)
@@ -136,7 +137,8 @@ module parse_mod
         call get_value(child, "layer", layer, 1)
         call get_value(child, "nbins", nbins, 100)
         call get_value(child, "maxval", maxval, 100._wp)
-        dects(counts) = camera(p1, p2, p3, layer, nbins, maxval)
+        call get_value(child, "trackHistory", trackHistory, .false.)
+        dects(counts) = camera(p1, p2, p3, layer, nbins, maxval, trackHistory)
         counts = counts + 1
 
     end subroutine handle_camera
@@ -153,13 +155,15 @@ module parse_mod
         integer       :: layer, nbins
         real(kind=wp) :: maxval, radius
         type(vector)  :: pos
+        logical       :: trackHistory
 
         pos = get_vector(child, "position", context)
         call get_value(child, "layer", layer, 1)
         call get_value(child, "radius1", radius)
         call get_value(child, "nbins", nbins, 100)
         call get_value(child, "maxval", maxval, 100._wp)
-        dects(counts) = circle_dect(pos, layer, radius, nbins, maxval)
+        call get_value(child, "trackHistory", trackHistory, .false.)
+        dects(counts) = circle_dect(pos, layer, radius, nbins, maxval, trackHistory)
         counts = counts + 1
 
     end subroutine handle_circle_dect
@@ -176,6 +180,7 @@ module parse_mod
         integer       :: layer, nbins, origin
         real(kind=wp) :: maxval, radius1, radius2
         type(vector)  :: pos
+        logical       :: trackHistory
 
         pos = get_vector(child, "position", context)
         call get_value(child, "layer", layer, 1)
@@ -187,7 +192,8 @@ module parse_mod
         end if
             call get_value(child, "nbins", nbins, 100)
         call get_value(child, "maxval", maxval, 100._wp)
-        dects(counts) = annulus_dect(pos, layer, radius1, radius2, nbins, maxval)
+        call get_value(child, "trackHistory", trackHistory, .false.)
+        dects(counts) = annulus_dect(pos, layer, radius1, radius2, nbins, maxval, trackHistory)
         counts = counts + 1
     end subroutine handle_annulus_dect
 

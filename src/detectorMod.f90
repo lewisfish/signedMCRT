@@ -19,6 +19,7 @@ module detector_mod
     type, abstract :: detector
         ! abstract detector
         type(vector)  :: pos
+        logical :: trackHistory
         contains
             private
             procedure(recordHitInterface), deferred, public :: record_hit
@@ -35,13 +36,15 @@ module detector_mod
             type(hit_t),     intent(in)    :: hitpoint
         end function checkHitInterface
 
-        subroutine recordHitInterface(this, hitpoint)
-            use vector_class
+        subroutine recordHitInterface(this, hitpoint, history)
             use constants, only : wp
+            use historyStack,  only : history_stack_t
+            use vector_class
             import detector, hit_t
 
-            class(detector), intent(inout) :: this
-            type(hit_t),     intent(in)    :: hitpoint
+            class(detector),       intent(inout) :: this
+            type(hit_t),           intent(in)    :: hitpoint
+            type(history_stack_t), intent(inout) :: history
         end subroutine recordHitInterface
     end interface
 
@@ -113,10 +116,13 @@ contains
 
     end function hit_init
    
-    subroutine record_hit_1D_sub(this, hitpoint)
+    subroutine record_hit_1D_sub(this, hitpoint, history)
 
-        class(detector1D), intent(inout) :: this
-        type(hit_t),       intent(in)    :: hitpoint
+        use historyStack, only : history_stack_t
+
+        class(detector1D),     intent(inout) :: this
+        type(hit_t),           intent(in)    :: hitpoint
+        type(history_stack_t), intent(inout) :: history
 
         real(kind=wp) :: value
         integer       :: idx
@@ -126,13 +132,20 @@ contains
             idx = min(nint(value / this%bin_wid) + 1, this%nbins)
             !$omp atomic
             this%data(idx) = this%data(idx) + 1
+            if(this%trackHistory)then
+                call history%write()
+            end if
         end if
+        history%size = 0
     end subroutine record_hit_1D_sub
 
-    subroutine record_hit_2D_sub(this, hitpoint)
+    subroutine record_hit_2D_sub(this, hitpoint, history)
 
-        class(detector2D), intent(inout) :: this
-        type(hit_t),       intent(in)    :: hitpoint
+        use historyStack, only : history_stack_t
+
+        class(detector2D),     intent(inout) :: this
+        type(hit_t),           intent(in)    :: hitpoint
+        type(history_stack_t), intent(inout) :: history
 
         real(kind=wp), volatile :: x, y
         integer       :: idx, idy
@@ -146,15 +159,20 @@ contains
             if(idy < 1)idy = this%nbinsY
             !$omp atomic
             this%data(idx, idy) = this%data(idx, idy) + 1
+            if(this%trackHistory)then
+                call history%write()
+            end if
         end if
-    end subroutine record_hit_2D_sub
+        history%size = 0
+        end subroutine record_hit_2D_sub
 !##############################################################################
 !                       CIRCLE DETECTOR
-    function init_circle_dect(pos, layer, radius, nbins, maxval) result(out)
+    function init_circle_dect(pos, layer, radius, nbins, maxval, trackHistory) result(out)
 
         type(vector),  intent(in) :: pos
         integer,       intent(in) :: layer, nbins
         real(kind=wp), intent(in) :: radius, maxval
+        logical,       intent(in) :: trackHistory
 
         type(circle_dect) :: out
 
@@ -170,6 +188,7 @@ contains
         else
             out%bin_wid = maxval / real(nbins, kind=wp)
         end if
+        out%trackHistory = trackHistory
 
     end function init_circle_dect
 
@@ -188,11 +207,12 @@ contains
     end function check_hit_circle
 ! ##########################################################################
 !                       ANNULUS DETECTOR
-    function init_annulus_dect(pos, layer, r1, r2, nbins, maxval) result(out)
+    function init_annulus_dect(pos, layer, r1, r2, nbins, maxval, trackHistory) result(out)
 
         type(vector),  intent(IN) :: pos
         integer,       intent(IN) :: layer, nbins
         real(kind=wp), intent(IN) :: r1, r2, maxval
+        logical,       intent(in) :: trackHistory
 
         type(annulus_dect) :: out
 
@@ -209,6 +229,8 @@ contains
         else
             out%bin_wid = maxval / real(nbins, kind=wp)
         end if
+        out%trackHistory = trackHistory
+
     end function init_annulus_dect
 
     logical function check_hit_annulus(this, hitpoint)
@@ -227,12 +249,12 @@ contains
     end function check_hit_annulus
 ! ##########################################################################
 !                       CAMERA
-    function init_camera(p1, p2, p3, layer, nbins, maxval) result(out)
+    function init_camera(p1, p2, p3, layer, nbins, maxval, trackHistory) result(out)
 
         type(vector),  intent(in) :: p1, p2, p3
         integer,       intent(in) :: layer, nbins
         real(kind=wp), intent(in) :: maxval
-
+        logical,       intent(in) :: trackHistory
         type(camera) :: out
 
         out%pos = p1
@@ -257,6 +279,8 @@ contains
             out%bin_wid_x = maxval / real(out%nbinsX, kind=wp)
             out%bin_wid_y = maxval / real(out%nbinsY, kind=wp)
         end if
+        out%trackHistory = trackHistory
+
     end function init_camera
 
     logical function check_hit_camera(this, hitpoint)

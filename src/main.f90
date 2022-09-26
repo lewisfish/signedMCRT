@@ -18,6 +18,7 @@ use sdfs
 use subs
 use inttau2
 use hitStack
+use historyStack
 use parse_mod
 use photonMod
 use stokes_mod
@@ -42,6 +43,7 @@ type(photon)      :: packet
 type(pbar)        :: bar
 type(hit_t)       :: hpoint
 type(vector)      :: dir
+type(history_stack_t) :: history
 
 real(kind=wp), allocatable :: distances(:), image(:,:,:)
 real(kind=wp) :: ran, start, time_taken, nscatt
@@ -105,10 +107,11 @@ end if
 #ifdef _OPENMP
 !is state%seed private, i dont think so...
 !$omp parallel default(none) shared(dict, array, numproc, start, state, bar, jmean, tev, dects)&
-!$omp& private(ran, id, distances, image, dir, hpoint) reduction(+:nscatt) firstprivate(packet)
+!$omp& private(ran, id, distances, image, dir, hpoint, history) reduction(+:nscatt) firstprivate(packet)
     numproc = omp_get_num_threads()
     id = omp_get_thread_num()
     if(numproc > state%nphotons .and. id == 0)print*,"Warning, simulation may be underministic due to low photon count!"
+    history = history_stack_t()
 #elif MPI
     !nothing
 #else
@@ -141,7 +144,7 @@ do j = 1, state%nphotons
 
     ! Find scattering location
     call tauint2(state%grid, packet, array)
-
+    call history%push(packet%pos)
     ! dir = vector(packet%nxp, packet%nyp, packet%nzp)
     ! hpoint = hit_t(packet%pos, dir, 1._wp, packet%layer)
     ! do i = 1, size(dects)
@@ -160,12 +163,13 @@ do j = 1, state%nphotons
         end if
         ! !Find next scattering location
         call tauint2(state%grid, packet, array)
+        call history%push(packet%pos)
     end do
 
     dir = vector(packet%nxp, packet%nyp, packet%nzp)
     hpoint = hit_t(packet%pos, dir, 1._wp, packet%layer)
     do i = 1, size(dects)
-        call dects(i)%p%record_hit(hpoint)
+        call dects(i)%p%record_hit(hpoint, history)
     end do
 
     if(id == 0 .and. mod(j,1000) == 0)then
@@ -226,6 +230,7 @@ if(id == 0)then
     ! print*,'write done'
 end if
 ! call write_detected_photons(dects)
+call history%finish()
 
 time_taken = get_time() - start
 call print_time(time_taken, id)
