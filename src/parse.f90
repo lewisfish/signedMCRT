@@ -233,16 +233,13 @@ module parse_mod
                 end if
                 do i = 1, len(children)
                     call get_value(children, i, pos(i))
-                    call dict%set(key("pos%"//axis(i)), value=pos(i))
                 end do
             else
                 if(state%source == "point")then
                     pos = [0._wp, 0._wp, 0._wp]
-                    call dict%set(key("pos%x"), value=pos(1))
-                    call dict%set(key("pos%y"), value=pos(2))
-                    call dict%set(key("pos%z"), value=pos(3))
                 end if
             end if
+            poss = vector(pos(1), pos(2), pos(3))
 
             children => null()
             
