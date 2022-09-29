@@ -20,6 +20,7 @@ use inttau2
 use hitStack
 use historyStack
 use parse_mod
+use vec4_class
 use photonMod
 use stokes_mod
 use writer_mod
@@ -111,12 +112,13 @@ end if
     numproc = omp_get_num_threads()
     id = omp_get_thread_num()
     if(numproc > state%nphotons .and. id == 0)print*,"Warning, simulation may be underministic due to low photon count!"
-    history = history_stack_t()
+    history = history_stack_t("obj")
 #elif MPI
     !nothing
 #else
     numproc = 1
     id = 0
+    history = history_stack_t("obj")
 #endif
 if(id == 0)print("(a,I3.1,a)"),'Photons now running on', numproc,' cores.'
 
@@ -133,7 +135,7 @@ do j = 1, state%nphotons
 
     ! Release photon from point source
     call packet%emit(dict)
-
+    packet%step = 0
     packet%id = id
     distances = 0._wp
     do i = 1, size(distances)
@@ -144,7 +146,7 @@ do j = 1, state%nphotons
 
     ! Find scattering location
     call tauint2(state%grid, packet, array)
-    call history%push(packet%pos)
+
     ! dir = vector(packet%nxp, packet%nyp, packet%nzp)
     ! hpoint = hit_t(packet%pos, dir, 1._wp, packet%layer)
     ! do i = 1, size(dects)
@@ -157,13 +159,14 @@ do j = 1, state%nphotons
         if(ran < array(packet%layer)%p%albedo)then!interacts with tissue
             call stokes(packet, array(packet%layer)%p%hgg, array(packet%layer)%p%g2)
             nscatt = nscatt + 1
+            packet%step = packet%step + 1
         else
             packet%tflag = .true.
             exit
         end if
         ! !Find next scattering location
         call tauint2(state%grid, packet, array)
-        call history%push(packet%pos)
+        call history%push(vec4(packet%pos, packet%step))
     end do
 
     dir = vector(packet%nxp, packet%nyp, packet%nzp)

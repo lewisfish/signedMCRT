@@ -1,13 +1,14 @@
 module historyStack
 
-    use constants,    only : wp
-    use vector_class, only : vector
+    use constants,  only : wp
+    use vec4_class, only : vec4
 
     implicit none
 
     type :: history_stack_t
-        type(vector), allocatable :: data(:)
+        type(vec4), allocatable :: data(:)
         integer :: size, vertex_counter, edge_counter
+        character(len=:), allocatable :: output_type
         contains
             procedure :: pop   => histpop_fn
             procedure :: push  => histpush_sub
@@ -29,20 +30,23 @@ module historyStack
 
 contains
 
-    type(history_stack_t) function init_historyStack()
+    type(history_stack_t) function init_historyStack(output_type)
 
+        character(*), intent(in) :: output_type
+
+        init_historyStack%output_type = output_type
         init_historyStack%size = 0
         init_historyStack%vertex_counter = 0
         init_historyStack%edge_counter = 0
 
     end function init_historyStack
 
-    type(vector) function histpop_fn(this)
+    type(vec4) function histpop_fn(this)
         
         class(history_stack_t) :: this
 
         if(this%size == 0 .or. .not. allocated(this%data))then
-            histpop_fn = vector(-99._wp, -99._wp, -99._wp)
+            histpop_fn = vec4(-99._wp, -99._wp, -99._wp, -99._wp)
             return
         end if
         
@@ -54,9 +58,9 @@ contains
     subroutine histpush_sub(this, val)
 
         class(history_stack_t) :: this
-        type(vector), intent(in) :: val
+        type(vec4), intent(in) :: val
         
-        type(vector), allocatable :: tmp(:)
+        type(vec4), allocatable :: tmp(:)
 
         if(.not. allocated(this%data) .or. size(this%data) == 0)then
             !allocate space if not yet allocated
@@ -72,12 +76,12 @@ contains
 
     end subroutine histpush_sub
 
-    type(vector) function histpeek_fn(this)
+    type(vec4) function histpeek_fn(this)
 
         class(history_stack_t) :: this
 
         if(this%size == 0 .or. .not. allocated(this%data))then
-            histpeek_fn = vector(-99._wp, -99._wp, -99._wp)
+            histpeek_fn = vec4(-99._wp, -99._wp, -99._wp, -99._wp)
             return
         end if
         histpeek_fn = this%data(this%size)
@@ -102,17 +106,106 @@ contains
 
     subroutine histwrite_sub(this)
 
+        class(history_stack_t) :: this
+
+        select case(this%output_type)
+            case("obj")
+                call obj_writer(this)
+            case("ply")
+                call ply_writer(this)
+            case("json")
+                call json_writer(this)
+            case default
+                error stop "No such output type "//this%output_type
+        end select
+
+    end subroutine histwrite_sub
+
+    subroutine histfinish_sub(this)
+
+        use string_utils, only : str
+        use constants,    only : fileplace
+
+        class(history_stack_t) :: this
+    
+        integer :: u
+
+        select case(this%output_type)
+        case("obj")
+            call execute_command_line("cat data/photPos.obj2 >> data/photPos.obj")
+        case("ply")
+            ! this is the easiest way to edit the vertex count as we don't know how many photons we will track when writing the header.
+            ! this saves stroing all photons data in RAM for duration of simulation.
+            ! taken from: https://stackoverflow.com/a/11145362
+            call execute_command_line("sed -i '3s#.*#element vertex "//str(this%vertex_counter)//"#' "//trim(fileplace)//"photPos.ply")
+            call execute_command_line("sed -i '7s#.*#element edge "//str(this%edge_counter)//"#' "//trim(fileplace)//"photPos.ply")
+
+            call execute_command_line("cat data/photPos.ply2 >> data/photPos.ply")
+        case("json")
+            open(newunit=u,file=trim(fileplace)//"photPos.json", status="old", position="append")
+            write(u,"(a)") "}"
+            close(u)
+        case default
+            error stop "No such output type "//this%output_type
+        end select
+    end subroutine histfinish_sub
+
+
+    subroutine obj_writer(this)
+        
         use constants, only : fileplace
         use omp_lib
         use string_utils, only : str
+        
+        type(history_stack_t), intent(inout) :: this
 
-        class(history_stack_t) :: this
-
-        type(vector) :: v
-        integer :: u, io, id, counter, i
+        type(vec4) :: v
+        integer :: u, io, id, counter, ioi
         logical :: res
         
         id = 0!omp_get_thread_num()
+        if(id == 0)then
+            inquire(file=trim(fileplace)//"photPos.obj", exist=res)
+            if(res)then
+                open(newunit=u,file=trim(fileplace)//"photPos.obj", status="old", position="append")
+                open(newunit=io,file=trim(fileplace)//"photPos.obj2", status="old", position="append")
+                open(newunit=ioi,file=trim(fileplace)//"scalers.dat", status="old", position="append")
+            else
+                open(newunit=u,file=trim(fileplace)//"photPos.obj", status="new")
+                open(newunit=io,file=trim(fileplace)//"photPos.obj2", status="new")
+                open(newunit=ioi,file=trim(fileplace)//"scalers.dat", status="new")
+            end if
+
+            v = this%pop()
+            if(this%size >=1)write(io, "(a)", advance="no")"l "
+            do counter = this%vertex_counter+1, this%vertex_counter+this%size, 2
+                write(io, "(2(i0,1x))", advance="no") counter, counter+1
+            end do
+            close(io)
+
+            do while(.not. this%empty())
+                v = this%pop()
+                write(u, "(a,1x,3(es15.8e2,1x))")"v", v%x, v%y, v%z
+                write(ioi, "(es15.8e2)")v%p
+                this%vertex_counter = this%vertex_counter + 1
+            end do
+            close(u)
+            close(ioi)
+        end if
+
+    end subroutine obj_writer
+    
+    subroutine ply_writer(this)
+
+        use constants,    only : fileplace
+        use string_utils, only : str
+        
+        type(history_stack_t), intent(inout) :: this
+        
+        integer :: id, io, counter, i, u
+        logical :: res
+        type(vec4) :: v
+    
         if(id == 0)then
             inquire(file=trim(fileplace)//"photPos.ply", exist=res)
             if(res)then
@@ -148,56 +241,43 @@ contains
                 this%vertex_counter = this%vertex_counter + 1
             end do
             close(u)
-
         end if
+    end subroutine ply_writer
 
-    end subroutine histwrite_sub
-
-    subroutine histfinish_sub(this)
-
+    subroutine json_writer(this)
+        
         use constants,    only : fileplace
         use string_utils, only : str
+        
+        type(history_stack_t), intent(inout) :: this
 
-        class(history_stack_t) :: this
+        logical :: res
+        integer :: id, u
+        integer, save :: counter = 0
+        type(vec4) :: v
 
-        ! integer :: u
-        ! this is the easiest way to edit the vertex count as we don't know how many photons we will track when writing the header.
-        ! this saves stroing all photons data in RAM for duration of simulation.
-        ! taken from: https://stackoverflow.com/a/11145362
-        call execute_command_line("sed -i '3s#.*#element vertex "//str(this%vertex_counter)//"#' "//trim(fileplace)//"photPos.ply")
-        call execute_command_line("sed -i '7s#.*#element edge "//str(this%edge_counter)//"#' "//trim(fileplace)//"photPos.ply")
-       
-        call execute_command_line("cat data/photPos.ply2 >> data/photPos.ply")
-        print*,"joined!",this%vertex_counter,this%edge_counter
-    end subroutine histfinish_sub
+        id = 0!omp_()
+        if(id == 0)then
+            inquire(file=trim(fileplace)//"photPos.json", exist=res)
+            if(res)then
+                open(newunit=u,file=trim(fileplace)//"photPos.json", status="old", position="append")
+                write(u,"(a)") ","//new_line("a")//'"'//str(counter)//'_'//str(id)//'": '//"["
+            else
+                open(newunit=u,file=trim(fileplace)//"photPos.json", status="new")
+                write(u,"(a)") "{"//new_line("a")//'"'//str(counter)//'_'//str(id)//'": '//"["
+            end if
+            counter = counter + 1
+
+            do while(.not. this%empty())                
+                v = this%pop()
+                if(this%size /= 0)then
+                    write(u,"(a,3(es15.8e2,a))")"[",v%x,",",v%y,",",v%z,"],"
+                else
+                    write(u,"(a,3(es15.8e2,a))")"[",v%x,",",v%y,",",v%z,"]"
+                end if
+            end do
+            write(u,"(a)")"]"
+            close(u)
+        end if
+    end subroutine json_writer
 end module historyStack
-
-
-
-!json
-! inquire(file=trim(fileplace)//"photPos.json", exist=res)
-! if(res)then
-!     open(newunit=u,file=trim(fileplace)//"photPos.json", status="old", position="append")
-!     write(u,"(a)") ","//new_line("a")//'"'//str(counter)//'_'//str(id)//'": '//"["
-! else
-!     open(newunit=u,file=trim(fileplace)//"photPos.json", status="new")
-!     write(u,"(a)") "{"//new_line("a")//'"'//str(counter)//'_'//str(id)//'": '//"["
-! end if
-! counter = counter + 1
-
-! do while(.not. this%empty())                
-!     v = this%pop()
-!     if(this%size /= 0)then
-!         write(u,"(a,3(es15.8e2,a))")"[",v%x,",",v%y,",",v%z,"],"
-!     else
-!         write(u,"(a,3(es15.8e2,a))")"[",v%x,",",v%y,",",v%z,"]"
-!     end if
-! end do
-! write(u,"(a)")"]"
-! close(u)
-
-
-
-! open(newunit=u,file=trim(fileplace)//"photPos.json", status="old", position="append")
-! write(u,"(a)") "}"
-! close(u)

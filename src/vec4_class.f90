@@ -2,6 +2,8 @@ Module vec4_class
 
     use constants, only : wp
 
+    implicit none
+
     !not fully implmented vec4 class
     type :: vec4
         real(kind=wp) :: x, y, z, p
@@ -36,17 +38,30 @@ Module vec4_class
         module procedure sin_vec
     end interface sin
 
+    
+    interface vec4
+        module procedure init_vec4_vector_real
+    end interface vec4
+
 
     private
     public :: vec4, sin
-
-
     contains
+        type(vec4) function init_vec4_vector_real(vec, val) result(out)
 
+            use vector_class
+
+            type(vector),  intent(in) :: vec
+            real(kind=wp), intent(in) :: val
+
+            out%x = vec%x
+            out%y = vec%y
+            out%z = vec%z
+            out%p = val
+
+        end function init_vec4_vector_real
 
         type(vec4) pure elemental function sin_vec(p)
-
-            implicit none
 
             type(vec4), intent(IN) :: p
 
@@ -55,10 +70,7 @@ Module vec4_class
 
         end function sin_vec
 
-
         type(vec4) function vec_minus_vec(a, b)
-
-            implicit none
 
             class(vec4), intent(IN) :: a
             type(vec4),  intent(IN) :: b
@@ -67,10 +79,7 @@ Module vec4_class
 
         end function vec_minus_vec
 
-
         type(vec4) function vec_add_scal(a, b)
-
-            implicit none
 
             class(vec4),     intent(IN) :: a
             real(kind=wp),   intent(IN) :: b
@@ -79,10 +88,7 @@ Module vec4_class
 
         end function vec_add_scal
 
-
         type(vec4) function scal_add_vec(a, b)
-
-            implicit none
 
             class(vec4),   intent(IN) :: b
             real(kind=wp), intent(IN) :: a
@@ -91,10 +97,7 @@ Module vec4_class
 
         end function scal_add_vec
 
-
         type(vec4) function vec_minus_scal(a, b)
-
-            implicit none
 
             class(vec4),   intent(IN) :: a
             real(kind=wp), intent(IN) :: b
@@ -103,10 +106,7 @@ Module vec4_class
 
         end function vec_minus_scal
 
-
         type(vec4) function scal_minus_vec(a, b)
-
-            implicit none
 
             class(vec4),   intent(IN) :: b
             real(kind=wp), intent(IN) :: a
@@ -115,10 +115,7 @@ Module vec4_class
 
         end function scal_minus_vec
 
-
         type(vec4) function vec_add_vec(a, b)
-
-            implicit none
 
             class(vec4), intent(IN) :: a
             type(vec4),  intent(IN) :: b
@@ -127,10 +124,7 @@ Module vec4_class
 
         end function vec_add_vec
 
-
         elemental function vec_dot_vec(a, b) result (dot)
-
-            implicit none
 
             class(vec4), intent(IN) :: a
             type(vec4),  intent(IN) :: b
@@ -142,8 +136,6 @@ Module vec4_class
 
         type(vec4) function vec_mult_vec(a, b)
 
-            implicit none
-
             class(vec4), intent(IN) :: a
             type(vec4),  intent(IN) :: b
 
@@ -151,10 +143,7 @@ Module vec4_class
 
         end function vec_mult_vec
 
-
         type(vec4) function vec_mult_scal(a, b)
-
-            implicit none
 
             class(vec4),   intent(IN) :: a
             real(kind=wp), intent(IN) :: b
@@ -163,10 +152,7 @@ Module vec4_class
 
         end function vec_mult_scal
 
-
         type(vec4) function scal_mult_vec(a, b)
-
-            implicit none
 
             class(vec4),   intent(IN) :: b
             real(kind=wp), intent(IN) :: a
@@ -175,10 +161,7 @@ Module vec4_class
 
         end function scal_mult_vec
 
-
         type(vec4) function vec_div_scal_r4(a, b)
-
-            implicit none
 
             class(vec4),   intent(IN) :: a
             real(kind=wp), intent(IN) :: b
@@ -189,8 +172,6 @@ Module vec4_class
 
         type(vec4) function vec_div_scal_int(a, b)
 
-            implicit none
-
             class(vec4), intent(IN) :: a
             integer,       intent(IN) :: b
 
@@ -198,10 +179,7 @@ Module vec4_class
 
         end function vec_div_scal_int
 
-
         type(vec4) function magnitude_fn(this)
-
-            implicit none
 
             class(vec4) :: this
 
@@ -212,10 +190,7 @@ Module vec4_class
 
         end function magnitude_fn
 
-
         real(kind=wp) function length(this)
-
-            implicit none
 
             class(vec4) :: this
 

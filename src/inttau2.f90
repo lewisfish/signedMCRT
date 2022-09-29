@@ -176,6 +176,7 @@ module inttau2
         packet%cost = dir%z
         packet%sint = sqrt(1._wp - packet%cost**2)
 
+        ! packet%step = dtot
         if(abs(packet%pos%x) > grid%xmax)then
             packet%tflag = .true.
         end if
