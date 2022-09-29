@@ -174,15 +174,15 @@ contains
         
         id = 0!omp_get_thread_num()
         if(id == 0)then
-            inquire(file=trim(fileplace)//"photPos.obj", exist=res)
+            inquire(file=trim(fileplace)//this%filename, exist=res)
             if(res)then
-                open(newunit=u,file=trim(fileplace)//"photPos.obj", status="old", position="append")
-                open(newunit=io,file=trim(fileplace)//"photPos.obj2", status="old", position="append")
-                open(newunit=ioi,file=trim(fileplace)//"scalers.dat", status="old", position="append")
+                open(newunit=u,file=trim(fileplace)//this%filename, status="old", position="append")
+                open(newunit=io,file=trim(fileplace)//this%filename//"2", status="old", position="append")
+                open(newunit=ioi,file=trim(fileplace)//"scalars.dat", status="old", position="append")
             else
-                open(newunit=u,file=trim(fileplace)//"photPos.obj", status="new")
-                open(newunit=io,file=trim(fileplace)//"photPos.obj2", status="new")
-                open(newunit=ioi,file=trim(fileplace)//"scalers.dat", status="new")
+                open(newunit=u,file=trim(fileplace)//this%filename, status="new")
+                open(newunit=io,file=trim(fileplace)//this%filename//"2", status="new")
+                open(newunit=ioi,file=trim(fileplace)//"scalars.dat", status="new")
             end if
 
             v = this%pop()
@@ -216,11 +216,11 @@ contains
         type(vec4) :: v
     
         if(id == 0)then
-            inquire(file=trim(fileplace)//"photPos.ply", exist=res)
+            inquire(file=trim(fileplace)//this%filename, exist=res)
             if(res)then
-                open(newunit=u,file=trim(fileplace)//"photPos.ply", status="old", position="append")
+                open(newunit=u,file=trim(fileplace)//this%filename, status="old", position="append")
             else
-                open(newunit=u,file=trim(fileplace)//"photPos.ply", status="new")
+                open(newunit=u,file=trim(fileplace)//this%filename, status="new")
                 write(u,"(a)") "ply"//new_line("a")//"format ascii 1.0"//new_line("a")//"element vertex "//str(this%size)
                 write(u,"(a)") "property float x"
                 write(u,"(a)") "property float y"
@@ -230,11 +230,11 @@ contains
                 write(u,"(a)") "property int vertex2"
                 write(u,"(a)") "end_header"
             end if
-            inquire(file=trim(fileplace)//"photPos.ply2", exist=res)
+            inquire(file=trim(fileplace)//this%filename//"2", exist=res)
             if(res)then
-                open(newunit=io,file=trim(fileplace)//"photPos.ply2", status="old", position="append")
+                open(newunit=io,file=trim(fileplace)//this%filename//"2", status="old", position="append")
             else
-                open(newunit=io,file=trim(fileplace)//"photPos.ply2", status="new")
+                open(newunit=io,file=trim(fileplace)//this%filename//"2", status="new")
             end if
 
             counter = this%vertex_counter
@@ -267,12 +267,12 @@ contains
 
         id = 0!omp_()
         if(id == 0)then
-            inquire(file=trim(fileplace)//"photPos.json", exist=res)
+            inquire(file=trim(fileplace)//this%filename, exist=res)
             if(res)then
-                open(newunit=u,file=trim(fileplace)//"photPos.json", status="old", position="append")
+                open(newunit=u,file=trim(fileplace)//this%filename, status="old", position="append")
                 write(u,"(a)") ","//new_line("a")//'"'//str(counter)//'_'//str(id)//'": '//"["
             else
-                open(newunit=u,file=trim(fileplace)//"photPos.json", status="new")
+                open(newunit=u,file=trim(fileplace)//this%filename, status="new")
                 write(u,"(a)") "{"//new_line("a")//'"'//str(counter)//'_'//str(id)//'": '//"["
             end if
             counter = counter + 1
