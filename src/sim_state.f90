@@ -7,7 +7,7 @@ module sim_state_mod
     type :: settings_t
         integer :: nphotons, iseed
         integer :: render_size(3)
-        character(len=:), allocatable :: experiment, outfile, renderfile, source
+        character(len=:), allocatable :: experiment, outfile, renderfile, source, historyFilename
         type(cart_grid) :: grid
         logical :: render_geom, tev
     end type settings_t

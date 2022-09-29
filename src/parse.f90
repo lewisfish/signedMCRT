@@ -45,6 +45,7 @@ module parse_mod
     subroutine parse_detectors(table, dects, context)
 
         use detector_mod
+        use sim_state_mod, only : state
 
         type(toml_table) :: table
         type(dect_array), allocatable :: dects(:)
@@ -89,6 +90,7 @@ module parse_mod
         do i = 1, len(array)
             call get_value(array, i, child)
             call get_value(child, "type", dect_type)
+            call get_value(child, "historyFileName", state%historyFilename, "photPos.obj")
             select case(dect_type)
             case("circle")
                 call handle_circle_dect(child, dect_c, c_counter, context)

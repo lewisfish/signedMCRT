@@ -8,7 +8,7 @@ module historyStack
     type :: history_stack_t
         type(vec4), allocatable :: data(:)
         integer :: size, vertex_counter, edge_counter
-        character(len=:), allocatable :: output_type
+        character(len=:), allocatable :: filename, type
         contains
             procedure :: pop   => histpop_fn
             procedure :: push  => histpush_sub
@@ -30,11 +30,21 @@ module historyStack
 
 contains
 
-    type(history_stack_t) function init_historyStack(output_type)
+    type(history_stack_t) function init_historyStack(filename)
 
-        character(*), intent(in) :: output_type
+        character(*), intent(in) :: filename
 
-        init_historyStack%output_type = output_type
+        init_historyStack%filename = filename
+        if(index(filename, "obj") /= 0)then
+            init_historyStack%type="obj"
+        elseif(index(filename, "ply") /= 0)then
+            init_historyStack%type="ply"
+        elseif(index(filename, "json") /= 0)then
+            init_historyStack%type="json"
+        else
+            error stop "Unsupported filetpye for track History!"
+        end if
+
         init_historyStack%size = 0
         init_historyStack%vertex_counter = 0
         init_historyStack%edge_counter = 0
@@ -108,7 +118,7 @@ contains
 
         class(history_stack_t) :: this
 
-        select case(this%output_type)
+        select case(this%type)
             case("obj")
                 call obj_writer(this)
             case("ply")
@@ -116,7 +126,7 @@ contains
             case("json")
                 call json_writer(this)
             case default
-                error stop "No such output type "//this%output_type
+                error stop "No such output type "//this%type
         end select
 
     end subroutine histwrite_sub
@@ -130,32 +140,31 @@ contains
     
         integer :: u
 
-        select case(this%output_type)
+        select case(this%type)
         case("obj")
-            call execute_command_line("cat data/photPos.obj2 >> data/photPos.obj")
+            call execute_command_line("cat "//trim(fileplace)//this%filename//"2 >> "//trim(fileplace)//this%filename)
         case("ply")
             ! this is the easiest way to edit the vertex count as we don't know how many photons we will track when writing the header.
             ! this saves stroing all photons data in RAM for duration of simulation.
             ! taken from: https://stackoverflow.com/a/11145362
-            call execute_command_line("sed -i '3s#.*#element vertex "//str(this%vertex_counter)//"#' "//trim(fileplace)//"photPos.ply")
-            call execute_command_line("sed -i '7s#.*#element edge "//str(this%edge_counter)//"#' "//trim(fileplace)//"photPos.ply")
-
-            call execute_command_line("cat data/photPos.ply2 >> data/photPos.ply")
+            call execute_command_line("sed -i '3s#.*#element vertex "//str(this%vertex_counter)//"#' "//trim(fileplace)//this%filename)
+            call execute_command_line("sed -i '7s#.*#element edge "//str(this%edge_counter)//"#' "//trim(fileplace)//this%filename)
+            call execute_command_line("cat "//trim(fileplace)//this%filename//"2 >> "//trim(fileplace)//this%filename)
         case("json")
-            open(newunit=u,file=trim(fileplace)//"photPos.json", status="old", position="append")
+            open(newunit=u,file=trim(fileplace)//this%filename, status="old", position="append")
             write(u,"(a)") "}"
             close(u)
         case default
-            error stop "No such output type "//this%output_type
+            error stop "No such output type "//this%type
         end select
     end subroutine histfinish_sub
 
 
     subroutine obj_writer(this)
         
-        use constants, only : fileplace
-        use omp_lib
+        use constants,    only : fileplace
         use string_utils, only : str
+        use omp_lib
         
         type(history_stack_t), intent(inout) :: this
 
@@ -237,7 +246,7 @@ contains
             close(io)
             do while(.not. this%empty())
                 v = this%pop()
-                write(u, "(3(es15.8e2,1x))") v
+                write(u, "(3(es15.8e2,1x))") v%x, v%y, v%z
                 this%vertex_counter = this%vertex_counter + 1
             end do
             close(u)
