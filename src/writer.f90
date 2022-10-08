@@ -17,7 +17,7 @@ implicit none
     end interface raw_write
 
     private
-    public :: normalise_fluence, write_fluence!, write_detected_photons
+    public :: normalise_fluence, write_fluence, write_detected_photons
 
     contains
         function normalise_fluence(grid, array, nphotons) result(out)
@@ -48,35 +48,35 @@ implicit none
         end function normalise_fluence
 
 
-        ! subroutine write_detected_photons(detectors)
+        subroutine write_detected_photons(detectors)
 
-        !     use detector_mod
-        !     use constants, only: fileplace
+            use detector_mod
+            use constants, only: fileplace
 
-        !     type(dect_array), intent(in) :: detectors(:)
+            type(dect_array), intent(in) :: detectors(:)
 
-        !     integer :: i, j, u
-        !     character(len=:), allocatable :: hdr
+            integer :: i, j, u
+            character(len=:), allocatable :: hdr
 
-        !     do i = 1, size(detectors)
-        !         open(newunit=u, file=trim(fileplace)//"detectors/detector_"//str(i)//".dat")
-        !         associate(x => detectors(i)%p)
-        !             select type(x)
-        !             type is(circle_dect)
-        !                 hdr = "pos, layer, nbins, bin_wid, radius"//new_line("a")//str(x%pos)//","//str(x%layer)//","//str(x%nbins)//","//str(x%bin_wid)//","//str(x%radius)
-        !             type is(annulus_dect)
-        !                 hdr = "pos, layer, nbins, bin_wid, radius1, radius2"//new_line("a")//str(x%pos)//","//str(x%layer)//","//str(x%nbins)//","//str(x%bin_wid)//","//str(x%r1)//","//str(x%r2)
-        !             end select
-        !         end associate
-        !         write(u, "(a)")hdr
-        !         write(u, "(a)")"data:"
-        !         ! do j = 1, detectors(i)%p%nbins 
-        !             ! write(u,"(es24.16e3)")detectors(i)%p%data(j)
-        !         ! end do
-        !         close(u)
-        !     end do
+            do i = 1, size(detectors)
+                open(newunit=u, file=trim(fileplace)//"detectors/detector_"//str(i)//".dat")
+                associate(x => detectors(i)%p)
+                    select type(x)
+                    type is(circle_dect)
+                        hdr = "# pos, layer, nbins, bin_wid, radius"//new_line("a")//str(x%pos)//","//str(x%layer)//","//str(x%nbins)//","//str(x%bin_wid)//","//str(x%radius)
+                        write(u, "(a)")hdr
+                        write(u, "(a)")"#data:"
+                        do j = 1, x%nbins 
+                            write(u,"(2(es24.16e3,1x))")real(j,kind=wp) * x%bin_wid, x%data(j)
+                        end do
+                    type is(annulus_dect)
+                        hdr = "#pos, layer, nbins, bin_wid, radius1, radius2"//new_line("a")//str(x%pos)//","//str(x%layer)//","//str(x%nbins)//","//str(x%bin_wid)//","//str(x%r1)//","//str(x%r2)
+                    end select
+                    end associate
+                close(u)
+            end do
 
-        ! end subroutine write_detected_photons
+        end subroutine write_detected_photons
 
 
         subroutine write_fluence(array, filename, dict, overwrite)

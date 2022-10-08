@@ -57,7 +57,7 @@ module parse_mod
         type(circle_dect), target, save, allocatable :: dect_c(:)
         type(annulus_dect), target, save, allocatable :: dect_a(:)
         type(camera), target, save, allocatable :: dect_cam(:)
-        integer :: i, c_counter, a_counter, cam_counter, j, origin, k
+        integer :: i, c_counter, a_counter, cam_counter, j, k,origin
 
         c_counter = 0
         a_counter = 0
@@ -156,16 +156,17 @@ module parse_mod
 
         integer       :: layer, nbins
         real(kind=wp) :: maxval, radius
-        type(vector)  :: pos
+        type(vector)  :: pos, dir
         logical       :: trackHistory
 
         pos = get_vector(child, "position", context)
+        dir = get_vector(child, "direction", context)
         call get_value(child, "layer", layer, 1)
         call get_value(child, "radius1", radius)
         call get_value(child, "nbins", nbins, 100)
         call get_value(child, "maxval", maxval, 100._wp)
         call get_value(child, "trackHistory", trackHistory, .false.)
-        dects(counts) = circle_dect(pos, layer, radius, nbins, maxval, trackHistory)
+        dects(counts) = circle_dect(pos, dir, layer, radius, nbins, maxval, trackHistory)
         counts = counts + 1
 
     end subroutine handle_circle_dect
@@ -514,5 +515,4 @@ module parse_mod
         end if
 
     end function get_vector
-
 end module parse_mod

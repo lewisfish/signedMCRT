@@ -1,5 +1,8 @@
+!TODO
+! add directions to detector class
+! - will need to adjust check_hit routine to compensate for this.
 module detector_mod
-    
+
     use vector_class
     use constants, only : wp
     
@@ -18,7 +21,7 @@ module detector_mod
 
     type, abstract :: detector
         ! abstract detector
-        type(vector)  :: pos
+        type(vector)  :: pos, dir
         logical :: trackHistory
         contains
             private
@@ -151,8 +154,8 @@ contains
         integer       :: idx, idy
 
         if(this%check_hit(hitpoint))then
-            x = hitpoint%pos%z + 7.5_wp
-            y = hitpoint%pos%y + 7.5_wp
+            x = hitpoint%pos%z + this%pos%x
+            y = hitpoint%pos%y + this%pos%y
             idx = min(int(x / this%bin_wid_x) + 1, this%nbinsX)
             idy = min(int(y / this%bin_wid_y) + 1, this%nbinsY)
             if(idx < 1)idx = this%nbinsX
@@ -167,15 +170,16 @@ contains
         end subroutine record_hit_2D_sub
 !##############################################################################
 !                       CIRCLE DETECTOR
-    function init_circle_dect(pos, layer, radius, nbins, maxval, trackHistory) result(out)
+    function init_circle_dect(pos, dir, layer, radius, nbins, maxval, trackHistory) result(out)
 
-        type(vector),  intent(in) :: pos
+        type(vector),  intent(in) :: pos, dir
         integer,       intent(in) :: layer, nbins
         real(kind=wp), intent(in) :: radius, maxval
         logical,       intent(in) :: trackHistory
 
         type(circle_dect) :: out
 
+        out%dir = dir
         out%pos = pos
         out%layer = layer
         !extra bin for data beyond end of array
@@ -193,17 +197,20 @@ contains
     end function init_circle_dect
 
     logical function check_hit_circle(this, hitpoint)
+        
+        use geometry, only : intersectCircle
 
         class(circle_dect), intent(INOUT) :: this
         type(hit_t),        intent(IN)    :: hitpoint
 
-        real(kind=wp) :: newpos
 
-        check_hit_circle = .false.
-        newpos = sqrt((hitpoint%pos%x - this%pos%x)**2 + (hitpoint%pos%y - this%pos%y)**2 + (hitpoint%pos%z - this%pos%z)**2)
-        if(newpos <= this%radius)then
-            check_hit_circle = .true.
-        end if
+        check_hit_circle = intersectCircle(this%dir, this%pos, this%radius, hitpoint%pos, hitpoint%dir)
+        !new
+        !old
+        ! newpos = sqrt((hitpoint%pos%x - this%pos%x)**2 + (hitpoint%pos%y - this%pos%y)**2 + (hitpoint%pos%z - this%pos%z)**2)
+        ! if(newpos <= this%radius)then
+            ! check_hit_circle = .true.
+        ! end if
     end function check_hit_circle
 ! ##########################################################################
 !                       ANNULUS DETECTOR
