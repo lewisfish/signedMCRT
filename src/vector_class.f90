@@ -276,7 +276,7 @@ Module vector_class
 
             real(kind=wp) :: tmp
 
-            tmp = sqrt(this%x**2 + this%y**2 + this%z**2)
+            tmp = this%length()
             magnitude_fn = this / tmp
 
         end function magnitude_fn
