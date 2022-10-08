@@ -19,7 +19,7 @@ auto-executables = false
 auto-tests = false
 auto-examples = false
 
-[executable]
+[[executable]]
 name="sMCRT"
 source-dir="src"
 main="main.f90"

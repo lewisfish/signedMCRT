@@ -1,6 +1,5 @@
 !TODO
-! add directions to detector class
-! - will need to adjust check_hit routine to compensate for this.
+! will need internal detectors then? Dont think so, no use case. REVISTI
 module detector_mod
 
     use vector_class
@@ -22,6 +21,7 @@ module detector_mod
     type, abstract :: detector
         ! abstract detector
         type(vector)  :: pos, dir
+        integer :: layer
         logical :: trackHistory
         contains
             private
@@ -40,7 +40,7 @@ module detector_mod
         end function checkHitInterface
 
         subroutine recordHitInterface(this, hitpoint, history)
-            use constants, only : wp
+            use constants,     only : wp
             use historyStack,  only : history_stack_t
             use vector_class
             import detector, hit_t
@@ -52,7 +52,7 @@ module detector_mod
     end interface
 
     type, abstract, extends(detector) :: detector1D
-        integer       :: layer, nbins
+        integer       :: nbins
         real(kind=wp) :: bin_wid
         real(kind=wp), allocatable :: data(:)
         contains
@@ -60,7 +60,7 @@ module detector_mod
     end type detector1D
 
     type, abstract, extends(detector) :: detector2D
-        integer       :: layer, nbinsX, nbinsY
+        integer       :: nbinsX, nbinsY
         real(kind=wp) :: bin_wid_x, bin_wid_y
         real(kind=wp), allocatable :: data(:,:)
         contains
@@ -203,14 +203,9 @@ contains
         class(circle_dect), intent(INOUT) :: this
         type(hit_t),        intent(IN)    :: hitpoint
 
-
+        check_hit_circle = .false.
+        if(this%layer /= hitpoint%layer)return
         check_hit_circle = intersectCircle(this%dir, this%pos, this%radius, hitpoint%pos, hitpoint%dir)
-        !new
-        !old
-        ! newpos = sqrt((hitpoint%pos%x - this%pos%x)**2 + (hitpoint%pos%y - this%pos%y)**2 + (hitpoint%pos%z - this%pos%z)**2)
-        ! if(newpos <= this%radius)then
-            ! check_hit_circle = .true.
-        ! end if
     end function check_hit_circle
 ! ##########################################################################
 !                       ANNULUS DETECTOR
@@ -248,6 +243,7 @@ contains
         real(kind=wp) :: newpos
 
         check_hit_annulus = .false.
+        if(this%layer /= hitpoint%layer)return
         newpos = sqrt((hitpoint%pos%x - this%pos%x)**2 + (hitpoint%pos%y - this%pos%y)**2 + (hitpoint%pos%z - this%pos%z)**2)
         if(newpos >= this%r1 .and. newpos <= this%r2)then
             check_hit_annulus = .true.
@@ -300,6 +296,7 @@ contains
         type(vector)  :: v
 
         check_hit_camera = .false.
+        if(this%layer /= hitpoint%layer)return
 
         t = ((this%pos - hitpoint%pos) .dot. this%n) / (hitpoint%dir .dot. this%n)
         if(t >= 0._wp)then

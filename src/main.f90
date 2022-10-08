@@ -222,17 +222,8 @@ if(id == 0)then
 
     jmeanGLOBAL = normalise_fluence(state%grid, jmeanGLOBAL, state%nphotons)
     call write_fluence(jmeanGLOBAL, trim(fileplace)//"jmean/"//state%outfile, dict)
-    ! open(newunit=j,file=trim(fileplace)//"camera.dat",form="unformatted",access="stream")
-    ! associate(x => dects(1)%p)
-    !     select type(x)
-    !         type is(camera)
-    !             write(j)x%data(:x%nbinsX-1,:x%nbinsY-1)
-    !     end select
-    ! end associate
-    ! close(j)
-    ! print*,'write done'
 end if
-! call write_detected_photons(dects)
+call write_detected_photons(dects)
 call history%finish()
 
 time_taken = get_time() - start

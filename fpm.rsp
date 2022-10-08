@@ -20,7 +20,7 @@ option run sMCRT --compiler gfortran --flag "-fopenmp -O2 -cpp -march=native -fl
 
 
 @test
-option test --compiler gfortran --flag "-O2 -cpp -march=native -flto -mavx -ffree-line-length-none"
+option test --compiler gfortran --flag "-O2 -cpp -march=native -flto -mavx -ffree-line-length-none -fprofile-arcs -ftest-coverage"
 
 @runnv
 option run sMCRT --compiler nvfortran --flag "-fast -cpp -Mbackslash"

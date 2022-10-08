@@ -40,12 +40,10 @@ module geometry
         intersectCircle = .false.
         t = 0._wp
         if(intersectPlane(n, p0, l0, l, t))then
-            if(t < 1e-4_wp)then
-                p = l0 + l * t
-                v = p - p0
-                d2 = v .dot. v
-                if(sqrt(d2) <= radius)intersectCircle=.true.            
-            end if
+            p = l0 + l * t
+            v = p - p0
+            d2 = v .dot. v
+            if(sqrt(d2) <= radius)intersectCircle=.true.            
         end if
     end function intersectCircle
 end module geometry

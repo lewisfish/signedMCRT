@@ -71,6 +71,8 @@ implicit none
                         end do
                     type is(annulus_dect)
                         hdr = "#pos, layer, nbins, bin_wid, radius1, radius2"//new_line("a")//str(x%pos)//","//str(x%layer)//","//str(x%nbins)//","//str(x%bin_wid)//","//str(x%r1)//","//str(x%r2)
+                    type is(camera)
+                        print*,"Warning not yet implmented!"
                     end select
                     end associate
                 close(u)

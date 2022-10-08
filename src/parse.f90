@@ -161,6 +161,7 @@ module parse_mod
 
         pos = get_vector(child, "position", context)
         dir = get_vector(child, "direction", context)
+        dir = dir%magnitude()
         call get_value(child, "layer", layer, 1)
         call get_value(child, "radius1", radius)
         call get_value(child, "nbins", nbins, 100)
