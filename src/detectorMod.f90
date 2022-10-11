@@ -1,5 +1,3 @@
-!TODO
-! will need internal detectors then? Dont think so, no use case. REVISTI
 module detector_mod
 
     use vector_class
@@ -288,7 +286,6 @@ contains
 
     logical function check_hit_camera(this, hitpoint)
     ! https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection
-    ! TODO add optics and make camera a distance away from simulated medium? -> make these optional?
         class(camera), intent(inout) :: this
         type(hit_t),   intent(in)    :: hitpoint
 

@@ -2,20 +2,20 @@
 Use of signed distance fields in Monte Carlo Radiative Transfer.
 This allows modelling of smooth surfaces with out the need to use triangle or similar meshes.
 
-Pre-print describing operation of signedMCRT: https://arxiv.org/abs/2112.08035
+Paper describing operation of signedMCRT: [https://doi.org/10.1117/1.JBO.27.8.083003](https://doi.org/10.1117/1.JBO.27.8.083003)
 
-Pre-print of an application of signedMCRT: https://arxiv.org/abs/2112.08877
+Paper describing of an application of signedMCRT: [https://doi.org/10.1364/OE.451496](https://doi.org/10.1364/OE.451496)
 
 
 ## Instructions
 
-Code prerequisites: fortran 2018 compliant complier e.g gfortran-10 or intel oneAPI fortran.
-Only tested on Linux. May run on Mac, but unlikly to run on Windows without some changes.
+Code prerequisites: Fortran 2018 compliant complier e.g gfortran-10 or intel oneAPI Fortran.
+Only tested on Linux. May run on Mac, but unlikely to run on Windows without some changes.
 
 To run the code you can use:
-  - The [fortran package manager](https://fpm.fortran-lang.org/en/index.html) by running; fpm @run
+  - The [Fortran package manager](https://fpm.fortran-lang.org/en/index.html) by running; fpm @run
 
-See [this](config.md) for instructions on what settings the toml config file can configure.
+See [this](docs/config.md) for instructions on what settings the toml config file can configure.
   
 ## Publication
 The code in this repo forms the basis for the following publication:
@@ -25,11 +25,11 @@ Data created with this code can be found at: https://doi.org/10.5281/zenodo.5780
 
 ## Example of SDF models produced by signedMCRT
 
-SDF of University of St Andrews crest. SVG of crest was simplfied in Inkscape and then exported using svg.f90 to line segments and assiagned optical properties before being illuminated uniformly by light.
+SDF of University of St Andrews crest. SVG of crest was simplified in Inkscape and then exported using svg.f90 to line segments and assigned optical properties before being illuminated uniformly by light.
 ![Image of SDF model of university crest](https://github.com/lewisfish/signedMCRT/raw/main/images/crest-sdf-svg.png)
 
-Comparison of voxel and SDF models of a glass bottle with scattering contents. The voxel model exhibts un-physical reflections and refractions.
-![Comparison of light distrbution in voxel and SDF bottle](https://github.com/lewisfish/signedMCRT/raw/main/images/georgie_compare_sdf_vs_voxel.png)
+Comparison of voxel and SDF models of a glass bottle with scattering contents. The voxel model exhibits un-physical reflections and refractions.
+![Comparison of light distribution in voxel and SDF bottle](https://github.com/lewisfish/signedMCRT/raw/main/images/georgie_compare_sdf_vs_voxel.png)
 
 Comparison of voxel interpolated surface normals, mesh based Monte Carlo (MMC), and SDFs model of a sphere being illuminated by a tophat laser beam.
 ![Comparison of sMCRT to voxel and smoothed surface normal method](https://github.com/lewisfish/signedMCRT/raw/main/images/sdf_vs_mmc_aptran%20(1).png)

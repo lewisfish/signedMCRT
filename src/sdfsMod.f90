@@ -523,8 +523,6 @@ end function eval_neural
         end function calcNormal
 
         function model_init(array, func, kopt) result(out)
-        !TODO make sure optical properties are same in all inputs            
-            implicit none
 
             type(model) :: out
 
