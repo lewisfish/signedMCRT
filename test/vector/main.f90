@@ -1,6 +1,6 @@
 module tests
 
-    use vector_class, only : vector, max, abs, nint
+    use vector_class, only : vector, max, abs, nint, min
     use testdrive, only : new_unittest, unittest_type, error_type, check
     use constants, only : wp
 
@@ -30,7 +30,8 @@ module tests
                 new_unittest("Vector_add_scalar", vector_add_scal), &
                 new_unittest("Vector_subtract_scalar", vector_sub_scal), &
                 new_unittest("Vector_multiply_scalar", vector_mult_scal), &
-                new_unittest("Vector_div_scalar", vector_div_scal)&
+                new_unittest("Vector_div_scalar", vector_div_scal), &
+                new_unittest("Vector_div_scalar_int", vector_div_scal_int) &
                 ]
 
     end subroutine collect_suite2
@@ -44,6 +45,7 @@ module tests
                 new_unittest("Vector_length", vector_length), &
                 new_unittest("Vector_nint", vector_nint), &
                 new_unittest("Vector_abs", vector_abs), &
+                new_unittest("Vector_min", vector_min), &
                 new_unittest("Vector_max", vector_max) &
                 ]
 
@@ -159,6 +161,14 @@ module tests
         call check(error, c%z, 4._wp)
         if(allocated(error))return
 
+        c = b + a
+        call check(error, c%x, 4._wp)
+        if(allocated(error))return
+        call check(error, c%y, 4._wp)
+        if(allocated(error))return
+        call check(error, c%z, 4._wp)
+        if(allocated(error))return
+
     end subroutine vector_add_scal
 
     subroutine vector_sub_scal(error)
@@ -172,6 +182,14 @@ module tests
         b = 1._wp
 
         c = a - b
+        call check(error, c%x, 1._wp)
+        if(allocated(error))return
+        call check(error, c%y, 1._wp)
+        if(allocated(error))return
+        call check(error, c%z, 1._wp)
+        if(allocated(error))return
+
+        c = b - a
         call check(error, c%x, 1._wp)
         if(allocated(error))return
         call check(error, c%y, 1._wp)
@@ -199,6 +217,14 @@ module tests
         call check(error, c%z, 4._wp)
         if(allocated(error))return
 
+        c = b * a
+        call check(error, c%x, 4._wp)
+        if(allocated(error))return
+        call check(error, c%y, 4._wp)
+        if(allocated(error))return
+        call check(error, c%z, 4._wp)
+        if(allocated(error))return
+
     end subroutine vector_mult_scal
 
     subroutine vector_div_scal(error)
@@ -219,6 +245,25 @@ module tests
         call check(error, c%z, 4._wp)
         if(allocated(error))return
     end subroutine vector_div_scal
+
+    subroutine vector_div_scal_int(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(vector) :: a, c
+        integer      :: b
+
+        a = vector(8._wp, 8._wp, 8._wp)
+        b = 2
+
+        c = a / b
+        call check(error, c%x, 4._wp)
+        if(allocated(error))return
+        call check(error, c%y, 4._wp)
+        if(allocated(error))return
+        call check(error, c%z, 4._wp)
+        if(allocated(error))return
+    end subroutine vector_div_scal_int
 
     subroutine vector_mag(error)
 
@@ -289,7 +334,7 @@ module tests
 
         type(error_type), allocatable, intent(out) :: error
 
-        type(vector) :: a, c
+        type(vector)  :: a, c
         real(kind=wp) :: b
 
         a = vector(8._wp, -1._wp, 2.2_wp)
@@ -303,6 +348,25 @@ module tests
         call check(error, c%z, 2.2_wp)
         if(allocated(error))return
     end subroutine vector_max
+
+    subroutine vector_min(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(vector)  :: a, c
+        real(kind=wp) :: b
+
+        a = vector(8._wp, -1._wp, 2.2_wp)
+        b = 2._wp
+
+        c = min(a, b)
+        call check(error, c%x, 2._wp)
+        if(allocated(error))return
+        call check(error, c%y, -1._wp)
+        if(allocated(error))return
+        call check(error, c%z, 2._wp)
+        if(allocated(error))return
+    end subroutine vector_min
 
 end module tests
 

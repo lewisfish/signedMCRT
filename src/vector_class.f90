@@ -41,7 +41,7 @@ Module vector_class
     end type vector
 
     private
-    public :: magnitude, vector, print, abs, length, max, invert, nint
+    public :: magnitude, vector, print, abs, length, max, invert, nint, min
 
     interface nint
         module procedure nint_vec
@@ -54,6 +54,10 @@ Module vector_class
     interface max
         module procedure max_vec
     end interface max
+
+    interface min
+        module procedure min_vec
+    end interface min
 
     contains
 
@@ -88,16 +92,16 @@ Module vector_class
 
         end function max_vec
 
-        type(vector) function min_fn(this, val)
+        type(vector) function min_vec(this, val)
 
             implicit none
 
             type(vector),  intent(IN) :: this
             real(kind=wp), intent(IN) :: val
 
-            min_fn = vector(min(this%x, val), min(this%y, val), min(this%z, val))
+            min_vec = vector(min(this%x, val), min(this%y, val), min(this%z, val))
 
-        end function min_fn
+        end function min_vec
 
         type(vector) function vec_minus_vec(a, b)
 

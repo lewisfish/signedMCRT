@@ -52,9 +52,6 @@ jobs:
       if: ${{ contains(matrix.build, 'fpm') }}
       run: fpm @test
 
-    - name: listfiles
-      run: ls ./build/
-
     - name: Run CodeCov
       run: |
         gcov ./build/gfortran_*/sMCRT/src*.gcda -r ./src/ -b
@@ -62,81 +59,81 @@ jobs:
     - name: Codecov
       uses: codecov/codecov-action@v3.1.1
 
-  intel-build:
-      runs-on: ${{ matrix.os }}
-      strategy:
-        fail-fast: false
-        matrix:
-          os: [ubuntu-latest]
-          fc: [ifort]
-          cc: [icc]
-          cxx: [icpc]
-          build: [fpm]
-      env:
-        MACOS_HPCKIT_URL: >-
-          https://registrationcenter-download.intel.com/akdlm/irc_nas/18242/m_HPCKit_p_2021.4.0.3389_offline.dmg
-        MACOS_FORTRAN_COMPONENTS: all
-        FC: ${{ matrix.fc }}
-        CC: ${{ matrix.cc }}
-        CXX: ${{ matrix.cxx }}
+  # intel-build:
+  #     runs-on: ${{ matrix.os }}
+  #     strategy:
+  #       fail-fast: false
+  #       matrix:
+  #         os: [ubuntu-latest]
+  #         fc: [ifort]
+  #         cc: [icc]
+  #         cxx: [icpc]
+  #         build: [fpm]
+  #     env:
+  #       MACOS_HPCKIT_URL: >-
+  #         https://registrationcenter-download.intel.com/akdlm/irc_nas/18242/m_HPCKit_p_2021.4.0.3389_offline.dmg
+  #       MACOS_FORTRAN_COMPONENTS: all
+  #       FC: ${{ matrix.fc }}
+  #       CC: ${{ matrix.cc }}
+  #       CXX: ${{ matrix.cxx }}
 
-      steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+  #     steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
 
-      - name: Prepare for cache restore (OSX)
-        if: contains(matrix.os, 'macos')
-        run: |
-          sudo mkdir -p /opt/intel
-          sudo chown $USER /opt/intel
-      - name: Cache Intel install (OSX)
-        if: contains(matrix.os, 'macos')
-        id: cache-install
-        uses: actions/cache@v2
-        with:
-          path: /opt/intel/oneapi
-          key: install-${{ env.MACOS_HPCKIT_URL }}-${{ env.MACOS_FORTRAN_COMPONENTS }}
+  #     - name: Prepare for cache restore (OSX)
+  #       if: contains(matrix.os, 'macos')
+  #       run: |
+  #         sudo mkdir -p /opt/intel
+  #         sudo chown $USER /opt/intel
+  #     - name: Cache Intel install (OSX)
+  #       if: contains(matrix.os, 'macos')
+  #       id: cache-install
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: /opt/intel/oneapi
+  #         key: install-${{ env.MACOS_HPCKIT_URL }}-${{ env.MACOS_FORTRAN_COMPONENTS }}
 
-      - name: Add Intel repository (Linux)
-        if: contains(matrix.os, 'ubuntu')
-        run: |
-          wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-          sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-          rm GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-          echo "deb https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
-          sudo apt-get update
-      - name: Install Intel oneAPI compiler (Linux)
-        if: contains(matrix.os, 'ubuntu')
-        run: |
-          sudo apt-get install intel-oneapi-compiler-fortran
-          sudo apt-get install intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic
-      - name: Install Intel oneAPI compiler (OSX)
-        if: contains(matrix.os, 'macos') && steps.cache-install.outputs.cache-hit != 'true'
-        run: |
-          curl --output webimage.dmg --url "$URL" --retry 5 --retry-delay 5
-          hdiutil attach webimage.dmg
-          if [ -z "$COMPONENTS" ]; then
-            sudo /Volumes/"$(basename "$URL" .dmg)"/bootstrapper.app/Contents/MacOS/bootstrapper -s --action install --eula=accept --continue-with-optional-error=yes --log-dir=.
-            installer_exit_code=$?
-          else
-            sudo /Volumes/"$(basename "$URL" .dmg)"/bootstrapper.app/Contents/MacOS/bootstrapper -s --action install --components="$COMPONENTS" --eula=accept --continue-with-optional-error=yes --log-dir=.
-            installer_exit_code=$?
-          fi
-          hdiutil detach /Volumes/"$(basename "$URL" .dmg)" -quiet
-          exit $installer_exit_code
-        env:
-          URL: ${{ env.MACOS_HPCKIT_URL }}
-          COMPONENTS: ${{ env.MACOS_FORTRAN_COMPONENTS }}
+  #     - name: Add Intel repository (Linux)
+  #       if: contains(matrix.os, 'ubuntu')
+  #       run: |
+  #         wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+  #         sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+  #         rm GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+  #         echo "deb https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
+  #         sudo apt-get update
+  #     - name: Install Intel oneAPI compiler (Linux)
+  #       if: contains(matrix.os, 'ubuntu')
+  #       run: |
+  #         sudo apt-get install intel-oneapi-compiler-fortran
+  #         sudo apt-get install intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic
+  #     - name: Install Intel oneAPI compiler (OSX)
+  #       if: contains(matrix.os, 'macos') && steps.cache-install.outputs.cache-hit != 'true'
+  #       run: |
+  #         curl --output webimage.dmg --url "$URL" --retry 5 --retry-delay 5
+  #         hdiutil attach webimage.dmg
+  #         if [ -z "$COMPONENTS" ]; then
+  #           sudo /Volumes/"$(basename "$URL" .dmg)"/bootstrapper.app/Contents/MacOS/bootstrapper -s --action install --eula=accept --continue-with-optional-error=yes --log-dir=.
+  #           installer_exit_code=$?
+  #         else
+  #           sudo /Volumes/"$(basename "$URL" .dmg)"/bootstrapper.app/Contents/MacOS/bootstrapper -s --action install --components="$COMPONENTS" --eula=accept --continue-with-optional-error=yes --log-dir=.
+  #           installer_exit_code=$?
+  #         fi
+  #         hdiutil detach /Volumes/"$(basename "$URL" .dmg)" -quiet
+  #         exit $installer_exit_code
+  #       env:
+  #         URL: ${{ env.MACOS_HPCKIT_URL }}
+  #         COMPONENTS: ${{ env.MACOS_FORTRAN_COMPONENTS }}
 
-      - name: Setup Intel oneAPI environment
-        run: |
-          source /opt/intel/oneapi/setvars.sh
-          printenv >> $GITHUB_ENV
+  #     - name: Setup Intel oneAPI environment
+  #       run: |
+  #         source /opt/intel/oneapi/setvars.sh
+  #         printenv >> $GITHUB_ENV
 
-      - uses: fortran-lang/setup-fpm@v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+  #     - uses: fortran-lang/setup-fpm@v4
+  #       with:
+  #         github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and compile
-        if: ${{ contains(matrix.build, 'fpm') }}
-        run: fpm @build
+  #     - name: Build and compile
+  #       if: ${{ contains(matrix.build, 'fpm') }}
+  #       run: fpm @build

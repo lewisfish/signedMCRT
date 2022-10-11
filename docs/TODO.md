@@ -4,8 +4,8 @@ List of ToDo's for SignedMCRT.
 
 ## Additional Features
 
-- [ ] Make CI run tests
-- [ ] Add Code Coverage reports
+- [x] Make CI run tests
+- [x] Add Code Coverage reports
 - [ ] Add Direction component to rest of Detectors
     - [x] **Circle**
     - [x] **Camera**
