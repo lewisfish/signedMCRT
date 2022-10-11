@@ -1,6 +1,6 @@
 module tests
 
-    use vector_class
+    use vector_class, only : vector, max, abs, nint
     use testdrive, only : new_unittest, unittest_type, error_type, check
     use constants, only : wp
 
