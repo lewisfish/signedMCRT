@@ -58,7 +58,6 @@ jobs:
       uses: codecov/codecov-action@v3.1.1
       with:
           gcov: true
-          gcov_include: *.f90
 
   intel-build:
       runs-on: ${{ matrix.os }}
