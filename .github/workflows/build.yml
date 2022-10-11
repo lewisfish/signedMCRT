@@ -53,7 +53,12 @@ jobs:
       run: fpm @test
 
     - name: Codecov
+      run: |
+        mv ./build/gfortran_*/sMCRT/src*.gcda -r ./src/ -b
       uses: codecov/codecov-action@v3.1.1
+      with:
+          gcov: true
+          gcov_include: *.f90
 
   intel-build:
       runs-on: ${{ matrix.os }}
