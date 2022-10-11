@@ -52,6 +52,9 @@ jobs:
       if: ${{ contains(matrix.build, 'fpm') }}
       run: fpm @test
 
+    - name: listfiles
+      run: ls ./build/
+
     - name: Setup CodeCov
       run: |
         mv ./build/gfortran_*/sMCRT/src*.gcda ./src/
