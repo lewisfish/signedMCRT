@@ -58,13 +58,9 @@ jobs:
     - name: Run CodeCov
       run: |
         gcov ./build/gfortran_*/sMCRT/src*.gcda -r ./src/ -b
-        bash <(curl -s https://codecov.io/bash) -v -X $GCOV
     
-    # - name: Codecov
-    #   uses: codecov/codecov-action@v3.1.1
-    #   with:
-    #       gcov: true
-    #       gcov_include: ./src/
+    - name: Codecov
+      uses: codecov/codecov-action@v3.1.1
 
   intel-build:
       runs-on: ${{ matrix.os }}
