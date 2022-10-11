@@ -54,7 +54,7 @@ jobs:
 
     - name: Setup CodeCov
       run: |
-        mv ./build/gfortran_*/sMCRT/src*.gcda -r ./src/ -b
+        mv ./build/gfortran_*/sMCRT/src*.gcda ./src/
     
     - name: Codecov
       uses: codecov/codecov-action@v3.1.1
