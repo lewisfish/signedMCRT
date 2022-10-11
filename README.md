@@ -1,5 +1,8 @@
 ![SignedMCRT logo made in signedMCRT](https://github.com/lewisfish/signedMCRT/raw/main/sMCRT_logo.png)
 [![DOI](https://zenodo.org/badge/390770167.svg)](https://zenodo.org/badge/latestdoi/390770167) [![codecov](https://codecov.io/github/lewisfish/signedMCRT/branch/main/graph/badge.svg?token=U402PQWWUY)](https://codecov.io/github/lewisfish/signedMCRT)
+![workflow](https://github.com/lewisfish/signedMCRT/actions/workflows/build.yml/badge.svg
+)
+
 
 Use of signed distance fields in Monte Carlo Radiative Transfer.
 This allows modelling of smooth surfaces with out the need to use triangle or similar meshes.
