@@ -24,8 +24,8 @@ use vec4_class
 use photonMod
 use stokes_mod
 use writer_mod
-use detector_mod
-use vector_class
+use detector_mod,  only : dect_array, hit_t
+use vector_class,  only : vector
 use sim_state_mod, only : state
 use string_utils,  only : str
 use utils,         only : pbar, get_time, print_time
@@ -223,8 +223,17 @@ if(id == 0)then
     jmeanGLOBAL = normalise_fluence(state%grid, jmeanGLOBAL, state%nphotons)
     call write_fluence(jmeanGLOBAL, trim(fileplace)//"jmean/"//state%outfile, dict)
 end if
+!write out detected photons
+if(size(dects) > 0)then
 call write_detected_photons(dects)
-call history%finish()
+    block
+        logical :: mask(size(dects))
+        do i = 1, size(dects)
+            mask(i) = dects(i)%p%trackHistory
+        end do
+    if(any(mask))call history%finish()
+    end block
+end if
 
 time_taken = get_time() - start
 call print_time(time_taken, id)

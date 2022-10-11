@@ -116,6 +116,8 @@ module parse_mod
             dects(j+i+k-2)%p => dect_cam(k)
         end do
 
+        if(.not. allocated(state%historyFilename))state%historyFilename="photPos.obj"
+
     end subroutine parse_detectors
 
     subroutine handle_camera(child, dects, counts, context)

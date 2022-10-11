@@ -355,7 +355,6 @@ module subs
             use vector_class
             use sdfs, only : container, box, segment, extrude, model, union, model_init
 
-
             type(container), allocatable :: cnta(:), array(:)
             type(box),     target, save :: bbox
             type(segment), allocatable, target, save :: seg(:)
