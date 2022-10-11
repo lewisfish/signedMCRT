@@ -40,6 +40,10 @@ List of ToDo's for SignedMCRT.
 - [ ] End to End tests
     - [ ] Scattering Test
     - [ ] Others
+- [ ] Implment a fuzzer to test input space
+- [ ] Add a input schema to validate input toml
+    - [ ] Add Even better TOML?
+    - [ ] Learn from https://json-schema.org/learn/getting-started-step-by-step.html
 
 ## Bugs
 

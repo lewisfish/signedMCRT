@@ -180,7 +180,9 @@ module subs
 
             use sdfs,         only : container, sphere, box, translate
             use random,       only : ranu
-            use vector_class, only : vector, invert
+            use vector_class, only : vector
+            use mat_class,    only : invert
+
 
             type(toml_table), intent(inout) :: dict
             type(container), allocatable :: array(:)
@@ -225,7 +227,9 @@ module subs
         function blobby() result(array)
             
             use sdfs, only : box, capsule, sphere, translate, rotate_x, rotate_y, rotate_z, container, model, smoothunion, model_init
-            use vector_class, only : vector, invert
+            use vector_class, only : vector
+            use mat_class,    only : invert
+
             
             type(container), allocatable :: array(:)
             type(container), target, save, allocatable :: cnta(:)
@@ -301,7 +305,9 @@ module subs
         function lens_test_setup() result(array)
         !create lens geometry from tran and Jacques interpolated normals approach paper
             use sdfs, only : sphere, container, box, model, intersection, model_init, translate
-            use vector_class, only : vector, invert
+            use vector_class, only : vector
+            use mat_class,    only : invert
+
 
 
             type(container),target, save :: cnta(2)
@@ -454,7 +460,9 @@ module subs
         !
         !
             use sdfs,         only : sphere, box, container, translate
-            use vector_class, only : vector, invert
+            use vector_class, only : vector
+            use mat_class,    only : invert
+
             
             type(container), allocatable :: array(:)
             type(sphere),   target, save :: sph
@@ -486,8 +494,8 @@ module subs
 
         function interior_test() result(array)
 
-            use sdfs, only : container, model, union, sphere, box, translate, model_init
-            
+            use sdfs,      only : container, model, union, sphere, box, translate, model_init
+            use mat_class, only : invert
             use vector_class
 
             type(container) :: array(1), cnta(3)
@@ -530,8 +538,8 @@ module subs
 
         function exterior_test() result(array)
 
-            use sdfs, only : container, moon, box, translate
-            
+            use sdfs,      only : container, moon, box, translate
+            use mat_class, only : invert
             use vector_class
 
             type(container) :: array(1)
@@ -590,8 +598,8 @@ module subs
         !
             use sdfs,  only : container, box, cylinder, rotate_y, subtraction, translate
             use utils, only : deg2rad
-
-            use vector_class, only : vector, invert
+            use vector_class, only : vector
+            use mat_class,    only : invert
 
             type(toml_table), intent(inout)  :: dict
 
@@ -671,7 +679,8 @@ module subs
         function setup_omg_sdf() result(array)
             
             use sdfs,         only : container, cylinder, torus, model, box, union, rotate_y, model_init, translate
-            use vector_class, only : vector, invert
+            use vector_class, only : vector
+            use mat_class,    only : invert
 
             type(container), allocatable :: array(:)
 
@@ -778,8 +787,9 @@ module subs
 
         function get_vessels() result(array)
 
-            use sdfs, only : container, model, capsule, model_init, union, box, union
-            use vector_class, only : vector, invert
+            use sdfs,         only : container, model, capsule, model_init, union, box, union
+            use vector_class, only : vector
+            use mat_class,    only : invert
 
             type(container), allocatable :: array(:), cnta(:)
             type(model), target, save :: vessels
@@ -897,9 +907,9 @@ module subs
 
         function setup_skin_model() result(array)
 
-            use sdfs, only : container, model, capsule, box, translate, model_init, smoothunion
-
-            use vector_class, only : vector, invert
+            use sdfs,         only : container, model, capsule, box, translate, model_init, smoothunion
+            use vector_class, only : vector
+            use mat_class,    only : invert
 
             type(container), allocatable :: array(:), cnta(:)
 

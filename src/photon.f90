@@ -117,6 +117,7 @@ module photonMod
                 use constants,     only : twoPI
                 use tomlf,         only : toml_table, get_value
                 use sdfs,          only : rotationAlign, rotmat
+                use mat_class,     only : invert
                 use vector_class
             
                 class(photon) :: this

@@ -51,6 +51,16 @@ module tests
 
     end subroutine collect_suite3
 
+    subroutine collect_suite4(testsuite)
+
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [ &
+                new_unittest("Vector_dot_mat", vector_dot_mat) &
+                ]
+
+    end subroutine collect_suite4
+
     subroutine vector_add(error)
 
         type(error_type), allocatable, intent(out) :: error
@@ -368,6 +378,27 @@ module tests
         if(allocated(error))return
     end subroutine vector_min
 
+    subroutine vector_dot_mat(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(vector)  :: a, c
+        real(kind=wp) :: b(4, 4)
+
+        a = vector(8._wp, -1._wp, 2.2_wp)
+        b(:, 1) = [1._wp, 0._wp, 0._wp, 0._wp]
+        b(:, 2) = [0._wp, 1._wp, 0._wp, 0._wp]
+        b(:, 3) = [0._wp, 0._wp, 1._wp, 0._wp]
+        b(:, 4) = [0._wp, 0._wp, 0._wp, 1._wp]
+
+        c = a .dot. b
+        call check(error, c%x, 8._wp)
+        if(allocated(error))return
+        call check(error, c%y, -1._wp)
+        if(allocated(error))return
+        call check(error, c%z, 2.2_wp)
+        if(allocated(error))return
+    end subroutine vector_dot_mat
 end module tests
 
 program test_vector
@@ -388,7 +419,9 @@ program test_vector
 
     testsuites = [new_testsuite("Suite: Vector .op. vector", collect_suite1), &
                   new_testsuite("Suite: Vector .op. scalar", collect_suite2), &
-                  new_testsuite("Suite: Vector functions", collect_suite3)]
+                  new_testsuite("Suite: Vector functions", collect_suite3), &
+                  new_testsuite("Suite: Vector .op. matrix", collect_suite4) &
+                  ]
 
     do i = 1, size(testsuites)
         write(error_unit, fmt) "Testing:", testsuites(i)%name
