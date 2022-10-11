@@ -52,12 +52,15 @@ jobs:
       if: ${{ contains(matrix.build, 'fpm') }}
       run: fpm @test
 
-    - name: Codecov
+    - name: Setup CodeCov
       run: |
         mv ./build/gfortran_*/sMCRT/src*.gcda -r ./src/ -b
+    
+    - name: Codecov
       uses: codecov/codecov-action@v3.1.1
       with:
           gcov: true
+          gcov_include: ./src/
 
   intel-build:
       runs-on: ${{ matrix.os }}
