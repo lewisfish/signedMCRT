@@ -126,3 +126,10 @@ jobs:
       - name: Build and compile
         if: ${{ contains(matrix.build, 'fpm') }}
         run: fpm @build
+        
+      - name: Test and compile
+        if: ${{ contains(matrix.build, 'fpm') }}
+        run: fpm @test
+
+      - name: Codecov
+        uses: codecov/codecov-action@v3.1.1
