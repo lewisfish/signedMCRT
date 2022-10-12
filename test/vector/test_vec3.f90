@@ -1,4 +1,4 @@
-module tests
+module testsVecMod
 
     use vector_class, only : vector, max, abs, nint, min
     use testdrive, only : new_unittest, unittest_type, error_type, check
@@ -399,7 +399,7 @@ module tests
         call check(error, c%z, 2.2_wp)
         if(allocated(error))return
     end subroutine vector_dot_mat
-end module tests
+end module testsVecMod
 
 program test_vector
 
@@ -407,7 +407,7 @@ program test_vector
 
     use constants, only : wp
     use testdrive, only : run_testsuite, new_testsuite, testsuite_type
-    use tests
+    use testsVecMod
 
     implicit none
     
