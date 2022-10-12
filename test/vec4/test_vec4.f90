@@ -13,13 +13,213 @@ module testsVec4Mod
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
-                new_unittest("Vector_add", vector_add) &
-                ! new_unittest("Vector_subtract", vector_sub), &
-                ! new_unittest("Vector_multiply", vector_mult), &
-                ! new_unittest("Vector_dot", vector_dot) &
+                new_unittest("Vector_add", vector_add), &
+                new_unittest("Vector_subtract", vector_sub), &
+                new_unittest("Vector_multiply", vector_mult), &
+                new_unittest("Vector_dot", vector_dot) &
                 ]
 
     end subroutine collect_suite1
+
+    subroutine collect_suite2(testsuite)
+
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [ &
+                new_unittest("Vector_add_scal", vector_add_scal), &
+                new_unittest("Vector_subtract_scal", vector_sub_scal), &
+                new_unittest("Vector_multiply_scal", vector_mult_scal), &
+                new_unittest("Vector_div_scal", vector_div_scal) &
+                ]
+
+    end subroutine collect_suite2
+
+    subroutine collect_suite3(testsuite)
+
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [ &
+                new_unittest("Vector_init", vector_init), &
+                new_unittest("Vector_sine", vector_sine) &
+                ]
+    end subroutine collect_suite3
+
+    subroutine vector_sine(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(vec4)    :: c
+        real(kind=wp) :: pi
+
+        pi = 4._wp*atan(1._wp)
+        c = vec4(0._wp, pi/2._wp, pi, (3._wp/2._wp)*pi)
+        c = sin(c)
+
+        call check(error, c%x, 0._wp)
+        if(allocated(error))return
+        call check(error, c%y, 1._wp)
+        if(allocated(error))return
+        call check(error, c%z, 0._wp)
+        if(allocated(error))return
+        call check(error, c%p, -1._wp)
+        if(allocated(error))return
+
+    end subroutine vector_sine
+
+    subroutine vector_init(error)
+
+        use vector_class, only : vector
+        
+        type(error_type), allocatable, intent(out) :: error
+
+        type(vec4)    :: a
+        type(vector) :: vec
+        real(kind=wp) :: val
+
+        vec = vector(1._wp, 2._wp, 3._wp)
+        val = 4._wp
+        a = vec4(vec, val)
+
+        call check(error, a%x, 1._wp)
+        if(allocated(error))return
+        call check(error, a%y, 2._wp)
+        if(allocated(error))return
+        call check(error, a%z, 3._wp)
+        if(allocated(error))return
+        call check(error, a%p, 4._wp)
+        if(allocated(error))return
+
+    end subroutine vector_init
+
+    subroutine vector_add_scal(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(vec4)    :: a, c
+        real(kind=wp) :: b
+
+        a = vec4(1._wp, 1._wp, 1._wp, 1._wp)
+        b = 5._wp
+
+        c = a + b
+        call check(error, c%x, 6._wp)
+        if(allocated(error))return
+        call check(error, c%y, 6._wp)
+        if(allocated(error))return
+        call check(error, c%z, 6._wp)
+        if(allocated(error))return
+        call check(error, c%p, 6._wp)
+        if(allocated(error))return
+
+        c = b + a
+        call check(error, c%x, 6._wp)
+        if(allocated(error))return
+        call check(error, c%y, 6._wp)
+        if(allocated(error))return
+        call check(error, c%z, 6._wp)
+        if(allocated(error))return
+        call check(error, c%p, 6._wp)
+        if(allocated(error))return
+
+    end subroutine vector_add_scal
+
+    subroutine vector_sub_scal(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(vec4)    :: a, c
+        real(kind=wp) :: b
+
+        a = vec4(1._wp, 1._wp, 1._wp, 1._wp)
+        b = 5._wp
+
+        c = a - b
+        call check(error, c%x, -4._wp)
+        if(allocated(error))return
+        call check(error, c%y, -4._wp)
+        if(allocated(error))return
+        call check(error, c%z, -4._wp)
+        if(allocated(error))return
+        call check(error, c%p, -4._wp)
+        if(allocated(error))return
+
+        c = b - a
+        call check(error, c%x, 4._wp)
+        if(allocated(error))return
+        call check(error, c%y, 4._wp)
+        if(allocated(error))return
+        call check(error, c%z, 4._wp)
+        if(allocated(error))return
+        call check(error, c%p, 4._wp)
+        if(allocated(error))return
+
+    end subroutine vector_sub_scal
+
+    subroutine vector_mult_scal(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(vec4)    :: a, c
+        real(kind=wp) :: b
+
+        a = vec4(1._wp, 1._wp, 1._wp, 1._wp)
+        b = 5._wp
+
+        c = a * b
+        call check(error, c%x, 5._wp)
+        if(allocated(error))return
+        call check(error, c%y, 5._wp)
+        if(allocated(error))return
+        call check(error, c%z, 5._wp)
+        if(allocated(error))return
+        call check(error, c%p, 5._wp)
+        if(allocated(error))return
+
+        c = b * a
+        call check(error, c%x, 5._wp)
+        if(allocated(error))return
+        call check(error, c%y, 5._wp)
+        if(allocated(error))return
+        call check(error, c%z, 5._wp)
+        if(allocated(error))return
+        call check(error, c%p, 5._wp)
+        if(allocated(error))return
+
+    end subroutine vector_mult_scal
+
+    subroutine vector_div_scal(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(vec4)    :: a, c
+        real(kind=wp) :: b
+        integer :: bi
+
+        a = vec4(10._wp, 10._wp, 10._wp, 10._wp)
+        b = 5._wp
+
+        c = a / b
+        call check(error, c%x, 2._wp)
+        if(allocated(error))return
+        call check(error, c%y, 2._wp)
+        if(allocated(error))return
+        call check(error, c%z, 2._wp)
+        if(allocated(error))return
+        call check(error, c%p, 2._wp)
+        if(allocated(error))return
+
+        bi = 2
+        c = a / bi
+        call check(error, c%x, 5._wp)
+        if(allocated(error))return
+        call check(error, c%y, 5._wp)
+        if(allocated(error))return
+        call check(error, c%z, 5._wp)
+        if(allocated(error))return
+        call check(error, c%p, 5._wp)
+        if(allocated(error))return
+
+    end subroutine vector_div_scal
 
     subroutine vector_add(error)
 
@@ -41,6 +241,63 @@ module testsVec4Mod
         if(allocated(error))return
 
     end subroutine vector_add
+
+    subroutine vector_sub(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(vec4) :: a, b, c
+
+        a = vec4(2._wp, 3._wp, 4._wp, 6._wp)
+        b = vec4(0.5_wp, 1._wp, 3._wp, 2._wp)
+
+        c = a - b
+        call check(error, c%x, 1.5_wp)
+        if(allocated(error))return
+        call check(error, c%y, 2._wp)
+        if(allocated(error))return
+        call check(error, c%z, 1._wp)
+        if(allocated(error))return
+        call check(error, c%p, 4._wp)
+        if(allocated(error))return
+
+    end subroutine vector_sub
+
+    subroutine vector_mult(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(vec4) :: a, b, c
+
+        a = vec4(2._wp, 3._wp, 4._wp, 6._wp)
+        b = vec4(0.5_wp, 1._wp, 3._wp, 2._wp)
+
+        c = a * b
+        call check(error, c%x, 1._wp)
+        if(allocated(error))return
+        call check(error, c%y, 3._wp)
+        if(allocated(error))return
+        call check(error, c%z, 12._wp)
+        if(allocated(error))return
+        call check(error, c%p, 12._wp)
+        if(allocated(error))return
+
+    end subroutine vector_mult
+
+    subroutine vector_dot(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(vec4)    :: a, b
+        real(kind=wp) :: c
+
+        a = vec4(2._wp, 3._wp, 4._wp, 6._wp)
+        b = vec4(0.5_wp, 1._wp, 3._wp, 2._wp)
+
+        c = a .dot. b
+        call check(error, c, 28._wp)
+        if(allocated(error))return
+    end subroutine vector_dot
 end module testsVec4Mod
 
 program test_vector4
@@ -59,10 +316,9 @@ program test_vector4
 
     stat = 0
 
-    testsuites = [new_testsuite("Suite: Vector .op. vector", collect_suite1) &
-    !               new_testsuite("Suite: Vector .op. scalar", collect_suite2), &
-    !               new_testsuite("Suite: Vector functions", collect_suite3), &
-    !               new_testsuite("Suite: Vector .op. matrix", collect_suite4) &
+    testsuites = [new_testsuite("Suite: Vector .op. vector", collect_suite1), &
+                  new_testsuite("Suite: Vector .op. scalar", collect_suite2), &
+                  new_testsuite("Suite: Vector functions", collect_suite3) &
                   ]
 
     do i = 1, size(testsuites)

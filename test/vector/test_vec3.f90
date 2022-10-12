@@ -200,11 +200,11 @@ module testsVecMod
         if(allocated(error))return
 
         c = b - a
-        call check(error, c%x, 1._wp)
+        call check(error, c%x, -1._wp)
         if(allocated(error))return
-        call check(error, c%y, 1._wp)
+        call check(error, c%y, -1._wp)
         if(allocated(error))return
-        call check(error, c%z, 1._wp)
+        call check(error, c%z, -1._wp)
         if(allocated(error))return
 
     end subroutine vector_sub_scal

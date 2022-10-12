@@ -158,7 +158,7 @@ Module vector_class
             class(vector), intent(IN) :: b
             real(kind=wp), intent(IN) :: a
 
-            scal_minus_vec = vector(b%x - a, b%y - a, b%z - a)
+            scal_minus_vec = vector(a - b%x, a - b%y, a - b%z)
 
         end function scal_minus_vec
 
