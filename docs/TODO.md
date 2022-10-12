@@ -25,7 +25,8 @@ List of ToDo's for SignedMCRT.
 ## Testing
 
 - [x] Vec3 class
-- [ ] Matrix class
+- [x] Matrix class
+ - [ ] Need Mat mult Mat test
 - [ ] Vec4 Class
 - [ ] SDF Class
 - [ ] Detector Class

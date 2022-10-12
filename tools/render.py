@@ -78,6 +78,7 @@ def read_data(file, header):
     data = data.reshape((size))
     return data
 
+
 def write_binary_stl(path, points):
     n = len(points) // 3
     dtype = np.dtype([
@@ -121,4 +122,3 @@ if ".nrrd" in args:
     write_binary_stl(f"{args.file[:-5]}.stl", points)
 else:
     write_binary_stl(f"{args.file[:-4]}.stl", points)
-

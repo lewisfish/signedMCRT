@@ -2,16 +2,18 @@ import subprocess
 import sys
 from typing import Dict
 
+
 def run_sim(setting_file: str) -> None:
 
     command = f'bash -c "source activate root; conda activate fpm; fpm @runmp -- sphere.toml"'
     subprocess.run(command, check=True, shell=True)
 
+
 def make_settings(user_dict: Dict, file: str) -> None:
     source = {"name": "uniform", "nphotons": 1000000, "directions": "-z"}
-    grid = {"nxg":200, "nyg":200, "nzg":200, "xmax":1.0, "ymax":1.0, "zmax":1.0}
-    geometry = {"geom_name": "sphere_scene", "num_spheres":10}
-    output = {"fluence":f"sphere_scene_{geometry['num_spheres']}.nrrd", "render_geom": "false"}
+    grid = {"nxg": 200, "nyg": 200, "nzg": 200, "xmax": 1.0, "ymax": 1.0, "zmax": 1.0}
+    geometry = {"geom_name": "sphere_scene", "num_spheres": 10}
+    output = {"fluence": f"sphere_scene_{geometry['num_spheres']}.nrrd", "render_geom": "false"}
     simulation = {"iseed": 123456789, "tev": "false"}
 
     defaults = {"source": source, "grid": grid, "geometry": geometry, "output": output, "simulation": simulation}
@@ -22,7 +24,7 @@ def make_settings(user_dict: Dict, file: str) -> None:
                 defaults[key][user_key] = user_dict[user_key]
                 if user_key == "num_spheres":
                     defaults["output"]["fluence"] = f"sphere_scene_{user_dict[user_key]}.nrrd"
-    
+
     # write out setting file
     with open("res/" + file, "w") as f:
         for key in defaults:
@@ -37,6 +39,7 @@ def make_settings(user_dict: Dict, file: str) -> None:
                 else:
                     f.write(f"{subkey}={output}\n")
             f.write("\n")
+
 
 if __name__ == "__main__":
     import time
