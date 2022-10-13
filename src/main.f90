@@ -112,13 +112,13 @@ end if
     numproc = omp_get_num_threads()
     id = omp_get_thread_num()
     if(numproc > state%nphotons .and. id == 0)print*,"Warning, simulation may be underministic due to low photon count!"
-    history = history_stack_t(state%historyFilename)
+    history = history_stack_t(state%historyFilename, id)
 #elif MPI
     !nothing
 #else
     numproc = 1
     id = 0
-    history = history_stack_t(state%historyFilename)
+    history = history_stack_t(state%historyFilename, id)
 #endif
 if(id == 0)print("(a,I3.1,a)"),'Photons now running on', numproc,' cores.'
 
@@ -231,7 +231,7 @@ call write_detected_photons(dects)
         do i = 1, size(dects)
             mask(i) = dects(i)%p%trackHistory
         end do
-    if(any(mask))call history%finish()
+    if(any(mask))call history%finish(numproc)
     end block
 end if
 

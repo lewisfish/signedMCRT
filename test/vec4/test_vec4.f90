@@ -40,9 +40,48 @@ module testsVec4Mod
 
         testsuite = [ &
                 new_unittest("Vector_init", vector_init), &
-                new_unittest("Vector_sine", vector_sine) &
+                new_unittest("Vector_sine", vector_sine), &
+                new_unittest("Vector_magnitude", vector_mag), &
+                new_unittest("Vector_length", vector_length) &
                 ]
     end subroutine collect_suite3
+
+    subroutine vector_mag(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(vec4)    :: a, c
+        real(kind=wp) :: val
+
+        a = vec4(1._wp, 2._wp, 3._wp, 4._wp)
+        c = a%magnitude()
+
+        val = sqrt(30._wp)
+
+        call check(error, c%x, 1._wp / val)
+        if(allocated(error))return
+        call check(error, c%y, 2._wp / val)
+        if(allocated(error))return
+        call check(error, c%z, 3._wp / val)
+        if(allocated(error))return
+        call check(error, c%p, 4._wp / val)
+        if(allocated(error))return
+
+    end subroutine vector_mag
+
+    subroutine vector_length(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(vec4)    :: a
+        real(kind=wp) :: c
+
+        a = vec4(1._wp, 2._wp, 3._wp, 4._wp)
+        c = a%length()
+
+        call check(error, c, sqrt(30._wp))
+        if(allocated(error))return
+    end subroutine vector_length
 
     subroutine vector_sine(error)
 

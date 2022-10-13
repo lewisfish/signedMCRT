@@ -13,7 +13,10 @@ test-drive.tag = "v0.4.0"
 toml-f.git = "https://github.com/toml-f/toml-f"
 tev_bindings.git = "https://github.com/lewisfish/fortran_tev_bindings"
 
-[executable]
+[build]
+external-modules = "mpi_f08"
+
+[[executable]]
 name="sMCRT"
 source-dir="src"
 main="main.f90"

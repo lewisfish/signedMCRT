@@ -30,19 +30,36 @@ module historyStack
 
 contains
 
-    type(history_stack_t) function init_historyStack(filename)
+    type(history_stack_t) function init_historyStack(filename, id)
+
+        use string_utils, only : str
+        use constants,    only : fileplace
 
         character(*), intent(in) :: filename
+        integer, intent(in) :: id
 
-        init_historyStack%filename = filename
-        if(index(filename, "obj") /= 0)then
+        character(len=:), allocatable :: new_filename
+        integer :: idx
+        logical :: res
+        
+        idx = index(filename, ".")
+        new_filename = filename(1:idx-1)//"_"//str(id,3)//filename(idx:)
+
+        init_historyStack%filename = new_filename
+        if(index(new_filename, "obj") /= 0)then
             init_historyStack%type="obj"
-        elseif(index(filename, "ply") /= 0)then
+        elseif(index(new_filename, "ply") /= 0)then
             init_historyStack%type="ply"
-        elseif(index(filename, "json") /= 0)then
+        elseif(index(new_filename, "json") /= 0)then
             init_historyStack%type="json"
         else
-            error stop "Unsupported filetpye for track History!"
+            error stop "Unsupported filetype for track History!"
+        end if
+
+        inquire(file=trim(fileplace)//new_filename, exist=res)
+        if(res)then
+            print*,"Deleting existing trackHistory files!"
+            call execute_command_line("rm "//trim(fileplace)//new_filename)
         end if
 
         init_historyStack%size = 0
@@ -131,18 +148,26 @@ contains
 
     end subroutine histwrite_sub
 
-    subroutine histfinish_sub(this)
+    subroutine histfinish_sub(this, num_threads)
 
         use string_utils, only : str
         use constants,    only : fileplace
 
         class(history_stack_t) :: this
-    
-        integer :: u
+        integer, intent(in) :: num_threads
 
-        select case(this%type)
+        character(len=:), allocatable :: command
+        integer :: u, idx
+
+        print*,this%type,"###"
+        select case(trim(this%type))
         case("obj")
-            call execute_command_line("cat "//trim(fileplace)//this%filename//"2 >> "//trim(fileplace)//this%filename)
+            command = ""
+            idx = index(this%filename, ".")
+            do u = 0, num_threads-1
+                command = command//trim(fileplace)//this%filename(1:idx-4)//str(u,3)//this%filename(idx:)//"2 "
+            end do
+            call execute_command_line("cat "//command//" >> "//trim(fileplace)//this%filename(1:idx-4)//this%filename(idx:))
         case("ply")
             ! this is the easiest way to edit the vertex count as we don't know how many photons we will track when writing the header.
             ! this saves stroing all photons data in RAM for duration of simulation.
@@ -172,35 +197,35 @@ contains
         integer :: u, io, id, counter, ioi
         logical :: res
         
-        id = 0!omp_get_thread_num()
-        if(id == 0)then
-            inquire(file=trim(fileplace)//this%filename, exist=res)
-            if(res)then
-                open(newunit=u,file=trim(fileplace)//this%filename, status="old", position="append")
-                open(newunit=io,file=trim(fileplace)//this%filename//"2", status="old", position="append")
-                open(newunit=ioi,file=trim(fileplace)//"scalars.dat", status="old", position="append")
-            else
-                open(newunit=u,file=trim(fileplace)//this%filename, status="new")
-                open(newunit=io,file=trim(fileplace)//this%filename//"2", status="new")
-                open(newunit=ioi,file=trim(fileplace)//"scalars.dat", status="new")
-            end if
-
-            v = this%pop()
-            if(this%size >=1)write(io, "(a)", advance="no")"l "
-            do counter = this%vertex_counter+1, this%vertex_counter+this%size, 2
-                write(io, "(2(i0,1x))", advance="no") counter, counter+1
-            end do
-            close(io)
-
-            do while(.not. this%empty())
-                v = this%pop()
-                write(u, "(a,1x,3(es15.8e2,1x))")"v", v%x, v%y, v%z
-                write(ioi, "(es15.8e2)")v%p
-                this%vertex_counter = this%vertex_counter + 1
-            end do
-            close(u)
-            close(ioi)
+        id = omp_get_thread_num()
+        inquire(file=trim(fileplace)//this%filename, exist=res)
+        if(res)then
+            open(newunit=u,file=trim(fileplace)//this%filename, status="old", position="append")
+            open(newunit=io,file=trim(fileplace)//this%filename//"2", status="old", position="append")
+            open(newunit=ioi,file=trim(fileplace)//"scalars_"//str(id,3)//".dat", status="old", position="append")
+        else
+            open(newunit=u,file=trim(fileplace)//this%filename, status="new")
+            open(newunit=io,file=trim(fileplace)//this%filename//"2", status="new")
+            open(newunit=ioi,file=trim(fileplace)//"scalars_"//str(id,3)//".dat", status="new")
         end if
+
+        v = this%pop()
+        ! write lines
+        if(this%size >=1)write(io, "(a)", advance="no")"l "
+        do counter = this%vertex_counter+1, this%vertex_counter+this%size, 2
+            write(io, "(2(i0,1x))", advance="no") counter, counter+1
+        end do
+        close(io)
+
+        !write vertices
+        do while(.not. this%empty())
+            v = this%pop()
+            write(u, "(a,1x,3(es15.8e2,1x))")"v", v%x, v%y, v%z
+            write(ioi, "(es15.8e2)")v%p
+            this%vertex_counter = this%vertex_counter + 1
+        end do
+        close(u)
+        close(ioi)
 
     end subroutine obj_writer
     

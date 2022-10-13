@@ -9,6 +9,8 @@ Module vec4_class
         real(kind=wp) :: x, y, z, p
         contains
 
+        procedure :: magnitude         => magnitude_fn
+        procedure :: length            => length
         generic   :: operator(.dot.) => vec_dot_vec
         generic   :: operator(/)     => vec_div_scal_r4, vec_div_scal_int
         generic   :: operator(*)     => vec_mult_vec, vec_mult_scal, scal_mult_vec
@@ -182,10 +184,7 @@ Module vec4_class
 
             class(vec4) :: this
 
-            real(kind=wp) :: tmp
-
-            tmp = sqrt(this%x**2 + this%y**2 + this%z**2 + this%p**2)
-            magnitude_fn = this / tmp
+            magnitude_fn = this / this%length()
 
         end function magnitude_fn
 
