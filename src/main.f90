@@ -225,7 +225,7 @@ if(id == 0)then
 end if
 !write out detected photons
 if(size(dects) > 0)then
-call write_detected_photons(dects)
+    call write_detected_photons(dects)
     block
         logical :: mask(size(dects))
         do i = 1, size(dects)
