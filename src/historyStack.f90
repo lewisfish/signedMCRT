@@ -197,7 +197,11 @@ contains
         integer :: u, io, id, counter, ioi
         logical :: res
         
+#ifdef _OPENMP
         id = omp_get_thread_num()
+#else
+        id = 0
+#endif
         inquire(file=trim(fileplace)//this%filename, exist=res)
         if(res)then
             open(newunit=u,file=trim(fileplace)//this%filename, status="old", position="append")
