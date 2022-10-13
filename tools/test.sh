@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-cd src
+cd ../src
 gfortran-10 utils.f90 vector_class.f90  sdfsMod.f90 test.f90 -cpp -fopenmp -freal-4-real-8 && ./a.out 
 cd ..
 

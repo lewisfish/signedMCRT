@@ -11,3 +11,6 @@ figs_new/*
 a.out
 *.zip
 *.stl
+*.gcda
+*.gcno
+*.gcov

@@ -5,17 +5,55 @@ author = "Lewis McMillan"
 maintainer = "lewisfish92"
 copyright = "2020 Lewis McMillan"
 
+[dev-dependencies]
+test-drive.git = "https://github.com/fortran-lang/test-drive"
+test-drive.tag = "v0.4.0"
+
 [dependencies]
 toml-f.git = "https://github.com/toml-f/toml-f"
 tev_bindings.git = "https://github.com/lewisfish/fortran_tev_bindings"
 
-[build]
-external-modules = "mpi_f08"
-auto-executables = false
-auto-tests = false
-auto-examples = false
-
-[[ executable ]]
+[executable]
 name="sMCRT"
 source-dir="src"
 main="main.f90"
+
+[[test]]
+name="vector-test"
+source-dir="test/vector"
+main="test_vec3.f90"
+
+[[test]]
+name="vec4-test"
+source-dir="test/vec4"
+main="test_vec4.f90"
+
+[[test]]
+name="matrix-test"
+source-dir="test/matrix"
+main="test_matrix.f90"
+
+[[test]]
+name="SDF-test"
+source-dir="test/SDF"
+main="test_SDF.f90"
+
+[[test]]
+name="photon-test"
+source-dir="test/photon"
+main="test_photon.f90"
+
+[[test]]
+name="io-test"
+source-dir="test/io"
+main="test_io.f90"
+
+[[test]]
+name="detector-test"
+source-dir="test/detector"
+main="test_detector.f90"
+
+[[test]]
+name="stack-test"
+source-dir="test/stack"
+main="test_stack.f90"

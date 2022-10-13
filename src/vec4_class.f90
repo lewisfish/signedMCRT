@@ -65,7 +65,6 @@ Module vec4_class
 
             type(vec4), intent(IN) :: p
 
-
             sin_vec = vec4(sin(p%x), sin(p%y), sin(p%z), sin(p%p))
 
         end function sin_vec
@@ -111,7 +110,7 @@ Module vec4_class
             class(vec4),   intent(IN) :: b
             real(kind=wp), intent(IN) :: a
 
-            scal_minus_vec = vec4(b%x - a, b%y - a, b%z - a, b%p - a)
+            scal_minus_vec = vec4(a - b%x, a - b%y, a - b%z, a - b%p)
 
         end function scal_minus_vec
 

@@ -1,5 +1,5 @@
 module detector_mod
-    
+
     use vector_class
     use constants, only : wp
     
@@ -18,7 +18,8 @@ module detector_mod
 
     type, abstract :: detector
         ! abstract detector
-        type(vector)  :: pos
+        type(vector)  :: pos, dir
+        integer :: layer
         logical :: trackHistory
         contains
             private
@@ -37,7 +38,7 @@ module detector_mod
         end function checkHitInterface
 
         subroutine recordHitInterface(this, hitpoint, history)
-            use constants, only : wp
+            use constants,     only : wp
             use historyStack,  only : history_stack_t
             use vector_class
             import detector, hit_t
@@ -49,7 +50,7 @@ module detector_mod
     end interface
 
     type, abstract, extends(detector) :: detector1D
-        integer       :: layer, nbins
+        integer       :: nbins
         real(kind=wp) :: bin_wid
         real(kind=wp), allocatable :: data(:)
         contains
@@ -57,7 +58,7 @@ module detector_mod
     end type detector1D
 
     type, abstract, extends(detector) :: detector2D
-        integer       :: layer, nbinsX, nbinsY
+        integer       :: nbinsX, nbinsY
         real(kind=wp) :: bin_wid_x, bin_wid_y
         real(kind=wp), allocatable :: data(:,:)
         contains
@@ -151,8 +152,8 @@ contains
         integer       :: idx, idy
 
         if(this%check_hit(hitpoint))then
-            x = hitpoint%pos%z + 7.5_wp
-            y = hitpoint%pos%y + 7.5_wp
+            x = hitpoint%pos%z + this%pos%x
+            y = hitpoint%pos%y + this%pos%y
             idx = min(int(x / this%bin_wid_x) + 1, this%nbinsX)
             idy = min(int(y / this%bin_wid_y) + 1, this%nbinsY)
             if(idx < 1)idx = this%nbinsX
@@ -167,15 +168,16 @@ contains
         end subroutine record_hit_2D_sub
 !##############################################################################
 !                       CIRCLE DETECTOR
-    function init_circle_dect(pos, layer, radius, nbins, maxval, trackHistory) result(out)
+    function init_circle_dect(pos, dir, layer, radius, nbins, maxval, trackHistory) result(out)
 
-        type(vector),  intent(in) :: pos
+        type(vector),  intent(in) :: pos, dir
         integer,       intent(in) :: layer, nbins
         real(kind=wp), intent(in) :: radius, maxval
         logical,       intent(in) :: trackHistory
 
         type(circle_dect) :: out
 
+        out%dir = dir
         out%pos = pos
         out%layer = layer
         !extra bin for data beyond end of array
@@ -193,17 +195,15 @@ contains
     end function init_circle_dect
 
     logical function check_hit_circle(this, hitpoint)
+        
+        use geometry, only : intersectCircle
 
         class(circle_dect), intent(INOUT) :: this
         type(hit_t),        intent(IN)    :: hitpoint
 
-        real(kind=wp) :: newpos
-
         check_hit_circle = .false.
-        newpos = sqrt((hitpoint%pos%x - this%pos%x)**2 + (hitpoint%pos%y - this%pos%y)**2 + (hitpoint%pos%z - this%pos%z)**2)
-        if(newpos <= this%radius)then
-            check_hit_circle = .true.
-        end if
+        if(this%layer /= hitpoint%layer)return
+        check_hit_circle = intersectCircle(this%dir, this%pos, this%radius, hitpoint%pos, hitpoint%dir)
     end function check_hit_circle
 ! ##########################################################################
 !                       ANNULUS DETECTOR
@@ -241,6 +241,7 @@ contains
         real(kind=wp) :: newpos
 
         check_hit_annulus = .false.
+        if(this%layer /= hitpoint%layer)return
         newpos = sqrt((hitpoint%pos%x - this%pos%x)**2 + (hitpoint%pos%y - this%pos%y)**2 + (hitpoint%pos%z - this%pos%z)**2)
         if(newpos >= this%r1 .and. newpos <= this%r2)then
             check_hit_annulus = .true.
@@ -285,7 +286,6 @@ contains
 
     logical function check_hit_camera(this, hitpoint)
     ! https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection
-    ! TODO add optics and make camera a distance away from simulated medium? -> make these optional?
         class(camera), intent(inout) :: this
         type(hit_t),   intent(in)    :: hitpoint
 
@@ -293,6 +293,7 @@ contains
         type(vector)  :: v
 
         check_hit_camera = .false.
+        if(this%layer /= hitpoint%layer)return
 
         t = ((this%pos - hitpoint%pos) .dot. this%n) / (hitpoint%dir .dot. this%n)
         if(t >= 0._wp)then

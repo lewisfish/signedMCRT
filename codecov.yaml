@@ -1,0 +1,3 @@
+coverage:
+  fixes:
+  - ./build/gfortran_6B81358B4E8760D7/sMCRT::src

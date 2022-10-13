@@ -15,5 +15,4 @@ module constants
     real(kind=wp),    parameter :: PI=4._wp*atan(1._wp), TWOPI=2._wp*PI
     character(len=255)          :: cwd, homedir, fileplace, resdir
 
-
 end module constants

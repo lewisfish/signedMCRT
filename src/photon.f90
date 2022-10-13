@@ -117,6 +117,7 @@ module photonMod
                 use constants,     only : twoPI
                 use tomlf,         only : toml_table, get_value
                 use sdfs,          only : rotationAlign, rotmat
+                use mat_class,     only : invert
                 use vector_class
             
                 class(photon) :: this
@@ -285,7 +286,6 @@ module photonMod
 
         subroutine uniform(this, dict)
         !uniformly illuminate a surface of the simulation media
-        !TODO change to user defined patch inplace of whole side
             use random,        only : ranu, ran2, randint
             use sim_state_mod, only : state
             use tomlf,         only : toml_table, get_value
