@@ -147,11 +147,11 @@ do j = 1, state%nphotons
     ! Find scattering location
     call tauint2(state%grid, packet, array)
 
-    ! dir = vector(packet%nxp, packet%nyp, packet%nzp)
-    ! hpoint = hit_t(packet%pos, dir, 1._wp, packet%layer)
-    ! do i = 1, size(dects)
-    !     call dects(i)%p%record_hit(hpoint)
-    ! end do
+    dir = vector(packet%nxp, packet%nyp, packet%nzp)
+    hpoint = hit_t(packet%pos, dir, packet%step, packet%layer)
+    do i = 1, size(dects)
+        call dects(i)%p%record_hit(hpoint, history)
+    end do
 
     ! Photon scatters in grid until it exits (tflag=TRUE)
     do while(.not. packet%tflag)
@@ -170,7 +170,7 @@ do j = 1, state%nphotons
     end do
 
     dir = vector(packet%nxp, packet%nyp, packet%nzp)
-    hpoint = hit_t(packet%pos, dir, 1._wp, packet%layer)
+    hpoint = hit_t(packet%pos, dir, packet%step, packet%layer)
     do i = 1, size(dects)
         call dects(i)%p%record_hit(hpoint, history)
     end do
