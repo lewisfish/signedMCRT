@@ -117,7 +117,7 @@ else:
 points = marching_cubes(data, level=args.levels)
 points -= np.amin(points)
 points /= np.amax(points)
-if ".nrrd" in args:
+if ".nrrd" in args.file:
     write_binary_stl(f"{args.file[:-5]}.stl", points)
 else:
     write_binary_stl(f"{args.file[:-4]}.stl", points)

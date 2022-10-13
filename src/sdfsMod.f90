@@ -70,6 +70,18 @@ module sdfs
     end interface box
 
 
+    type, extends(sdf) :: bevel_box
+        type(vector)  :: size
+        real(kind=wp) :: box_r
+        contains
+        procedure :: evaluate => eval_bevel_box
+    end type bevel_box
+
+    interface bevel_box
+        module procedure bevel_box_init
+    end interface bevel_box
+
+
     type, extends(sdf) :: torus
         real(kind=wp) :: oradius, iradius
         contains
@@ -764,6 +776,85 @@ end function eval_neural
             res = length(max(q, 0._wp)) + min(max(q%x, max(q%y, q%z)), 0._wp)
 
         end function box_fn
+
+
+        function bevel_box_init(size, box_r, mus, mua, hgg, n, layer, transform) result(out)
+        
+            implicit none
+        
+            type(bevel_box) :: out
+            
+            type(vector),            intent(IN) :: size
+            real(kind=wp),           intent(IN) :: box_r, mus, mua, hgg, n
+            integer,                 intent(IN) :: layer
+            real(kind=wp), optional, intent(in) :: transform(4, 4)
+
+            real(kind=wp) :: t(4, 4)
+
+            if(present(transform))then
+                t = transform
+            else
+                t = identity()
+            end if
+
+            out%size = size
+            out%box_r = box_r
+            out%layer = layer
+            out%transform = t
+
+            out%mus = mus
+            out%mua = mua
+            out%kappa = mus + mua
+            if(out%mua < 1e-9_wp)then
+                out%albedo = 1._wp
+            else
+                out%albedo = mus / out%kappa
+            end if
+            out%hgg = hgg
+            out%g2 = hgg**2
+            out%n = n
+
+        end function bevel_box_init
+
+        function eval_bevel_box(this, pos) result(res)
+
+            implicit none
+
+            class(bevel_box) :: this
+            type(vector), intent(IN) :: pos
+            real(kind=wp) :: res
+
+            type(vector) :: p
+
+            p = pos .dot. this%transform
+            res = bevel_box_fn(p, this%size, this%box_r)
+
+        end function eval_bevel_box
+
+        function bevel_box_fn(p, size, box_r) result(res)
+
+            implicit none
+
+            type(vector),  intent(IN) :: p, size
+            real(kind=wp), intent(IN) :: box_r
+            real(kind=wp) :: res
+
+            type(vector)  :: box_edge, dd
+            real(kind=wp) :: maxdd, ddd
+
+            box_edge = size - box_r * 0.5_wp
+            dd = abs(p) - box_edge
+
+            maxdd = max(max(dd%x, dd%y), dd%z)
+            maxdd = min(maxdd, 0.0_wp)
+
+            dd = max(dd, 0.0_wp)
+            ddd = (length(dd) - box_r)
+            ddd  = ddd + maxdd
+
+            res = ddd
+
+        end function bevel_box_fn
 
 
 
