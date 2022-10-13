@@ -53,10 +53,12 @@ Module vector_class
 
     interface max
         module procedure max_vec
+        module procedure maxval_vec
     end interface max
 
     interface min
         module procedure min_vec
+        module procedure minval_vec
     end interface min
 
     contains
@@ -102,6 +104,27 @@ Module vector_class
             min_vec = vector(min(this%x, val), min(this%y, val), min(this%z, val))
 
         end function min_vec
+
+
+        real(kind=wp) function maxval_vec(this)
+
+            implicit none
+
+            type(vector),  intent(IN) :: this
+
+            maxval_vec = max(this%x, this%y, this%z)
+
+        end function maxval_vec
+
+        real(kind=wp) function minval_vec(this)
+
+            implicit none
+
+            type(vector),  intent(IN) :: this
+
+            minval_vec = min(this%x, this%y, this%z)
+
+        end function minval_vec
 
         type(vector) function vec_minus_vec(a, b)
 

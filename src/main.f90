@@ -1,3 +1,7 @@
+!IDEA move most of this to other modules
+! this file should only call subroutines and functions, init variables to be used globally and should look clean
+!IDEA make mcrt_loop a subroutine and have it be a pointer target
+! Can then have user decide to use kenny's method or jacques's
 program mcpolar
 
 #ifdef MPI
@@ -154,6 +158,28 @@ do j = 1, state%nphotons
     end do
 
     ! Photon scatters in grid until it exits (tflag=TRUE)
+    ! do while(.not. packet%tflag)
+        
+    !     absorb = packet%weight * (1._wp - exp(-array(packet%layer)%p%mua * packet%step))!(1._wp - array(packet%layer)%p%albedo)
+
+    !     packet%weight = packet%weight - absorb
+    !     associate(celli=>packet%xcell, cellj=>packet%ycell, cellk=>packet%zcell)
+    !         jmean(celli,cellj,cellk) = jmean(celli,cellj,cellk) + absorb
+    !     end associate
+    !     call stokes(packet, array(packet%layer)%p%hgg, array(packet%layer)%p%g2)
+
+    !     if(packet%weight < threshold)then
+    !         if(ran2() <= chance)then
+    !             packet%weight = packet%weight / chance
+    !         else
+    !             packet%weight = 0._wp
+    !             packet%tflag = .true.
+    !         end if
+    !     end if
+    !     call tauint2(state%grid, packet, array)
+
+    ! end do
+
     do while(.not. packet%tflag)
         ran = ran2()
         if(ran < array(packet%layer)%p%albedo)then!interacts with tissue

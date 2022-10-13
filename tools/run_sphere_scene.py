@@ -41,12 +41,29 @@ def make_settings(user_dict: Dict, file: str) -> None:
             f.write("\n")
 
 
+def squared(x, c):
+    return c*x**2
+
+
+def power(x, c):
+    return x**c
+
+
+def linear(x, m, c):
+    return m*x+c
+
+
+def get_r2(xdata, ydata, f):
+    res = ydata - f(xdata, *popt)
+    ss_res = np.sum(res**2)
+    ss_tot = np.sum((ydata - np.mean(ydata))**2)
+    return 1. - (ss_res / ss_tot)
+
+
 if __name__ == "__main__":
     import time
 
-    times = []
 
-    num_spheres = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
     for num_sphere in num_spheres:
         user_dict = {"num_spheres": num_sphere}
         make_settings(user_dict, "sphere.toml")
@@ -54,4 +71,6 @@ if __name__ == "__main__":
         run_sim("")
         end = time.time()
         times.append([num_sphere, end - start])
-print(times)
+with open("times.dat", "w") as file:
+    for time in times:
+        file.write(f"{time[0]}, {time[1]:.2f}" + "\n")
