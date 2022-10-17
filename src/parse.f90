@@ -15,8 +15,6 @@ module parse_mod
     
         use photonmod
         use detector_mod, only : dect_array
-
-        implicit none
     
         character(*),      intent(IN)    :: filename
         type(toml_table),  intent(INOUT) :: dict
@@ -207,8 +205,6 @@ module parse_mod
 
         use sim_state_mod, only : state
         use photonmod
-
-        implicit none
         
         type(toml_table),  intent(INOUT) :: table, dict
         type(photon),      intent(OUT)   :: packet
@@ -366,8 +362,6 @@ module parse_mod
 
         use sim_state_mod, only : state
         use gridMod,       only : init_grid 
-
-        implicit none
         
         type(toml_table),  intent(INOUT) :: table, dict
 
@@ -398,9 +392,7 @@ module parse_mod
     subroutine parse_geometry(table, dict)
 
         use sim_state_mod, only : state
-        
-        implicit none
-        
+                
         type(toml_table),  intent(INOUT) :: table, dict
         
         type(toml_table), pointer :: child
@@ -476,8 +468,6 @@ module parse_mod
     subroutine parse_simulation(table)
 
         use sim_state_mod, only : state
-
-        implicit none
         
         type(toml_table), intent(INOUT) :: table
 

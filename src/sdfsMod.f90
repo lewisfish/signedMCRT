@@ -1771,23 +1771,21 @@ end function eval_neural
 
         type(onion) function onion_init(prim, thickness) result(out)
 
-        implicit none
+            class(sdf), target :: prim
+            real(kind=wp), intent(IN) :: thickness
 
-        class(sdf), target :: prim
-        real(kind=wp), intent(IN) :: thickness
+            out%thickness = thickness
+            out%prim => prim
 
-        out%thickness = thickness
-        out%prim => prim
-
-        out%mus = prim%mus
-        out%mua = prim%mua
-        out%hgg = prim%hgg
-        out%g2 = prim%g2
-        out%n = prim%n
-        out%kappa = prim%kappa
-        out%albedo = prim%kappa
-        out%layer = prim%layer
-        out%transform = identity()
+            out%mus = prim%mus
+            out%mua = prim%mua
+            out%hgg = prim%hgg
+            out%g2 = prim%g2
+            out%n = prim%n
+            out%kappa = prim%kappa
+            out%albedo = prim%kappa
+            out%layer = prim%layer
+            out%transform = identity()
 
         end function onion_init
 
