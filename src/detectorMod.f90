@@ -39,7 +39,7 @@ module detector_mod
 
         subroutine recordHitInterface(this, hitpoint)!, history)
             use constants,     only : wp
-            use historyStack,  only : history_stack_t
+            ! use historyStack,  only : history_stack_t
             use vector_class
             import detector, hit_t
 
@@ -119,7 +119,7 @@ contains
    
     subroutine record_hit_1D_sub(this, hitpoint)!, history)
 
-        use historyStack, only : history_stack_t
+        ! use historyStack, only : history_stack_t
 
         class(detector1D),     intent(inout) :: this
         type(hit_t),           intent(in)    :: hitpoint
@@ -142,7 +142,7 @@ contains
 
     subroutine record_hit_2D_sub(this, hitpoint)!, history)
 
-        use historyStack, only : history_stack_t
+        ! use historyStack, only : history_stack_t
 
         class(detector2D),     intent(inout) :: this
         type(hit_t),           intent(in)    :: hitpoint

@@ -28,7 +28,6 @@ contains
         use random,        only : ran2, init_rng
         use sdfs,          only : container
         use sim_state_mod, only : state
-        use stokes_mod,    only : stokes
         use utils,         only : pbar
         use vec4_class,    only : vec4
         use vector_class,  only : vector
@@ -107,7 +106,8 @@ contains
             do while(.not. packet%tflag)
                 ran = ran2()
                 if(ran < array(packet%layer)%p%albedo)then!interacts with tissue
-                    call stokes(packet, array(packet%layer)%p%hgg, array(packet%layer)%p%g2)
+                    call packet%scatter(array(packet%layer)%p%hgg, array(packet%layer)%p%g2)
+                    ! call stokes(packet, array(packet%layer)%p%hgg, array(packet%layer)%p%g2)
                     nscatt = nscatt + 1
                     packet%step = packet%step + 1
                 else
