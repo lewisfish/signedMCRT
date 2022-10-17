@@ -14,8 +14,6 @@ module random
 
         subroutine init_rng(input_seed, fwd)
         ! initiate RNG state with reproducable state
-
-            implicit none
             
             integer, optional, intent(IN) :: input_seed(:)
             logical, optional, intent(IN) :: fwd
@@ -56,8 +54,6 @@ module random
         function ran2() result(res)
         !wrapper for call random number
 
-            implicit none
-
             real(kind=wp) :: res
 
             call random_number(res)
@@ -66,8 +62,6 @@ module random
 
         function ranu(a, b) result(res)
         !uniformly sample in range[a, b)
-
-            implicit none
 
             real(kind=wp) :: res
             real(kind=wp), intent(IN) :: a, b
@@ -78,8 +72,6 @@ module random
 
         subroutine rang(x, y, avg, sigma)
         ! sample a 2D Guassian distribution
-
-            implicit none
 
             real(kind=wp), intent(IN)  :: avg, sigma
             real(kind=wp), intent(OUT) :: x,y
@@ -103,8 +95,6 @@ module random
         end subroutine rang
 
         integer function randint(a, b)
-
-            implicit none
 
             integer, intent(IN) :: a, b
 

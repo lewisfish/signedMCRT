@@ -58,8 +58,6 @@ contains
 
     type(hit_t) function hpeek_fn(this)
 
-        implicit none
-
         class(hit_stack_t) :: this
 
         if(this%size == 0 .or. .not. allocated(this%data))then
@@ -72,8 +70,6 @@ contains
 
     logical function hempty_fn(this)
 
-        implicit none
-
         class(hit_stack_t) :: this
 
         hempty_fn = (this%size == 0 .or. .not. allocated(this%data))
@@ -81,9 +77,7 @@ contains
     end function hempty_fn
 
     subroutine hzero_sub(this)
-        
-        implicit none
-        
+                
         class(hit_stack_t) :: this
 
         this%size = 0

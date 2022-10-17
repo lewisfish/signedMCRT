@@ -330,8 +330,6 @@ module sdfs
 
         function segment_init(a, b, mus, mua, hgg, n, layer, transform) result(out)
 
-            implicit none
-
             type(segment) :: out
 
             type(vector),            intent(IN) :: a, b
@@ -369,8 +367,6 @@ module sdfs
 
         function eval_segment(this, pos) result(res)
 
-            implicit none
-
             class(segment) :: this
             type(vector), intent(IN) :: pos
             real(kind=wp) :: res
@@ -390,8 +386,6 @@ module sdfs
 
             use utils, only : clamp
 
-            implicit none
-
             type(vector), intent(IN) :: p, a, b
             real(kind=wp) :: res
 
@@ -408,9 +402,7 @@ module sdfs
 
 
         function neural_init(mus, mua, hgg, n, layer, transform) result(out)
-        
-            implicit none
-        
+                
             type(neural) :: out
             
             real(kind=wp),           intent(IN) :: mus, mua, hgg, n
@@ -448,8 +440,6 @@ function eval_neural(this, pos) result(out)
 ! this function is generated using code. do not edit
     use vec4_class
     use mat_class
-
-    implicit none
 
     class(neural) :: this
     type(vector), intent(IN) :: pos
@@ -511,8 +501,6 @@ end function eval_neural
 
         type(vector) function calcNormal(p, obj)
 
-            implicit none
-
             type(vector), intent(IN) :: p
             class(sdf) :: obj
 
@@ -565,8 +553,6 @@ end function eval_neural
 
         function eval_model(this, pos) result(res)
 
-            implicit none
-
             class(model) :: this
             type(vector), intent(IN) :: pos
             real(kind=wp) :: res
@@ -582,9 +568,7 @@ end function eval_neural
 
 
         function cylinder_init(a, b, radius, mus, mua, hgg, n, layer, transform) result(out)
-        
-            implicit none
-        
+                
             type(cylinder) :: out
             
             real(kind=wp),           intent(IN) :: radius, mus, mua, hgg, n
@@ -622,8 +606,6 @@ end function eval_neural
 
         function eval_cylinder(this, pos) result(res)
 
-            implicit none
-
             class(cylinder) :: this
             type(vector), intent(IN) :: pos
             real(kind=wp) :: res
@@ -641,7 +623,6 @@ end function eval_neural
             !b = pt2
             !r = radius
             !draws cylinder along the axis between 2 points a and b
-            implicit none
 
             type(vector),  intent(IN) :: p, a, b
             real(kind=wp), intent(IN) :: r
@@ -677,9 +658,7 @@ end function eval_neural
         end function cylinder_fn
 
         function box_init(lengths, mus, mua, hgg, n, layer, transform) result(out)
-        
-            implicit none
-        
+                
             type(box) :: out
             
             type(vector),            intent(IN) :: lengths
@@ -714,9 +693,7 @@ end function eval_neural
         end function box_init
 
         function box_init_vec(widths, mus, mua, hgg, n, layer, transform) result(out)
-        
-            implicit none
-        
+                
             type(box) :: out
             
             type(vector),            intent(IN) :: widths
@@ -729,9 +706,7 @@ end function eval_neural
         end function box_init_vec
 
         function box_init_scal(width, mus, mua, hgg, n, layer, transform) result(res)
-        
-            implicit none
-        
+                
             type(box) :: res
             
             real(kind=wp),           intent(IN) :: width, mus, mua, hgg, n
@@ -748,8 +723,6 @@ end function eval_neural
 
         function eval_box(this, pos) result(res)
 
-            implicit none
-
             class(box) :: this
             type(vector), intent(IN) :: pos
             real(kind=wp) :: res
@@ -763,8 +736,6 @@ end function eval_neural
 
         function box_fn(p, b) result(res)
 
-            implicit none
-
             type(vector), intent(IN) :: p, b
             real(kind=wp) :: res
 
@@ -777,9 +748,7 @@ end function eval_neural
 
 
         function bevel_box_init(size, box_r, mus, mua, hgg, n, layer, transform) result(out)
-        
-            implicit none
-        
+                
             type(bevel_box) :: out
             
             type(vector),            intent(IN) :: size
@@ -816,8 +785,6 @@ end function eval_neural
 
         function eval_bevel_box(this, pos) result(res)
 
-            implicit none
-
             class(bevel_box) :: this
             type(vector), intent(IN) :: pos
             real(kind=wp) :: res
@@ -830,8 +797,6 @@ end function eval_neural
         end function eval_bevel_box
 
         function bevel_box_fn(p, size, box_r) result(res)
-
-            implicit none
 
             type(vector),  intent(IN) :: p, size
             real(kind=wp), intent(IN) :: box_r
@@ -857,9 +822,7 @@ end function eval_neural
 
 
         function sphere_init(radius, mus, mua, hgg, n, layer, transform) result(out)
-        
-            implicit none
-        
+                
             type(sphere) :: out
             
             real(kind=wp),           intent(IN) :: radius, mus, mua, hgg, n
@@ -895,8 +858,6 @@ end function eval_neural
 
         function eval_sphere(this, pos) result(res)
 
-            implicit none
-
             class(sphere) :: this
             type(vector), intent(IN) :: pos
             real(kind=wp) :: res
@@ -910,8 +871,6 @@ end function eval_neural
 
         function sphere_fn(p, c) result(res)
 
-            implicit none
-
             type(vector),  intent(IN) :: p
             real(kind=wp), intent(IN) :: c
             real(kind=wp) :: res
@@ -922,8 +881,6 @@ end function eval_neural
 
 
         function torus_init(oradius, iradius, mus, mua, hgg, n, layer, transform) result(out)
-
-            implicit none
         
             type(torus) :: out
             
@@ -960,8 +917,6 @@ end function eval_neural
 
         function eval_torus(this, pos) result(res)
 
-            implicit none
-
             class(torus) :: this
             type(vector), intent(IN) :: pos
             real(kind=wp) :: res
@@ -974,8 +929,6 @@ end function eval_neural
         end function eval_torus
 
         function torus_fn(p, or, ir) result(res)
-
-            implicit none
 
             type(vector),  intent(IN) :: p
             real(kind=wp), intent(IN) :: or, ir
@@ -992,9 +945,7 @@ end function eval_neural
         function triprisim_init(h1, h2, mus, mua, hgg, n, layer, transform) result(out)
         !h1 is height
         !h2 is length
-        !
-            implicit none
-        
+        !        
             type(triprisim) :: out
             
             real(kind=wp),           intent(IN) :: h1, h2, mus, mua, hgg, n
@@ -1030,8 +981,6 @@ end function eval_neural
 
         function eval_triprisim(this, pos) result(res)
 
-            implicit none
-
             class(triprisim) :: this
             type(vector), intent(IN) :: pos
             real(kind=wp) :: res
@@ -1045,8 +994,6 @@ end function eval_neural
 
         function triprisim_fn(p, h1, h2) result(res)
 
-            implicit none
-
             type(vector),  intent(IN) :: p
             real(kind=wp), intent(IN) :: h1, h2
             real(kind=wp) :: res
@@ -1059,8 +1006,6 @@ end function eval_neural
         end function triprisim_fn
 
         function cone_init(a, b, ra, rb, mus, mua, hgg, n, layer, transform) result(out)
-
-            implicit none
         
             type(cone) :: out
             
@@ -1100,8 +1045,6 @@ end function eval_neural
 
         function eval_cone(this, pos) result(res)
 
-            implicit none
-
             class(cone) :: this
             type(vector), intent(IN) :: pos
             real(kind=wp) :: res
@@ -1116,8 +1059,6 @@ end function eval_neural
         function cone_fn(p, a, b, ra, rb) result(res)
 
             use utils, only : clamp
-
-            implicit none
 
             type(vector),  intent(IN) :: p, a, b
             real(kind=wp), intent(IN) :: ra, rb
@@ -1150,8 +1091,6 @@ end function eval_neural
         end function cone_fn
 
         function capsule_init(a, b, r, mus, mua, hgg, n, layer, transform) result(out)
-
-            implicit none
         
             type(capsule) :: out
             
@@ -1190,8 +1129,6 @@ end function eval_neural
 
         function eval_capsule(this, pos) result(res)
 
-            implicit none
-
             class(capsule) :: this
             type(vector), intent(IN) :: pos
             real(kind=wp) :: res
@@ -1206,8 +1143,6 @@ end function eval_neural
         function capsule_fn(p, a, b, r) result(res)
 
             use utils, only : clamp
-
-            implicit none
 
             type(vector),  intent(IN) :: p, a, b
             real(kind=wp), intent(IN) :: r
@@ -1225,8 +1160,6 @@ end function eval_neural
 
 
         function plane_init(a, mus, mua, hgg, n, layer, transform) result(out)
-
-            implicit none
         
             type(plane) :: out
             
@@ -1263,8 +1196,6 @@ end function eval_neural
 
         function eval_plane(this, pos) result(res)
 
-            implicit none
-
             class(plane) :: this
             type(vector), intent(IN) :: pos
             real(kind=wp) :: res
@@ -1280,8 +1211,6 @@ end function eval_neural
 
             use utils, only : clamp
 
-            implicit none
-
             type(vector), intent(IN) :: p, n
             real(kind=wp) :: res
 
@@ -1292,8 +1221,6 @@ end function eval_neural
 
 
         function moon_init(d, ra, rb, mus, mua, hgg, n, layer, transform) result(out)
-
-            implicit none
         
             type(moon) :: out
             
@@ -1331,8 +1258,6 @@ end function eval_neural
 
         function eval_moon(this, pos) result(res)
 
-            implicit none
-
             class(moon) :: this
             type(vector), intent(IN) :: pos
             real(kind=wp) :: res
@@ -1347,8 +1272,6 @@ end function eval_neural
         function moon_fn(p, d, ra, rb) result(res)
 
             use utils, only : clamp
-
-            implicit none
 
             type(vector),  intent(IN) :: p
             real(kind=wp), intent(IN) :: d, ra, rb
@@ -1413,8 +1336,6 @@ end function eval_neural
 
         function eval_egg(this, pos) result(res)
 
-            implicit none
-
             class(egg) :: this
             type(vector), intent(IN) :: pos
             real(kind=wp) :: res
@@ -1458,8 +1379,6 @@ end function eval_neural
 
         function translate(o) result(out)
 
-            implicit none
-
             type(vector), intent(IN) :: o
 
             real(kind=wp) :: out(4, 4)
@@ -1473,8 +1392,6 @@ end function eval_neural
 
         function union(d1, d2, k) result(res)
 
-            implicit none
-
             real(kind=wp), intent(IN) :: d1, d2, k
             real(kind=wp) :: res
 
@@ -1485,8 +1402,6 @@ end function eval_neural
         function SmoothUnion(d1, d2, k) result(res)
 
             use utils, only : mix, clamp
-
-            implicit none
 
             real(kind=wp), intent(IN) :: d1, d2, k
             real(kind=wp) :: res
@@ -1502,8 +1417,6 @@ end function eval_neural
 
         function subtraction(d1, d2, k) result(res)
 
-            implicit none
-
             real(kind=wp), intent(IN) :: d1, d2, k
             real(kind=wp) :: res
 
@@ -1513,8 +1426,6 @@ end function eval_neural
 
         function intersection(d1, d2, k) result(res)
 
-            implicit none
-
             real(kind=wp), intent(IN) :: d1, d2, k
             real(kind=wp) :: res
 
@@ -1523,8 +1434,6 @@ end function eval_neural
         end function intersection
 
         type(elongate) function elongate_init(prim, size) result(out)
-
-            implicit none
 
             type(vector), intent(IN) :: size
             class(sdf), target :: prim
@@ -1546,8 +1455,6 @@ end function eval_neural
 
         function eval_elongate(this, pos) result(res)
 
-            implicit none
-
             class(elongate) :: this
             type(vector), intent(IN) :: pos
             real(kind=wp) :: res
@@ -1557,8 +1464,6 @@ end function eval_neural
         end function eval_elongate
 
         function elongate_fn(p, size, prim) result(res)
-
-            implicit none
 
             class(sdf) :: prim
 
@@ -1577,8 +1482,6 @@ end function eval_neural
         end function elongate_fn
 
         type(bend) function bend_init(prim, k) result(out)
-
-            implicit none
 
             real(kind=wp), intent(IN) :: k
             class(sdf), target :: prim
@@ -1600,8 +1503,6 @@ end function eval_neural
 
         function eval_bend(this, pos) result(res)
 
-            implicit none
-
             class(bend) :: this
             type(vector), intent(IN) :: pos
             real(kind=wp) :: res
@@ -1611,8 +1512,6 @@ end function eval_neural
         end function eval_bend
 
         function bend_fn(p, k, prim) result(res)
-
-            implicit none
 
             class(sdf) :: prim
 
@@ -1634,8 +1533,6 @@ end function eval_neural
 
         type(displacement) function displacement_init(prim, func) result(out)
 
-            implicit none
-
             class(sdf), target :: prim
             procedure(primitive) :: func
 
@@ -1656,8 +1553,6 @@ end function eval_neural
 
         function eval_disp(this, pos) result(res)
 
-            implicit none
-
             class(displacement) :: this
             type(vector), intent(IN) :: pos
             real(kind=wp) :: res
@@ -1667,8 +1562,6 @@ end function eval_neural
         end function eval_disp
 
         function displacement_fn(p, prim, disp) result(res)
-
-            implicit none
 
             class(sdf) :: prim
             procedure(primitive) :: disp
@@ -1685,8 +1578,6 @@ end function eval_neural
         end function displacement_fn
 
         type(twist) function twist_init(prim, k) result(out)
-
-            implicit none
 
             class(sdf), target :: prim
             real :: k
@@ -1707,8 +1598,6 @@ end function eval_neural
 
         function eval_twist(this, pos) result(res)
 
-            implicit none
-
             class(twist) :: this
             type(vector), intent(IN) :: pos
             real(kind=wp) :: res
@@ -1718,8 +1607,6 @@ end function eval_neural
         end function eval_twist
 
         function twist_fn(p, k, prim) result(res)
-
-            implicit none
 
             class(sdf) :: prim
             type(vector),  intent(IN) :: p
@@ -1740,8 +1627,6 @@ end function eval_neural
 
 
         type(repeat) function repeat_init(prim, c, la, lb) result(out)
-
-            implicit none
 
             class(sdf), target :: prim
             type(vector),  intent(IN) :: la, lb
@@ -1765,8 +1650,6 @@ end function eval_neural
             end function repeat_init
 
         function eval_repeat(this, pos) result(res)
-
-            implicit none
 
             class(repeat) :: this
             type(vector), intent(IN) :: pos
@@ -1795,8 +1678,6 @@ end function eval_neural
 
         type(extrude) function extrude_init(prim, h) result(out)
 
-            implicit none
-
             class(sdf), target :: prim
             real(kind=wp), intent(IN)   :: h
 
@@ -1817,8 +1698,6 @@ end function eval_neural
 
         function eval_extrude(this, pos) result(res)
 
-            implicit none
-
             class(extrude) :: this
             type(vector), intent(IN) :: pos
             real(kind=wp) :: res
@@ -1829,8 +1708,6 @@ end function eval_neural
 
 
         function extrude_fn(p, h, prim) result(res)
-
-            implicit none
 
             class(sdf) :: prim
             type(vector),  intent(IN) :: p
@@ -1847,8 +1724,6 @@ end function eval_neural
         end function extrude_fn
 
         type(revolution) function revolution_init(prim, o) result(out)
-
-            implicit none
 
             class(sdf), target :: prim
             real(kind=wp), intent(IN) :: o
@@ -1869,8 +1744,6 @@ end function eval_neural
             end function revolution_init
 
         function eval_revolution(this, pos) result(res)
-
-            implicit none
 
             class(revolution) :: this
             type(vector), intent(IN) :: pos
@@ -1920,8 +1793,6 @@ end function eval_neural
 
         function eval_onion(this, pos) result(res)
 
-            implicit none
-
             class(onion) :: this
             type(vector), intent(IN) :: pos
             real(kind=wp) :: res
@@ -1943,8 +1814,6 @@ end function eval_neural
         function rotate_x(angle) result(r)
         ! rotation funcs from https://inspirnathan.com/posts/54-shadertoy-tutorial-part-8/
             use utils, only : deg2rad
-
-            implicit none
             
             real(kind=wp), intent(IN) :: angle
             
@@ -1964,8 +1833,6 @@ end function eval_neural
         function rotate_y(angle) result(r)
             
             use utils, only : deg2rad
-
-            implicit none
             
             real(kind=wp), intent(IN) :: angle
 
@@ -1985,8 +1852,6 @@ end function eval_neural
         function rotate_z(angle) result(r)
             
             use utils, only : deg2rad
-
-            implicit none
             
             real(kind=wp), intent(IN) :: angle
 
@@ -2091,8 +1956,6 @@ end function eval_neural
 
         subroutine render_scaler(cnt, extent, sample, fname)
 
-            implicit none
-
             type(container),        intent(IN) :: cnt(:)
             integer,                intent(IN) :: sample
             type(vector),           intent(IN) :: extent
@@ -2118,9 +1981,7 @@ end function eval_neural
             use utils,     only : pbar
             use constants, only : fileplace
             use writer_mod
-            
-            implicit none
-            
+                        
             type(container),        intent(IN) :: cnt(:)
             integer,                intent(IN) :: samples(3)
             type(vector),           intent(IN) :: extent

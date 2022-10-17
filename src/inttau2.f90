@@ -201,8 +201,6 @@ module inttau2
         use photonMod
         use gridMod
         use iarray,        only: jmean
-
-        implicit none
         
         type(cart_grid), intent(IN)    :: grid
         type(vector),    intent(IN)    :: dir
@@ -274,8 +272,6 @@ module inttau2
         use vector_class
         use gridMod
 
-        implicit none
-
         type(cart_grid), intent(IN)    :: grid
         type(vector),    intent(IN)    :: pos, dir
         logical,         intent(INOUT) :: ldir(:)
@@ -334,8 +330,6 @@ module inttau2
         use vector_class
         use gridMod
         use utils, only : str
-
-        implicit none
       
         type(cart_grid), intent(IN)    :: grid
         type(vector),    intent(IN)    :: dir
@@ -399,8 +393,6 @@ module inttau2
     !
         use vector_class
         use gridmod
-
-        implicit none
         
         type(cart_grid), intent(IN)    :: grid
         type(vector),    intent(IN)    :: pos
@@ -426,8 +418,6 @@ module inttau2
     ! searches for bracketing indices for a value value in an array a
     !
     !
-        implicit none
-
         real(kind=wp), intent(IN) :: val, a(:)
         integer :: n, lo, mid, hi
 

@@ -1,6 +1,6 @@
 module surfaces
 
-    use vector_class
+    use vector_class, only : vector
     use constants,    only : wp
 
     implicit none
@@ -16,8 +16,6 @@ module surfaces
     ! returns true if intersection exists
     ! returns t, the paramertised parameter of the line equation
     ! adapted from scratchapixel
-        
-        implicit none
 
         type(vector),  intent(IN)  :: dir, orig, centre
         real(kind=wp), intent(OUT) :: t
@@ -58,8 +56,6 @@ module surfaces
     ! need to check z height after moving ray
     ! if not this is an infinte cylinder
     ! cylinder lies length ways along z-axis
-        
-        implicit none
 
         type(vector),  intent(IN)  :: dir, orig, centre
         real(kind=wp), intent(OUT) :: t
@@ -101,8 +97,6 @@ module surfaces
     ! if not this is an infinte ellipse-cylinder
     ! ellipse lies length ways along z-axis
     ! semia and semib are the semimajor axis which are the half width and height.
-        
-        implicit none
 
         type(vector),  intent(IN)  :: dir, orig, centre
         real(kind=wp), intent(OUT) :: t
@@ -148,8 +142,6 @@ module surfaces
     ! if not this is an infinte cone
     ! cone lies height ways along z-axis
 
-        implicit none
-
         type(vector),  intent(IN)  :: orig, dir, centre
         real(kind=wp), intent(IN)  :: radius, height
         real(kind=wp), intent(OUT) :: t
@@ -192,8 +184,6 @@ module surfaces
     ! returns x0 and x1
     ! adapted from scratchapixel
 
-        implicit none
-
         real(kind=wp), intent(IN)  :: a, b, c
         real(kind=wp), intent(OUT) :: x0, x1
 
@@ -229,8 +219,6 @@ module surfaces
     !
         use random, only : ran2
 
-        implicit none
-
         type(vector),  intent(INOUT) :: I !incident vector
         type(vector),  intent(INOUT) :: N ! normal vector
         real(kind=wp), intent(IN)    :: n1, n2 !refractive indcies
@@ -256,8 +244,6 @@ module surfaces
     !
     !
 
-        implicit none
-
         type(vector), intent(INOUT) :: I ! incident vector
         type(vector), intent(IN)    :: N ! normal vector
 
@@ -273,8 +259,6 @@ module surfaces
     !   get vector of refracted photon
     !
     !
-
-        implicit none
 
         type(vector),  intent(INOUT) :: I
         type(vector),  intent(IN)    :: N
@@ -305,8 +289,6 @@ module surfaces
     !
     !
         use ieee_arithmetic, only : ieee_is_nan
-
-        implicit none
 
         real(kind=wp), intent(IN) :: n1, n2
         type(vector),  intent(IN) :: I, N

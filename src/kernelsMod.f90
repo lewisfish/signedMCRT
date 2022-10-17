@@ -239,7 +239,7 @@ subroutine finalise(dict, dects, nscatt, start)
     ! type(history_stack_t), intent(in) :: history
     type(toml_table),      intent(inout) :: dict
 
-    integer :: id, numproc, i
+    integer :: id, numproc!, i
     real(kind=wp) :: nscattGLOBAL, time_taken
 
     id = 0

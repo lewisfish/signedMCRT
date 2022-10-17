@@ -346,8 +346,6 @@ module photonMod
             use sim_state_mod, only : state
             use tomlf,         only : toml_table, get_value
 
-            implicit none
-
             class(photon) :: this
             type(toml_table), optional, intent(inout) :: dict
 

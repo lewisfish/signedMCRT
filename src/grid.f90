@@ -24,8 +24,6 @@ module gridMod
     function get_voxel(this, pos) result(res)
         
         use vector_class
-
-        implicit none
     
         class(cart_grid)         :: this
         type(vector), intent(IN) :: pos
@@ -42,8 +40,7 @@ module gridMod
     ! setup grid
     !
     !
-        implicit none
-        
+       
         integer,       intent(IN) :: nxg, nyg, nzg 
         real(kind=wp), intent(IN) :: xmax, ymax, zmax
         

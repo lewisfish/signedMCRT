@@ -11,9 +11,7 @@ contains
 
    use constants, only : PI, TWOPI, wp
    use random,    only : ran2   
-   use photonMod
-
-   implicit none
+   use photonMod, only : photon
 
    type(photon),  intent(INOUT) :: packet
    real(kind=wp), intent(IN)    :: hgg, g2
