@@ -38,8 +38,6 @@ contains
     
     type(mat) function mat_init(array)
 
-        implicit none
-
         real(kind=wp) :: array(16)
         integer :: i, cnt
 
@@ -55,8 +53,6 @@ contains
 
     type(mat) function mat_add_scal(a, b)
 
-        implicit none
-
         class(mat),    intent(IN) :: a
         real(kind=wp), intent(IN) :: b
 
@@ -66,8 +62,6 @@ contains
 
 
     type(mat) function scal_add_mat(a, b)
-
-        implicit none
 
         class(mat),    intent(IN) :: b
         real(kind=wp), intent(IN) :: a
@@ -79,8 +73,6 @@ contains
 
     type(mat) function mat_minus_scal(a, b)
 
-        implicit none
-
         class(mat),    intent(IN) :: a
         real(kind=wp), intent(IN) :: b
 
@@ -89,8 +81,6 @@ contains
     end function mat_minus_scal
 
     type(mat) function mat_div_scal(a, b)
-
-        implicit none
 
         class(mat),    intent(IN) :: a
         real(kind=wp), intent(IN) :: b
@@ -101,8 +91,6 @@ contains
 
     type(mat) function mat_mult_scal(a, b)
 
-        implicit none
-
         class(mat),    intent(IN) :: a
         real(kind=wp), intent(IN) :: b
 
@@ -111,8 +99,6 @@ contains
     end function mat_mult_scal
 
     type(mat) function scal_mult_mat(a, b)
-
-        implicit none
 
         class(mat),    intent(IN) :: b
         real(kind=wp), intent(IN) :: a
@@ -124,8 +110,6 @@ contains
     type(vec4) function mat_mult_mat(a, b)
 
         use vec4_class
-
-        implicit none
 
         class(mat), intent(IN) :: a
         type(vec4), intent(IN) :: b

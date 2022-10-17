@@ -71,7 +71,7 @@ Module vec4_class
 
         end function sin_vec
 
-        type(vec4) function vec_minus_vec(a, b)
+        type(vec4) pure elemental function vec_minus_vec(a, b)
 
             class(vec4), intent(IN) :: a
             type(vec4),  intent(IN) :: b
@@ -80,7 +80,7 @@ Module vec4_class
 
         end function vec_minus_vec
 
-        type(vec4) function vec_add_scal(a, b)
+        type(vec4) pure elemental function vec_add_scal(a, b)
 
             class(vec4),     intent(IN) :: a
             real(kind=wp),   intent(IN) :: b
@@ -89,7 +89,7 @@ Module vec4_class
 
         end function vec_add_scal
 
-        type(vec4) function scal_add_vec(a, b)
+        type(vec4) pure elemental function scal_add_vec(a, b)
 
             class(vec4),   intent(IN) :: b
             real(kind=wp), intent(IN) :: a
@@ -98,7 +98,7 @@ Module vec4_class
 
         end function scal_add_vec
 
-        type(vec4) function vec_minus_scal(a, b)
+        type(vec4) pure elemental function vec_minus_scal(a, b)
 
             class(vec4),   intent(IN) :: a
             real(kind=wp), intent(IN) :: b
@@ -107,7 +107,7 @@ Module vec4_class
 
         end function vec_minus_scal
 
-        type(vec4) function scal_minus_vec(a, b)
+        type(vec4) pure elemental function scal_minus_vec(a, b)
 
             class(vec4),   intent(IN) :: b
             real(kind=wp), intent(IN) :: a
@@ -116,7 +116,7 @@ Module vec4_class
 
         end function scal_minus_vec
 
-        type(vec4) function vec_add_vec(a, b)
+        type(vec4) pure elemental function vec_add_vec(a, b)
 
             class(vec4), intent(IN) :: a
             type(vec4),  intent(IN) :: b
@@ -125,7 +125,7 @@ Module vec4_class
 
         end function vec_add_vec
 
-        elemental function vec_dot_vec(a, b) result (dot)
+        pure elemental function vec_dot_vec(a, b) result (dot)
 
             class(vec4), intent(IN) :: a
             type(vec4),  intent(IN) :: b
@@ -135,7 +135,7 @@ Module vec4_class
 
         end function vec_dot_vec
 
-        type(vec4) function vec_mult_vec(a, b)
+        type(vec4) pure elemental function vec_mult_vec(a, b)
 
             class(vec4), intent(IN) :: a
             type(vec4),  intent(IN) :: b
@@ -144,7 +144,7 @@ Module vec4_class
 
         end function vec_mult_vec
 
-        type(vec4) function vec_mult_scal(a, b)
+        type(vec4) pure elemental function vec_mult_scal(a, b)
 
             class(vec4),   intent(IN) :: a
             real(kind=wp), intent(IN) :: b
@@ -153,7 +153,7 @@ Module vec4_class
 
         end function vec_mult_scal
 
-        type(vec4) function scal_mult_vec(a, b)
+        type(vec4) pure elemental function scal_mult_vec(a, b)
 
             class(vec4),   intent(IN) :: b
             real(kind=wp), intent(IN) :: a
@@ -162,7 +162,7 @@ Module vec4_class
 
         end function scal_mult_vec
 
-        type(vec4) function vec_div_scal_r4(a, b)
+        type(vec4) pure elemental function vec_div_scal_r4(a, b)
 
             class(vec4),   intent(IN) :: a
             real(kind=wp), intent(IN) :: b
@@ -171,26 +171,26 @@ Module vec4_class
 
         end function vec_div_scal_r4
 
-        type(vec4) function vec_div_scal_int(a, b)
+        type(vec4) pure elemental function vec_div_scal_int(a, b)
 
             class(vec4), intent(IN) :: a
-            integer,       intent(IN) :: b
+            integer,     intent(IN) :: b
 
             vec_div_scal_int = vec4(a%x / real(b, kind=wp), a%y / real(b, kind=wp), a%z / real(b, kind=wp), a%p / real(b, kind=wp))
 
         end function vec_div_scal_int
 
-        type(vec4) function magnitude_fn(this)
+        type(vec4) pure elemental function magnitude_fn(this)
 
-            class(vec4) :: this
+            class(vec4), intent(in) :: this
 
             magnitude_fn = this / this%length()
 
         end function magnitude_fn
 
-        real(kind=wp) function length(this)
+        real(kind=wp) pure elemental function length(this)
 
-            class(vec4) :: this
+            class(vec4), intent(in) :: this
 
             length = sqrt(this%x**2 + this%y**2 + this%z**2 + this%p**2)
 

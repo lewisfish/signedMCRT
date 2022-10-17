@@ -14,6 +14,10 @@ toml-f.git = "https://github.com/toml-f/toml-f"
 tev_bindings.git = "https://github.com/lewisfish/fortran_tev_bindings"
 utils.git = "https://github.com/lewisfish/fortran_utilities"
 
+[preprocess]
+[preprocess.cpp]
+directories = ["src/"]
+
 [build]
 external-modules = "mpi_f08"
 auto-executables = true

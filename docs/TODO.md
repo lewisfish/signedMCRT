@@ -6,6 +6,8 @@ List of ToDo's for SignedMCRT.
 
 - [x] Make CI run tests
 - [x] Add Code Coverage reports
+- [x] Remove spurious implicit nones
+- [ ] Automate benchmarking so we can catch performance regressions
 - [ ] Add Direction component to rest of Detectors
     - [x] **Circle**
     - [x] **Camera**
@@ -18,7 +20,6 @@ List of ToDo's for SignedMCRT.
     - [x] path length counter method
     - [ ] Weight method
 - [ ] Make sure all optical properties are the same for a model instance (SDF)
-- [ ] Remove spurious implicit nones
 - [ ] Improve performance of SDF intersection
     - [ ] Implement KD trees in 2D
     - [ ] Implement KD trees in 3D

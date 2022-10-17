@@ -1,0 +1,336 @@
+module models
+
+    use sdfs, only : sdf!, RotMat
+    use constants, only : wp, pi
+    use vector_class
+
+    implicit none
+
+    type, extends(sdf) :: dalek
+        contains
+        procedure :: evaluate => eval_dalek
+    end type dalek
+
+    interface dalek
+        module procedure dalek_init
+    end interface dalek
+
+    private
+    public :: dalek
+
+    contains
+
+
+  !   function dalek_init(mus, mua, hgg, n, layer, transform) result(out)
+        
+  !       use sdfs, only : identity
+
+  !       implicit none
+    
+  !       type(dalek) :: out
+        
+  !       real(kind=wp),           intent(IN) :: mus, mua, hgg, n
+  !       integer,                 intent(IN) :: layer
+  !       real(kind=wp), optional, intent(IN) :: transform(4, 4)
+
+  !       real(kind=wp) :: t(4, 4)
+
+  !       if(present(transform))then
+  !           t = transform
+  !       else
+  !           t = identity()
+  !       end if
+
+  !       out%layer = layer
+
+  !       out%transform = t
+
+  !       out%mus = mus
+  !       out%mua = mua
+  !       out%kappa = mus + mua
+  !       if(out%mua < 1e-9_wp)then
+  !           out%albedo = 1._wp
+  !       else
+  !           out%albedo = mus / out%kappa
+  !       end if
+  !       out%hgg = hgg
+  !       out%g2 = hgg**2
+  !       out%n = n
+
+  !   end function dalek_init
+
+    
+  !   function bevelbox(p, size, box_r) result(res)
+
+  !       implicit none
+
+  !       type(vector),  intent(IN) :: p, size
+  !       real(kind=wp), intent(IN) :: box_r
+  !       real(kind=wp) :: res
+
+  !       type(vector)  :: box_edge, dd
+  !       real(kind=wp) :: maxdd, ddd
+
+  !       box_edge = size - box_r * 0.5_wp
+  !       dd = abs(p) - box_edge
+
+  !       maxdd = max(max(dd%x, dd%y), dd%z)
+  !       maxdd = min(maxdd, 0.0_wp)
+
+  !       dd = max(dd, 0.0_wp)
+  !       ddd = (length(dd) - box_r)
+  !       ddd  = ddd + maxdd
+
+  !       res = ddd
+
+  !   end function bevelbox
+
+  !   real function cylinderxz(p, c)
+
+  !       implicit none
+
+  !       type(vector),  intent(IN) :: p, c
+
+  !       cylinderxz = length(vector(p%x, p%z, 0._wp) - vector(c%x, c%y, 0._wp)) - c%z
+
+  !   end function cylinderxz
+
+  !   real function sphere(p, c, r)
+
+  !       implicit none
+
+  !       type(vector),  intent(IN) :: p, c
+  !       real(kind=wp), intent(IN) :: r
+
+  !       sphere = length(p - c) - r
+
+  !   end function sphere
+
+
+  !   function eval_dalek(this, pos) result(res)
+
+  !       implicit none
+
+  !       class(dalek) :: this
+  !       type(vector), intent(IN) :: pos
+  !       real(kind=wp) :: res, scale
+
+  !       type(vector) :: p
+
+  !       ! print*,p,RotMat(vector(0._wp, 1._wp, 0._wp), 3.14_wp/2.0_wp)
+  !       p = pos .dot. RotMat(vector(0._wp, 1._wp, 0._wp), 3.14_wp/2.0_wp)
+  !       ! print*,p
+  !       p = p + vector(0._wp, -0.2_wp, 0._wp)
+  !       scale = 0.25_wp
+  !       p = p * (1._wp / scale)
+
+  !       res = dalek_fn(p) * scale * 0.5_wp
+
+  !   end function eval_dalek
+
+  !   function dalek_fn(p) result(res)
+
+  !       implicit none
+
+  !       type(vector),  intent(IN) :: p
+  !       real(kind=wp) :: res
+
+  !       real(kind=wp) :: polar_t, polar_r, d, d_bound
+
+  !       polar_t = atan(p%z, p%x)
+  !       polar_r = length(vector(p%x, p%z, 0._wp))
+
+  !       d = 1e10_wp
+  !       d_bound = 2.5_wp
+  !       if(polar_r < d_bound)then! optimize away this stuff if far away from bound cylinder
+        
+  !       !  if (p.y < -1.0) //opt?
+  !           d = min(d, Balls(p, polar_t, polar_r))
+  !           d = min(d, Belt(p, polar_t, polar_r))
+  !           d = min(d, PlateRing(p, polar_t, polar_r))
+  !       !!  if (p.y > 0.25) //opt?
+  !       else
+  !           ! d = min(d, Grill(p, polar_t, polar_r))
+  !           ! d = min(d, Head(p))
+  !           ! d = min(d, Ears(p))
+  !       end if
+
+  !       !!    if (p.y < -1.0) !!opt ?
+  !       d = min(d, Body(p))
+  !       !!    else            !!opt ? glitches shadows though
+  !       ! if(abs(polar_t) < pi * 0.5)then !! optimize away this stuff if far away from front
+  !       !     d = min(d, Eye(p))
+  !       !     d = min(d, GunPort(p))
+  !       !     d = min(d, Gun(p))
+  !       !     d = min(d, Plunger(p))
+  !       ! end if
+
+  !       res = d
+
+  !   end function dalek_fn
+
+
+  !   real function balls(p, polar_t, polar_r)
+
+  !       implicit none
+
+  !       type(vector) :: p
+  !       real(kind=wp) :: polar_t, polar_r
+
+  !       real(kind=wp) :: ang_reps, k
+  !       type(vector) :: q, r
+
+  !       r = p
+  !       r%y = p%y + 2.45
+
+  !       ang_reps = 6._wp
+  !       polar_t = mod(polar_t, pi * (1._wp / ang_reps)) - pi * (1._wp / ang_reps) * 0.5
+  !       q = vector(polar_r * sin(polar_t), r%y, polar_r * cos(polar_t))
+
+  !       k = 0.5_wp
+  !       q%y = mod(q%y, k) - 0.5_wp * k
+
+  !       balls = sphere(q, vector(0.0_wp, 0._wp, 1.25_wp - 0.1_wp * floor(r%y * 2._wp)), 0.2_wp)
+  !       balls = max(balls, abs(r%y) - 1._wp)
+  !   end function balls
+
+  !   real function belt(p, polar_t, polar_r)
+
+  !       implicit none
+
+  !       type(vector) :: p
+  !       real(kind=wp) :: polar_r, polar_t
+
+  !       type(vector) :: q
+  !       real(kind=wp) :: d, b, r
+
+  !       r = p%y + 1.05_wp
+  !       d = cylinderxz(p, vector(0._wp, 0._wp, 1.25_wp - 0.15_wp * r))
+  !       q = p
+  !       q%y = q%y + 1.05_wp
+  !       d = max(d, abs(q%y) - 0.125_wp)
+
+  !       b = cylinderxz(p, vector(0._wp, 0._wp, 0.8_wp - 0.15_wp*p%y))
+  !       b = max(b, abs(p%y) - 1.2_wp)
+
+  !       d = min(d, bevelbox(p+ vector(-0.8_wp, 0.6_wp, 0._wp), vector(0.2_wp, 0.2_wp, 0.4_wp+0.2_wp+p%y), 0.05_wp))
+  !       d = min(d, b)
+  !       belt = d
+
+  !   end function belt
+
+  !   real function PlateRing(p, polar_t, polar_r)
+
+  !       implicit none
+
+  !       type(vector) :: p
+  !       real(kind=wp) :: polar_t, polar_r
+
+  !       real(kind=wp) :: h
+  !       type(vector) :: q
+
+  !       if(abs(polar_t) < pi * (3.0_wp / 8._wp))then
+  !           h = 0.25_wp
+  !       else
+  !           h = 0.5_wp
+  !       end if
+
+  !       polar_t = mod(polar_t, pi * (1._wp / 8._wp)) - pi * (1._wp / 8._wp) * 0.5_wp
+  !       q = vector(polar_r * sin(polar_t), p%y, polar_r * cos(polar_t))
+  !       q = q - vector(0._wp, -(h - 0.25_wp), 1.0_wp)
+
+  !   end function PlateRing
+
+  !   real function grill(p, polar_t, polar_r)
+
+  !       implicit none
+
+  !       type(vector) :: p
+  !       real(kind=wp) :: polar_t, polar_r
+
+  !   end function grill
+
+  !   real function head(p)
+
+  !       implicit none
+
+  !       type(vector) :: p
+
+  !   end function head
+
+  !   real function ears(p)
+
+  !       implicit none
+
+  !       type(vector) :: p
+
+  !   end function ears
+
+  !   real function body(p)
+
+  !       implicit none
+
+  !       type(vector) :: p
+
+  !       type(vector) :: q
+  !       real(kind=wp) :: taper, w, d
+        
+  !       q = p
+  !       p = RotY(p, pi * 1.0_wp / 12.0_wp)
+
+
+  !       taper = 1.0_wp + 0.1_wp * p%y
+
+  !       if(p%y < -3.5_wp)then
+  !           taper = taper - 0.2_wp * clamp(-(p%y + 3.5_wp), 0._wp, 0.1_wp)
+  !       else
+  !           taper = taper - 0.0_wp
+  !       end if
+
+  !       p = vector(p%x / taper, p%y, p%z / taper)
+
+  !       w = 1.15 ! taper;
+  ! ! d = udHexPrism(p.zx, w)
+  ! ! d = max(d, udHexPrism(p.xz, w))
+
+  !       d = d / taper
+
+  !       q%y = q%y + 2.45_wp
+
+  !       d = max(d, abs(q%y) - 1.5_wp) !! clip!
+  !       body = d
+  !   end function body
+
+  !   real function eye(p)
+
+  !       implicit none
+
+  !       type(vector) :: p
+
+  !   end function eye
+
+  !   real function GunPort(p)
+
+  !       implicit none
+
+  !       type(vector) :: p
+
+  !   end function GunPort
+
+  !   real function plunger(p)
+
+  !       implicit none
+
+  !       type(vector) :: p
+
+  !   end function plunger
+
+  !   real function gun(p)
+
+  !       implicit none
+
+  !       type(vector) :: p
+
+  !   end function gun
+
+end module models

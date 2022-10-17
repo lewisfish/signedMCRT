@@ -65,7 +65,7 @@ module vector_class
 
     contains
 
-        type(vector) pure function nint_vec(this)
+        type(vector) pure elemental function nint_vec(this)
 
             type(vector), intent(IN) :: this
 
@@ -73,7 +73,7 @@ module vector_class
 
         end function nint_vec
 
-        type(vector) pure function abs_vec(this)
+        type(vector) pure elemental function abs_vec(this)
 
             type(vector), intent(IN) :: this
 
@@ -81,7 +81,7 @@ module vector_class
 
         end function abs_vec
 
-        type(vector) pure function max_vec(this, val)
+        type(vector) pure elemental function max_vec(this, val)
 
             type(vector),  intent(IN) :: this
             real(kind=wp), intent(IN) :: val
@@ -90,7 +90,7 @@ module vector_class
 
         end function max_vec
 
-        type(vector) pure function min_vec(this, val)
+        type(vector) pure elemental function min_vec(this, val)
 
             type(vector),  intent(IN) :: this
             real(kind=wp), intent(IN) :: val
@@ -100,7 +100,7 @@ module vector_class
         end function min_vec
 
 
-        real(kind=wp) pure function maxval_vec(this)
+        real(kind=wp) pure elemental function maxval_vec(this)
 
             type(vector),  intent(IN) :: this
 
@@ -108,7 +108,7 @@ module vector_class
 
         end function maxval_vec
 
-        real(kind=wp) pure function minval_vec(this)
+        real(kind=wp) pure elemental function minval_vec(this)
 
             type(vector),  intent(IN) :: this
 
@@ -116,7 +116,7 @@ module vector_class
 
         end function minval_vec
 
-        type(vector) pure function vec_minus_vec(a, b)
+        type(vector) pure elemental function vec_minus_vec(a, b)
 
             class(vector), intent(IN) :: a
             type(vector),  intent(IN) :: b
@@ -126,7 +126,7 @@ module vector_class
         end function vec_minus_vec
 
 
-        type(vector) pure function vec_add_scal(a, b)
+        type(vector) pure elemental function vec_add_scal(a, b)
 
             class(vector), intent(IN) :: a
             real(kind=wp), intent(IN) :: b
@@ -136,7 +136,7 @@ module vector_class
         end function vec_add_scal
 
 
-        type(vector) pure function scal_add_vec(a, b)
+        type(vector) pure elemental function scal_add_vec(a, b)
 
             class(vector), intent(IN) :: b
             real(kind=wp), intent(IN) :: a
@@ -198,7 +198,7 @@ module vector_class
 
         end function vec_dot_mat
 
-        pure function vec_cross_vec(a, b) result(cross)
+        pure elemental function vec_cross_vec(a, b) result(cross)
 
             class(vector), intent(in) :: a
             type(vector),  intent(in) :: b
@@ -210,7 +210,7 @@ module vector_class
 
         end function vec_cross_vec
 
-        type(vector) pure function vec_mult_vec(a, b)
+        type(vector) pure elemental function vec_mult_vec(a, b)
 
             class(vector), intent(IN) :: a
             type(vector),  intent(IN) :: b
@@ -220,7 +220,7 @@ module vector_class
         end function vec_mult_vec
 
 
-        type(vector) pure function vec_mult_scal(a, b)
+        type(vector) pure elemental function vec_mult_scal(a, b)
 
             class(vector), intent(IN) :: a
             real(kind=wp), intent(IN) :: b
@@ -230,7 +230,7 @@ module vector_class
         end function vec_mult_scal
 
 
-        type(vector) pure function scal_mult_vec(a, b)
+        type(vector) pure elemental function scal_mult_vec(a, b)
 
             class(vector), intent(IN) :: b
             real(kind=wp), intent(IN) :: a
@@ -240,7 +240,7 @@ module vector_class
         end function scal_mult_vec
 
 
-        type(vector) pure function vec_div_scal_r4(a, b)
+        type(vector) pure elemental function vec_div_scal_r4(a, b)
 
             class(vector), intent(IN) :: a
             real(kind=wp), intent(IN) :: b
@@ -249,7 +249,7 @@ module vector_class
 
         end function vec_div_scal_r4
 
-        type(vector) pure function vec_div_scal_int(a, b)
+        type(vector) pure elemental function vec_div_scal_int(a, b)
 
             class(vector), intent(IN) :: a
             integer,       intent(IN) :: b
@@ -259,7 +259,7 @@ module vector_class
         end function vec_div_scal_int
 
 
-        type(vector) pure function magnitude(this)
+        type(vector) pure elemental function magnitude(this)
 
             class(vector), intent(in) :: this
 
@@ -271,7 +271,7 @@ module vector_class
         end function magnitude
 
 
-        real(kind=wp) pure function length(this)
+        real(kind=wp) pure elemental function length(this)
 
             class(vector), intent(in) :: this
 
