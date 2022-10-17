@@ -116,7 +116,7 @@ module photonMod
                 use random,        only : ran2
                 use constants,     only : twoPI
                 use tomlf,         only : toml_table, get_value
-                use sdfs,          only : rotationAlign, rotmat
+                ! use sdfs,          only : rotationAlign, rotmat
                 use mat_class,     only : invert
                 use vector_class
             
@@ -143,11 +143,11 @@ module photonMod
                 axis = tmp .cross. dir
                 axis = axis%magnitude()
                 angle = (dir .dot. axis) / (length(dir) * length(axis))
-                t = rotmat(axis, angle)
-                print*,t(:,1)
-                print*,t(:,2)
-                print*,t(:,3)
-                print*,t(:,4)
+                ! t = rotmat(axis, angle)
+                ! print*,t(:,1)
+                ! print*,t(:,2)
+                ! print*,t(:,3)
+                ! print*,t(:,4)
 ! 
                 print*," "
                 print*,"tmp ",tmp

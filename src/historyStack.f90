@@ -32,7 +32,7 @@ contains
 
     type(history_stack_t) function init_historyStack(filename, id)
 
-        use string_utils, only : str
+        use utils, only : str
         use constants,    only : fileplace
 
         character(*), intent(in) :: filename
@@ -151,7 +151,7 @@ contains
 
     subroutine histfinish_sub(this, num_threads)
 
-        use string_utils, only : str
+        use utils, only : str
         use constants,    only : fileplace
 
         class(history_stack_t) :: this
@@ -187,7 +187,7 @@ contains
     subroutine obj_writer(this)
         
         use constants,    only : fileplace
-        use string_utils, only : str
+        use utils, only : str
         use omp_lib
         
         type(history_stack_t), intent(inout) :: this
@@ -235,7 +235,7 @@ contains
     subroutine ply_writer(this)
 
         use constants,    only : fileplace
-        use string_utils, only : str
+        use utils, only : str
         
         type(history_stack_t), intent(inout) :: this
         
@@ -284,7 +284,7 @@ contains
     subroutine json_writer(this)
         
         use constants,    only : fileplace
-        use string_utils, only : str
+        use utils, only : str
         
         type(history_stack_t), intent(inout) :: this
 

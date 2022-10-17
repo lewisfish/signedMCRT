@@ -12,6 +12,7 @@ test-drive.tag = "v0.4.0"
 [dependencies]
 toml-f.git = "https://github.com/toml-f/toml-f"
 tev_bindings.git = "https://github.com/lewisfish/fortran_tev_bindings"
+utils.git = "https://github.com/lewisfish/fortran_utilities"
 
 [build]
 external-modules = "mpi_f08"

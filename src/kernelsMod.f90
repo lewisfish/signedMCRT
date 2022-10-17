@@ -229,10 +229,9 @@ subroutine finalise(dict, dects, nscatt, start)
     
     ! use historyStack, only : history_stack_t
     use detector_mod, only : dect_array
-    use string_utils, only : str
-    use utils,        only : get_time, print_time
     use writer_mod,   only : normalise_fluence, write_fluence, write_detected_photons
-
+    
+    use utils, only : get_time, print_time, str
     use tomlf, only : toml_table, set_value
 
     real(kind=wp),         intent(in) :: nscatt, start
@@ -291,6 +290,4 @@ subroutine finalise(dict, dects, nscatt, start)
 #endif
 
 end subroutine finalise
-
-
 end module kernels

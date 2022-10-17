@@ -3,9 +3,8 @@ module writer_mod
 !
 !
     use constants,    only : wp
-    use string_utils, only : str
 
-implicit none
+    implicit none
 
     interface nrrd_write
         module procedure write_3d_r8_nrrd
@@ -52,6 +51,7 @@ implicit none
 
             use detector_mod
             use constants, only: fileplace
+            use utils, only : str
 
             type(dect_array), intent(in) :: detectors(:)
 
@@ -63,14 +63,14 @@ implicit none
                 associate(x => detectors(i)%p)
                     select type(x)
                     type is(circle_dect)
-                        hdr = "# pos, layer, nbins, bin_wid, radius"//new_line("a")//str(x%pos)//","//str(x%layer)//","//str(x%nbins)//","//str(x%bin_wid)//","//str(x%radius)
+                        ! hdr = "# pos, layer, nbins, bin_wid, radius"//new_line("a")//str(x%pos)//","//str(x%layer)//","//str(x%nbins)//","//str(x%bin_wid)//","//str(x%radius)
                         write(u, "(a)")hdr
                         write(u, "(a)")"#data:"
                         do j = 1, x%nbins 
                             write(u,"(2(es24.16e3,1x))")real(j,kind=wp) * x%bin_wid, x%data(j)
                         end do
                     type is(annulus_dect)
-                        hdr = "#pos, layer, nbins, bin_wid, radius1, radius2"//new_line("a")//str(x%pos)//","//str(x%layer)//","//str(x%nbins)//","//str(x%bin_wid)//","//str(x%r1)//","//str(x%r2)
+                        ! hdr = "#pos, layer, nbins, bin_wid, radius1, radius2"//new_line("a")//str(x%pos)//","//str(x%layer)//","//str(x%nbins)//","//str(x%bin_wid)//","//str(x%r1)//","//str(x%r2)
                     type is(camera)
                         print*,"Warning not yet implmented!"
                     end select
@@ -130,8 +130,6 @@ implicit none
 
         subroutine write_3d_r8_raw(array, filename, overwrite)
 
-            implicit none
-
             real(kind=wp), intent(IN) :: array(:, :, :)
             character(*),  intent(IN) :: filename
             logical,       intent(IN) :: overwrite
@@ -153,7 +151,7 @@ implicit none
 
         function get_new_file_name(file) result(res)
 
-            implicit none
+            use utils, only : str
 
             character(len=*), intent(IN) :: file
             character(len=:), allocatable :: res
@@ -170,9 +168,7 @@ implicit none
         end function get_new_file_name
 
         logical function check_file(file) result(res)
-            
-            implicit none
-        
+                    
             character(len=*), intent(IN) :: file
 
             inquire(file=trim(file), exist=res)
@@ -181,7 +177,7 @@ implicit none
 
         subroutine write_hdr(u, sizes, type)
 
-            implicit none
+            use utils, only : str
 
             character(*), intent(IN) :: type
             integer,      intent(IN) :: sizes(:), u
@@ -213,7 +209,7 @@ implicit none
             
             use tomlf,           only : toml_table, toml_serializer
             use iso_fortran_env, only : int32, int64, real32, real64
-            use string_utils,    only : str
+            use utils,    only : str
         
             character(*),               intent(IN)    :: filename
             real(kind=wp),              intent(IN)    :: array(:, :, :)
