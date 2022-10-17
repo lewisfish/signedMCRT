@@ -37,7 +37,7 @@ module detector_mod
             type(hit_t),     intent(in)    :: hitpoint
         end function checkHitInterface
 
-        subroutine recordHitInterface(this, hitpoint, history)
+        subroutine recordHitInterface(this, hitpoint)!, history)
             use constants,     only : wp
             use historyStack,  only : history_stack_t
             use vector_class
@@ -45,7 +45,7 @@ module detector_mod
 
             class(detector),       intent(inout) :: this
             type(hit_t),           intent(in)    :: hitpoint
-            type(history_stack_t), intent(inout) :: history
+            ! type(history_stack_t), intent(inout) :: history
         end subroutine recordHitInterface
     end interface
 
@@ -117,13 +117,13 @@ contains
 
     end function hit_init
    
-    subroutine record_hit_1D_sub(this, hitpoint, history)
+    subroutine record_hit_1D_sub(this, hitpoint)!, history)
 
         use historyStack, only : history_stack_t
 
         class(detector1D),     intent(inout) :: this
         type(hit_t),           intent(in)    :: hitpoint
-        type(history_stack_t), intent(inout) :: history
+        ! type(history_stack_t), intent(inout) :: history
 
         real(kind=wp) :: value
         integer       :: idx
@@ -133,20 +133,20 @@ contains
             idx = min(nint(value / this%bin_wid) + 1, this%nbins)
             !$omp atomic
             this%data(idx) = this%data(idx) + 1
-            if(this%trackHistory)then
-                call history%write()
-            end if
+            ! if(this%trackHistory)then
+            !     call history%write()
+            ! end if
         end if
-        history%size = 0
+        ! history%size = 0
     end subroutine record_hit_1D_sub
 
-    subroutine record_hit_2D_sub(this, hitpoint, history)
+    subroutine record_hit_2D_sub(this, hitpoint)!, history)
 
         use historyStack, only : history_stack_t
 
         class(detector2D),     intent(inout) :: this
         type(hit_t),           intent(in)    :: hitpoint
-        type(history_stack_t), intent(inout) :: history
+        ! type(history_stack_t), intent(inout) :: history
 
         real(kind=wp), volatile :: x, y
         integer       :: idx, idy
@@ -160,11 +160,11 @@ contains
             if(idy < 1)idy = this%nbinsY
             !$omp atomic
             this%data(idx, idy) = this%data(idx, idy) + 1
-            if(this%trackHistory)then
-                call history%write()
-            end if
+            ! if(this%trackHistory)then
+            !     call history%write()
+            ! end if
         end if
-        history%size = 0
+        ! history%size = 0
         end subroutine record_hit_2D_sub
 !##############################################################################
 !                       CIRCLE DETECTOR

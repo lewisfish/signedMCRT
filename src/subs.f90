@@ -5,8 +5,8 @@ module subs
 
     implicit none
 
+    private
     public  :: setup_simulation
-    private :: directory, alloc_array, zarray
 
     contains
 
@@ -1072,6 +1072,8 @@ module subs
             inquire(file=trim(fileplace)//"/.", exist=dirExists)
 #elif __INTEL_COMPILER
             inquire(directory=trim(fileplace), exist=dirExists)
+#else 
+    error stop "Compiler not supported!"
 #endif
             if(.not. dirExists)then
                 mkdirCMD = "mkdir -p "//trim(fileplace)

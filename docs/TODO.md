@@ -11,8 +11,11 @@ List of ToDo's for SignedMCRT.
     - [x] **Camera**
     - [ ] **Annulus**
 - [ ] Add optics to **Camera** type
+- [ ] Add photon tracjectory history tracking
+    - [ ] Fix openmp troubles
+    - [ ] Fix speed issues
 - [ ] Add "Scattering" kernels
-    - [ ] path length counter method
+    - [x] path length counter method
     - [ ] Weight method
 - [ ] Make sure all optical properties are the same for a model instance (SDF)
 - [ ] Remove spurious implicit nones
@@ -20,16 +23,24 @@ List of ToDo's for SignedMCRT.
     - [ ] Implement KD trees in 2D
     - [ ] Implement KD trees in 3D
 - [ ] Make code serializable so that we can checkpoint simulations
-
+     - [ ] Save input toml file
+     - [ ] photons run
+     - [ ] Save output data
+        - [ ] Detectors
+        - [ ] Fluence
+        - [ ] Nscatt
 
 ## Testing
 
 - [x] Vec3 class
-- [x] Matrix class
+- [ ] Matrix class
  - [ ] Need Mat mult Mat test
-- [ ] Vec4 Class
+- [x] Vec4 Class
 - [ ] SDF Class
 - [ ] Detector Class
+    - [ ] Circle
+    - [ ] Camera
+    - [ ] Annulus
 - [ ] Photon class
 - [ ] Stack Class
 - [ ] String Utils

@@ -46,6 +46,7 @@ contains
         new_filename = filename(1:idx-1)//"_"//str(id,3)//filename(idx:)
 
         init_historyStack%filename = new_filename
+        ! print*,id, " ", trim(init_historyStack%filename)
         if(index(new_filename, "obj") /= 0)then
             init_historyStack%type="obj"
         elseif(index(new_filename, "ply") /= 0)then
@@ -159,7 +160,6 @@ contains
         character(len=:), allocatable :: command
         integer :: u, idx
 
-        print*,this%type,"###"
         select case(trim(this%type))
         case("obj")
             command = ""
@@ -184,7 +184,6 @@ contains
         end select
     end subroutine histfinish_sub
 
-
     subroutine obj_writer(this)
         
         use constants,    only : fileplace
@@ -196,7 +195,7 @@ contains
         type(vec4) :: v
         integer :: u, io, id, counter, ioi
         logical :: res
-        
+
 #ifdef _OPENMP
         id = omp_get_thread_num()
 #else
