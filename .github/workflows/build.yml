@@ -29,8 +29,9 @@ jobs:
         args: -O fpm https://github.com/fortran-lang/fpm/releases/download/current/fpm-linux-x86_64 
 
     - name: rename
-      run: sudo chmod u+x fpm
-
+      run: |
+       sudo chmod u+x fpm
+       echo "{path}" >> $GITHUB_PATH
     # - uses: fortran-lang/setup-fpm@v4
     #   with:
     #     github-token: ${{ secrets.GITHUB_TOKEN }}
