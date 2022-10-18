@@ -136,10 +136,10 @@ jobs:
       run: ./fpm @test
 
     - name: Run CodeCov
-      if: ${{ contains(matrix.os, 'ubuntu') && contains(matrix.compiler, 'ubuntu') }}
+      if: ${{ contains(matrix.os, 'ubuntu') && matrix.compiler == 'gnu' }}
       run: |
         gcov ./build/gfortran_*/sMCRT/src*.gcda -r ./src/ -b
     
     - name: Codecov
-      if: ${{ contains(matrix.os, 'ubuntu') && contains(matrix.compiler, 'ubuntu') }}
+      if: ${{ contains(matrix.os, 'ubuntu') && matrix.compiler == 'gnu' }}
       uses: codecov/codecov-action@v3.1.1
