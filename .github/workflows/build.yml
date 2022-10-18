@@ -23,9 +23,17 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - uses: fortran-lang/setup-fpm@v4
+    - name: wget
+      uses: wei/wget@v1
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        args: -O fpm https://github.com/fortran-lang/fpm/releases/download/current/fpm-linux-x86_64 
+
+    - name: rename
+      run: chmod u+x fpm
+
+    # - uses: fortran-lang/setup-fpm@v4
+    #   with:
+    #     github-token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Install GCC compilers Linux
       if: contains( matrix.os, 'ubuntu')
