@@ -7,7 +7,12 @@ List of ToDo's for SignedMCRT.
 - [x] Make CI run tests
 - [x] Add Code Coverage reports
 - [x] Remove spurious implicit nones
+- [ ] Add more saved state to photon_origin to save compute time
 - [ ] Automate benchmarking so we can catch performance regressions
+- [ ] Finish Circular, focus, and annulus source types
+    - [ ] Circular
+    - [ ] Focus
+    - [ ] Annulus
 - [ ] Add Direction component to rest of Detectors
     - [x] **Circle**
     - [x] **Camera**
@@ -43,6 +48,11 @@ List of ToDo's for SignedMCRT.
     - [ ] Camera
     - [ ] Annulus
 - [ ] Photon class
+    - [ ] Uniform
+    - [ ] Point
+    - [ ] Pencil
+    - [ ] Circular
+    - [ ] Annulus
 - [ ] Stack Class
 - [ ] String Utils
 - [ ] Utils
@@ -51,7 +61,7 @@ List of ToDo's for SignedMCRT.
 - [ ] Scattering
 - [ ] Fresnel reflections
 - [ ] End to End tests
-    - [ ] Scattering Test
+    - [x] Scattering Test
     - [ ] Others
 - [ ] Implment a fuzzer to test input space
 - [ ] Add a input schema to validate input toml
