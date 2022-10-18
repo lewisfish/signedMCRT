@@ -4,6 +4,8 @@ option build --compiler gfortran --flag "-ffree-line-length-none -Wno-compare-re
 @buildmp
 option build --compiler gfortran --flag "-fopenmp -ffree-line-length-none -Wno-compare-reals -g -fbacktrace -fcheck=all -fbounds-check -ffpe-trap=invalid,overflow,underflow,denormal -Wall -Wextra"
 
+@buildintel
+option build --compiler ifort
 
 @run
 option run sMCRT --compiler gfortran --flag "-O2 -march=native -flto -mavx -ffree-line-length-none"
@@ -22,6 +24,8 @@ option run sMCRT --compiler gfortran --flag "-fopenmp -O2 -march=native -flto -m
 @test
 option test --compiler gfortran --flag "-O0 -ffree-line-length-none -fprofile-arcs -ftest-coverage --coverage"
 
+@testintel
+option test --compiler ifort
 
 @runnv
 option run sMCRT --compiler nvfortran --flag "-fast -Mbackslash"
