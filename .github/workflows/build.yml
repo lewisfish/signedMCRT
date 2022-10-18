@@ -7,7 +7,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        gcc_v: [9, 10, 11] # Version of GFortran we want to use.
+        gcc_v: [11] # Version of GFortran we want to use.
         build: [fpm]
         include:
           - os: ubuntu-latest
@@ -30,8 +30,9 @@ jobs:
 
     - name: rename
       run: |
-       sudo chmod x fpm
-       ls -ltcr
+        ls -ltcr
+        sudo chmod +x fpm
+        ls -ltcr
 
     # - uses: fortran-lang/setup-fpm@v4
     #   with:
