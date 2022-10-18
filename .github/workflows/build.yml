@@ -131,7 +131,7 @@ jobs:
       if: ${{ contains(matrix.build, 'fpm') && matrix.compiler == 'gnu' }}
       run: ./fpm test
 
-    -name: debug
+    - name: debug
       run: ls build/ -ltcr
 
     - name: Run CodeCov

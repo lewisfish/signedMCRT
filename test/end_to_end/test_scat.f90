@@ -17,7 +17,8 @@ module testScatterMod
     end subroutine collect_suite1
 
     subroutine Scatter_test(error)
-
+    ! run the test case of a sphere radius 1, tau=10cm^-1
+    ! expect to follow theory of N_scatt \approx tau^2 / 2 + tau
         use kernels, only : pathlength_scatter
 
         type(error_type), allocatable, intent(out) :: error
