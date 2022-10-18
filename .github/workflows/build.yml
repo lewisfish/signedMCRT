@@ -69,7 +69,7 @@ jobs:
       if: ${{ contains(matrix.os, 'macos') }}
       run: |
         brew install wget
-        wget -O fpm https://github.com/fortran-lang/fpm/releases/download/current/fpm-linux-x86_64 
+        wget -O fpm https://github.com/fortran-lang/fpm/releases/download/current/fpm-macos-x86_64
 
     - name: Install FPM
       run: |
