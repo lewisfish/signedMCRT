@@ -129,7 +129,10 @@ jobs:
 
     - name: Test and compile (GNU)
       if: ${{ contains(matrix.build, 'fpm') && matrix.compiler == 'gnu' }}
-      run: ./fpm test
+      run: ./fpm @test
+
+    - name: debug
+      run: ls build/ -ltcr
 
     - name: Run CodeCov
       if: ${{ contains(matrix.os, 'ubuntu') && matrix.compiler == 'gnu' }}
