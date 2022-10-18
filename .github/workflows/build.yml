@@ -30,7 +30,8 @@ jobs:
 
     - name: rename
       run: |
-       sudo chmod u+x fpm
+       sudo chmod x fpm
+       ls -ltcr
 
     # - uses: fortran-lang/setup-fpm@v4
     #   with:
