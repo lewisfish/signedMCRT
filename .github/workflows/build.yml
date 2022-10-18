@@ -115,12 +115,20 @@ jobs:
         source /opt/intel/oneapi/setvars.sh
         printenv >> $GITHUB_ENV
 
-    - name: Build and compile
-      if: ${{ contains(matrix.build, 'fpm') }}
+    - name: Build and compile (Intel)
+      if: ${{ contains(matrix.build, 'fpm') && matrix.compiler == 'intel' }}
+      run: ./fpm @buildintel
+
+    - name: Test and compile (Intel)
+      if: ${{ contains(matrix.build, 'fpm') && matrix.compiler == 'intel' }}
+      run: ./fpm @testintel
+
+    - name: Build and compile (GNU)
+      if: ${{ contains(matrix.build, 'fpm') && matrix.compiler == 'gnu' }}
       run: ./fpm @build
 
-    - name: Test and compile
-      if: ${{ contains(matrix.build, 'fpm') }}
+    - name: Test and compile (GNU)
+      if: ${{ contains(matrix.build, 'fpm') && matrix.compiler == 'gnu' }}
       run: ./fpm @test
 
     - name: Run CodeCov
