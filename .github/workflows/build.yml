@@ -23,7 +23,7 @@ jobs:
         os: [ubuntu-latest, macos-latest]
         build: [fpm]
         build-type: [debug]
-        compiler: [gnu]
+        compiler: [gnu, intel]
         version: [10]
 
     defaults:
@@ -59,10 +59,16 @@ jobs:
         --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-${{ env.GCC_V }} \
         --slave /usr/bin/gcov gcov /usr/bin/gcov-${{ env.GCC_V }}
 
-    - name: wget
+    - name: wget (Linux)
       uses: wei/wget@v1
       with:
         args: -O fpm https://github.com/fortran-lang/fpm/releases/download/current/fpm-linux-x86_64 
+
+    - name: wget (OSX)
+      if: ${{ contains(matrix.os, 'macos') }}
+      run: |
+        brew install wget
+        wget -O fpm https://github.com/fortran-lang/fpm/releases/download/current/fpm-linux-x86_64 
 
     - name: Install FPM
       run: |
