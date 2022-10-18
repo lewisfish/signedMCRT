@@ -14,11 +14,12 @@ Paper describing of an application of signedMCRT: [https://doi.org/10.1364/OE.45
 
 ## Instructions
 
-Code prerequisites: Fortran 2018 compliant complier e.g gfortran-10 or intel oneAPI Fortran.
-Only tested on Linux. May run on Mac, but unlikely to run on Windows without some changes.
+Code prerequisites: Fortran 2018 compliant complier e.g gfortran-9+ or intel oneAPI Fortran.
+Only tested on Linux and Mac. Unlikely to run on Windows without some changes.
 
 To run the code you can use:
-  - The [Fortran package manager](https://fpm.fortran-lang.org/en/index.html) by running; fpm @run
+  - The [Fortran package manager](https://fpm.fortran-lang.org/en/index.html) by running; "fpm run" for single core uage
+  or "fpm @runmp" for multicore usage.
 
 See [this](docs/config.md) for instructions on what settings the toml config file can configure.
   
