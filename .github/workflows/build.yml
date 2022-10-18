@@ -1,57 +1,124 @@
-on: [push]
+name: CI
+
+on: [push, pull_request]
+
+env:
+  BUILD_DIR: _build
+  PIP_PACKAGES: >-
+    gcovr
+  MACOS_BASEKIT_URL: >-
+    https://registrationcenter-download.intel.com/akdlm/irc_nas/17969/m_BaseKit_p_2021.3.0.3043.dmg
+  MACOS_HPCKIT_URL: >-
+    https://registrationcenter-download.intel.com/akdlm/irc_nas/17890/m_HPCKit_p_2021.3.0.3226_offline.dmg
+  LINUX_INTEL_COMPONENTS: >-
+    intel-oneapi-compiler-fortran-2021.2.0
+    intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic-2021.2.0
 
 jobs:
-  Build:
+  build:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-        gcc_v: [9,10,11] # Version of GFortran we want to use.
+        os: [ubuntu-latest, macos-latest]
         build: [fpm]
-        include:
-          - os: ubuntu-latest
-            gcc_v: 10
+        build-type: [debug]
+        compiler: [gnu]
+        version: [10]
+
+    defaults:
+      run:
+        shell: ${{ matrix.shell || 'bash' }}
 
     env:
-      FC: gfortran-${{ matrix.gcc_v }}
-      CC: gcc-${{ matrix.gcc_v }}
-      CXX: g++-${{ matrix.gcc_v }}
-      GCC_V: ${{ matrix.gcc_v }}
+      FC: ${{ matrix.compiler == 'intel' && 'ifort' || 'gfortran' }}
+      CC: ${{ matrix.compiler == 'intel' && 'icc' || 'gcc' }}
+      GCC_V: ${{ matrix.version }}
+      PYTHON_V: 3.8
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+
+    - name: Install GCC (OSX)
+      if: ${{ contains(matrix.os, 'macos') && matrix.compiler == 'gnu' }}
+      run: |
+        brew install gcc@${{ env.GCC_V }}
+        ln -s /usr/local/bin/gfortran-${{ env.GCC_V }} /usr/local/bin/gfortran
+        ln -s /usr/local/bin/gcc-${{ env.GCC_V }} /usr/local/bin/gcc
+        ln -s /usr/local/bin/g++-${{ env.GCC_V }} /usr/local/bin/g++
+
+    - name: Install GCC (Linux)
+      if: ${{ contains(matrix.os, 'ubuntu') && matrix.compiler == 'gnu' }}
+      run: |
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+        sudo apt-get update
+        sudo apt-get install -y gcc-${{ env.GCC_V}} gfortran-${{ env.GCC_V }}
+        sudo update-alternatives \
+        --install /usr/bin/gcc gcc /usr/bin/gcc-${{ env.GCC_V }} 100 \
+        --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-${{ env.GCC_V }} \
+        --slave /usr/bin/gcov gcov /usr/bin/gcov-${{ env.GCC_V }}
 
     - name: wget
       uses: wei/wget@v1
       with:
         args: -O fpm https://github.com/fortran-lang/fpm/releases/download/current/fpm-linux-x86_64 
 
-    - name: rename
+    - name: Install FPM
       run: |
         sudo chmod +x fpm
 
-    # - uses: fortran-lang/setup-fpm@v4
-    #   with:
-    #     github-token: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Install GCC compilers Linux
-      if: contains( matrix.os, 'ubuntu')
+    - name: Prepare for cache restore
+      if: ${{ matrix.compiler == 'intel' }}
       run: |
-        sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+        sudo mkdir -p /opt/intel
+        sudo chown $USER /opt/intel
+
+    - name: Cache Intel install
+      if: ${{ matrix.compiler == 'intel' }}
+      id: cache-install
+      uses: actions/cache@v2
+      with:
+        path: /opt/intel/oneapi
+        key: install-${{ matrix.compiler }}-${{ matrix.version }}-${{ matrix.os }}
+
+    - name: Install Intel (Linux)
+      if: ${{ contains(matrix.os, 'ubuntu') && contains(matrix.compiler, 'intel') && steps.cache-install.outputs.cache-hit != 'true' }}
+      run: |
+        wget https://apt.repos.intel.com/intel-gpg-keys/${{ env.KEY }}
+        sudo apt-key add ${{ env.KEY }}
+        rm ${{ env.KEY }}
+        echo "deb https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
         sudo apt-get update
-        sudo apt-get install -y gcc-${GCC_V} g++-${GCC_V} gfortran-${GCC_V}
-        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${GCC_V} 100 \
-        --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-${GCC_V} \
-        --slave /usr/bin/g++ g++ /usr/bin/g++-${GCC_V} \
-        --slave /usr/bin/gcov gcov /usr/bin/gcov-${GCC_V}
+        sudo apt-get install ${{ env.PKG }}
+      env:
+        KEY: GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+        PKG: ${{ env.LINUX_INTEL_COMPONENTS }}
 
-    - name: Install GCC compilers macOS
-      if: contains( matrix.os, 'macos')
+    - name: Install Intel HPCKit (OSX)
+      if: ${{ contains(matrix.os, 'macos') && contains(matrix.compiler, 'intel') && steps.cache-install.outputs.cache-hit != 'true' }}
       run: |
-          brew install gcc@${GCC_V} || brew upgrade gcc@${GCC_V} || true
-          brew link gcc@${GCC_V}
+        curl --output ${{ env.OUT }} --url "$URL" --retry 5 --retry-delay 5
+        hdiutil attach ${{ env.OUT }}
+        if [ -z "$COMPONENTS" ]; then
+          sudo /Volumes/"$(basename "$URL" .dmg)"/bootstrapper.app/Contents/MacOS/bootstrapper -s --action install --eula=accept --continue-with-optional-error=yes --log-dir=.
+          installer_exit_code=$?
+        else
+          sudo /Volumes/"$(basename "$URL" .dmg)"/bootstrapper.app/Contents/MacOS/bootstrapper -s --action install --components="$COMPONENTS" --eula=accept --continue-with-optional-error=yes --log-dir=.
+          installer_exit_code=$?
+        fi
+        hdiutil detach /Volumes/"$(basename "$URL" .dmg)" -quiet
+        exit $installer_exit_code
+      env:
+        OUT: webimage-hpc.dmg
+        URL: ${{ env.MACOS_HPCKIT_URL }}
+        COMPONENTS: all
+
+    - name: Setup Intel oneAPI environment
+      if: ${{ matrix.compiler == 'intel' }}
+      run: |
+        source /opt/intel/oneapi/setvars.sh
+        printenv >> $GITHUB_ENV
 
     - name: Build and compile
       if: ${{ contains(matrix.build, 'fpm') }}
@@ -62,8 +129,10 @@ jobs:
       run: ./fpm @test
 
     - name: Run CodeCov
+      if: ${{ contains(matrix.os, 'ubuntu') }}
       run: |
         gcov ./build/gfortran_*/sMCRT/src*.gcda -r ./src/ -b
     
     - name: Codecov
+      if: ${{ contains(matrix.os, 'ubuntu') }}
       uses: codecov/codecov-action@v3.1.1
