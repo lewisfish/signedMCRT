@@ -31,7 +31,9 @@ jobs:
     - name: rename
       run: |
        sudo chmod u+x fpm
-       echo "{path}" >> $GITHUB_PATH
+       ls -ltcr
+       pwd
+       echo "{path}/fpm" >> $GITHUB_PATH
     # - uses: fortran-lang/setup-fpm@v4
     #   with:
     #     github-token: ${{ secrets.GITHUB_TOKEN }}
