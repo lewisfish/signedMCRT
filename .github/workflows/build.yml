@@ -31,9 +31,7 @@ jobs:
     - name: rename
       run: |
        sudo chmod u+x fpm
-       ls -ltcr
-       pwd
-       echo "{path}/fpm" >> $GITHUB_PATH
+
     # - uses: fortran-lang/setup-fpm@v4
     #   with:
     #     github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -57,11 +55,11 @@ jobs:
 
     - name: Build and compile
       if: ${{ contains(matrix.build, 'fpm') }}
-      run: fpm @build
+      run: ./fpm @build
 
     - name: Test and compile
       if: ${{ contains(matrix.build, 'fpm') }}
-      run: fpm @test
+      run: ./fpm @test
 
     - name: Run CodeCov
       run: |
