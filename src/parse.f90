@@ -68,7 +68,8 @@ module parse_mod
             call get_value(child, "type", dect_type, origin=origin)
             select case(dect_type)
             case default
-                print'(a)',context%report("Invalid detector type. Valid types are [circle, annulus]", origin, "expected valid detector type")
+                print'(a)',context%report("Invalid detector type. Valid types are [circle, annulus]", &
+                           origin, "expected valid detector type")
                 stop 1
             case("circle")
                 c_counter = c_counter + 1
@@ -259,7 +260,9 @@ module parse_mod
                     stop 1
                 end if
                 if(state%source == "circular")then
-                    print'(a)',context%report("Direction not yet fully implmented for source type Circular. Results may not be accurate!", origin, level=toml_level%warning)
+                    print'(a)',context%report(&
+                    "Direction not yet fully implmented for source type Circular. Results may not be accurate!", origin,&
+                     level=toml_level%warning)
                 end if
                 do i = 1, len(children)
                     call get_value(children, i, dir(i))

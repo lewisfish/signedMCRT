@@ -239,7 +239,7 @@ subroutine finalise(dict, dects, nscatt, start)
     ! type(history_stack_t), intent(in) :: history
     type(toml_table),      intent(inout) :: dict
 
-    integer :: id, numproc!, i
+    integer :: id, numproc, i
     real(kind=wp) :: nscattGLOBAL, time_taken
 
     id = 0
@@ -259,6 +259,9 @@ subroutine finalise(dict, dects, nscatt, start)
         print*,'Average # of scatters per photon:',nscattGLOBAL/(state%nphotons)
 #else
         print*,'Average # of scatters per photon:',nscattGLOBAL/(state%nphotons*numproc)
+        open(newunit=i,file="nscatt.dat")
+        write(i,*)nscattGLOBAL/(state%nphotons)
+        close(i)
 #endif
         !write out files
         !create dict to store metadata and nrrd hdr info

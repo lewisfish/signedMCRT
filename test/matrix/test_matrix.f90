@@ -188,14 +188,16 @@ module testsMatrixMod
 
         type(error_type), allocatable, intent(out) :: error
 
-        real(kind=wp) :: val
+        real(kind=wp) :: val, b(16)
         type(mat) :: a
         integer :: i, j
 
-        a = mat([1._wp, 5._wp, 9._wp, 13._wp, &
-                2._wp, 6._wp, 10._wp, 14._wp, &
-                3._wp, 7._wp, 11._wp, 15._wp, &
-                4._wp, 8._wp, 12._wp, 16._wp])
+        b = [1._wp, 5._wp, 9._wp, 13._wp, &
+        2._wp, 6._wp, 10._wp, 14._wp, &
+        3._wp, 7._wp, 11._wp, 15._wp, &
+        4._wp, 8._wp, 12._wp, 16._wp]
+
+        a = mat(b)
 
         val = 1._wp
         do i = 1, 4

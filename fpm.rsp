@@ -1,37 +1,32 @@
-@build
-option build --compiler gfortran --flag "-ffree-line-length-none -Wno-compare-reals -g -fbacktrace -fcheck=all -fbounds-check -ffpe-trap=invalid,overflow,underflow,denormal -Wall -Wextra -pedantic -std=f2018"
-
 @buildmp
-option build --compiler gfortran --flag "-fopenmp -ffree-line-length-none -Wno-compare-reals -g -fbacktrace -fcheck=all -fbounds-check -ffpe-trap=invalid,overflow,underflow,denormal -Wall -Wextra"
+option build --compiler gfortran --profile debug --flag "-fopenmp"
 
 @buildintel
 option build --compiler ifort
 
-@run
-option run sMCRT --compiler gfortran --flag "-O2 -march=native -flto -mavx -ffree-line-length-none"
-
 @runmp
-option run sMCRT --compiler gfortran --flag "-O2 -march=native -flto -mavx -ffree-line-length-none -fopenmp"
+option run sMCRT --compiler gfortran --profile release --flag "-fopenmp"
 
 
 @debug
-option run sMCRT --compiler gfortran --flag "-O2 -march=native -flto -mavx -ffree-line-length-none -g -fbacktrace -fcheck=all -fbounds-check -ffpe-trap=invalid,overflow,underflow,denormal"
+option run sMCRT --compiler gfortran --flag "-O2 -march=native -flto -mavx -g -fbacktrace -fcheck=all -fbounds-check -ffpe-trap=invalid,overflow,underflow,denormal"
 
 @debugmp
-option run sMCRT --compiler gfortran --flag "-fopenmp -O2 -march=native -flto -mavx -ffree-line-length-none -g -fbacktrace -fcheck=all -fbounds-check -ffpe-trap=invalid,overflow,underflow,denormal"
+option run sMCRT --compiler gfortran --flag "-fopenmp -O2 -march=native -flto -mavx -g -fbacktrace -fcheck=all -fbounds-check -ffpe-trap=invalid,overflow,underflow,denormal"
 
 
 @test
-option test --compiler gfortran --flag "-O0 -ffree-line-length-none -fprofile-arcs -ftest-coverage --coverage"
+option test --compiler gfortran --flag "-O0 -fprofile-arcs -ftest-coverage --coverage"
 
 @testintel
 option test --compiler ifort
+
 
 @runnv
 option run sMCRT --compiler nvfortran --flag "-fast -Mbackslash"
 
 @runifort
-option run sMCRT --compiler ifort --flag "-O2 -xHost -ipo -assume byterecl -qopenmp"
+option run sMCRT --compiler ifort --profile release --flag "-qopenmp"
 
 @runifortdebug
 option run sMCRT --compiler ifort --flag "-O2 -xHost -ipo -assume byterecl -g -debug -traceback -CB -CU -CA -fpe0 -warn all -stand f08"

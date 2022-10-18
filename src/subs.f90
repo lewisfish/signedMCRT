@@ -204,7 +204,8 @@ module subs
 
             do i = 1, num_spheres
                 radius = ranu(0.001_wp, 0.25_wp)
-                pos = vector(ranu(-1._wp+radius, 1._wp-radius), ranu(-1._wp+radius, 1._wp-radius), ranu(-1._wp+radius, 1._wp-radius))
+                pos = vector(ranu(-1._wp+radius, 1._wp-radius), ranu(-1._wp+radius, 1._wp-radius),&
+                             ranu(-1._wp+radius, 1._wp-radius))
                 t = invert(translate(pos))
                 mus = ranu(1._wp, 50._wp)
                 mua = ranu(0.01_wp, 1._wp)
@@ -226,7 +227,8 @@ module subs
 
         function blobby() result(array)
             
-            use sdfs, only : box, capsule, sphere, translate, rotate_x, rotate_y, rotate_z, container, model, smoothunion, model_init
+            use sdfs, only : box, capsule, sphere, translate, rotate_x, rotate_y,&
+                             rotate_z, container, model, smoothunion, model_init
             use vector_class, only : vector
             use mat_class,    only : invert
 

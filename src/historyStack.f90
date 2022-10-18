@@ -167,14 +167,15 @@ contains
             do u = 0, num_threads-1
                 command = command//trim(fileplace)//this%filename(1:idx-4)//str(u,3)//this%filename(idx:)//"2 "
             end do
-            call execute_command_line("cat "//command//" >> "//trim(fileplace)//this%filename(1:idx-4)//this%filename(idx:))
+        call execute_command_line("cat "//command//" >> "//trim(fileplace)//&
+                                   this%filename(1:idx-4)//this%filename(idx:))
         case("ply")
             ! this is the easiest way to edit the vertex count as we don't know how many photons we will track when writing the header.
             ! this saves stroing all photons data in RAM for duration of simulation.
             ! taken from: https://stackoverflow.com/a/11145362
-            call execute_command_line("sed -i '3s#.*#element vertex "//str(this%vertex_counter)//"#' "//trim(fileplace)//this%filename)
-            call execute_command_line("sed -i '7s#.*#element edge "//str(this%edge_counter)//"#' "//trim(fileplace)//this%filename)
-            call execute_command_line("cat "//trim(fileplace)//this%filename//"2 >> "//trim(fileplace)//this%filename)
+        call execute_command_line("sed -i '3s#.*#element vertex "//str(this%vertex_counter)//"#' "//trim(fileplace)//this%filename)
+        call execute_command_line("sed -i '7s#.*#element edge "//str(this%edge_counter)//"#' "//trim(fileplace)//this%filename)
+        call execute_command_line("cat "//trim(fileplace)//this%filename//"2 >> "//trim(fileplace)//this%filename)
         case("json")
             open(newunit=u,file=trim(fileplace)//this%filename, status="old", position="append")
             write(u,"(a)") "}"
