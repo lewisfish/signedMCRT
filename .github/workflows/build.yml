@@ -76,13 +76,13 @@ jobs:
         sudo chmod +x fpm
 
     - name: Prepare for cache restore
-      if: ${{ matrix.compiler == 'intel' }}
+      if: ${{ matrix.compiler == 'intel' && contains(matrix.os, 'ubuntu')}}
       run: |
         sudo mkdir -p /opt/intel
         sudo chown $USER /opt/intel
 
     - name: Cache Intel install
-      if: ${{ matrix.compiler == 'intel' }}
+      if: ${{ matrix.compiler == 'intel' && contains(matrix.os, 'ubuntu')}}
       id: cache-install
       uses: actions/cache@v2
       with:
@@ -102,27 +102,27 @@ jobs:
         KEY: GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
         PKG: ${{ env.LINUX_INTEL_COMPONENTS }}
 
-    - name: Install Intel HPCKit (OSX)
-      if: ${{ contains(matrix.os, 'macos') && contains(matrix.compiler, 'intel') && steps.cache-install.outputs.cache-hit != 'true' }}
-      run: |
-        curl --output ${{ env.OUT }} --url "$URL" --retry 5 --retry-delay 5
-        hdiutil attach ${{ env.OUT }}
-        if [ -z "$COMPONENTS" ]; then
-          sudo /Volumes/"$(basename "$URL" .dmg)"/bootstrapper.app/Contents/MacOS/bootstrapper -s --action install --eula=accept --continue-with-optional-error=yes --log-dir=.
-          installer_exit_code=$?
-        else
-          sudo /Volumes/"$(basename "$URL" .dmg)"/bootstrapper.app/Contents/MacOS/bootstrapper -s --action install --components="$COMPONENTS" --eula=accept --continue-with-optional-error=yes --log-dir=.
-          installer_exit_code=$?
-        fi
-        hdiutil detach /Volumes/"$(basename "$URL" .dmg)" -quiet
-        exit $installer_exit_code
-      env:
-        OUT: webimage-hpc.dmg
-        URL: ${{ env.MACOS_HPCKIT_URL }}
-        COMPONENTS: all
+    # - name: Install Intel HPCKit (OSX)
+    #   if: ${{ contains(matrix.os, 'macos') && contains(matrix.compiler, 'intel') && steps.cache-install.outputs.cache-hit != 'true' }}
+    #   run: |
+    #     curl --output ${{ env.OUT }} --url "$URL" --retry 5 --retry-delay 5
+    #     hdiutil attach ${{ env.OUT }}
+    #     if [ -z "$COMPONENTS" ]; then
+    #       sudo /Volumes/"$(basename "$URL" .dmg)"/bootstrapper.app/Contents/MacOS/bootstrapper -s --action install --eula=accept --continue-with-optional-error=yes --log-dir=.
+    #       installer_exit_code=$?
+    #     else
+    #       sudo /Volumes/"$(basename "$URL" .dmg)"/bootstrapper.app/Contents/MacOS/bootstrapper -s --action install --components="$COMPONENTS" --eula=accept --continue-with-optional-error=yes --log-dir=.
+    #       installer_exit_code=$?
+    #     fi
+    #     hdiutil detach /Volumes/"$(basename "$URL" .dmg)" -quiet
+    #     exit $installer_exit_code
+    #   env:
+    #     OUT: webimage-hpc.dmg
+    #     URL: ${{ env.MACOS_HPCKIT_URL }}
+    #     COMPONENTS: all
 
     - name: Setup Intel oneAPI environment
-      if: ${{ matrix.compiler == 'intel' }}
+      if: ${{ matrix.compiler == 'intel' && contains(matrix.os, 'ubuntu')}}
       run: |
         source /opt/intel/oneapi/setvars.sh
         printenv >> $GITHUB_ENV
