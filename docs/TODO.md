@@ -24,6 +24,7 @@ List of ToDo's for SignedMCRT.
 - [ ] Add "Scattering" kernels
     - [x] path length counter method
     - [ ] Weight method
+- [ ] Add phase tracking. To be done by Masters Student?
 - [ ] Make sure all optical properties are the same for a model instance (SDF)
 - [ ] Improve performance of SDF intersection
     - [ ] Implement KD trees in 2D
