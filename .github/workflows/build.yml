@@ -13,21 +13,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
-        gcc_v: [10]
-        build: [fpm]
-        build-type: [debug]
-        compiler: [gnu]
-        version: [10]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        gcc_v: [10] # Version of GFortran we want to use.
+        include:
+        - os: ubuntu-latest
+          os-arch: linux-x86_64
+
+        - os: macos-latest
+          os-arch: macos-x86_64
 
     defaults:
       run:
         shell: ${{ matrix.shell || 'bash' }}
 
     env:
-      FC: ${{ matrix.compiler == 'gfortran' }}
-      CC: ${{ matrix.compiler == 'gcc' }}
-      GCC_V: ${{ matrix.version }}
       PYTHON_V: 3.8
 
     steps:
