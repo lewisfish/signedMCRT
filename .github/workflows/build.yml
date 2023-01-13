@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest]
         gcc_v: [10] # Version of GFortran we want to use.
         include:
         - os: ubuntu-latest
@@ -27,6 +27,8 @@ jobs:
         shell: ${{ matrix.shell || 'bash' }}
 
     env:
+      FC: gfortran
+      GCC_V: ${{ matrix.gcc_v }}
       PYTHON_V: 3.8
 
     steps:
@@ -37,15 +39,15 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Install GCC (OSX)
-      if: ${{ contains(matrix.os, 'macos') && matrix.compiler == 'gnu' }}
+    - name: Install GFortran macOS
+      if: contains(matrix.os, 'macos')
       run: |
         ln -s /usr/local/bin/gfortran-${GCC_V} /usr/local/bin/gfortran
         which gfortran-${GCC_V}
         which gfortran
 
     - name: Install GCC (Linux)
-      if: ${{ contains(matrix.os, 'ubuntu') && matrix.compiler == 'gnu' }}
+      if: contains(matrix.os, 'ubuntu')
       run: |
         sudo add-apt-repository ppa:ubuntu-toolchain-r/test
         sudo apt-get update
@@ -56,18 +58,18 @@ jobs:
         --slave /usr/bin/gcov gcov /usr/bin/gcov-${{ env.GCC_V }}
    
     - name: Build and compile (GNU)
-      if: ${{ contains(matrix.build, 'fpm') && matrix.compiler == 'gnu' }}
+      if: ${{ contains(matrix.build, 'fpm') && contains(matrix.os, 'ubuntu') }}
       run: fpm build
 
     - name: Test and compile (GNU)
-      if: ${{ contains(matrix.build, 'fpm') && matrix.compiler == 'gnu' }}
+      if: ${{ contains(matrix.build, 'fpm') && contains(matrix.os, 'ubuntu') }}
       run: fpm @test
 
     - name: Run CodeCov
-      if: ${{ contains(matrix.os, 'ubuntu') && matrix.compiler == 'gnu' }}
+      if: ${{ contains(matrix.os, 'ubuntu') && contains(matrix.os, 'ubuntu') }}
       run: |
         gcov ./build/gfortran_*/sMCRT/src*.gcda -r ./src/ -b
     
     - name: Codecov
-      if: ${{ contains(matrix.os, 'ubuntu') && matrix.compiler == 'gnu' }}
+      if: ${{ contains(matrix.os, 'ubuntu') && contains(matrix.os, 'ubuntu') }}
       uses: codecov/codecov-action@v3.1.1
