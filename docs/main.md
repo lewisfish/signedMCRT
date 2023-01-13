@@ -28,66 +28,66 @@ Documentation of the input file format can be found in [here](config.md)
 ## Code Structure
 
 ### constants.f90
-Source code can be found (here)[../src/constants.f90]
+Source code can be found (here)[/src/constants.f90]
 
 ### detectorMod.f90
-Source code can be found (here)[../src/detectorMod.f90]
+Source code can be found (here)[/src/detectorMod.f90]
 
 ### geometeryMod.f90
-Source code can be found (here)[../src/geometeryMod.f90]
+Source code can be found (here)[/src/geometeryMod.f90]
 
 ### grid.f90
-Source code can be found (here)[../src/grid.f90]
+Source code can be found (here)[/src/grid.f90]
 
 ### historyStack.f90
-Source code can be found (here)[../src/historyStack.f90]
+Source code can be found (here)[/src/historyStack.f90]
 
 ### iarray.f90
-Source code can be found (here)[../src/iarray.f90]
+Source code can be found (here)[/src/iarray.f90]
 
 ### inttau2.f90
-Source code can be found (here)[../src/inttau2.f90]
+Source code can be found (here)[/src/inttau2.f90]
 
 ### kernelsMod.f90
-Source code can be found (here)[../src/kernelsMod.f90]
+Source code can be found (here)[/src/kernelsMod.f90]
 
 ### mat_class.f90
-Source code can be found (here)[../src/mat_class.f90]
+Source code can be found (here)[/src/mat_class.f90]
 
 ### photon.f90
-Source code can be found (here)[../src/photon.f90]
+Source code can be found (here)[/src/photon.f90]
 
 ### parse.f90
-Source code can be found (here)[../src/parse.f90]
+Source code can be found (here)[/src/parse.f90]
 
 ### random_mod.f90
-Source code can be found (here)[../src/random_mod.f90]
+Source code can be found (here)[/src/random_mod.f90]
 
 ### sdfsMod.f90
-Source code can be found (here)[../src/sdfsMod.f90]
+Source code can be found (here)[/src/sdfsMod.f90]
 
 ### sim_state.f90
-Source code can be found (here)[../src/sim_state.f90]
+Source code can be found (here)[/src/sim_state.f90]
 
 ### subs.f90
-Source code can be found (here)[../src/subs.f90]
+Source code can be found (here)[/src/subs.f90]
 
 ### surfaces.f90
-Source code can be found (here)[../src/surfaces.f90]
+Source code can be found (here)[/src/surfaces.f90]
 
 ### vec4_class.f90
-Source code can be found (here)[../src/vec4_class.f90]
+Source code can be found (here)[/src/vec4_class.f90]
 
 ### vector_class.f90
-Source code can be found (here)[../src/vector_class.f90]
+Source code can be found (here)[/src/vector_class.f90]
 
 ### writer.f90
-Source code can be found (here)[../src/writer.f90]
+Source code can be found (here)[/src/writer.f90]
 
 
 ## Monte Carlo Radiation Transfer (MCRT) method
 
-Please see my (thesis)[main.pdf] for an overview of the MCRT method
+Please see my (thesis)[/docs/main.pdf] for an overview of the MCRT method
 
 ## Citation
 
