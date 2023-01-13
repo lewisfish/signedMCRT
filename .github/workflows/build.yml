@@ -59,11 +59,11 @@ jobs:
         --slave /usr/bin/gcov gcov /usr/bin/gcov-${{ env.GCC_V }}
    
     - name: Build and compile (GNU)
-      if: ${{ contains(matrix.build, 'fpm') && contains(matrix.os, 'ubuntu') }}
+      if: ${{ contains(matrix.build, 'fpm') }}
       run: fpm build
 
     - name: Test and compile (GNU)
-      if: ${{ contains(matrix.build, 'fpm') && contains(matrix.os, 'ubuntu') }}
+      if: ${{ contains(matrix.build, 'fpm') }}
       run: fpm @test
 
     - name: Run CodeCov
