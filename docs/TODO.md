@@ -3,12 +3,12 @@
 List of ToDo's for SignedMCRT.
 
 ## Additional Features
-
+### Finished Features
 - [x] Make CI run tests
 - [x] Add Code Coverage reports
 - [x] Remove spurious implicit nones
+### Minor Features
 - [ ] Add more saved state to photon_origin to save compute time
-- [ ] Automate benchmarking so we can catch performance regressions
 - [ ] Finish Circular, focus, and annulus source types
     - [ ] Circular
     - [ ] Focus
@@ -17,7 +17,6 @@ List of ToDo's for SignedMCRT.
     - [x] **Circle**
     - [x] **Camera**
     - [ ] **Annulus**
-- [ ] Add optics to **Camera** type
 - [ ] Add photon tracjectory history tracking
     - [ ] Fix openmp troubles
     - [ ] Fix speed issues
@@ -26,6 +25,9 @@ List of ToDo's for SignedMCRT.
     - [ ] Weight method
 - [ ] Add phase tracking. To be done by Masters Student?
 - [ ] Make sure all optical properties are the same for a model instance (SDF)
+### Major Features
+- [ ] Make code work on Windows
+- [ ] Automate benchmarking so we can catch performance regressions
 - [ ] Improve performance of SDF intersection
     - [ ] Implement KD trees in 2D
     - [ ] Implement KD trees in 3D
@@ -36,6 +38,7 @@ List of ToDo's for SignedMCRT.
         - [ ] Detectors
         - [ ] Fluence
         - [ ] Nscatt
+- [ ] Add optics to **Camera** type
 
 ## Testing
 
@@ -70,7 +73,9 @@ List of ToDo's for SignedMCRT.
     - [ ] Learn from https://json-schema.org/learn/getting-started-step-by-step.html
 
 ## Bugs
-
+- [ ] Fix CI so that build on Macos run, and builds using Intel run.
+    - [ ] Macos
+    - [ ] Intel
 - [ ] Can't operate trackHistory in parallel
     - [ ] Make each thread write to tmp file and finish method collate results
 - [x] Always runs history%finish leading to error messages

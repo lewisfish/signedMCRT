@@ -1,8 +1,9 @@
 # Config file settings
 
-The below sections describe the tables (dictionaries) that are able to be defined for SignedMCRT
+The configuration file format used is Tom's Obvious Minimal Language ((TOML))[https://toml.io/en/].
+The below sections describe the tables (dictionaries) that are able to be defined for SignedMCRT.
 
-## source
+## Source
 
 This table defines the parameters for the light source used in the simulation it can have the following:
 
@@ -20,7 +21,7 @@ This table defines the parameters for the light source used in the simulation it
 | Beta | float | - | 5.0 | Annular source convergence angle (Bessel beam beta parameter) |
 | annulus_type | string | gaussian, tophat | gaussian | Type of annular beam |
 
-## grid
+## Grid
 
 | Parameter | Type | Default | Notes |
 |:---------:|:----:|:-------:|:-----:|
@@ -32,7 +33,7 @@ This table defines the parameters for the light source used in the simulation it
 | zmax | float | 1.0 | Half size of simulated medium in z direction |
 | units | string | cm | Units of simulation (currently need to manually adjust optical properties to account) |
 
-## geometry
+## Geometry
 
 | Parameter | Type | Default | Notes |
 |:---------:|:----:|:-------:|:-----:|
@@ -46,7 +47,7 @@ This table defines the parameters for the light source used in the simulation it
 | hgg | float | 0.7 | See Above |
 
 
-## detectors
+## Detectors
 
 | Parameter | Type | Options | Default | Notes |
 |:---------:|:----:|:-------:|:-------:|:----:|
@@ -58,7 +59,7 @@ This table defines the parameters for the light source used in the simulation it
 | nbins | integer | - | 100 | Number of bins in detector |
 | maxval | float | - | 100.0 | Maximum value to bin |
 
-## output
+## Output
 
 | Parameter | Type | Default | Notes |
 |:---------:|:----:|:-------:|:-----:|
@@ -68,7 +69,7 @@ This table defines the parameters for the light source used in the simulation it
 | render_size | integer array size 3 | [200, 200, 200] | Size in voxels of render |
 | overwrite | boolean | false | Overwrite files if they have the same name |
 
-## simulation
+## Simulation
 
 | Parameter | Type | Default | Notes |
 |:---------:|:----:|:-------:|:-----:|
