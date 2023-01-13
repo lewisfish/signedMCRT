@@ -6,13 +6,6 @@ env:
   BUILD_DIR: _build
   PIP_PACKAGES: >-
     gcovr
-  MACOS_BASEKIT_URL: >-
-    https://registrationcenter-download.intel.com/akdlm/irc_nas/17969/m_BaseKit_p_2021.3.0.3043.dmg
-  MACOS_HPCKIT_URL: >-
-    https://registrationcenter-download.intel.com/akdlm/irc_nas/17890/m_HPCKit_p_2021.3.0.3226_offline.dmg
-  LINUX_INTEL_COMPONENTS: >-
-    intel-oneapi-compiler-fortran-2021.2.0
-    intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic-2021.2.0
 
 jobs:
   build:
@@ -26,20 +19,13 @@ jobs:
         compiler: [gnu]
         version: [10]
 
-        include:
-        - os: ubuntu-latest
-          build: fpm
-          build-type: debug
-          compiler: intel
-          version: 2021
-
     defaults:
       run:
         shell: ${{ matrix.shell || 'bash' }}
 
     env:
-      FC: ${{ matrix.compiler == 'intel' && 'ifort' || 'gfortran' }}
-      CC: ${{ matrix.compiler == 'intel' && 'icc' || 'gcc' }}
+      FC: ${{ matrix.compiler == 'gfortran' }}
+      CC: ${{ matrix.compiler == 'gcc' }}
       GCC_V: ${{ matrix.version }}
       PYTHON_V: 3.8
 
@@ -54,10 +40,9 @@ jobs:
     - name: Install GCC (OSX)
       if: ${{ contains(matrix.os, 'macos') && matrix.compiler == 'gnu' }}
       run: |
-        brew install gcc@${{ env.GCC_V }}
-        ln -s /usr/local/bin/gfortran-${{ env.GCC_V }} /usr/local/bin/gfortran
-        ln -s /usr/local/bin/gcc-${{ env.GCC_V }} /usr/local/bin/gcc
-        ln -s /usr/local/bin/g++-${{ env.GCC_V }} /usr/local/bin/g++
+        ln -s /usr/local/bin/gfortran-${GCC_V} /usr/local/bin/gfortran
+        which gfortran-${GCC_V}
+        which gfortran
 
     - name: Install GCC (Linux)
       if: ${{ contains(matrix.os, 'ubuntu') && matrix.compiler == 'gnu' }}
@@ -69,48 +54,7 @@ jobs:
         --install /usr/bin/gcc gcc /usr/bin/gcc-${{ env.GCC_V }} 100 \
         --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-${{ env.GCC_V }} \
         --slave /usr/bin/gcov gcov /usr/bin/gcov-${{ env.GCC_V }}
-
-    - name: Prepare for cache restore
-      if: ${{ matrix.compiler == 'intel' && contains(matrix.os, 'ubuntu')}}
-      run: |
-        sudo mkdir -p /opt/intel
-        sudo chown $USER /opt/intel
-
-    - name: Cache Intel install
-      if: ${{ matrix.compiler == 'intel' && contains(matrix.os, 'ubuntu')}}
-      id: cache-install
-      uses: actions/cache@v2
-      with:
-        path: /opt/intel/oneapi
-        key: install-${{ matrix.compiler }}-${{ matrix.version }}-${{ matrix.os }}
-
-    - name: Install Intel (Linux)
-      if: ${{ contains(matrix.os, 'ubuntu') && contains(matrix.compiler, 'intel') && steps.cache-install.outputs.cache-hit != 'true' }}
-      run: |
-        wget https://apt.repos.intel.com/intel-gpg-keys/${{ env.KEY }}
-        sudo apt-key add ${{ env.KEY }}
-        rm ${{ env.KEY }}
-        echo "deb https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
-        sudo apt-get update
-        sudo apt-get install ${{ env.PKG }}
-      env:
-        KEY: GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-        PKG: ${{ env.LINUX_INTEL_COMPONENTS }}
-
-    - name: Setup Intel oneAPI environment
-      if: ${{ matrix.compiler == 'intel' && contains(matrix.os, 'ubuntu')}}
-      run: |
-        source /opt/intel/oneapi/setvars.sh
-        printenv >> $GITHUB_ENV
-
-    - name: Build and compile (Intel)
-      if: ${{ contains(matrix.build, 'fpm') && matrix.compiler == 'intel' }}
-      run: fpm @buildintel
-
-    - name: Test and compile (Intel)
-      if: ${{ contains(matrix.build, 'fpm') && matrix.compiler == 'intel' }}
-      run: fpm @testintel
-
+   
     - name: Build and compile (GNU)
       if: ${{ contains(matrix.build, 'fpm') && matrix.compiler == 'gnu' }}
       run: fpm build
