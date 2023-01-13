@@ -1,0 +1,23 @@
+authors:
+  - family-names: McMillan
+    given-names: Lewis
+cff-version: 1.2.0
+message: "If you use this software, please cite both the article from preferred-citation and the software itself."
+preferred-citation:
+  authors:
+    - family-names: McMillan
+      given-names: Lewis
+      orcid: https://orcid.org/0000-0002-7725-5162
+    - family-names: Bruce
+      given-names: Graham D
+      orcid: https://orcid.org/0000-0003-3403-0614
+    - family-names: Dholakia
+      given-names: Kishan
+      orcid: https://orcid.org/0000-0001-6534-9009
+  title: "Meshless Monte Carlo Radiation Transfer Method for Curved Geometries Using Signed Distance Functions"
+  type: article
+title: "Meshless Monte Carlo Radiation Transfer Method for Curved Geometries Using Signed Distance Functions"
+version: 1.0.0
+doi: 10.1364/OE.451496
+date-released: 2023-01-13
+url: "https://doi.org/10.1364/OE.451496"
