@@ -12,7 +12,7 @@ List of ToDo's for SignedMCRT.
 - [ ] Finish Circular, focus, and annulus source types
     - [ ] Circular
     - [ ] Focus
-    - [ ] Annulus
+    - [x] Annulus. Partially done via control of Beta parameter. 
 - [ ] Add Direction component to rest of Detectors
     - [x] **Circle**
     - [x] **Camera**

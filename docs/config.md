@@ -15,7 +15,10 @@ This table defines the parameters for the light source used in the simulation it
 | point1 | float array size 3 | - | [-1.0, -1.0, -1.0] | Used by uniform source only to set location and size of source |
 | point2 | float array size 3 | - | [2.0, 0.0, 0.0] | See Above |
 | point3 | float array size 3 | - | [0.0, 2.0, 0.0] | See Above |
-| Radius | float | - | 0.5 | Only used by circular source |
+| Radius | float | - | 0.5 | Used by circular source and annular source (as lower radius) |
+| rhi | float | - | 0.6 | Annular source upper radius |
+| Beta | float | - | 5.0 | Annular source convergence angle (Bessel beam beta parameter) |
+| annulus_type | string | gaussian, tophat | gaussian | Type of annular beam |
 
 ## grid
 

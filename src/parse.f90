@@ -203,7 +203,8 @@ module parse_mod
     end subroutine handle_annulus_dect
 
     subroutine parse_source(table, packet, dict, context)
-
+    ! Parse source table
+    ! any updates here MUST be reflected in docs/config.md
         use sim_state_mod, only : state
         use photonmod
         
@@ -215,10 +216,10 @@ module parse_mod
         type(toml_array), pointer :: children
 
         type(vector) :: poss, dirr
-        real(kind=wp) :: dir(3), pos(3), corners(3, 3), radius
+        real(kind=wp) :: dir(3), pos(3), corners(3, 3), radius, beta, rlo, rhi
         integer :: i, nlen, origin
         character(len=1) :: axis(3)
-        character(len=:), allocatable :: direction
+        character(len=:), allocatable :: direction, annulus_type
 
         axis = ["x", "y", "z"]
         pos = 0._wp
@@ -351,6 +352,17 @@ module parse_mod
             end if
             call get_value(child, "radius", radius, 0.5_wp)
             call set_value(dict, "radius", radius)
+
+            ! parameters for annulus beam type
+            call get_value(child, "beta", beta, 5._wp)
+            call set_value(dict, "beta", beta)
+
+            call get_value(child, "radius_hi", rhi, 0.6_wp)
+            call set_value(dict, "rhi", rhi)
+
+            call get_value(child, "annulus_type", annulus_type, "gaussian")
+            call set_value(dict, "annulus_type", annulus_type)
+
         else
             print'(a)',context%report("Simulation needs Source table", origin, "Missing source table")
             stop 1

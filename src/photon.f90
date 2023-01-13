@@ -377,97 +377,66 @@ module photonMod
         
         subroutine annulus(this, dict)
 
+            use constants,     only : TWOPI 
             use utils,         only : deg2rad
-            use random,        only : rang
-            use surfaces,      only : reflect_refract
-            use sim_state_mod, only : state
             use tomlf,         only : toml_table, get_value
+            use random,        only : ran2, rang
+            use sim_state_mod, only : state
 
             class(photon) :: this
             type(toml_table), optional, intent(inout) :: dict
 
-            real(kind=wp) :: ra, ta, alpha, Ls, beam_width, rp, da, dist
-            real(kind=wp) :: tana, x, y, z, total_length, axicon_n, height, k
-            type(vector)  :: pos, dir, normal, centre, newpos
-            logical       :: flag
+            character(len=:), allocatable :: beam_type
+            real(kind=wp) :: beta, rlo, rhi, radius, tmp, mid, angle, x, y, z, phi, sinp, cosp
+            type(vector)  :: pos
             integer       :: cell(3)
 
+            call get_value(dict, "beta", beta)
+            call get_value(dict, "radius", rlo)
+            call get_value(dict, "radius_hi", rhi)
+            call get_value(dict, "annulus_type", beam_type)
 
-            ra = 4._wp ! 12.7mm
-            beam_width = .5e0_wp !100um
-            do
-                call rang(x, y, 0._wp, beam_width)
-                rp = sqrt(x**2 + y**2)
-                axicon_n = 1.45_wp
-                ta = 0.0e-3_wp  ! 0.0 mm
-                alpha = deg2rad(20.0_wp)
-                tana = tan(alpha)
-                height = tana * ra
-                Ls = 10._wp  ! 100mm
-                centre = vector(0._wp, 0._wp, 0._wp)
-                k  = (rp / height)**2
-                
-                da = (ra - rp) * tana
-                pos = vector(x, y, -da)
+            if(beam_type == "tophat")then
+                radius = rlo + (rhi - rlo) * sqrt(ran2())
+            elseif(beam_type == "gaussian")then
+                mid = (rhi - rlo) / 2.
+                call rang(radius, tmp, mid, 0.04_wp)
+            else
+                error stop "No such beam type!"
+            end if
 
-                total_length = Ls + height
+            phi = TWOPI * ran2()
 
-                dir = vector(0._wp, 0._wp, -1._wp)
-                !https://math.stackexchange.com/a/3349448
-                normal =vector(2._wp*pos%x, 2._wp*pos%y, -2._wp*ra**2*(pos%z+height)/height**2)
-                normal = normal%magnitude()
-                call reflect_refract(dir, normal, axicon_n, 1._wp, flag, k)
-                if(.not. flag)then
-                    exit
-                end if
-            end do
+            angle = deg2rad(beta)
 
-            !move packet to L1 location
-            pos = pos + dir * (-total_length / dir%z)
-
-            !focus to a point
-            pos%z = 4.e0_wp !f distance 40mm
-            call rang(x, y, 0._wp, 5.e-4_wp)
-
-            call get_value(dict, "focus", z)!not implmented yet!
-            error stop "Not implmented focus yet!"
-
-            newpos = vector(x, y, z)!.775
-            dist = sqrt((pos%x - newpos%x)**2 + (pos%y - newpos%y)**2 +(pos%z - newpos%z)**2)
-
-            dir = (-1._wp)*pos / dist
-            dist = (state%grid%zmax + 5e-8_wp - pos%z) / dir%z
-            pos = pos + dist * dir
+            cosp = cos(phi)
+            sinp = sin(phi)
+            x = radius * cosp
+            y = radius * sinp
+            z = state%grid%zmax - 1e-8_wp! just inside surface of medium. TODO make this user configurable?
+            pos = vector(x, y, z)
             this%pos = pos
 
-            dir = dir%magnitude()
+            this%nxp = sin(angle) * cosp
+            this%nyp = sin(angle) * sinp
+            this%nzp = -cos(angle)
 
-            this%nxp = dir%x
-            this%nyp = dir%y
-            this%nzp = dir%z
-
+            this%phi = phi
+            this%cosp = cosp
+            this%sinp = sinp
             this%cost = this%nzp
-            this%sint = sqrt(1.e0_wp - this%cost**2)
-
-            this%phi = atan2(this%nyp, this%nxp)
-            this%cosp = cos(this%phi)
-            this%sinp = sin(this%phi)
+            this%sint = sqrt(1._wp - this%cost**2)
 
             this%tflag = .false.
-            this%layer = 3
-            this%cnts = 0
             this%bounces = 0
+            this%cnts = 0
             this%weight = 1.0_wp
-
-            !teleport to just inside medium
-            this%pos%z = state%grid%zmax - 1e-8_wp
 
             ! Linear Grid 
             cell = state%grid%get_voxel(this%pos)
             this%xcell = cell(1)
             this%ycell = cell(2)
             this%zcell = cell(3)
-
         end subroutine annulus
 
         subroutine scatter(this, hgg, g2)
