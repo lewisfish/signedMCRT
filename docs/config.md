@@ -1,6 +1,6 @@
 # Config file settings
 
-The configuration file format used is Tom's Obvious Minimal Language ((TOML))[https://toml.io/en/].
+The configuration file format used is Tom's Obvious Minimal Language ([TOML](https://toml.io/en/)).
 The below sections describe the tables (dictionaries) that are able to be defined for SignedMCRT.
 
 ## Source

@@ -4,7 +4,7 @@ This document is the incomplete documentation of **signedMCRT**.
 
 ## Build system
 
-To build signedMCRT, the only current method is using (FPM)[https://fpm.fortran-lang.org/en/index.html].
+To build signedMCRT, the only current method is using [FPM](https://fpm.fortran-lang.org/en/index.html).
 FPM can be easily installed on any platform, and is simple to use to pull all dependencies, and build and compile signedMCRT.
 We also provide several commands via FPM response file ((found here))[fpm.rsp], to enable the use of OpenMP, other compliers, and various debug modes.
 
@@ -12,12 +12,12 @@ We also provide several commands via FPM response file ((found here))[fpm.rsp], 
 
 Below is the current list of dependencies:
 
-* (test drive)[https://github.com/fortran-lang/test-drive]
-* (Fortran TEV Bindings)[https://github.com/lewisfish/fortran_tev_bindings]
-* (Fortran Utilities)[https://github.com/lewisfish/fortran_utilities]
+* [test drive](https://github.com/fortran-lang/test-drive)
+* [Fortran TEV Bindings](https://github.com/lewisfish/fortran_tev_bindings)
+* [Fortran Utilities](https://github.com/lewisfish/fortran_utilities)
 
 Test drive is used to run all tests.
-Fortran (TEV)[https://github.com/Tom94/tev/] Bindings is used to interface with TEV, to show live slices of fluences as the simulation is run, which is handy for debugging purposes.
+Fortran [TEV](https://github.com/Tom94/tev/) Bindings is used to interface with TEV, to show live slices of fluences as the simulation is run, which is handy for debugging purposes.
 Finally, Fortran Utilities is my personal collection of useful fortran utilities such as mathimatical functions, or progress bars.
 
 ## Config file
@@ -94,9 +94,9 @@ Please see my (thesis)[docs/main.pdf] for an overview of the MCRT method
 SignedMCRT has so far been used in 2 papers:
 
 + MESHLESS MONTE CARLO RADIATION TRANSFER METHOD FOR CURVED GEOMETRIES USING SIGNED DISTANCE FUNCTIONS
-L. McMillan, G. D. Bruce, K. Dholakia, (J. Biomed. Opt. 27(8), 083003 (2022))[https://doi.org/10.1364/OE.451496]/(arXiv:2112.08035 (2021))[https://arxiv.org/abs/2112.08035]
+L. McMillan, G. D. Bruce, K. Dholakia, [J. Biomed. Opt. 27(8), 083003 (2022)](https://doi.org/10.1364/OE.451496)/[arXiv:2112.08035 (2021)](https://arxiv.org/abs/2112.08035)
 + TO FOCUS-MATCH OR NOT TO FOCUS-MATCH INVERSE SPATIALLY OFFSET RAMAN SPECTROSCOPY: A QUESTION OF LIGHT PENETRATION
-G.E. Shillito, L. McMillan, G. D. Bruce, K. Dholakia, (Opt. Express 30, 8876 (2022))[https://doi.org/10.1364/OE.451496]/(arXiv:2112.08877)[https://arxiv.org/abs/2112.08877]
+G.E. Shillito, L. McMillan, G. D. Bruce, K. Dholakia, [Opt. Express 30, 8876 (2022)](https://doi.org/10.1364/OE.451496)/[arXiv:2112.08877](https://arxiv.org/abs/2112.08877)
 
 ## TODO's
 The current TODO list of planned features and current bugs can be found [here](docs/TODO.md)
