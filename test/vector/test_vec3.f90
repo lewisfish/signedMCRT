@@ -32,7 +32,8 @@ module testsVecMod
                 new_unittest("Vector_subtract", vector_sub), &
                 new_unittest("Vector_multiply", vector_mult), &
                 new_unittest("Vector_dot", vector_dot), &
-                new_unittest("Vector_cross", vector_cross) &
+                new_unittest("Vector_cross", vector_cross), &
+                new_unittest("Vector_equal", vector_equal) &
                 ]
 
     end subroutine collect_suite1
@@ -167,6 +168,27 @@ module testsVecMod
         if(allocated(error))return
 
     end subroutine vector_cross
+
+
+    subroutine vector_equal(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(vector) :: a, b
+        logical :: c
+
+        a = vector(1._wp, 2._wp, 3._wp)
+        b = vector(1._wp, 2._wp, 3._wp)
+
+        c = (a == b)
+        call check(error, c, .true.)
+        if(allocated(error))return
+
+        b = vector(2._wp, 3._wp, 4._wp)
+        c = (a == b)
+        call check(error, c, .false.)
+        if(allocated(error))return
+    end subroutine vector_equal
 
     subroutine vector_add_scal(error)
 

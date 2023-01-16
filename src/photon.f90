@@ -117,18 +117,17 @@ module photonMod
                 use random,        only : ran2
                 use constants,     only : twoPI
                 use tomlf,         only : toml_table, get_value
-                ! use sdfs,          only : rotationAlign, rotmat
+                use sdfs,          only : rotationAlign, translate
                 use mat_class,     only : invert
                 use vector_class
             
                 class(photon) :: this
                 type(toml_table), optional, intent(inout) :: dict
                 
-                type(vector) :: pos, dir, tmp, axis
+                type(vector) :: a, b
                 integer :: cell(3)
-                real(kind=wp) :: t(4,4), radius, r, theta, angle
+                real(kind=wp) :: t(4,4), radius, r, theta
 
-                this%pos = photon_origin%pos
                 this%nxp = photon_origin%nxp
                 this%nyp = photon_origin%nyp
                 this%nzp = photon_origin%nzp
@@ -136,45 +135,39 @@ module photonMod
                 call get_value(dict, "radius", radius)
 
                 ! https://math.stackexchange.com/a/1681815
-                dir = vector(this%nxp, this%nyp, this%nzp)
-                dir = dir%magnitude()
-
-                tmp = vector(0._wp, 0._wp, 1._wp)
-
-                axis = tmp .cross. dir
-                axis = axis%magnitude()
-                angle = (dir .dot. axis) / (length(dir) * length(axis))
-                ! t = rotmat(axis, angle)
-                ! print*,t(:,1)
-                ! print*,t(:,2)
-                ! print*,t(:,3)
-                ! print*,t(:,4)
-! 
-                print*," "
-                print*,"tmp ",tmp
-                print*,"dir ",dir
-                print*,"orig",this%pos
-                print*,"new ",this%pos .dot. invert(t)
-                print*,"axis",axis
-                print*,"angl",angle
-                stop
-
                 r = radius * sqrt(ran2())
                 theta = ran2() * TWOPI
-                pos = this%pos
-                this%pos%x = this%pos%x + r * cos(theta)
-                this%pos%y = this%pos%y + r * sin(theta)
+                
+                !set inital vector from which the source points
+                a = vector(0._wp, 0._wp, 1._wp)
+                a = a%magnitude()
+                !set vector to rotate to. User defined.
+                b = vector(this%nxp, this%nyp, this%nzp)
+                b = b%magnitude()
+                
+                
+                ! method fails if below condition. So change a vector to point down x-axis
+                if(abs(a) == abs(b))then
+                    a = vector(1._wp, 0._wp, 0._wp)
+                    a = a%magnitude()
+                    this%pos = vector(0._wp, radius * cos(theta), radius * sin(theta))
+                else
+                    this%pos = vector(radius * cos(theta), radius * sin(theta), 0._wp)
+                end if
 
-                ! b = vector(this%nxp, this%nyp, this%nzp)
-                ! b = b%magnitude()
-                ! t = rotmat(vector(0._wp,0._wp,-1._wp), b)
-                print*,this%pos
-                this%pos = this%pos - pos 
+                ! get rotation matrix
+                t = rotationAlign(a, b)
+                ! get translation matrix
+                t = t + translate(photon_origin%pos)
+                ! transform point
                 this%pos = this%pos .dot. t
-                print*,this%pos + pos
-                print*," "
 
-
+                this%phi  = atan2(this%nyp, this%nxp)
+                this%cosp = cos(this%phi)
+                this%sinp = sin(this%phi)
+                this%cost = this%nzp
+                this%sint = sqrt(1._wp - this%cost**2)  
+                
                 this%tflag  = .false.
                 this%cnts   = 0
                 this%bounces = 0

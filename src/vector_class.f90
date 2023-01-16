@@ -19,6 +19,7 @@ module vector_class
         generic   :: operator(*)       => vec_mult_vec, vec_mult_scal, scal_mult_vec
         generic   :: operator(+)       => vec_add_vec, vec_add_scal, scal_add_vec
         generic   :: operator(-)       => vec_minus_vec, vec_minus_scal, scal_minus_vec
+        generic   :: operator(==)      => vec_equal_vec
 
         procedure, pass(a), private :: vec_dot_vec
         procedure, pass(a), private :: vec_dot_mat
@@ -39,6 +40,8 @@ module vector_class
         procedure, pass(a), private :: vec_minus_vec
         procedure, pass(a), private :: vec_minus_scal
         procedure, pass(b), private :: scal_minus_vec
+
+        procedure, pass(a), private :: vec_equal_vec
 
     end type vector
 
@@ -64,6 +67,22 @@ module vector_class
     end interface min
 
     contains
+
+        logical pure elemental function vec_equal_vec(a, b)
+
+            class(vector), intent(in) :: a, b
+
+            vec_equal_vec = .false.
+
+            if(a%x == b%x)then
+                if(a%y == b%y)then
+                    if(a%z == b%z)then
+                        vec_equal_vec = .true.
+                    end if
+                end if
+            end if           
+
+        end function vec_equal_vec
 
         type(vector) pure elemental function nint_vec(this)
 
