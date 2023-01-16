@@ -6,7 +6,7 @@ This document is the incomplete documentation of **signedMCRT**.
 
 To build signedMCRT, the only current method is using [FPM](https://fpm.fortran-lang.org/en/index.html).
 FPM can be easily installed on any platform, and is simple to use to pull all dependencies, and build and compile signedMCRT.
-We also provide several commands via FPM response file ((found here)[fpm.rsp]), to enable the use of OpenMP, other compliers, and various debug modes.
+We also provide several commands via FPM response file ([found here](fpm.rsp)), to enable the use of OpenMP, other compliers, and various debug modes.
 
 ## Dependencies
 
@@ -64,7 +64,7 @@ Defines a set of functions for intersecting a line and a surface.
 - Ellipse
 - Sphere
 
-Source code can be found [here](/src/geometeryMod.f90)
+Source code can be found [here](/src/geometryMod.f90)
 
 ### grid.f90
 
@@ -148,7 +148,7 @@ Source code can be found [here](/src/random_mod.f90)
 ### sdfsMod.f90
 
 This module defines the signed distance function (SDF) abstract type and all types that inherit from it.
-The SDF abstract type defines the optical properties of an SDF (mus, mua, kappa, albedo, hgg, g2,and n), as well as a transform (4x4 matrix), and the layer ID code of the SDF. The SDF abstract type also provides an abstract interface (evaluate) which each inheriting function must implement. This evaluate function is the heart of the SDF implementation. Each individual evaluate is the direct implementation of that SDF, e.g. that function defines the mathematical SDF.
+The SDF abstract type defines the optical properties of an SDF (mus, mua, kappa, albedo, hgg, g2,and n), as well as a transform (4x4 matrix), and the layer ID code of the SDF. The SDF abstract type also provides an abstract interface (evaluate) which each inheriting function must implement. This evaluate function is the heart of the SDF implementation. Each individual evaluate is the direct implementation of that SDF, e.g. that function defines the mathematical SDF. For more information on SDFs, check out Inigo Quilez's [website](https://iquilezles.org/articles/) from which most of the below SDFs and transforms have been taken.
 
 - cylinder
 - sphere
@@ -253,7 +253,7 @@ Please see my [thesis](main.pdf) for an overview of the MCRT method
 SignedMCRT has so far been used in 2 papers:
 
 + MESHLESS MONTE CARLO RADIATION TRANSFER METHOD FOR CURVED GEOMETRIES USING SIGNED DISTANCE FUNCTIONS
-L. McMillan, G. D. Bruce, K. Dholakia, [J. Biomed. Opt. 27(8), 083003 (2022)](https://doi.org/10.1364/OE.451496)/[arXiv:2112.08035 (2021)](https://arxiv.org/abs/2112.08035)
+L. McMillan, G. D. Bruce, K. Dholakia, [J. Biomed. Opt. 27(8), 083003 (2022)](https://doi.org/10.1117/1.JBO.27.8.083003)/[arXiv:2112.08035 (2021)](https://arxiv.org/abs/2112.08035)
 + TO FOCUS-MATCH OR NOT TO FOCUS-MATCH INVERSE SPATIALLY OFFSET RAMAN SPECTROSCOPY: A QUESTION OF LIGHT PENETRATION
 G.E. Shillito, L. McMillan, G. D. Bruce, K. Dholakia, [Opt. Express 30, 8876 (2022)](https://doi.org/10.1364/OE.451496)/[arXiv:2112.08877](https://arxiv.org/abs/2112.08877)
 

@@ -2,14 +2,13 @@ module writer_mod
 ! module provides output routines in raw binary and .nrrd formats
 !
 !
-    use constants,    only : wp
+    use constants, only : wp
 
     implicit none
 
     interface nrrd_write
         module procedure write_3d_r8_nrrd
     end interface nrrd_write
-
 
     interface raw_write
         module procedure write_3d_r8_raw
