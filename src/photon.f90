@@ -139,26 +139,25 @@ module photonMod
                 theta = ran2() * TWOPI
                 
                 !set inital vector from which the source points
-                a = vector(0._wp, 0._wp, 1._wp)
+                a = vector(1._wp, 0._wp, 0._wp)
                 a = a%magnitude()
                 !set vector to rotate to. User defined.
                 b = vector(this%nxp, this%nyp, this%nzp)
                 b = b%magnitude()
                 
-                
                 ! method fails if below condition. So change a vector to point down x-axis
                 if(abs(a) == abs(b))then
-                    a = vector(1._wp, 0._wp, 0._wp)
+                    a = vector(0._wp, 0._wp, 1._wp)
                     a = a%magnitude()
-                    this%pos = vector(0._wp, radius * cos(theta), radius * sin(theta))
+                    this%pos = vector(r * cos(theta), r * sin(theta), 0._wp)
                 else
-                    this%pos = vector(radius * cos(theta), radius * sin(theta), 0._wp)
+                    this%pos = vector(0._wp, r * cos(theta), r * sin(theta))
                 end if
 
                 ! get rotation matrix
                 t = rotationAlign(a, b)
                 ! get translation matrix
-                t = t + translate(photon_origin%pos)
+                t = t + invert(translate(photon_origin%pos))
                 ! transform point
                 this%pos = this%pos .dot. t
 
@@ -179,7 +178,6 @@ module photonMod
                 this%xcell = cell(1)
                 this%ycell = cell(2)
                 this%zcell = cell(3)
-            
             end subroutine circular
 
 

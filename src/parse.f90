@@ -262,7 +262,7 @@ module parse_mod
                 end if
                 if(state%source == "circular")then
                     print'(a)',context%report(&
-                    "Direction not yet fully implmented for source type Circular. Results may not be accurate!", origin,&
+                    "Direction not yet fully tested for source type Circular. Results may not be accurate!", origin,&
                      level=toml_level%warning)
                 end if
                 do i = 1, len(children)
