@@ -161,7 +161,7 @@ module testsVecMod
         c = a .cross. b
         call check(error, c%x, -3._wp)
         if(allocated(error))return
-        call check(error, c%y, -6._wp)
+        call check(error, c%y, 6._wp)
         if(allocated(error))return
         call check(error, c%z, -3._wp)
         if(allocated(error))return

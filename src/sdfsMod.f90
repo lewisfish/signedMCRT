@@ -313,7 +313,7 @@ module sdfs
     private
     ! shapes
     public :: sdf, cylinder, sphere, box, torus, cone, triprism
-    public :: capsule, plane, moon, neural, segment, egg
+    public :: capsule, plane, moon, segment, egg, neural
     ! meta
     public :: model, container
     ! boolean ops
@@ -1246,8 +1246,6 @@ end function eval_neural
 
         function plane_fn(p, n) result(res)
 
-            use utils, only : clamp
-
             type(vector), intent(IN) :: p, n
             real(kind=wp) :: res
 
@@ -1307,8 +1305,6 @@ end function eval_neural
         end function eval_moon
 
         function moon_fn(p, d, ra, rb) result(res)
-
-            use utils, only : clamp
 
             type(vector),  intent(IN) :: p
             real(kind=wp), intent(IN) :: d, ra, rb
@@ -1386,7 +1382,6 @@ end function eval_neural
 
         function egg_fn(p, r1, r2, h) result(res)
         !https://www.shadertoy.com/view/WsjfRt
-            use utils, only : clamp
 
             type(vector),  intent(IN) :: p
             real(kind=wp), intent(IN) :: r1, r2, h
@@ -1438,7 +1433,7 @@ end function eval_neural
 
         function SmoothUnion(d1, d2, k) result(res)
 
-            use utils, only : mix, clamp
+            ! use utils, only : mix, clamp
 
             real(kind=wp), intent(IN) :: d1, d2, k
             real(kind=wp) :: res
@@ -1698,7 +1693,7 @@ end function eval_neural
 
         function repeat_fn(p, c, la, lb, prim) result(res)
 
-            use utils, only : clamp
+            ! use utils, only : clamp
 
             class(sdf) :: prim
             type(vector),  intent(IN) :: p, la, lb
@@ -1931,23 +1926,27 @@ end function eval_neural
         ! https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula
         ! https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d
         function rotationAlign(a, b) result(res)
-
+            
             type(vector), intent(in) :: a, b
-
+            
             type(vector)  :: v
-            real(kind=wp) :: c, k, res(4, 4)
-
+            real(kind=wp) :: c, k, res(4, 4), v_x(4, 4), v_x2(4, 4)
+            
+            
             v = a .cross. b
             c = a .dot. b
-            k = 1._wp / (1._wp+c)
-
-            res(:, 1) = [v%x*v%x*k + c,     v%y*v%x*k - v%z,    v%z*v%x*k + v%y, 0._wp]
-            res(:, 2) = [v%x*v%y*k + v%z,   v%y*v%y*k + c,      v%z*v%y*k - v%x, 0._wp]
-            res(:, 3) = [v%x*v%z*K - v%y,   v%y*v%z*k + v%x,    v%z*v%z*k + c  , 0._wp]
-            res(:, 4) = [0._wp, 0._wp, 0._wp, 1._wp]
+            k = 1._wp / (1._wp + c)
+            
+            !skew-symmetric matrix
+            v_x(:, 1) = [0._wp     , -1._wp*v%z, v%y       , 0._wp]
+            v_x(:, 2) = [v%z       , 0._wp     , -1._wp*v%x, 0._wp]
+            v_x(:, 3) = [-1._wp*v%y, v%x       , 0._wp     , 0._wp]
+            v_x(:, 4) = [0._wp, 0._wp, 0._wp, 0._wp]
+            
+            v_x2 = matmul(v_x, v_x)
+            res = identity() + v_x + v_x2*k
 
         end function rotationAlign
-
 
         function identity() result(r)
                         

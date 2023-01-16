@@ -135,7 +135,7 @@ module photonMod
 
                 call get_value(dict, "radius", radius)
 
-                ! !https://math.stackexchange.com/a/1681815
+                ! https://math.stackexchange.com/a/1681815
                 dir = vector(this%nxp, this%nyp, this%nzp)
                 dir = dir%magnitude()
 
