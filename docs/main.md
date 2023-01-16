@@ -28,7 +28,7 @@ Documentation of the input file format can be found in [here](config.md)
 ## Code Structure
 
 See below for a brief description of each source code file.
-See (this)[relations.pdf] for rat's nest diagram of the relationships and dependencies between each source code file. 
+See [this](relations.pdf) for rat's nest diagram of the relationships and dependencies between each source code file. 
 Blue is a module with functions.
 Grey is a external dependency.
 Red is a module with only data components.
