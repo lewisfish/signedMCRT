@@ -1057,9 +1057,9 @@ module subs
         !  subroutine defines vars to hold paths to various folders   
         !   
         !   
-            use constants, only : cwd, homedir, fileplace, resdir
+            use constants, only : homedir, fileplace, resdir
 
-            character(len=:), allocatable :: mkdirCMD
+            character(len=:), allocatable :: mkdirCMD, cwd
             logical :: dirExists
 
             !get current working directory

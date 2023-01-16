@@ -93,15 +93,15 @@ module sdfs
     end interface torus
 
 
-    type, extends(sdf) :: triprisim
+    type, extends(sdf) :: triprism
         real(kind=wp) :: h1, h2
         contains
-        procedure :: evaluate => eval_triprisim
-    end type triprisim
+        procedure :: evaluate => eval_triprism
+    end type triprism
 
-    interface triprisim
-        module procedure triprisim_init
-    end interface triprisim
+    interface triprism
+        module procedure triprism_init
+    end interface triprism
 
 
     type, extends(sdf) :: cone
@@ -312,7 +312,7 @@ module sdfs
 
     private
     ! shapes
-    public :: sdf, cylinder, sphere, box, torus, cone, triprisim
+    public :: sdf, cylinder, sphere, box, torus, cone, triprism
     public :: capsule, plane, moon, neural, segment, egg
     ! meta
     public :: model, container
@@ -979,11 +979,11 @@ end function eval_neural
         end function torus_fn
 
 
-        function triprisim_init(h1, h2, mus, mua, hgg, n, layer, transform) result(out)
+        function triprism_init(h1, h2, mus, mua, hgg, n, layer, transform) result(out)
         !h1 is height
         !h2 is length
         !        
-            type(triprisim) :: out
+            type(triprism) :: out
             
             real(kind=wp),           intent(IN) :: h1, h2, mus, mua, hgg, n
             integer,                 intent(IN) :: layer
@@ -1014,22 +1014,22 @@ end function eval_neural
             out%g2 = hgg**2
             out%n = n
 
-        end function triprisim_init
+        end function triprism_init
 
-        function eval_triprisim(this, pos) result(res)
+        function eval_triprism(this, pos) result(res)
 
-            class(triprisim) :: this
+            class(triprism) :: this
             type(vector), intent(IN) :: pos
             real(kind=wp) :: res
 
             type(vector) :: p
 
             p = pos .dot. this%transform
-            res = triprisim_fn(p, this%h1, this%h2)
+            res = triprism_fn(p, this%h1, this%h2)
 
-        end function eval_triprisim
+        end function eval_triprism
 
-        function triprisim_fn(p, h1, h2) result(res)
+        function triprism_fn(p, h1, h2) result(res)
 
             type(vector),  intent(IN) :: p
             real(kind=wp), intent(IN) :: h1, h2
@@ -1040,7 +1040,7 @@ end function eval_neural
             q = abs(p)
             res = max(q%z - h2, max(q%x*.866025_wp + p%y*.5_wp, -p%y) - h1*.5_wp) 
 
-        end function triprisim_fn
+        end function triprism_fn
 
         function cone_init(a, b, ra, rb, mus, mua, hgg, n, layer, transform) result(out)
         

@@ -13,7 +13,7 @@ module random
     contains
 
         subroutine init_rng(input_seed, fwd)
-        ! initiate RNG state with reproducable state
+        ! initiate RNG state with reproducible state
             
             integer, optional, intent(IN) :: input_seed(:)
             logical, optional, intent(IN) :: fwd

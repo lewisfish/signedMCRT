@@ -18,7 +18,7 @@ Below is the current list of dependencies:
 
 Test drive is used to run all tests.
 Fortran [TEV](https://github.com/Tom94/tev/) Bindings is used to interface with TEV, to show live slices of fluences as the simulation is run, which is handy for debugging purposes.
-Finally, Fortran Utilities is my personal collection of useful fortran utilities such as mathimatical functions, or progress bars.
+Finally, Fortran Utilities is my personal collection of useful fortran utilities such as mathematical functions, or progress bars.
 
 ## Config file
 signedMCRT uses TOML as it's configuration file format.
@@ -28,6 +28,17 @@ Documentation of the input file format can be found in [here](config.md)
 ## Code Structure
 
 ### constants.f90
+
+This module contains mathematical constants and strings that contain the various directories used by the program.
+Math constants:
+- PI
+- 2 PI
+- wp (working precision of the whole program). Default is double precision (64bit floats)
+Directories:
+- homedir. Root directory of this code
+- fileplace. data folder directory
+- resdir. holds the path to the directory that holds the parameter and other associated input files
+
 Source code can be found [here](/src/constants.f90)
 
 ### detectorMod.f90
@@ -37,15 +48,32 @@ Source code can be found [here](/src/detectorMod.f90)
 Source code can be found [here](/src/geometeryMod.f90)
 
 ### grid.f90
+
+This module defines the cartesian grid type (cart_grid) and associated routines.
+
+The cart_grid type contains information related to the grid used to record the fluence. This includes the number of voxels in each cardinal direction (nxg, nyg, nzg), the **half** size of the grid in each direction (xmax, ymax, zmax), and the locations of the voxels walls in each direction (xface, yface, zface).
+The type-bound function get_voxel takes a position (vector) and returns the voxel the position falls in. 
+
+Init_grid initialises a cart_grid instance.
+
 Source code can be found [here](/src/grid.f90)
 
 ### historyStack.f90
 Source code can be found [here](/src/historyStack.f90)
 
 ### iarray.f90
+
+The iarray module contains the variables that record the fluence. These are 3D arrays, with roughly the same dimensions as the cart_grid type.
+Jmean is the *local* fluence. JmeanGLOBAL is the *global* fluence grid. The global version is the one that is written to disk at the simulations end.
+
 Source code can be found [here](/src/iarray.f90)
 
 ### inttau2.f90
+
+inttau2 is the heart of the MCRT simulation. It moves the photons though the simulated media.
+tauint2 is the only public function here and is the main function that moves the photon.
+Changes should only be made here if bugs are discovered or new methods of tracking photons (i.e phase tracking) or moving photons (i.e new geometry method) is needed.
+
 Source code can be found [here](/src/inttau2.f90)
 
 ### kernelsMod.f90
@@ -55,15 +83,82 @@ Source code can be found [here](/src/kernelsMod.f90)
 Source code can be found [here](/src/mat_class.f90)
 
 ### photon.f90
+
+This source file contains the photon type, all the photon launch routines for different light sources, and the scattering code.
+
+Below are the current types of light sources available. Check [here](config.md) for parameters needed for each light source.
+- uniform
+- pencil
+- annulus
+- focus
+- point
+- circular
+
 Source code can be found [here](/src/photon.f90)
 
 ### parse.f90
+
+This file contains all the logic for parsing the toml input file using the toml-f library.
+parse_params is the only public function in this module. This function returns a dictionary (toml_table) of parameters needed to setup the simulation and an array of detectors if any are defined.
+
+Any additions to the toml input file should be added in here.
+
 Source code can be found [here](/src/parse.f90)
 
 ### random_mod.f90
+
+This module defines a set of functions that return random numbers in different distributions.
+
+- ran2. Returns a single float uniformly in the range [0, 1)
+- ranu. Return a single float uniformly in the range [a, b)
+- randint. Returns a single integer uniformly in the range [a, b)
+- rang. Returns a single float from a Gaussian distribution with mean *avg* and std *sigma*.
+- init_rng. Seeds the internal random number generator with a reproducible seed.
+
 Source code can be found [here](/src/random_mod.f90)
 
 ### sdfsMod.f90
+
+This module defines the signed distance function (SDF) abstract type and all types that inherit from it.
+The SDF abstract type defines the optical properties of an SDF (mus, mua, kappa, albedo, hgg, g2,and n), as well as a transform (4x4 matrix), and the layer ID code of the SDF. The SDF abstract type also provides an abstract interface (evaluate) which each inheriting function must implement. This evaluate function is the heart of the SDF implementation. Each individual evaluate is the direct implementation of that SDF, e.g. that function defines the mathematical SDF.
+
+- cylinder
+- sphere
+- box
+- torus
+- cone
+- triprism (triangular prism)
+- capsule
+- plane
+- moon (not tested)
+- neural (requires the use of separate python scripts to generate SDF. Current model is the Stanford bunny.)
+- segment
+- egg
+
+This module also defines tow meta-container for dealing with multiple SDFs at the same time:
+
+- model. This joins multiple SDFs into one SDF type.
+- container. This is essentially an array type for storing multiple SDFs at once.
+
+This module also defines transforms that can be applied to each SDF:
+
+- Union
+- Intersection
+- Subtraction
+- SmoothUnion
+- Rotate_{x,y,z}
+- Translate
+- RotationAlign (not tested)
+- RotMat (not tested)
+- Displacement
+- Bend
+- Twist
+- Elongate
+- Repeat
+- Extrude
+- Revolution
+- Onion
+
 Source code can be found [here](/src/sdfsMod.f90)
 
 ### sim_state.f90

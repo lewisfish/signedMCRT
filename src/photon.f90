@@ -440,7 +440,7 @@ module photonMod
         end subroutine annulus
 
         subroutine scatter(this, hgg, g2)
-        !This routine contains the scattering routinesmaths for isotropic and henyey-greenstein governed scattering
+        !This routine contains the scattering routines maths for isotropic and henyey-greenstein governed scattering
         ! Original is due to K. Woods
             use constants, only : PI, TWOPI, wp
             use random,    only : ran2   
