@@ -27,6 +27,12 @@ Documentation of the input file format can be found in [here](config.md)
 
 ## Code Structure
 
+See below for a brief description of each source code file.
+See (this)[relations.pdf] for rat's nest diagram of the relationships and dependencies between each source code file. 
+Blue is a module with functions.
+Grey is a external dependency.
+Red is a module with only data components.
+
 ### constants.f90
 
 This module contains mathematical constants and strings that contain the various directories used by the program.
@@ -42,9 +48,22 @@ Directories:
 Source code can be found [here](/src/constants.f90)
 
 ### detectorMod.f90
+
+Currently in development.
+
 Source code can be found [here](/src/detectorMod.f90)
 
 ### geometeryMod.f90
+
+Defines a set of functions for intersecting a line and a surface.
+
+- Circle
+- Plane
+- Cone
+- Cylinder
+- Ellipse
+- Sphere
+
 Source code can be found [here](/src/geometeryMod.f90)
 
 ### grid.f90
@@ -59,6 +78,9 @@ Init_grid initialises a cart_grid instance.
 Source code can be found [here](/src/grid.f90)
 
 ### historyStack.f90
+
+Currently in development.
+
 Source code can be found [here](/src/historyStack.f90)
 
 ### iarray.f90
@@ -77,9 +99,15 @@ Changes should only be made here if bugs are discovered or new methods of tracki
 Source code can be found [here](/src/inttau2.f90)
 
 ### kernelsMod.f90
+
+Contains the main program and scattering loop. Calls all other routine to setup, run and break down the simulation.
+
 Source code can be found [here](/src/kernelsMod.f90)
 
 ### mat_class.f90
+
+Matrix class module. Defines a matrix type (4x4 matrix) and associated operations on matrices and other types.
+
 Source code can be found [here](/src/mat_class.f90)
 
 ### photon.f90
@@ -162,23 +190,59 @@ This module also defines transforms that can be applied to each SDF:
 Source code can be found [here](/src/sdfsMod.f90)
 
 ### sim_state.f90
+
+This module defines the setting_t type which holds simulation metadata:
+
+- nphotons. Number of photons to run
+- iseed. initial seed
+- render_size. Size of voxel grid to render SDFs to 
+- experiment. Name of experiment/simulation
+- outfile. Name of fluence output file
+- renderfile. Name of voxel render file
+- source. Light source used
+- historyFilename. Name of photon history file
+- grid. Cart_grid type
+- render_geom. Boolean to indicate wether to render SDF to voxels or not.
+- tev. Boolean to indicate wether to use TEV as debug viewer.
+
 Source code can be found [here](/src/sim_state.f90)
 
 ### subs.f90
+
+This file sets up some simulations variables and initialises the geometry for the simulation.
+Add any new geometry setups here.
+
 Source code can be found [here](/src/subs.f90)
 
 ### surfaces.f90
+
+Contains the routines that handle reflection, and refraction via the Fresnel equations.
+
 Source code can be found [here](/src/surfaces.f90)
 
 ### vec4_class.f90
+
+Vector4 class module. Defines a vector4 type (x, y, z, p) and associated operations on vectors and other types.
+
 Source code can be found [here](/src/vec4_class.f90)
 
 ### vector_class.f90
+
+Vector class module. Defines a vector type (x, y, z) and associated operations on vectors and other types.
+
 Source code can be found [here](/src/vector_class.f90)
 
 ### writer.f90
-Source code can be found [here](/src/writer.f90)
 
+This module defines all functions that write simulation data to the disk or pre-process data before writing.
+
+- normalise_fluence. Normalises fluence by number of photons run and size of each voxel. **!Does not normalise by power!**
+- write_fluence. Write out fluence in either raw or nrrd format. Default is nrrd.
+- write_detected_photons. Write out photons detected by detectors.
+
+Changes should only be made here if there is a bug or new data types need to be written to disk (phase information) or new file format is needed.
+
+Source code can be found [here](/src/writer.f90)
 
 ## Monte Carlo Radiation Transfer (MCRT) method
 
