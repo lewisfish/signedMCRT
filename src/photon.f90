@@ -145,7 +145,7 @@ module photonMod
                 b = vector(this%nxp, this%nyp, this%nzp)
                 b = b%magnitude()
                 
-                ! method fails if below condition. So change a vector to point down x-axis
+                ! method fails if below condition is true. So change a vector to point down x-axis
                 if(abs(a) == abs(b))then
                     a = vector(0._wp, 0._wp, 1._wp)
                     a = a%magnitude()

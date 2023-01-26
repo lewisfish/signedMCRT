@@ -36,6 +36,7 @@ program test_all
     use testsPhotonMod
     use testsSDFMod 
     use testsVecMod
+    use testsFresnelMod
 
     implicit none
 
@@ -55,6 +56,9 @@ program test_all
     call grow_suite(tmp, testsuites)
 
     call photon_suite(tmp)
+    call grow_suite(tmp, testsuites)
+
+    call Fresnel_suite(tmp)
     call grow_suite(tmp, testsuites)
 
     do i = 1, size(testsuites)

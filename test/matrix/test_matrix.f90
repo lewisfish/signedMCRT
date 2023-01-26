@@ -29,7 +29,8 @@ module testsMatrixMod
                 new_unittest("Matrix_add", Matrix_add), &
                 new_unittest("Matrix_subtract", matrix_sub), &
                 new_unittest("Matrix_multiply", matrix_mult), &
-                new_unittest("Matrix_div", matrix_div) &
+                new_unittest("Matrix_div", matrix_div), &
+                new_unittest("Matrix_mult_Matrix", matrix_mult_matrix) &
                 ]
 
     end subroutine collect_suite1
@@ -165,6 +166,35 @@ module testsMatrixMod
             val = val + 1._wp
         end do
     end subroutine matrix_div
+
+    subroutine matrix_mult_matrix(error)
+
+        use vec4_class
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(mat) :: a
+        type(vec4) :: b, c
+
+        a%vals(:, 1) = [1._wp, 2._wp, 3._wp, 4._wp] 
+        a%vals(:, 2) = [5._wp, 6._wp, 7._wp, 8._wp] 
+        a%vals(:, 3) = [9._wp, 10._wp, 11._wp, 12._wp] 
+        a%vals(:, 4) = [13._wp, 14._wp, 15._wp, 16._wp] 
+
+        b = vec4(3._wp, 5._wp, 7._wp, 9._wp)
+
+        c = a * b
+        call check(error, c%x, 208._wp)
+        if(allocated(error))return
+        call check(error, c%y, 232._wp)
+        if(allocated(error))return
+        call check(error, c%z, 256._wp)
+        if(allocated(error))return
+        call check(error, c%p, 280._wp)
+        if(allocated(error))return
+
+    end subroutine matrix_mult_matrix
+
 
     subroutine matrix_inv(error)
 

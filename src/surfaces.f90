@@ -16,7 +16,7 @@ module surfaces
     !
         use random, only : ran2
 
-        type(vector),  intent(INOUT) :: I !incident vector
+        type(vector),  intent(INOUT) :: I ! incident vector
         type(vector),  intent(INOUT) :: N ! normal vector
         real(kind=wp), intent(IN)    :: n1, n2 !refractive indcies
         real(kind=wp), intent(OUT)   :: Ri

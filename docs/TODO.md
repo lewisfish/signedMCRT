@@ -17,8 +17,8 @@ List of ToDo's for SignedMCRT.
     - [x] **Circle**
     - [x] **Camera**
     - [ ] **Annulus**
-- [ ] Add photon tracjectory history tracking
-    - [ ] Fix openmp troubles
+- [ ] Add photon trajectory history tracking
+    - [ ] Fix openMP troubles
     - [ ] Fix speed issues
 - [ ] Add "Scattering" kernels
     - [x] path length counter method
@@ -37,14 +37,13 @@ List of ToDo's for SignedMCRT.
      - [ ] Save output data
         - [ ] Detectors
         - [ ] Fluence
-        - [ ] Nscatt
+        - [ ] NScatt
 - [ ] Add optics to **Camera** type
 
 ## Testing
 
 - [x] Vec3 class
-- [ ] Matrix class
- - [ ] Need Mat mult Mat test
+- [x] Matrix class
 - [x] Vec4 Class
 - [ ] SDF Class
 - [ ] Detector Class
@@ -58,16 +57,18 @@ List of ToDo's for SignedMCRT.
     - [ ] Circular
     - [ ] Annulus
 - [ ] Stack Class
-- [ ] String Utils
-- [ ] Utils
 - [ ] I/O
 - [ ] Random Numbers
 - [ ] Scattering
-- [ ] Fresnel reflections
+- [-] Fresnel reflections
+    - [x] Simple reflect
+    - [x] Simple refract
+    - [ ] Complex reflect
+    - [ ] Complex refract
 - [ ] End to End tests
     - [x] Scattering Test
     - [ ] Others
-- [ ] Implment a fuzzer to test input space
+- [ ] Implement a fuzzer to test input space
 - [ ] Add a input schema to validate input toml
     - [ ] Add Even better TOML?
     - [ ] Learn from https://json-schema.org/learn/getting-started-step-by-step.html
