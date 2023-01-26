@@ -244,6 +244,11 @@ Changes should only be made here if there is a bug or new data types need to be 
 
 Source code can be found [here](/src/writer.f90)
 
+## Plotting Results
+
+To view the output of simulations you can use [this](https://github.com/lewisfish/data_cube_viewer).
+Alternatively to customise the plot you can adjust the following [script](../tools/plot_nrrd.py).
+
 ## Monte Carlo Radiation Transfer (MCRT) method
 
 Please see my [thesis](main.pdf) for an overview of the MCRT method
