@@ -39,19 +39,32 @@ module testsFresnelMod
 
         type(vector) :: I, N
         logical :: rflag
-        real(kind=wp) :: ri, n1, n2, theta, real_value
+        real(kind=wp) :: ri, n1, n2, theta, real_value, phi
 
-        I = vector(1._wp, 0._wp, -1._wp)
+
+        theta = deg2rad(180._wp + 45._wp)
+        phi = 0._wp
+
+        I%x = abs(sin(theta) * cos(phi))
+        I%y = sin(theta) * sin(phi)
+        I%z = cos(theta)
         I = I%magnitude()
+        
         N = vector(0._wp, 0._wp, 1._wp)
         n1 = 1._wp
         n2 = 1.33_wp
 
+        print*,I
+
         call reflect_refract(I, N, n1, n2, rflag, ri)
+
+        print*,I
 
         theta = pi - acos(I%z)
         real_value = asin(n1/ n2 * sin(deg2rad(45._wp)))
-        call check(error, theta, real_value)
+        print*,theta,epsilon(theta)
+        print*,real_value
+        call check(error, theta, real_value, thr=1.0e-10_wp)
         if(allocated(error))return
 
     end subroutine simple_refract

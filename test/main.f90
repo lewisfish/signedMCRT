@@ -66,5 +66,5 @@ program test_all
         call run_testsuite(testsuites(i)%collect, error_unit, stat, context=context)
     end do
     call context%report()
-
+    if(stat > 0)error stop 1
 end program test_all
