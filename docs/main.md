@@ -8,6 +8,34 @@ To build signedMCRT, the only current method is using [FPM](https://fpm.fortran-
 FPM can be easily installed on any platform, and is simple to use to pull all dependencies, and build and compile signedMCRT.
 We also provide several commands via FPM response file ([found here](fpm.rsp)), to enable the use of OpenMP, other compliers, and various debug modes.
 
+## Running the code
+
+The code is run using FPM. To run on a single core with no debug flags enabled:
+
+```
+fpm run
+```
+
+To run on all available threads on current computer with no debug flags:
+
+```
+fpm @runmp
+```
+
+To run the code on one thread with all debug flags enabled:
+
+```
+fpm @debug
+```
+
+To run the code on all threads with all debug flags enabled:
+
+```
+fpm @debugmp
+```
+
+Please see ([here](fpm.rsp)) for other possible options.
+
 ## Dependencies
 
 Below is the current list of dependencies:
