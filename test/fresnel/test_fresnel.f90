@@ -54,16 +54,10 @@ module testsFresnelMod
         n1 = 1._wp
         n2 = 1.33_wp
 
-        print*,I
-
         call reflect_refract(I, N, n1, n2, rflag, ri)
-
-        print*,I
 
         theta = pi - acos(I%z)
         real_value = asin(n1/ n2 * sin(deg2rad(45._wp)))
-        print*,theta,epsilon(theta)
-        print*,real_value
         call check(error, theta, real_value, thr=1.0e-10_wp)
         if(allocated(error))return
 
