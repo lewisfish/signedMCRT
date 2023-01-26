@@ -7,6 +7,7 @@ List of ToDo's for SignedMCRT.
 - [x] Make CI run tests
 - [x] Add Code Coverage reports
 - [x] Remove spurious implicit nones
+- [x] Make sure all optical properties are the same for a model instance (SDF)
 ### Minor Features
 - [ ] Add more saved state to photon_origin to save compute time
 - [ ] Finish Circular, focus, and annulus source types
@@ -24,10 +25,11 @@ List of ToDo's for SignedMCRT.
     - [x] path length counter method
     - [ ] Weight method
 - [ ] Add phase tracking. To be done by Masters Student?
-- [ ] Make sure all optical properties are the same for a model instance (SDF)
 ### Major Features
 - [ ] Make code work on Windows
 - [ ] Automate benchmarking so we can catch performance regressions
+- [ ] Add voxel geometry
+- [ ] Add mesh geometry
 - [ ] Improve performance of SDF intersection
     - [ ] Implement KD trees in 2D
     - [ ] Implement KD trees in 3D
@@ -51,16 +53,16 @@ List of ToDo's for SignedMCRT.
     - [ ] Camera
     - [ ] Annulus
 - [ ] Photon class
-    - [ ] Uniform
-    - [ ] Point
-    - [ ] Pencil
+    - [x] Uniform
+    - [x] Point
+    - [x] Pencil
     - [ ] Circular
     - [ ] Annulus
-- [ ] Stack Class
+    - [ ] Scattering
+- [ ] History Stack Class
 - [ ] I/O
 - [ ] Random Numbers
-- [ ] Scattering
-- [-] Fresnel reflections
+- [ ] Fresnel reflections
     - [x] Simple reflect
     - [x] Simple refract
     - [ ] Complex reflect

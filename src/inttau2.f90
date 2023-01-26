@@ -51,7 +51,12 @@ module inttau2
             end do
             packet%cnts = packet%cnts + size(ds)
             d_sdf = minval(ds)
-    
+
+            if(d_sdf < eps)then
+                packet%tflag=.true.
+                exit
+            end if
+
             do while(d_sdf > eps)
                 t_sdf = d_sdf * sdfs_array(packet%layer)%p%kappa
                 if(taurun + t_sdf <= tau)then
@@ -135,7 +140,12 @@ module inttau2
                 if(ds(packet%layer) < 0._wp .and. ds(new_layer) < 0._wp)then
                     oldlayer = minloc(abs([ds(packet%layer), ds(new_layer)]), dim=1)
                 elseif(dstmp(packet%layer) < 0._wp .and. dstmp(new_layer) < 0._wp)then
-                        oldlayer=maxloc([dstmp(packet%layer), dstmp(new_layer)],dim=1)
+                    oldlayer=maxloc([dstmp(packet%layer), dstmp(new_layer)],dim=1)
+                elseif(ds(packet%layer) > 0._wp .and. ds(new_layer) < 0._wp)then
+                    oldlayer = packet%layer
+                elseif(ds(packet%layer) > 0._wp .and. ds(new_layer) > 0._wp)then
+                    packet%tflag = .true.
+                    exit
                 else
                     error stop "This should not be reached!"
                 end if
@@ -162,6 +172,7 @@ module inttau2
             else
                 packet%layer = new_layer
             end if
+            if(packet%tflag)exit
         end do
 
         packet%pos = pos

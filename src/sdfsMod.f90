@@ -566,6 +566,7 @@ end function eval_neural
             procedure(op) :: func
             type(container),          intent(IN) :: array(:)
             real(kind=wp), optional,  intent(IN) :: kopt
+            integer :: i
 
             out%array = array
             out%func => func
@@ -574,6 +575,14 @@ end function eval_neural
             else
                 out%k = 0._wp
             end if
+
+            do i = 2, size(array)
+                if(array(1)%p%mus /= array(i)%p%mus)print*,"Error mismatch in model mus in object: ",i
+                if(array(1)%p%mua /= array(i)%p%mua)print*,"Error mismatch in model mua in object: ",i
+                if(array(1)%p%hgg /= array(i)%p%hgg)print*,"Error mismatch in model hgg in object: ",i
+                if(array(1)%p%n /= array(i)%p%n)print*,"Error mismatch in model n in object: ",i
+                if(array(1)%p%layer /= array(i)%p%layer)print*,"Error mismatch in model layer in object: ",i
+            end do
 
             associate(member => array(1)%p)
                 out%mus = member%mus

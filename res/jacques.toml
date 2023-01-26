@@ -1,11 +1,14 @@
 [source]
 name = "uniform"
 nphotons = 10000000
-direction = "-z"
+direction = [0.0, 0.0, -1.0]
+point1 = [-1.0, -1.0, 0.99999]
+point2 = [2.0, 0.0, 0.0]
+point3 = [0.0, 2.0, 0.0]
 
 [grid]
-nxg = 200
-nyg = 200
+nxg = 400
+nyg = 400
 nzg = 400
 xmax = 1.0
 ymax = 1.0
@@ -21,3 +24,4 @@ render_geom = true
 
 [simulation]
 iseed = 123456789
+tev=true

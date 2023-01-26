@@ -18,9 +18,9 @@ zmax = 1.0
 geom_name = "neural"
 
 [output]
-fluence = "fluence.nrrd"
-render = "geom_render.nrrd"
-render_geom = true
+fluence = "bunny.nrrd"
+render = "bunny.nrrd"
+render_geom = false
 overwrite=true
 
 [simulation]
