@@ -166,7 +166,7 @@ contains
         use sdfs,          only : container, render
         use sim_state_mod, only : state
         use subs,          only : setup_simulation
-        use utils,         only : get_time, print_time
+        use utils,         only : get_time, print_time, str
         use vector_class,  only : vector
         
         ! !external deps
@@ -195,20 +195,22 @@ contains
         call parse_params("res/"//trim(input_file), packet, dects, dict)
         allocate(image(state%grid%nxg,state%grid%nzg,1))
         
+        call display_settings(state, input_file, packet, "Pathlength")
+
         if(state%tev)then
             !init TEV link
             tev = tevipc()
             call tev%close_image(state%experiment)
             call tev%create_image(state%experiment, state%grid%nxg, state%grid%nzg, ["I", "J", "K"], .true.)
         end if
-        
+
         nscatt = 0._wp
         call init_rng(spread(state%iseed+0, 1, 8), fwd=.true.)
         
         call setup_simulation(array, dict)
         ! render geometry to voxel format for debugging
         if(state%render_geom)then
-            call render(array, vector(state%grid%xmax, state%grid%ymax, state%grid%zmax), state%render_size, fname=state%renderfile)
+            call render(array, state)
         end if
         
         allocate(distances(size(array)))
@@ -272,7 +274,7 @@ subroutine finalise(dict, dects, nscatt, start)
         call set_value(dict, "experiment", state%experiment)
 
         jmeanGLOBAL = normalise_fluence(state%grid, jmeanGLOBAL, state%nphotons)
-        call write_fluence(jmeanGLOBAL, trim(fileplace)//"jmean/"//state%outfile, dict)
+        call write_fluence(jmeanGLOBAL, trim(fileplace)//"jmean/"//state%outfile, state, dict)
     end if
     !write out detected photons
     if(size(dects) > 0)then
@@ -293,4 +295,34 @@ subroutine finalise(dict, dects, nscatt, start)
 #endif
 
 end subroutine finalise
+
+subroutine display_settings(state, input_file, packet, kernel_type)
+
+    use sim_state_mod, only : settings_t
+    use photonMod,     only : photon
+    use utils,         only : str
+
+    type(settings_t), intent(IN) :: state
+    character(*),     intent(IN) :: input_file, kernel_type
+    type(photon),     intent(IN) :: packet
+
+    print*,repeat("#", 20)//" Settings "//repeat("#", 20)
+    print*,"# Config file: ",trim(input_file),repeat(" ", 50-16-len(trim(input_file))),"#"
+    print*,"# Using: "//trim(kernel_type)//"kernel"//repeat(" ", 50-16-len(kernel_type)),"#"
+    print*,"# Light source: "//trim(state%source)//repeat(" ", 50-17-len(trim(state%source))),"#"
+print*,"# Light direction: ["//str(packet%nxp,4)//", "//str(packet%nyp,4)//", "//str(packet%nzp,4)//"]"//repeat(" ", 12)//"#"
+    print*,"# Geometry: "//trim(state%experiment)//repeat(" ", 50-13-len(trim(state%experiment))),"#"
+    print*,"# Seed: "//str(state%iseed,9)//repeat(" ", 32)//"#"
+    if(state%tev)then
+        print*,"# Tev enabled!"//repeat(" ", 35)//"#"
+    end if
+    if(state%render_geom)then
+        print*,"# Render Geomerty to file enabled!"//repeat(" ", 15)//"#"
+    end if
+    if(state%overwrite)then
+        print*,"# Overwrite Enabled!",repeat(" ", 29)//"#"
+    end if
+    print*,repeat("#", 50)
+
+end subroutine display_settings
 end module kernels

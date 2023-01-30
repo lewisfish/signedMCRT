@@ -20,7 +20,7 @@ geom_name = "neural"
 [output]
 fluence = "bunny.nrrd"
 render = "bunny.nrrd"
-render_geom = false
+render_geom = true
 overwrite=true
 
 [simulation]

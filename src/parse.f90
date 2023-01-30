@@ -448,7 +448,6 @@ module parse_mod
 
         type(toml_table), pointer :: child
         type(toml_array), pointer :: children
-        logical :: overwrite
         integer :: i, nlen
 
         call get_value(table, "output", child)
@@ -472,8 +471,7 @@ module parse_mod
                 state%render_size = [200, 200, 200]
             end if
 
-            call get_value(child, "overwrite", overwrite, .false.)
-            call set_value(dict, "overwrite", overwrite)
+            call get_value(child, "overwrite", state%overwrite, .false.)
         else
             error stop "Need output table in input param file"
         end if
@@ -491,9 +489,8 @@ module parse_mod
         call get_value(table, "simulation", child)
 
         if(associated(child))then
-            call get_value(child, "seed", state%iseed, 123456789)
+            call get_value(child, "iseed", state%iseed, 123456789)
             call get_value(child, "tev", state%tev, .false.)
-
         else
             error stop "Need simulation table in input param file"
         end if

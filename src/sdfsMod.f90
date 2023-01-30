@@ -285,7 +285,6 @@ module sdfs
     end interface onion
 
     interface render
-        module procedure render_scaler
         module procedure render_vec
     end interface render
 
@@ -1981,57 +1980,32 @@ end function eval_neural
 
         end function skewSymm
 
-        subroutine render_vec(cnt, extent, samples, fname)
-                                    
-            type(container),        intent(IN) :: cnt(:)
-            integer,                intent(IN) :: samples(3)
-            type(vector),           intent(IN) :: extent
-            character(*), optional, intent(IN) :: fname
+        subroutine render_vec(cnt, state)
 
-            character(len=:), allocatable  :: filename
+            use sim_state_mod, only : settings_t
 
-            if(present(fname))then
-                filename = fname
-            else
-                filename = "model.dat"
-            end if
+            type(settings_t), intent(IN) :: state
+            type(container),  intent(IN) :: cnt(:)
+            
+            type(vector):: extent
 
-            call render_sub(cnt, extent, samples, filename)
+            extent = vector(state%grid%xmax, state%grid%ymax, state%grid%zmax)
+        
+            call render_sub(cnt, extent, state%render_size, state)
 
         end subroutine render_vec
 
-        subroutine render_scaler(cnt, extent, sample, fname)
+        subroutine render_sub(cnt, extent, samples, state)
 
-            type(container),        intent(IN) :: cnt(:)
-            integer,                intent(IN) :: sample
-            type(vector),           intent(IN) :: extent
-            character(*), optional, intent(IN) :: fname
-
-            character(len=:), allocatable  :: filename
-            integer :: samples(3)
-
-            if(present(fname))then
-                filename = fname
-            else
-                filename = "model.dat"
-            end if
-
-            samples = [sample, sample, sample]
-
-            call render_sub(cnt, extent, samples, filename)
-
-        end subroutine render_scaler
-
-        subroutine render_sub(cnt, extent, samples, fname)
-
-            use utils,     only : pbar
-            use constants, only : fileplace
+            use sim_state_mod, only : settings_t
+            use utils,         only : pbar
+            use constants,     only : fileplace
             use writer_mod
-                        
-            type(container),        intent(IN) :: cnt(:)
-            integer,                intent(IN) :: samples(3)
-            type(vector),           intent(IN) :: extent
-            character(*),           intent(IN) :: fname
+                      
+            type(settings_t), intent(IN) :: state
+            type(container),  intent(IN) :: cnt(:)
+            integer,          intent(IN) :: samples(3)
+            type(vector),     intent(IN) :: extent
 
             type(vector)               :: pos, wid
             integer                    :: i, j, k, u, id
@@ -2085,6 +2059,6 @@ end function eval_neural
             end do
 !$OMP end  do
 !$OMP end parallel
-            call write_fluence(image, trim(fileplace)//fname, overwrite=.true.)
+            call write_fluence(image, trim(fileplace)//state%renderfile, state, overwrite=.true.)
         end subroutine render_sub
 end module sdfs

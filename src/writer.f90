@@ -80,11 +80,13 @@ module writer_mod
         end subroutine write_detected_photons
 
 
-        subroutine write_fluence(array, filename, dict, overwrite)
+        subroutine write_fluence(array, filename, state, dict, overwrite)
         ! routine automatically selects which way to write out results based upon file extension
             
-            use tomlf, only : toml_table, get_value
-        
+            use sim_state_mod, only : settings_t
+            use tomlf,         only : toml_table, get_value
+
+            type(settings_t),           intent(IN)    :: state
             real(kind=wp),              intent(IN)    :: array(:,:,:)
             character(*),               intent(IN)    :: filename
             type(toml_table), optional, intent(INOUT) :: dict
@@ -93,12 +95,10 @@ module writer_mod
             Logical :: over_write
             integer :: pos
             
-            if(present(dict))then
-                call get_value(dict, "overwrite", over_write)
-            elseif(present(overwrite))then
+            if(present(overwrite))then
                 over_write = overwrite
             else
-                over_write = .false.
+                over_write = state%overwrite
             end if
 
             pos = index(filename, ".nrrd")

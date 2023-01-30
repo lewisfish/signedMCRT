@@ -9,12 +9,11 @@ module sim_state_mod
         integer :: render_size(3)
         character(len=:), allocatable :: experiment, outfile, renderfile, source, historyFilename
         type(cart_grid) :: grid
-        logical :: render_geom, tev
+        logical :: render_geom, tev, overwrite
     end type settings_t
 
     type(settings_t) :: state
 
     private
-    public :: settings_t, state 
-
+    public :: settings_t, state
 end module sim_state_mod
