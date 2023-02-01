@@ -1,6 +1,6 @@
 [source]
 name = "uniform"
-nphotons = 10000000
+nphotons = 1000000
 direction = [0.0, 0.0, -1.0]
 point1 = [-1.0, -1.0, 0.99999]
 point2 = [2.0, 0.0, 0.0]
@@ -21,7 +21,8 @@ geom_name = "jacques"
 fluence = "fluence.nrrd"
 render = "geom_render.nrrd"
 render_geom = true
+overwrite=true
 
 [simulation]
 iseed = 123456789
-tev=true
+tev=false
