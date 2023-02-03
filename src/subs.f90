@@ -606,8 +606,8 @@ module subs
             type(toml_table), intent(inout)  :: dict
 
             type(container), allocatable :: array(:)
-            ! type(cylinder), target, save :: cyl(2)
-            type(box),      target, save :: bbox, slab
+            type(cylinder), target, save :: cyl(2)
+            type(box),      target, save :: bbox!, slab
 
             type(vector)  :: a, b
             real(kind=wp) :: n, t(4, 4), optprop(5)
@@ -624,25 +624,25 @@ module subs
             a = vector(-10._wp, 0._wp, 0._wp)
             b = vector(10._wp, 0._wp, 0._wp)
             !bottle
-            ! cyl(2) = cylinder(a, b, 1.75, optprop(1), optprop(2), optprop(5), 1.5, 2)
+            cyl(2) = cylinder(a, b, 1.75_wp, optprop(1), optprop(2), optprop(5), 1.5_wp, 2)
             ! contents
-            ! cyl(1) = cylinder(a, b, 1.55, optprop(3), optprop(4), optprop(5), 1.3, 1)
+            cyl(1) = cylinder(a, b, 1.55_wp, optprop(3), optprop(4), optprop(5), 1.3_wp, 1)
 
-            t = invert(translate(vector(0._wp, 0._wp, -5._wp+1.75_wp)))
-            slab = box(vector(10._wp, 10._wp, 10._wp), optprop(3), optprop(4), optprop(5), 1.3_wp, 1, transform=t)
+            ! t = invert(translate(vector(0._wp, 0._wp, -5._wp+1.75_wp)))
+            ! slab = box(vector(10._wp, 10._wp, 10._wp), optprop(3), optprop(4), optprop(5), 1.3_wp, 1, transform=t)
             bbox = box(4._wp, 0.0_wp, 0.0_wp, 0.0_wp, n, 2)
 
-            allocate(array(2))
-            ! allocate(array(1)%p, source=cyl(1))
-            ! allocate(array(2)%p, source=cyl(2))
-            allocate(array(1)%p, source=slab)
-            allocate(array(2)%p, source=bbox)
+            allocate(array(3))
+            allocate(array(1)%p, source=cyl(1))
+            allocate(array(2)%p, source=cyl(2))
+            ! allocate(array(1)%p, source=slab)
+            allocate(array(3)%p, source=bbox)
 
-            ! array(1)%p => cyl(1)
-            ! array(2)%p => cyl(2)
-            ! array(3)%p => bbox
-            array(1)%p => slab
-            array(2)%p => bbox
+            array(1)%p => cyl(1)
+            array(2)%p => cyl(2)
+            array(3)%p => bbox
+            ! array(1)%p => slab
+            ! array(2)%p => bbox
         end function setup_exp
 
         function setup_scat_test(dict) result(array)
@@ -662,7 +662,7 @@ module subs
             call get_value(dict, "tau", tau)
 
             n = 1._wp
-            hgg = 0._wp
+            hgg = 0.0_wp
             mua = 1e-17_wp
             mus = tau
 

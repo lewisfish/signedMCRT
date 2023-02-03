@@ -1,6 +1,11 @@
 [source]
 name = "annulus"
 nphotons = 1000000
+direction = "x"
+beta = 10.0
+radius = 0.5
+rhi = 0.8
+annulus_type="gaussian"
 
 [grid]
 nxg = 200
@@ -12,16 +17,17 @@ zmax = 1.55
 
 [geometry]
 geom_name = "exp"
-musb = 10.0
-muab = 10.01
-musc = 10.0
-muac = 10.01
-hgg = 10.7
+musb = 0.001 # bottle scattering
+muab = 0.000001 # bottle absorb
+musc = 0.1 # contents scattering
+muac = 0.0001 # contents absorb
+hgg = 0.9
 
 [output]
 fluence = "fluence.nrrd"
 render = "geom_render.nrrd"
 render_geom = true
+overwrite=true
 
 [simulation]
 iseed = 123456789
