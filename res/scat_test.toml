@@ -19,6 +19,7 @@ tau = 10.0
 fluence = "fluence.nrrd"
 render = "geom_render.nrrd"
 render_geom = false
+overwrite = true
 
 [simulation]
 iseed = 123456789
