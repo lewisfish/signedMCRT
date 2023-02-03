@@ -210,6 +210,7 @@ contains
         call setup_simulation(array, dict)
         ! render geometry to voxel format for debugging
         if(state%render_geom)then
+            print*,"Rendering geometry to file"
             call render(array, state)
         end if
         
@@ -289,7 +290,7 @@ subroutine finalise(dict, dects, nscatt, start)
     end if
 
     time_taken = get_time() - start
-    call print_time(time_taken, id)
+    call print_time(time_taken, 4)
 #ifdef MPI
     call MPI_Finalize()
 #endif
@@ -310,19 +311,26 @@ subroutine display_settings(state, input_file, packet, kernel_type)
     print*,"# Config file: ",trim(input_file),repeat(" ", 50-16-len(trim(input_file))),"#"
     print*,"# Using: "//trim(kernel_type)//"kernel"//repeat(" ", 50-16-len(kernel_type)),"#"
     print*,"# Light source: "//trim(state%source)//repeat(" ", 50-17-len(trim(state%source))),"#"
-print*,"# Light direction: ["//str(packet%nxp,4)//", "//str(packet%nyp,4)//", "//str(packet%nzp,4)//"]"//repeat(" ", 12)//"#"
+    if(state%source == "point")then
+        print*,"# Light Source Position: ["//str(packet%pos%x,4)//", "//str(packet%pos%y,4)//", "//str(packet%pos%z,4)// &
+                                        "]"//repeat(" ", 6)//"#"
+    else
+        print*,"# Light direction: ["//str(packet%nxp,4)//", "//str(packet%nyp,4)//", "//str(packet%nzp,4)// &
+                                  "]"//repeat(" ", 12)//"#"
+    end if
     print*,"# Geometry: "//trim(state%experiment)//repeat(" ", 50-13-len(trim(state%experiment))),"#"
     print*,"# Seed: "//str(state%iseed,9)//repeat(" ", 32)//"#"
     if(state%tev)then
         print*,"# Tev enabled!"//repeat(" ", 35)//"#"
     end if
     if(state%render_geom)then
-        print*,"# Render Geomerty to file enabled!"//repeat(" ", 15)//"#"
+        print*,"# Render geometry to file enabled!"//repeat(" ", 15)//"#"
     end if
     if(state%overwrite)then
         print*,"# Overwrite Enabled!",repeat(" ", 29)//"#"
     end if
     print*,repeat("#", 50)
+    print*,new_line("a")
 
 end subroutine display_settings
 end module kernels

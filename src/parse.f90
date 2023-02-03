@@ -246,7 +246,9 @@ module parse_mod
                 end do
             else
                 if(state%source == "point")then
-                    pos = [0._wp, 0._wp, 0._wp]
+                    print'(a)',context%report(&
+                    "Point source needs a position!", origin, "Need vector of size 3 for position")
+                    stop 1
                 end if
             end if
             poss = vector(pos(1), pos(2), pos(3))
@@ -255,6 +257,10 @@ module parse_mod
             
             call get_value(child, "direction", children, requested=.false., origin=origin)
             if(associated(children))then
+                if(state%source == "point")then
+                    print'(a)',context%report(&
+                    "Point source needs no direction!!", origin, level=toml_level%warning)
+                end if
                 nlen = len(children)
                 if(nlen < 3)then
                     print'(a)',context%report("Need a vector of size 3 for direction", origin, "expected vector of size 3")
@@ -272,27 +278,36 @@ module parse_mod
                 dirr%y = dir(2)
                 dirr%z = dir(3)
             else
-                if(state%source == "uniform" .or. state%source == "circular")then
-                    print'(a)',context%report("Uniform source needs vector direction", origin, "expected vector of size 3")
+                call get_value(child, "direction", direction, origin=origin)
+                if(allocated(direction))then
+                    if(state%source == "point")then
+                        print'(a)',context%report(&
+                        "Point source needs no direction!!", origin, level=toml_level%warning)
+                    end if
+    
+                    select case(direction)
+                    case("x")
+                        dirr = vector(1._wp, 0._wp, 0._wp)
+                    case("-x")
+                        dirr = vector(-1._wp, 0._wp, 0._wp)                
+                    case("y")
+                        dirr = vector(0._wp, 1._wp, 0._wp)
+                    case("-y")
+                        dirr = vector(0._wp, -1._wp, 0._wp)
+                    case("z")
+                        dirr = vector(0._wp, 0._wp, 1._wp)
+                    case("-z")
+                        dirr = vector(0._wp, 0._wp, -1._wp)
+                    case default
+                        print'(a)',context%report("Direction needs a cardinal direction i.e x, y, or z", origin, &
+                                                "Expected cardinal direction")
+                        stop 1 
+                    end select
+                elseif(state%source /= "point")then
+                    print'(a)',context%report("Need to specify direction for source type!", origin, &
+                                              "No direction specified")
                     stop 1
                 end if
-                call get_value(child, "direction", direction, "-z")
-                select case(direction)
-                case("x")
-                    dirr = vector(1._wp, 0._wp, 0._wp)
-                case("-x")
-                    dirr = vector(-1._wp, 0._wp, 0._wp)                
-                case("y")
-                    dirr = vector(0._wp, 1._wp, 0._wp)
-                case("-y")
-                    dirr = vector(0._wp, -1._wp, 0._wp)
-                case("z")
-                    dirr = vector(0._wp, 0._wp, 1._wp)
-                case("-z")
-                    dirr = vector(0._wp, 0._wp, -1._wp)
-                case default
-                    error stop "fucked it!"
-                end select
             end if
 
             children => null()
@@ -370,6 +385,10 @@ module parse_mod
 
         call set_photon(poss, dirr)
         packet = photon(state%source)
+        packet%pos = poss
+        packet%nxp = dirr%x
+        packet%nyp = dirr%y
+        packet%nzp = dirr%z
 
     end subroutine parse_source
 
