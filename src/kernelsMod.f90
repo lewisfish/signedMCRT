@@ -262,6 +262,7 @@ subroutine finalise(dict, dects, nscatt, start)
         print*,'Average # of scatters per photon:',nscattGLOBAL/(state%nphotons)
 #else
         print*,'Average # of scatters per photon:',nscattGLOBAL/(state%nphotons*numproc)
+        ! for testing purposes
         open(newunit=i,file="nscatt.dat")
         write(i,*)nscattGLOBAL/(state%nphotons)
         close(i)

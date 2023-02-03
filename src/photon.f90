@@ -476,3 +476,4 @@ module photonMod
             this%nzp = uzz
 
         end subroutine scatter
+end module photonMod
