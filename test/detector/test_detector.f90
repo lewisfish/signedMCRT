@@ -34,7 +34,7 @@ module testsDetectorMod
         type(circle_dect) :: a
         type(vector) :: pos, dir
         integer :: layer, nbins
-        real(kind=wp) :: radius, maxval, val, t
+        real(kind=wp) :: radius, maxval, val
         logical :: flag
 
         pos = vector(0._wp, 0._wp, 0._wp)
@@ -51,7 +51,7 @@ module testsDetectorMod
         layer = 1
         hitpoint = hit_t(pos, dir, val, layer)
 
-        flag = a%check_hit(hitpoint, t)
+        flag = a%check_hit(hitpoint)
 
         call check(error, flag, .true.)
         if(allocated(error))return
