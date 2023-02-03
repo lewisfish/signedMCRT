@@ -194,7 +194,7 @@ module geometry
     end function intersectPlane
 
 
-    logical function intersectCircle(n, p0, radius, l0, l)
+    logical function intersectCircle(n, p0, radius, l0, l, t)
     !https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection
         type(vector),  intent(in) :: n, p0, l, l0
         real(kind=wp), intent(in) :: radius
@@ -208,7 +208,7 @@ module geometry
             p = l0 + l * t
             v = p - p0
             d2 = v .dot. v
-            if(sqrt(d2) <= radius)intersectCircle=.true.            
+            if(sqrt(d2) <= radius)intersectCircle=.true.
         end if
     end function intersectCircle
 

@@ -46,7 +46,7 @@ contains
         new_filename = filename(1:idx-1)//"_"//str(id,3)//filename(idx:)
 
         init_historyStack%filename = new_filename
-        ! print*,id, " ", trim(init_historyStack%filename)
+
         if(index(new_filename, "obj") /= 0)then
             init_historyStack%type="obj"
         elseif(index(new_filename, "ply") /= 0)then
@@ -61,6 +61,8 @@ contains
         if(res)then
             print*,"Deleting existing trackHistory files!"
             call execute_command_line("rm "//trim(fileplace)//new_filename)
+            call execute_command_line("rm "//trim(fileplace)//"scalars.dat")
+            call execute_command_line("rm "//trim(fileplace)//new_filename//"2")
         end if
 
         init_historyStack%size = 0
@@ -128,6 +130,7 @@ contains
                 
         class(history_stack_t) :: this
 
+        deallocate(this%data)
         this%size = 0
 
     end subroutine histzero_sub
@@ -157,21 +160,14 @@ contains
         class(history_stack_t) :: this
         integer, intent(in) :: num_threads
 
-        character(len=:), allocatable :: command
-        integer :: u, idx
+        integer :: u
 
         select case(trim(this%type))
         case("obj")
-            command = ""
-            idx = index(this%filename, ".")
-            do u = 0, num_threads-1
-                command = command//trim(fileplace)//this%filename(1:idx-4)//str(u,3)//this%filename(idx:)//"2 "
-            end do
-        call execute_command_line("cat "//command//" >> "//trim(fileplace)//&
-                                   this%filename(1:idx-4)//this%filename(idx:))
+            call execute_command_line("cat "//trim(fileplace)//this%filename//"2 >> "//trim(fileplace)//this%filename)
         case("ply")
             ! this is the easiest way to edit the vertex count as we don't know how many photons we will track when writing the header.
-            ! this saves stroing all photons data in RAM for duration of simulation.
+            ! this saves storing all photons data in RAM for duration of simulation.
             ! taken from: https://stackoverflow.com/a/11145362
         call execute_command_line("sed -i '3s#.*#element vertex "//str(this%vertex_counter)//"#' "//trim(fileplace)//this%filename)
         call execute_command_line("sed -i '7s#.*#element edge "//str(this%edge_counter)//"#' "//trim(fileplace)//this%filename)
@@ -197,20 +193,16 @@ contains
         integer :: u, io, id, counter, ioi
         logical :: res
 
-#ifdef _OPENMP
-        id = omp_get_thread_num()
-#else
         id = 0
-#endif
         inquire(file=trim(fileplace)//this%filename, exist=res)
         if(res)then
             open(newunit=u,file=trim(fileplace)//this%filename, status="old", position="append")
             open(newunit=io,file=trim(fileplace)//this%filename//"2", status="old", position="append")
-            open(newunit=ioi,file=trim(fileplace)//"scalars_"//str(id,3)//".dat", status="old", position="append")
+            open(newunit=ioi,file=trim(fileplace)//"scalars.dat", status="old", position="append")
         else
             open(newunit=u,file=trim(fileplace)//this%filename, status="new")
             open(newunit=io,file=trim(fileplace)//this%filename//"2", status="new")
-            open(newunit=ioi,file=trim(fileplace)//"scalars_"//str(id,3)//".dat", status="new")
+            open(newunit=ioi,file=trim(fileplace)//"scalars.dat", status="new")
         end if
 
         v = this%pop()
@@ -240,46 +232,44 @@ contains
         
         type(history_stack_t), intent(inout) :: this
         
-        integer :: id, io, counter, i, u
+        integer :: io, counter, i, u
         logical :: res
         type(vec4) :: v
     
-        if(id == 0)then
-            inquire(file=trim(fileplace)//this%filename, exist=res)
-            if(res)then
-                open(newunit=u,file=trim(fileplace)//this%filename, status="old", position="append")
-            else
-                open(newunit=u,file=trim(fileplace)//this%filename, status="new")
-                write(u,"(a)") "ply"//new_line("a")//"format ascii 1.0"//new_line("a")//"element vertex "//str(this%size)
-                write(u,"(a)") "property float x"
-                write(u,"(a)") "property float y"
-                write(u,"(a)") "property float z"
-                write(u,"(a)") "element edge"
-                write(u,"(a)") "property int vertex1"
-                write(u,"(a)") "property int vertex2"
-                write(u,"(a)") "end_header"
-            end if
-            inquire(file=trim(fileplace)//this%filename//"2", exist=res)
-            if(res)then
-                open(newunit=io,file=trim(fileplace)//this%filename//"2", status="old", position="append")
-            else
-                open(newunit=io,file=trim(fileplace)//this%filename//"2", status="new")
-            end if
-
-            counter = this%vertex_counter
-            do i = 1, this%size-1
-                write(io, "(2(i0,1x))") counter, counter+1
-                counter = counter + 1
-                this%edge_counter = this%edge_counter + 1
-            end do
-            close(io)
-            do while(.not. this%empty())
-                v = this%pop()
-                write(u, "(3(es15.8e2,1x))") v%x, v%y, v%z
-                this%vertex_counter = this%vertex_counter + 1
-            end do
-            close(u)
+        inquire(file=trim(fileplace)//this%filename, exist=res)
+        if(res)then
+            open(newunit=u,file=trim(fileplace)//this%filename, status="old", position="append")
+        else
+            open(newunit=u,file=trim(fileplace)//this%filename, status="new")
+            write(u,"(a)") "ply"//new_line("a")//"format ascii 1.0"//new_line("a")//"element vertex "//str(this%size)
+            write(u,"(a)") "property float x"
+            write(u,"(a)") "property float y"
+            write(u,"(a)") "property float z"
+            write(u,"(a)") "element edge"
+            write(u,"(a)") "property int vertex1"
+            write(u,"(a)") "property int vertex2"
+            write(u,"(a)") "end_header"
         end if
+        inquire(file=trim(fileplace)//this%filename//"2", exist=res)
+        if(res)then
+            open(newunit=io,file=trim(fileplace)//this%filename//"2", status="old", position="append")
+        else
+            open(newunit=io,file=trim(fileplace)//this%filename//"2", status="new")
+        end if
+
+        counter = this%vertex_counter
+        do i = 1, this%size-1
+            write(io, "(2(i0,1x))") counter, counter+1
+            counter = counter + 1
+            this%edge_counter = this%edge_counter + 1
+        end do
+        close(io)
+        do while(.not. this%empty())
+            v = this%pop()
+            write(u, "(3(es15.8e2,1x))") v%x, v%y, v%z
+            this%vertex_counter = this%vertex_counter + 1
+        end do
+        close(u)
     end subroutine ply_writer
 
     subroutine json_writer(this)

@@ -141,6 +141,9 @@ module parse_mod
         call get_value(child, "nbins", nbins, 100)
         call get_value(child, "maxval", maxval, 100._wp)
         call get_value(child, "trackHistory", trackHistory, .false.)
+#ifdef _OPENMP
+        if(trackHistory)error stop "Track history currently incompatable with OpenMP!"
+#endif
         dects(counts) = camera(p1, p2, p3, layer, nbins, maxval, trackHistory)
         counts = counts + 1
 
@@ -168,6 +171,9 @@ module parse_mod
         call get_value(child, "nbins", nbins, 100)
         call get_value(child, "maxval", maxval, 100._wp)
         call get_value(child, "trackHistory", trackHistory, .false.)
+#ifdef _OPENMP
+        if(trackHistory)error stop "Track history currently incompatable with OpenMP!"
+#endif
         dects(counts) = circle_dect(pos, dir, layer, radius, nbins, maxval, trackHistory)
         counts = counts + 1
 
@@ -198,6 +204,9 @@ module parse_mod
             call get_value(child, "nbins", nbins, 100)
         call get_value(child, "maxval", maxval, 100._wp)
         call get_value(child, "trackHistory", trackHistory, .false.)
+#ifdef _OPENMP
+        if(trackHistory)error stop "Track history currently incompatable with OpenMP!"
+#endif
         dects(counts) = annulus_dect(pos, layer, radius1, radius2, nbins, maxval, trackHistory)
         counts = counts + 1
     end subroutine handle_annulus_dect

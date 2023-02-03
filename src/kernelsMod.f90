@@ -41,7 +41,7 @@ contains
         character(*), intent(in) :: input_file
         
         integer :: numproc, id, j, i
-        ! type(history_stack_t) :: history
+        type(history_stack_t) :: history
         type(pbar)        :: bar
         type(photon)      :: packet
         type(toml_table)  :: dict
@@ -59,17 +59,16 @@ contains
 #ifdef _OPENMP
         !is state%seed private, i dont think so...
         !$omp parallel default(none) shared(dict, array, numproc, start, state, bar, jmean, tev, dects)&
-        !$omp& private(ran, id, distances, image, dir, hpoint) reduction(+:nscatt) firstprivate(packet)
+        !$omp& private(ran, id, distances, image, dir, hpoint, history) reduction(+:nscatt) firstprivate(packet)
         numproc = omp_get_num_threads()
         id = omp_get_thread_num()
         if(numproc > state%nphotons .and. id == 0)print*,"Warning, simulation may be underministic due to low photon count!"
-        ! history = history_stack_t(state%historyFilename, id)
 #elif MPI
     !nothing
 #else
         numproc = 1
         id = 0
-        ! history = history_stack_t(state%historyFilename, id)
+        history = history_stack_t(state%historyFilename, id)
 #endif
         if(id == 0)print("(a,I3.1,a)"),'Photons now running on', numproc,' cores.'
 
@@ -93,21 +92,17 @@ contains
                 if(distances(i) > 0._wp)distances(i)=-999.0_wp
             end do
             packet%layer=minloc(abs(distances),dim=1)
-
+            call history%push(vec4(packet%pos, packet%step))
             ! Find scattering location
             call tauint2(state%grid, packet, array)
 
             dir = vector(packet%nxp, packet%nyp, packet%nzp)
-            hpoint = hit_t(packet%pos, dir, packet%step, packet%layer)
-            do i = 1, size(dects)
-                call dects(i)%p%record_hit(hpoint)!, history)
-            end do
 
             do while(.not. packet%tflag)
+                call history%push(vec4(packet%pos, packet%step))
                 ran = ran2()
                 if(ran < array(packet%layer)%p%albedo)then!interacts with tissue
                     call packet%scatter(array(packet%layer)%p%hgg, array(packet%layer)%p%g2)
-                    ! call stokes(packet, array(packet%layer)%p%hgg, array(packet%layer)%p%g2)
                     nscatt = nscatt + 1
                     packet%step = packet%step + 1
                 else
@@ -116,13 +111,13 @@ contains
                 end if
                 ! !Find next scattering location
                 call tauint2(state%grid, packet, array)
-                ! call history%push(vec4(packet%pos, packet%step))
             end do
+            call history%push(vec4(packet%pos, packet%step))
 
             dir = vector(packet%nxp, packet%nyp, packet%nzp)
-            hpoint = hit_t(packet%pos, dir, packet%step, packet%layer)
+            hpoint = hit_t(packet%pos, dir, sqrt(packet%pos%x**2+packet%pos%y**2), packet%layer)
             do i = 1, size(dects)
-                call dects(i)%p%record_hit(hpoint)!, history)
+                call dects(i)%p%record_hit(hpoint, history)
             end do
 
             if(id == 0 .and. mod(j,1000) == 0)then
@@ -146,7 +141,7 @@ contains
 !$OMP end parallel
 #endif
 
-    call finalise(dict, dects, nscatt, start)
+    call finalise(dict, dects, nscatt, start, history)
     end subroutine pathlength_scatter
 
 
@@ -224,13 +219,13 @@ contains
         end if
 end subroutine setup
 
-subroutine finalise(dict, dects, nscatt, start)
+subroutine finalise(dict, dects, nscatt, start, history)
 
     use constants,     only : wp, fileplace
     use iarray,        only : jmean, jmeanGLOBAL
     use sim_state_mod, only : state
     
-    ! use historyStack, only : history_stack_t
+    use historyStack, only : history_stack_t
     use detector_mod, only : dect_array
     use writer_mod,   only : normalise_fluence, write_fluence, write_detected_photons
     
@@ -239,7 +234,7 @@ subroutine finalise(dict, dects, nscatt, start)
 
     real(kind=wp),         intent(in) :: nscatt, start
     type(dect_array),      intent(in) :: dects(:)
-    ! type(history_stack_t), intent(in) :: history
+    type(history_stack_t), intent(in) :: history
     type(toml_table),      intent(inout) :: dict
 
     integer :: id, numproc, i
@@ -281,13 +276,13 @@ subroutine finalise(dict, dects, nscatt, start)
     !write out detected photons
     if(size(dects) > 0)then
         call write_detected_photons(dects)
-        ! block
-        !     logical :: mask(size(dects))
-        !     do i = 1, size(dects)
-        !         mask(i) = dects(i)%p%trackHistory
-        !     end do
-        !     if(any(mask))call history%finish(numproc)
-        ! end block
+        block
+            logical :: mask(size(dects))
+            do i = 1, size(dects)
+                mask(i) = dects(i)%p%trackHistory
+            end do
+            if(any(mask))call history%finish(numproc)
+        end block
     end if
 
     time_taken = get_time() - start

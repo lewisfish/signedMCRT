@@ -63,10 +63,10 @@ module writer_mod
                     select type(x)
                     type is(circle_dect)
                         ! hdr = "# pos, layer, nbins, bin_wid, radius"//new_line("a")//str(x%pos)//","//str(x%layer)//","//str(x%nbins)//","//str(x%bin_wid)//","//str(x%radius)
-                        write(u, "(a)")hdr
-                        write(u, "(a)")"#data:"
-                        do j = 1, x%nbins 
-                            write(u,"(2(es24.16e3,1x))")real(j,kind=wp) * x%bin_wid, x%data(j)
+                        ! write(u, "(a)")hdr
+                        ! write(u, "(a)")"#data:"
+                        do j = 1, x%nbins
+                            write(u,*)real(j,kind=wp) * x%bin_wid, x%data(j)
                         end do
                     type is(annulus_dect)
                         ! hdr = "#pos, layer, nbins, bin_wid, radius1, radius2"//new_line("a")//str(x%pos)//","//str(x%layer)//","//str(x%nbins)//","//str(x%bin_wid)//","//str(x%r1)//","//str(x%r2)
