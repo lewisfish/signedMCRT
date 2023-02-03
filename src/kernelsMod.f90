@@ -92,14 +92,14 @@ contains
                 if(distances(i) > 0._wp)distances(i)=-999.0_wp
             end do
             packet%layer=minloc(abs(distances),dim=1)
-            call history%push(vec4(packet%pos, packet%step))
+            ! call history%push(vec4(packet%pos, packet%step))
             ! Find scattering location
             call tauint2(state%grid, packet, array)
 
             dir = vector(packet%nxp, packet%nyp, packet%nzp)
 
             do while(.not. packet%tflag)
-                call history%push(vec4(packet%pos, packet%step))
+                ! call history%push(vec4(packet%pos, packet%step))
                 ran = ran2()
                 if(ran < array(packet%layer)%p%albedo)then!interacts with tissue
                     call packet%scatter(array(packet%layer)%p%hgg, array(packet%layer)%p%g2)
@@ -112,7 +112,7 @@ contains
                 ! !Find next scattering location
                 call tauint2(state%grid, packet, array)
             end do
-            call history%push(vec4(packet%pos, packet%step))
+            ! call history%push(vec4(packet%pos, packet%step))
 
             dir = vector(packet%nxp, packet%nyp, packet%nzp)
             hpoint = hit_t(packet%pos, dir, sqrt(packet%pos%x**2+packet%pos%y**2), packet%layer)

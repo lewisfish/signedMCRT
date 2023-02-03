@@ -430,24 +430,40 @@ module photonMod
             this%zcell = cell(3)
         end subroutine annulus
 
-        subroutine scatter(this, hgg, g2)
+        subroutine scatter(this, hgg, g2, dects)
         ! taken from mcxyz https://omlc.org/software/mc/mcxyz/index.html
 
             use constants, only : PI, TWOPI, wp
             use random,    only : ran2
+            use detector_mod, only : dect_array
 
             class(photon), intent(inout) :: this
             real(kind=wp), intent(in)    :: hgg, g2
+            type(dect_array), optional, intent(in) :: dects(:)
 
-            real(kind=wp) :: temp, uxx, uyy, uzz
+            real(kind=wp) :: temp, uxx, uyy, uzz, a, p
+
+            a = 0.9_wp
+            p = 0.0_wp
 
             if(hgg == 0.0_wp)then
                 !isotropic scattering
                 this%cost = 2._wp * ran2() - 1._wp
             else
                 !henyey-greenstein scattering
-                temp = (1.0_wp - g2) / (1.0_wp - hgg + 2._wp*hgg*ran2())
-                this%cost = (1.0_wp + g2 - temp**2) / (2._wp*hgg)
+                if(ran2() < p)then
+                    !bias scattering
+                    temp = ran2()*((1._wp / (1._wp - a)) - (1._wp / sqrt(a**2 + 1._wp))) + (1._wp/sqrt(a**2 + 1._wp))
+                    temp = temp**(-2._wp)
+                    this%cost = (1._wp/(2._wp*a)) * (a**2 +1._wp - temp)
+                    this%nxp = dects(1)%p%pos%x - this%pos%x
+                    this%nyp = dects(1)%p%pos%y - this%pos%y
+                    this%nzp = dects(1)%p%pos%z - this%pos%z
+                else
+                    !unbiased
+                    temp = (1.0_wp - g2) / (1.0_wp - hgg + 2._wp*hgg*ran2())
+                    this%cost = (1.0_wp + g2 - temp**2) / (2._wp*hgg)
+                end if
             end if
 
             this%sint = sqrt(1._wp - this%cost**2)

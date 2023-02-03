@@ -662,7 +662,7 @@ module subs
             call get_value(dict, "tau", tau)
 
             n = 1._wp
-            hgg = 0.0_wp
+            hgg = 0.0_wp!0.9_wp
             mua = 1e-17_wp
             mus = tau
 
