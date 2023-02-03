@@ -15,7 +15,7 @@ module photonMod
         logical       :: tflag                        ! Is photon dead?
         integer       :: layer                        ! id of sdf the packet is inside
         integer       :: id                           ! thread running packet
-        integer       :: cnts, bounces                !  number of sdf evals.
+        integer       :: cnts, bounces                ! number of sdf evals.
         real(kind=wp) :: weight, step
 
         procedure(generic_emit), pointer :: emit => null()
@@ -431,148 +431,48 @@ module photonMod
         end subroutine annulus
 
         subroutine scatter(this, hgg, g2)
-        !This routine contains the scattering routines maths for isotropic and henyey-greenstein governed scattering
-        ! Original is due to K. Woods
+        ! taken from mcxyz https://omlc.org/software/mc/mcxyz/index.html
+
             use constants, only : PI, TWOPI, wp
-            use random,    only : ran2   
-         
+            use random,    only : ran2
+
             class(photon), intent(inout) :: this
             real(kind=wp), intent(in)    :: hgg, g2
-            
-            real(kind=wp) :: costp, sintp, phip, bmu, b, ri1, ri3, cosi3, sini3
-            real(kind=wp) :: cosb2, sinbt, cosi2, sini1, cosi1, sini2, bott, cosdph
-         
-            !***** isotropic scattering if g = 0.0 ******************************
-            if(hgg == 0.0_wp) then
-               this%cost=2._wp * ran2() - 1._wp
-               this%sint=(1._wp - this%cost**2)
-               if(this%sint <= 0._wp)then
-                  this%sint = 0._wp
-               else
-                  this%sint=sqrt(this%sint)
-               endif
-         
-               this%phi=TWOPI*ran2()
-               this%sinp=sin(this%phi)
-               this%cosp=cos(this%phi)
-         
-               this%nxp=this%sint*this%cosp
-               this%nyp=this%sint*this%sinp
-               this%nzp=this%cost
-         
+
+            real(kind=wp) :: temp, uxx, uyy, uzz
+
+            if(hgg == 0.0_wp)then
+                !isotropic scattering
+                this%cost = 2._wp * ran2() - 1._wp
             else
-         
-            !***** heyney greenstein scattering ********************************
-         
-               costp=this%cost
-               sintp=this%sint
-               phip=this%phi
-         
-               bmu=((1._wp+g2)-((1._wp-g2)/(1._wp-hgg+2._wp*hgg*ran2()))**2)/(2._wp*hgg)
-               cosb2=bmu**2
-               b=cosb2-1._wp
-         
-               if(abs(bmu) > 1._wp) then
-                  if(bmu > 1._wp) then
-                     bmu=1._wp
-                     cosb2=1._wp
-                     b=0._wp
-                  else
-                     bmu=-1._wp
-                     cosb2=1._wp
-                     b=0._wp
-                  end if
-               end if
-               sinbt=sqrt(1._wp-cosb2)
-               ri1=TWOPI*ran2()
-         
-               if(ri1 > PI) then
-                  ri3=TWOPI-ri1
-                  cosi3=cos(ri3)
-                  sini3=sin(ri3)
-         
-                  if(bmu == 1._wp) then
-                     goto 100
-                  else
-                     if(bmu == -1._wp) then
-                        goto 100
-                     end if
-                  end if
-         
-                  this%cost=costp*bmu+sintp*sinbt*cosi3
-                  if(abs(this%cost) < 1._wp) then
-                     this%sint=abs(sqrt(1._wp - this%cost**2))
-                     sini2=sini3*sintp/this%sint
-                     bott=this%sint*sinbt
-                     cosi2=costp/bott-this%cost*bmu/bott
-                  else
-                     this%sint=0.
-                     sini2=0.
-                     if(this%cost >= 1._wp)  cosi2=-1._wp
-                     if(this%cost <= -1._wp) cosi2=1._wp
-                  end if
-         
-                  cosdph=-cosi2*cosi3+sini2*sini3*bmu
-                  if(abs(cosdph) > 1._wp) then
-                     if(cosdph > 1._wp) then
-                        cosdph=1._wp
-                     else
-                        cosdph=-1._wp
-                     end if
-                  end if
-                  
-                  this%phi=phip+acos(cosdph)
-                  if(this%phi > TWOPI) this%phi=this%phi-TWOPI
-                  if(this%phi.lt.0.)    this%phi=this%phi+TWOPI
-         
-                  !      elseif(ri1 <= PI) then
-               else  
-                  cosi1=cos(ri1)
-                  sini1=sin(ri1)
-                  if(bmu == 1.) then
-                     goto 100
-                  else
-                     if(bmu == -1._wp) then
-                        goto 100
-                  end if
-               end if
-         
-                  this%cost=costp*bmu+sintp*sinbt*cosi1
-                  if(abs(this%cost).lt.1.) then
-                     this%sint=abs(sqrt(1. - this%cost**2))
-                     sini2=sini1*sintp/this%sint
-                     bott=this%sint*sinbt
-                     cosi2=costp/bott-this%cost*bmu/bott
-                  else
-                     this%sint=0._wp
-                     sini2=0._wp
-                     if(this%cost >= 1._wp)  cosi2=-1._wp
-                     if(this%cost <= -1._wp) cosi2=1._wp
-                  end if
-         
-                  cosdph=-cosi1*cosi2+sini1*sini2*bmu
-                  if(abs(cosdph) > 1._wp) then
-                     if(cosdph > 1._wp) then
-                        cosdph=1._wp
-                     else
-                        cosdph=-1._wp
-                     end if
-                  end if
-                  this%phi=phip-acos(cosdph)
-                  if(this%phi > TWOPI) this%phi=this%phi-TWOPI
-                  if(this%phi < 0._wp)    this%phi=this%phi+TWOPI
-               end if
-         
-               this%cosp=cos(this%phi)
-               this%sinp=sin(this%phi)
-         
-               this%nxp=this%sint*this%cosp
-               this%nyp=this%sint*this%sinp
-               this%nzp=this%cost
-         
+                !henyey-greenstein scattering
+                temp = (1.0_wp - g2) / (1.0_wp - hgg + 2._wp*hgg*ran2())
+                this%cost = (1.0_wp + g2 - temp**2) / (2._wp*hgg)
             end if
-         
-            100   continue
-         
-            end subroutine scatter
-end module photonMod
+
+            this%sint = sqrt(1._wp - this%cost**2)
+
+            this%phi = TWOPI * ran2()
+            this%cosp = cos(this%phi)
+            if(this%phi < PI)then
+                this%sinp = sqrt(1._wp - this%cosp**2)
+            else
+                this%sinp = -sqrt(1._wp - this%cosp**2)
+            end if
+
+            if(1._wp - abs(this%nzp) <= 1e-12_wp)then ! near perpindicular
+                uxx = this%sint * this%cosp
+                uyy = this%sint * this%sinp
+                uzz = sign(this%cost, this%nzp)
+            else
+                temp = sqrt(1._wp - this%nzp**2)
+                uxx = this%sint * (this%nxp * this%nzp * this%cosp - this%nyp * this%sinp) / temp + this%nxp * this%cost
+                uyy = this%sint * (this%nyp * this%nzp * this%cosp + this%nxp * this%sinp) / temp + this%nyp * this%cost
+                uzz = -1._wp*this%sint * this%cosp * temp + this%nzp * this%cost
+            end if
+
+            this%nxp = uxx
+            this%nyp = uyy
+            this%nzp = uzz
+
+        end subroutine scatter

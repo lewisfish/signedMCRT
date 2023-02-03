@@ -184,7 +184,7 @@ module geometry
         type(vector)  :: p0l0
 
         intersectPlane = .false.
-        denom = n .dot. l
+        denom = l .dot. n
         if(denom > 1e-6_wp)then
             p0l0 = p0 - l0
             t = p0l0 .dot. n
