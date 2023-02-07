@@ -86,6 +86,7 @@ module parse_mod
         c_counter = 1
         a_counter = 1
         cam_counter = 1
+        state%trackHistory=.false.
         do i = 1, len(array)
             call get_value(array, i, child)
             call get_value(child, "type", dect_type)
@@ -122,6 +123,7 @@ module parse_mod
     subroutine handle_camera(child, dects, counts, context)
 
         use detector_mod
+        use sim_state_mod, only : state
 
         type(toml_table), pointer, intent(in)    :: child
         type(camera),              intent(inout) :: dects(:)
@@ -141,6 +143,7 @@ module parse_mod
         call get_value(child, "nbins", nbins, 100)
         call get_value(child, "maxval", maxval, 100._wp)
         call get_value(child, "trackHistory", trackHistory, .false.)
+        if(trackHistory)state%trackHistory=.true.
 #ifdef _OPENMP
         if(trackHistory)error stop "Track history currently incompatable with OpenMP!"
 #endif
@@ -152,6 +155,7 @@ module parse_mod
     subroutine handle_circle_dect(child, dects, counts, context)
 
         use detector_mod
+        use sim_state_mod, only : state
 
         type(toml_table), pointer, intent(in)    :: child
         type(circle_dect),         intent(inout) :: dects(:)
@@ -171,6 +175,7 @@ module parse_mod
         call get_value(child, "nbins", nbins, 100)
         call get_value(child, "maxval", maxval, 100._wp)
         call get_value(child, "trackHistory", trackHistory, .false.)
+        if(trackHistory)state%trackHistory=.true.
 #ifdef _OPENMP
         if(trackHistory)error stop "Track history currently incompatable with OpenMP!"
 #endif
@@ -182,6 +187,7 @@ module parse_mod
     subroutine handle_annulus_dect(child, dects, counts, context)
 
         use detector_mod
+        use sim_state_mod, only : state
 
         type(toml_table), pointer, intent(in)    :: child
         type(annulus_dect),        intent(inout) :: dects(:)
@@ -204,6 +210,7 @@ module parse_mod
             call get_value(child, "nbins", nbins, 100)
         call get_value(child, "maxval", maxval, 100._wp)
         call get_value(child, "trackHistory", trackHistory, .false.)
+        if(trackHistory)state%trackHistory=.true.
 #ifdef _OPENMP
         if(trackHistory)error stop "Track history currently incompatable with OpenMP!"
 #endif

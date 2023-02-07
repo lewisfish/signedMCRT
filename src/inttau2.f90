@@ -255,13 +255,13 @@ module inttau2
                 d = d_sdf
 ! needs to be atomic so dont write to same array address with more than 1 thread at a time
 !$omp atomic
-                    jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell*mua_real
+                    jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell!*mua_real
                 call update_pos(grid, old_pos, celli, cellj, cellk, dcell, .false., dir, ldir, delta)
                 exit
             else
                 d = d + dcell
 !$omp atomic
-                    jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell*mua_real
+                    jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell!*mua_real
                 call update_pos(grid, old_pos, celli, cellj, cellk, dcell, .true., dir, ldir, delta)
             end if
             if(celli == -1 .or. cellj == -1 .or. cellk == -1)then

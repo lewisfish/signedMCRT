@@ -9,7 +9,7 @@ module sim_state_mod
         integer :: render_size(3)
         character(len=:), allocatable :: experiment, outfile, renderfile, source, historyFilename
         type(cart_grid) :: grid
-        logical :: render_geom, tev, overwrite
+        logical :: render_geom, tev, overwrite, trackHistory
     end type settings_t
 
     type(settings_t) :: state
