@@ -102,7 +102,7 @@ contains
                 if(state%trackHistory)call history%push(vec4(packet%pos, packet%step))
                 ran = ran2()
                 if(ran < array(packet%layer)%p%albedo)then!interacts with tissue
-                    call packet%scatter(array(packet%layer)%p%hgg, array(packet%layer)%p%g2)
+                    call packet%scatter(array(packet%layer)%p%hgg, array(packet%layer)%p%g2, dects)
                     nscatt = nscatt + 1
                     packet%step = packet%step + 1
                 else
@@ -222,12 +222,12 @@ end subroutine setup
 subroutine finalise(dict, dects, nscatt, start, history)
 
     use constants,     only : wp, fileplace
-    use iarray,        only : jmean, jmeanGLOBAL
+    use iarray,        only : jmean, jmeanGLOBAL, absorb, absorbGLOBAL
     use sim_state_mod, only : state
     
     use historyStack, only : history_stack_t
     use detector_mod, only : dect_array
-    use writer_mod,   only : normalise_fluence, write_fluence, write_detected_photons
+    use writer_mod,   only : normalise_fluence, write_data, write_detected_photons
     
     use utils, only : get_time, print_time, str
     use tomlf, only : toml_table, set_value
@@ -246,9 +246,11 @@ subroutine finalise(dict, dects, nscatt, start, history)
 #ifdef MPI
     ! collate fluence from all processes
     call mpi_reduce(jmean, jmeanGLOBAL, size(jmean),MPI_DOUBLE_PRECISION, MPI_SUM,0,MPI_COMM_WORLD)
+    call mpi_reduce(absorb, absorbGLOBAL, size(absorb),MPI_DOUBLE_PRECISION, MPI_SUM,0,MPI_COMM_WORLD)
     call mpi_reduce(nscatt,nscattGLOBAL,1,MPI_DOUBLE_PRECISION,MPI_SUM,0,MPI_COMM_WORLD)
 #else
     jmeanGLOBAL = jmean
+    absorbGLOBAL = absorb
     nscattGLOBAL = nscatt
 #endif
 
@@ -271,7 +273,8 @@ subroutine finalise(dict, dects, nscatt, start, history)
         call set_value(dict, "experiment", state%experiment)
 
         jmeanGLOBAL = normalise_fluence(state%grid, jmeanGLOBAL, state%nphotons)
-        call write_fluence(jmeanGLOBAL, trim(fileplace)//"jmean/"//state%outfile, state, dict)
+        call write_data(jmeanGLOBAL, trim(fileplace)//"jmean/"//state%outfile, state, dict)
+        call write_data(absorbGLOBAL, trim(fileplace)//"deposit/"//state%outfile_absorb, state, dict)
     end if
     !write out detected photons
     if(size(dects) > 0)then
@@ -324,6 +327,9 @@ subroutine display_settings(state, input_file, packet, kernel_type)
     end if
     if(state%overwrite)then
         print*,"# Overwrite Enabled!",repeat(" ", 29)//"#"
+    end if
+    if(state%absorb)then
+        print*,"# Energy absorbed will be written to file."//repeat(" ", 7)//"#"
     end if
     print*,repeat("#", 50)
     print*,new_line("a")

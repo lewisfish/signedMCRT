@@ -64,6 +64,7 @@ This table defines the parameters for the light source used in the simulation it
 | Parameter | Type | Default | Notes |
 |:---------:|:----:|:-------:|:-----:|
 | fluence | string | fluence.nrrd | Filename for fluence output |
+| absorb | string | absorb.nrrd | Filename for energy absorbed output |
 | render | string | geom_render.nrrd | Filename for render geometry output |
 | render_geom | boolean | false | Render geometry out. For debugging purposes |
 | render_size | integer array size 3 | [200, 200, 200] | Size in voxels of render |
@@ -75,3 +76,4 @@ This table defines the parameters for the light source used in the simulation it
 |:---------:|:----:|:-------:|:-----:|
 | iseed | integer | 123456789 | seed for simulation. Each thread get its own copy + threadID |
 | tev | boolean | false | Enables TEV image viewer to display simulation as it runs. Must have opened TEV prior to launching simulation. |
+| absorb | boolean | false | Enables writing to file of absorbed energy. |

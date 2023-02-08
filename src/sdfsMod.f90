@@ -2059,6 +2059,6 @@ end function eval_neural
             end do
 !$OMP end  do
 !$OMP end parallel
-            call write_fluence(image, trim(fileplace)//state%renderfile, state, overwrite=.true.)
+            call write_data(image, trim(fileplace)//state%renderfile, state, overwrite=.true.)
         end subroutine render_sub
 end module sdfs

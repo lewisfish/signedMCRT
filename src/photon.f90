@@ -451,7 +451,7 @@ module photonMod
                 this%cost = 2._wp * ran2() - 1._wp
             else
                 !henyey-greenstein scattering
-                if(ran2() < p)then
+                if(ran2() < p .and. present(dects))then
                     !bias scattering
                     temp = ran2()*((1._wp / (1._wp - a)) - (1._wp / sqrt(a**2 + 1._wp))) + (1._wp/sqrt(a**2 + 1._wp))
                     temp = temp**(-2._wp)

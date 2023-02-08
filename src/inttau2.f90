@@ -211,7 +211,7 @@ module inttau2
         use vector_class
         use photonMod
         use gridMod
-        use iarray,        only: jmean
+        use iarray,        only: jmean, absorb
         
         type(cart_grid), intent(IN)    :: grid
         type(vector),    intent(IN)    :: dir
@@ -253,15 +253,20 @@ module inttau2
             if(d + dcell > d_sdf)then
                 dcell = d_sdf - d
                 d = d_sdf
-! needs to be atomic so dont write to same array address with more than 1 thread at a time
+! needs to be atomic so don't write to same array address with more than 1 thread at a time
 !$omp atomic
-                    jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell!*mua_real
+                    jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell
+!$omp atomic
+                    absorb(celli, cellj, cellk) = absorb(celli, cellj, cellk) + dcell*mua_real
                 call update_pos(grid, old_pos, celli, cellj, cellk, dcell, .false., dir, ldir, delta)
                 exit
             else
                 d = d + dcell
 !$omp atomic
-                    jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell!*mua_real
+                    jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell
+!$omp atomic
+                    absorb(celli, cellj, cellk) = absorb(celli, cellj, cellk) + dcell*mua_real
+
                 call update_pos(grid, old_pos, celli, cellj, cellk, dcell, .true., dir, ldir, delta)
             end if
             if(celli == -1 .or. cellj == -1 .or. cellk == -1)then

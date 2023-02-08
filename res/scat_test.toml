@@ -11,6 +11,16 @@ xmax = 1.0
 ymax = 1.0
 zmax = 1.0
 
+[[detectors]]
+type="circle"
+position=[0.5, 0.5, 0.7071]
+direction=[0.5, 0.5, 0.7071]
+layer=2
+radius1=0.25
+nbins=25
+maxval = 0.25
+trackHistory=true
+
 [geometry]
 geom_name = "scat_test"
 tau = 10.0
@@ -23,3 +33,4 @@ overwrite = true
 
 [simulation]
 iseed = 123456789
+absorb=true

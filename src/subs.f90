@@ -1099,6 +1099,8 @@ module subs
 
             jmean = 0._wp
             jmeanGLOBAL = 0._wp
+            absorb = 0.0_wp
+            absorbGLOBAL = 0.0_wp
 
         end subroutine zarray
 
@@ -1112,6 +1114,7 @@ module subs
             integer, intent(IN) :: nxg, nyg, nzg
 
             allocate(jmean(nxg, nyg, nzg), jmeanGLOBAL(nxg, nyg, nzg))
+            allocate(absorb(nxg, nyg, nzg), absorbGLOBAL(nxg, nyg, nzg))
 
         end subroutine alloc_array
 end module subs

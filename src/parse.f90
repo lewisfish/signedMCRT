@@ -489,6 +489,7 @@ module parse_mod
 
         if(associated(child))then
             call get_value(child, "fluence", state%outfile, "fluence.nrrd")
+            call get_value(child, "absorb", state%outfile_absorb, "absorb.nrrd")
             call get_value(child, "render", state%renderfile, "geom_render.nrrd")
             call get_value(child, "render_geom", state%render_geom, .false.)
             
@@ -526,6 +527,7 @@ module parse_mod
         if(associated(child))then
             call get_value(child, "iseed", state%iseed, 123456789)
             call get_value(child, "tev", state%tev, .false.)
+            call get_value(child, "absorb", state%absorb, .false.)
         else
             error stop "Need simulation table in input param file"
         end if
