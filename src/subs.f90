@@ -1085,7 +1085,7 @@ module subs
     error stop "Compiler not supported!"
 #endif
             if(.not. dataExists)then
-                call create_directory("data/", dataExists, "", .false.)
+                call create_directory("", dataExists, "", .false.)
                 call create_directory("jmean/", jmeanExists, "data/", .false.)
                 call create_directory("deposit/", depositExists, "data/", .false.)
                 call create_directory("detectors/", detectorsExists, "data/", .true.)
