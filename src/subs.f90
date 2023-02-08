@@ -1059,7 +1059,6 @@ module subs
         !   
             use constants, only : homedir, fileplace, resdir
 
-            character(len=:), allocatable :: mkdirCMD
             character(len=256) :: cwd
             logical :: dataExists, jmeanExists, depositExists, detectorsExists
 
