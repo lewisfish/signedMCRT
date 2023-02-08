@@ -1061,7 +1061,7 @@ module subs
 
             character(len=:), allocatable :: mkdirCMD
             character(len=256) :: cwd
-            logical :: dataExists, jmeanExists, depositExists 
+            logical :: dataExists, jmeanExists, depositExists, detectorsExists
 
             !get current working directory
             call get_environment_variable('PWD', cwd)
@@ -1075,33 +1075,24 @@ module subs
             inquire(file=trim(fileplace)//"/.", exist=dataExists)
             inquire(file=trim(fileplace)//"/jmean/.", exist=jmeanExists)
             inquire(file=trim(fileplace)//"/deposit/.", exist=depositExists)
+            inquire(file=trim(fileplace)//"/detectors/.", exist=detectorsExists)
 #elif __INTEL_COMPILER
             inquire(directory=trim(fileplace), exist=dataExists)
-            inquire(directory=trim(fileplace), exist=jmeanExists)
-            inquire(directory=trim(fileplace), exist=depositExists)
+            inquire(directory=trim(fileplace)//"/jmean", exist=jmeanExists)
+            inquire(directory=trim(fileplace)//"/deposit", exist=depositExists)
+            inquire(directory=trim(fileplace)//"/detectors", exist=detectorsExists)
 #else 
     error stop "Compiler not supported!"
 #endif
             if(.not. dataExists)then
-                mkdirCMD = "mkdir -p "//trim(fileplace)
-                call execute_command_line(mkdirCMD)
-                mkdirCMD = "mkdir -p "//trim(fileplace)//"jmean/"
-                call execute_command_line(mkdirCMD)
-                mkdirCMD = "mkdir -p "//trim(fileplace)//"deposit/"
-                call execute_command_line(mkdirCMD)
-                print*,new_line("a")//"Created data/"
-                print*,"Created data/jmean/"
-                print*,"Created data/deposit/"//new_line("a")
-            end if
-            if(.not. jmeanExists)then
-                mkdirCMD = "mkdir -p "//trim(fileplace)//"jmean/"
-                call execute_command_line(mkdirCMD)
-                print*,new_line("a")//"Created data/jmean/"//new_line("a")
-            end if
-            if(.not. depositExists)then
-                mkdirCMD = "mkdir -p "//trim(fileplace)//"deposit/"
-                call execute_command_line(mkdirCMD)
-                print*,"Created data/deposit/"//new_line("a")
+                call create_directory("data/", dataExists, "", .false.)
+                call create_directory("jmean/", jmeanExists, "data/", .false.)
+                call create_directory("deposit/", depositExists, "data/", .false.)
+                call create_directory("detectors/", detectorsExists, "data/", .true.)
+            else
+                call create_directory("jmean/", jmeanExists, "data/", .true.)
+                call create_directory("deposit/", depositExists, "data/", .true.)
+                call create_directory("detectors/", detectorsExists, "data/", .true.)
             end if
 
             ! get res dir
@@ -1109,6 +1100,26 @@ module subs
 
         end subroutine directory
 
+
+        subroutine create_directory(name, flag, appendname, newline)
+
+            use constants, only : fileplace
+
+            character(*),      intent(in) :: name, appendname
+            logical,           intent(in) :: flag
+            logical, optional, intent(in) :: newline
+
+            character(len=:), allocatable :: mkdirCMD
+
+            if(.not. flag)then
+                mkdirCMD = "mkdir -p "//trim(fileplace)//name
+                call execute_command_line(mkdirCMD)
+                mkdirCMD = "Created "//appendname//name
+                if(newline)mkdirCMD = mkdirCMD//new_line("a")
+                print*,mkdirCMD
+            end if
+
+        end subroutine create_directory
 
         subroutine zarray
 
