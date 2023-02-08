@@ -1114,7 +1114,12 @@ module subs
             if(.not. flag)then
                 mkdirCMD = "mkdir -p "//trim(fileplace)//name
                 call execute_command_line(mkdirCMD)
-                mkdirCMD = "Created "//appendname//name
+                ! output correct message for base data dir
+                if(len(name) == 0)then
+                    mkdirCMD = "Created "//appendname//"data/"                    
+                else
+                    mkdirCMD = "Created "//appendname//name
+                end if
                 if(newline)mkdirCMD = mkdirCMD//new_line("a")
                 print*,mkdirCMD
             end if
