@@ -274,7 +274,7 @@ subroutine finalise(dict, dects, nscatt, start, history)
 
         jmeanGLOBAL = normalise_fluence(state%grid, jmeanGLOBAL, state%nphotons)
         call write_data(jmeanGLOBAL, trim(fileplace)//"jmean/"//state%outfile, state, dict)
-        call write_data(absorbGLOBAL, trim(fileplace)//"deposit/"//state%outfile_absorb, state, dict)
+        if(state%absorb)call write_data(absorbGLOBAL, trim(fileplace)//"deposit/"//state%outfile_absorb, state, dict)
     end if
     !write out detected photons
     if(size(dects) > 0)then
