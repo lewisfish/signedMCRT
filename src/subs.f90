@@ -1061,7 +1061,7 @@ module subs
 
             character(len=:), allocatable :: mkdirCMD
             character(len=256) :: cwd
-            logical :: dirExists
+            logical :: dataExists, jmeanExists, depositExists 
 
             !get current working directory
             call get_environment_variable('PWD', cwd)
@@ -1070,19 +1070,38 @@ module subs
             homedir = trim(cwd)
             ! get data dir
             fileplace = trim(homedir)//'/data/'
-            !check if data directory exists. if not create it
+            !check if data directory and subdirectories exists. if not create it
 #ifdef __GFORTRAN__
-            inquire(file=trim(fileplace)//"/.", exist=dirExists)
+            inquire(file=trim(fileplace)//"/.", exist=dataExists)
+            inquire(file=trim(fileplace)//"/jmean/.", exist=jmeanExists)
+            inquire(file=trim(fileplace)//"/deposit/.", exist=depositExists)
 #elif __INTEL_COMPILER
-            inquire(directory=trim(fileplace), exist=dirExists)
+            inquire(directory=trim(fileplace), exist=dataExists)
+            inquire(directory=trim(fileplace), exist=jmeanExists)
+            inquire(directory=trim(fileplace), exist=depositExists)
 #else 
     error stop "Compiler not supported!"
 #endif
-            if(.not. dirExists)then
+            if(.not. dataExists)then
                 mkdirCMD = "mkdir -p "//trim(fileplace)
                 call execute_command_line(mkdirCMD)
                 mkdirCMD = "mkdir -p "//trim(fileplace)//"jmean/"
                 call execute_command_line(mkdirCMD)
+                mkdirCMD = "mkdir -p "//trim(fileplace)//"deposit/"
+                call execute_command_line(mkdirCMD)
+                print*,new_line("a")//"Created data/"
+                print*,"Created data/jmean/"
+                print*,"Created data/deposit/"//new_line("a")
+            end if
+            if(.not. jmeanExists)then
+                mkdirCMD = "mkdir -p "//trim(fileplace)//"jmean/"
+                call execute_command_line(mkdirCMD)
+                print*,new_line("a")//"Created data/jmean/"//new_line("a")
+            end if
+            if(.not. depositExists)then
+                mkdirCMD = "mkdir -p "//trim(fileplace)//"deposit/"
+                call execute_command_line(mkdirCMD)
+                print*,"Created data/deposit/"//new_line("a")
             end if
 
             ! get res dir

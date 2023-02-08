@@ -119,7 +119,8 @@ contains
    
     subroutine record_hit_1D_sub(this, hitpoint, history)
 
-        use historyStack, only : history_stack_t
+        use historyStack,  only : history_stack_t
+        use sim_state_mod, only : state
 
         class(detector1D),     intent(inout) :: this
         type(hit_t),           intent(in)    :: hitpoint
@@ -137,12 +138,13 @@ contains
                 call history%write()
             end if
         end if
-        call history%zero()
+        if(state%trackHistory)call history%zero()
     end subroutine record_hit_1D_sub
 
     subroutine record_hit_2D_sub(this, hitpoint, history)
 
         use historyStack, only : history_stack_t
+        use sim_state_mod, only : state
 
         class(detector2D),     intent(inout) :: this
         type(hit_t),           intent(in)    :: hitpoint
@@ -164,7 +166,7 @@ contains
                 call history%write()
             end if
         end if
-        call history%zero()
+        if(state%trackHistory)call history%zero()
         end subroutine record_hit_2D_sub
 !##############################################################################
 !                       CIRCLE DETECTOR
