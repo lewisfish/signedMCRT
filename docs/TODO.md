@@ -59,22 +59,21 @@ List of ToDo's for SignedMCRT.
     - [ ] Circular
     - [ ] Annulus
     - [ ] Scattering
+     - [ ] Isotropic
+     - [ ] Henyey-Greenstein
+     - [ ] Importance sampling biased scattering
 - [ ] Photon movement code
 - [ ] History Stack Class
 - [ ] I/O
 - [ ] Random Numbers
-- [ ] Fresnel reflections
+- [x] Fresnel reflections
     - [x] Simple reflect
     - [x] Simple refract
-    - [ ] Complex reflect
-    - [ ] Complex refract
+    - [x] Complex reflect
+    - [x] Complex refract
 - [ ] End to End tests
     - [x] Scattering Test
     - [ ] Others
-- [ ] Implement a fuzzer to test input space
-- [ ] Add a input schema to validate input toml
-    - [ ] Add Even better TOML?
-    - [ ] Learn from https://json-schema.org/learn/getting-started-step-by-step.html
 
 ## Bugs
 - [ ] Fix CI so that build on Macos run, and builds using Intel run.
