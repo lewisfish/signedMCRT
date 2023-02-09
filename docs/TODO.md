@@ -15,9 +15,9 @@ List of ToDo's for SignedMCRT.
     - [ ] Focus
     - [x] Annulus. Partially done via control of Beta parameter. 
 - [ ] Add Direction component to rest of Detectors
-    - [x] **Circle**
-    - [x] **Camera**
-    - [ ] **Annulus**
+    - [x] Circle
+    - [x] Camera
+    - [ ] Annulus
 - [ ] Add photon trajectory history tracking
     - [ ] Fix openMP troubles
     - [ ] Fix speed issues
@@ -39,8 +39,9 @@ List of ToDo's for SignedMCRT.
      - [ ] Save output data
         - [ ] Detectors
         - [ ] Fluence
+        - [ ] Absorb
         - [ ] NScatt
-- [ ] Add optics to **Camera** type
+- [ ] Add optics to Camera type
 
 ## Testing
 
@@ -81,6 +82,3 @@ List of ToDo's for SignedMCRT.
     - [ ] Intel
 - [ ] Can't operate trackHistory in parallel
     - [ ] Make each thread write to tmp file and finish method collate results
-- [x] Always runs history%finish leading to error messages
-- [x] photon history filename not set when no detectors are used. Causes crash.
-    - [x] Also causes crash on write out if no detectors used.

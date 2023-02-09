@@ -21,6 +21,8 @@ This table defines the parameters for the light source used in the simulation it
 | Beta | float | - | 5.0 | Annular source convergence angle (Bessel beam beta parameter) |
 | annulus_type | string | gaussian, tophat | gaussian | Type of annular beam |
 
+**Note** point1, point2, and point3 define a rectangle. Point1 is the origin,point2 and point3 are the vectors that describe the sides.
+
 ## Grid
 
 | Parameter | Type | Default | Notes |
