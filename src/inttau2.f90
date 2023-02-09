@@ -36,7 +36,7 @@ module inttau2
         oldpos = pos
         dir = vector(packet%nxp, packet%nyp, packet%nzp)
 
-        
+
         !round off distance
         eps = 1e-8_wp
         !get random tau
@@ -51,11 +51,6 @@ module inttau2
             end do
             packet%cnts = packet%cnts + size(ds)
             d_sdf = minval(ds)
-
-            if(d_sdf < eps)then
-                packet%tflag=.true.
-                exit
-            end if
 
             do while(d_sdf > eps)
                 t_sdf = d_sdf * sdfs_array(packet%layer)%p%kappa

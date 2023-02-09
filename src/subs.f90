@@ -700,7 +700,7 @@ module subs
             mua = 0.16_wp
             hgg = 0.0_wp
             n = 2.65_wp
-            layer = 1_wp
+            layer = 1
 
             ! x
             ! |

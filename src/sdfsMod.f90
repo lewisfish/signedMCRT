@@ -543,7 +543,7 @@ end function eval_neural
             real(kind=wp) :: h
             type(vector) :: xyy, yyx, yxy, xxx
 
-            h = 1e-5_wp
+            h = 1e-8_wp
             xyy = vector(1._wp, -1._wp, -1._wp)
             yyx = vector(-1._wp, -1._wp, 1._wp)
             yxy = vector(-1._wp, 1._wp, -1._wp)
