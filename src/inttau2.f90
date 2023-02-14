@@ -163,6 +163,10 @@ module inttau2
                     pos = oldpos
                     !reflect so incrment bounce counter
                     packet%bounces = packet%bounces + 1
+                    if(packet%bounces > 1000)then
+                        packet%tflag=.true.
+                        exit
+                    end if
                 end if
             else
                 packet%layer = new_layer

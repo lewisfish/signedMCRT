@@ -38,7 +38,7 @@ contains
 #ifdef _OPENMP
         use omp_lib
 #endif
-        character(*), intent(in) :: input_file
+        character(len=*), intent(in) :: input_file
         
         integer :: numproc, id, j, i
         type(history_stack_t) :: history
@@ -52,8 +52,6 @@ contains
         type(container),   allocatable :: array(:)
         real(kind=wp) :: ran, nscatt, start
         type(tevipc)      :: tev
-    
-
         call setup(input_file, tev, dects, array, packet, dict, distances, image, nscatt, start)
 
 #ifdef _OPENMP
@@ -63,6 +61,7 @@ contains
         numproc = omp_get_num_threads()
         id = omp_get_thread_num()
         if(numproc > state%nphotons .and. id == 0)print*,"Warning, simulation may be underministic due to low photon count!"
+        if(state%trackHistory)history = history_stack_t(state%historyFilename, id)
 #elif MPI
     !nothing
 #else
@@ -228,6 +227,7 @@ subroutine finalise(dict, dects, nscatt, start, history)
     use historyStack, only : history_stack_t
     use detector_mod, only : dect_array
     use writer_mod,   only : normalise_fluence, write_data, write_detected_photons
+    use subs, only : dealloc_array
     
     use utils, only : get_time, print_time, str
     use tomlf, only : toml_table, set_value
@@ -284,7 +284,7 @@ subroutine finalise(dict, dects, nscatt, start, history)
             do i = 1, size(dects)
                 mask(i) = dects(i)%p%trackHistory
             end do
-            if(any(mask))call history%finish(numproc)
+            if(state%trackHistory)call history%finish()
         end block
     end if
 
@@ -293,7 +293,7 @@ subroutine finalise(dict, dects, nscatt, start, history)
 #ifdef MPI
     call MPI_Finalize()
 #endif
-
+    call dealloc_array()
 end subroutine finalise
 
 subroutine display_settings(state, input_file, packet, kernel_type)

@@ -152,13 +152,12 @@ contains
 
     end subroutine histwrite_sub
 
-    subroutine histfinish_sub(this, num_threads)
+    subroutine histfinish_sub(this)
 
-        use utils, only : str
-        use constants,    only : fileplace
+        use constants, only : fileplace
+        use utils,     only : str
 
         class(history_stack_t) :: this
-        integer, intent(in) :: num_threads
 
         integer :: u
 
@@ -198,11 +197,11 @@ contains
         if(res)then
             open(newunit=u,file=trim(fileplace)//this%filename, status="old", position="append")
             open(newunit=io,file=trim(fileplace)//this%filename//"2", status="old", position="append")
-            open(newunit=ioi,file=trim(fileplace)//"scalars.dat", status="old", position="append")
+            open(newunit=ioi,file=trim(fileplace)//"scalars"//str(id,3)//".dat", status="old", position="append")
         else
             open(newunit=u,file=trim(fileplace)//this%filename, status="new")
             open(newunit=io,file=trim(fileplace)//this%filename//"2", status="new")
-            open(newunit=ioi,file=trim(fileplace)//"scalars.dat", status="new")
+            open(newunit=ioi,file=trim(fileplace)//"scalars"//str(id,3)//".dat", status="new")
         end if
 
         v = this%pop()

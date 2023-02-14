@@ -1,6 +1,10 @@
 [source]
 name = "uniform"
 nphotons = 1000000
+point1 = [-1.0, -1.0, 0.999999]
+point2 = [2.0, 0.0, 0.0]
+point3 = [0.0, 2.0, 0.0]
+direction="-z"
 
 [grid]
 nxg = 200
@@ -17,6 +21,7 @@ geom_name = "lens"
 fluence = "fluence.nrrd"
 render = "geom_render.nrrd"
 render_geom = true
+overwrite=true
 
 [simulation]
 iseed = 123456789

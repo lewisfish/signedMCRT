@@ -111,74 +111,74 @@ module photonMod
         end function init_source
 
         subroutine circular(this, dict)
-            ! circular source
-    
-                use sim_state_mod, only : state
-                use random,        only : ran2
-                use constants,     only : twoPI
-                use tomlf,         only : toml_table, get_value
-                use sdfs,          only : rotationAlign, translate
-                use mat_class,     only : invert
-                use vector_class
+        ! circular source
+
+            use sim_state_mod, only : state
+            use random,        only : ran2
+            use constants,     only : twoPI
+            use tomlf,         only : toml_table, get_value
+            use sdfs,          only : rotationAlign, translate
+            use mat_class,     only : invert
+            use vector_class
+        
+            class(photon) :: this
+            type(toml_table), optional, intent(inout) :: dict
             
-                class(photon) :: this
-                type(toml_table), optional, intent(inout) :: dict
-                
-                type(vector) :: a, b
-                integer :: cell(3)
-                real(kind=wp) :: t(4,4), radius, r, theta
+            type(vector) :: a, b
+            integer :: cell(3)
+            real(kind=wp) :: t(4,4), radius, r, theta
 
-                this%nxp = photon_origin%nxp
-                this%nyp = photon_origin%nyp
-                this%nzp = photon_origin%nzp
+            this%nxp = photon_origin%nxp
+            this%nyp = photon_origin%nyp
+            this%nzp = photon_origin%nzp
 
-                call get_value(dict, "radius", radius)
+            call get_value(dict, "radius", radius)
 
-                ! https://math.stackexchange.com/a/1681815
-                r = radius * sqrt(ran2())
-                theta = ran2() * TWOPI
-                
-                !set inital vector from which the source points
-                a = vector(1._wp, 0._wp, 0._wp)
+            ! https://math.stackexchange.com/a/1681815
+            r = radius * sqrt(ran2())
+            theta = ran2() * TWOPI
+            
+            !set inital vector from which the source points
+            a = vector(1._wp, 0._wp, 0._wp)
+            a = a%magnitude()
+            !set vector to rotate to. User defined.
+            b = vector(this%nxp, this%nyp, this%nzp)
+            b = b%magnitude()
+            
+            ! method fails if below condition is true. So change a vector to point down x-axis
+            if(abs(a) == abs(b))then
+                a = vector(0._wp, 0._wp, 1._wp)
                 a = a%magnitude()
-                !set vector to rotate to. User defined.
-                b = vector(this%nxp, this%nyp, this%nzp)
-                b = b%magnitude()
-                
-                ! method fails if below condition is true. So change a vector to point down x-axis
-                if(abs(a) == abs(b))then
-                    a = vector(0._wp, 0._wp, 1._wp)
-                    a = a%magnitude()
-                    this%pos = vector(r * cos(theta), r * sin(theta), 0._wp)
-                else
-                    this%pos = vector(0._wp, r * cos(theta), r * sin(theta))
-                end if
+                this%pos = vector(r * cos(theta), r * sin(theta), 0._wp)
+            else
+                this%pos = vector(0._wp, r * cos(theta), r * sin(theta))
+            end if
 
-                ! get rotation matrix
-                t = rotationAlign(a, b)
-                ! get translation matrix
-                t = t + invert(translate(photon_origin%pos))
-                ! transform point
-                this%pos = this%pos .dot. t
+            ! get rotation matrix
+            t = rotationAlign(a, b)
+            ! get translation matrix
+            t = t + invert(translate(photon_origin%pos))
+            ! transform point
+            this%pos = this%pos .dot. t
 
-                this%phi  = atan2(this%nyp, this%nxp)
-                this%cosp = cos(this%phi)
-                this%sinp = sin(this%phi)
-                this%cost = this%nzp
-                this%sint = sqrt(1._wp - this%cost**2)  
-                
-                this%tflag  = .false.
-                this%cnts   = 0
-                this%bounces = 0
-                this%layer  = 1
-                this%weight = 1.0_wp
-    
-                ! Linear Grid 
-                cell = state%grid%get_voxel(this%pos)
-                this%xcell = cell(1)
-                this%ycell = cell(2)
-                this%zcell = cell(3)
-            end subroutine circular
+            this%phi  = atan2(this%nyp, this%nxp)
+            this%cosp = cos(this%phi)
+            this%sinp = sin(this%phi)
+            this%cost = this%nzp
+            this%sint = sqrt(1._wp - this%cost**2)  
+            
+            this%tflag  = .false.
+            this%cnts   = 0
+            this%bounces = 0
+            this%layer  = 1
+            this%weight = 1.0_wp
+
+            ! Linear Grid 
+            cell = state%grid%get_voxel(this%pos)
+            this%xcell = cell(1)
+            this%ycell = cell(2)
+            this%zcell = cell(3)
+        end subroutine circular
 
 
         subroutine point(this, dict)

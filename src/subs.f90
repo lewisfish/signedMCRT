@@ -6,7 +6,7 @@ module subs
     implicit none
 
     private
-    public  :: setup_simulation
+    public  :: setup_simulation, dealloc_array
 
     contains
 
@@ -1151,4 +1151,14 @@ module subs
             allocate(absorb(nxg, nyg, nzg), absorbGLOBAL(nxg, nyg, nzg))
 
         end subroutine alloc_array
+
+        subroutine dealloc_array()
+
+            use iarray
+
+            deallocate(jmean)
+            deallocate(jmeanGLOBAL)
+            deallocate(absorb)
+            deallocate(absorbGLOBAL)
+        end subroutine dealloc_array
 end module subs
