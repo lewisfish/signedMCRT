@@ -60,8 +60,8 @@ contains
 
 #ifdef _OPENMP
         !is state%seed private, i dont think so...
-        !$omp parallel default(none) shared(dict, array, numproc, start, state, bar, phasor, tev, dects)&
-        !$omp& private(ran, id, distances, image, dir, hpoint) reduction(+:nscatt) firstprivate(packet)
+        !$omp parallel default(none) shared(dict, array, numproc, start, state, bar, jmean, phasor, tev, dects)&
+        !$omp& private(ran, id, distances, image, dir, hpoint, history) reduction(+:nscatt) firstprivate(packet)
         numproc = omp_get_num_threads()
         id = omp_get_thread_num()
         if(numproc > state%nphotons .and. id == 0)print*,"Warning, simulation may be underministic due to low photon count!"
@@ -83,7 +83,6 @@ contains
         !$OMP do
         !loop over photons 
         do j = 1, state%nphotons
-            packet%phase = 0._wp
             if(mod(j, 10) == 0)call bar%progress()
 
             ! Release photon from point source
@@ -141,7 +140,7 @@ contains
             if(id == 0 .and. mod(j,1000) == 0)then
                 if(state%tev)then
 !$omp critical
-                    image = reshape(phasor(:,100:100,:), [state%grid%nxg,state%grid%nzg,1])
+                    image = reshape(jmean(:,100:100,:), [state%grid%nxg,state%grid%nzg,1])
                     call tev%update_image(state%experiment, real(image(:,:,1:1)), ["I"], 0, 0, .false., .false.)
 
                     image = reshape(phasor(100:100,:,:), [state%grid%nyg,state%grid%nzg,1])
@@ -263,10 +262,13 @@ subroutine finalise(dict, dects, nscatt, start, history)
 
 #ifdef MPI
     ! collate fluence from all processes
-    !call mpi_reduce(jmean, jmeanGLOBAL, size(jmean),MPI_DOUBLE_PRECISION, MPI_SUM,0,MPI_COMM_WORLD)
+    call mpi_reduce(jmean, jmeanGLOBAL, size(jmean),MPI_DOUBLE_PRECISION, MPI_SUM,0,MPI_COMM_WORLD)
+    call mpi_reduce(absorb, absorbGLOBAL, size(absorb),MPI_DOUBLE_PRECISION, MPI_SUM,0,MPI_COMM_WORLD)
     call mpi_reduce(phasor, phasorGLOBAL, size(phasor),MPI_DOUBLE_COMPLEX, MPI_SUM,0,MPI_COMM_WORLD)
     call mpi_reduce(nscatt,nscattGLOBAL,1,MPI_DOUBLE_PRECISION,MPI_SUM,0,MPI_COMM_WORLD)
 #else
+    jmeanGLOBAL = jmean
+    absorbGLOBAL = absorb
     phasorGLOBAL = phasor
     nscattGLOBAL = nscatt
 #endif
@@ -289,8 +291,11 @@ subroutine finalise(dict, dects, nscatt, start, history)
         call set_value(dict, "source", state%source)
         call set_value(dict, "experiment", state%experiment)
 
-        !jmeanGLOBAL = normalise_fluence(state%grid, jmeanGLOBAL, state%nphotons)
-        phasorGLOBAL = normalise_fluence(state%grid, phasorGLOBAL, state%nphotons) !normalise_fluence normalises phase instead
+        jmeanGLOBAL = normalise_fluence(state%grid, jmeanGLOBAL, state%nphotons)
+        call write_data(jmeanGLOBAL, trim(fileplace)//"jmean/"//state%outfile, state, dict)
+        if(state%absorb)call write_data(absorbGLOBAL, trim(fileplace)//"deposit/"//state%outfile_absorb, state, dict)
+        
+        phasorGLOBAL = normalise_fluence(state%grid, phasorGLOBAL, state%nphotons)
 
         !INTENSITY
         call write_phase(abs(phasorGLOBAL)**2, trim(fileplace)//"phasor/"//state%outfile, dict)

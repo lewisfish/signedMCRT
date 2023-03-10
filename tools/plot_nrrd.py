@@ -79,7 +79,7 @@ def read_data(file, header):
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
-    file = "../data/phasor/fluence.nrrd"
+    file = "../data/jmean/fluence.nrrd"
     grid, hdr = read_nrrd(file)
 
     plt.imshow(grid[:, :, 100])

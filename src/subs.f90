@@ -52,10 +52,6 @@ module subs
                     sdfarray = lens_test_setup()
                 case("blobby")
                     sdfarray = blobby()
-                case("filled_sphere_drop")
-                    sdfarray = setup_filled_sphere_drop(dict)
-                case("sphere_drop")
-                    sdfarray = setup_sphere_drop(dict)
                 case("slab_test")
                     sdfarray = setup_slab_test(dict)
                 case("sphere_scene")
@@ -181,100 +177,6 @@ module subs
 
 
         ! end function dalek_start
-
-
-        function setup_filled_sphere_drop(dict) result(array) !need randomly placed spheres WITHOUT overlap
-
-            use sdfs,         only : container, sphere, box, translate
-            use random,       only : ranu
-            use vector_class, only : vector
-            use mat_class,    only : invert
-            use constants,    only : twoPI
-
-            type(toml_table), intent(inout) :: dict
-            type(container), allocatable :: array(:)
-            
-            type(sphere), target, save, allocatable :: sphs(:)
-            type(box),    target, save :: bbox
-            integer :: num_spheres, i
-            real(kind=wp) :: t(4,4), mus, mua, hgg, n, radius, tau, x, y, z
-            type(vector) :: pos
-            
-            call get_value(dict, "tau", tau)
-            call get_value(dict, "num_spheres", num_spheres)
-            allocate(sphs(num_spheres+1))
-
-            !simulation bounds (size,mus,mua,hgg,refindex,number)
-            bbox = box(2._wp, 0._wp, 1e-17_wp, 0._wp, 1._wp, num_spheres+1) 
-
-            !virions
-            do i = 1, num_spheres-1
-                radius = 0.01111111111_wp
-                x = 1._wp
-                y = 1._wp
-                z = 1._wp
-                do while ((sqrt(x**2+y**2+z**2)).gt.(0.5_wp-radius))
-                    x = ranu(-0.5_wp+radius, 0.5_wp-radius)
-                    y = ranu(-0.5_wp+radius, 0.5_wp-radius)
-                    z = ranu(-0.5_wp+radius, 0.5_wp-radius)
-                end do
-                pos = vector(x,y,z)
-                t = invert(translate(pos))
-                mus = 0._wp
-                mua = 1.84672206832_wp
-                hgg = 0._wp
-                n = 1.59_wp
-                sphs(i) = sphere(radius, mus, mua, hgg, n, i, transform=t)
-            end do
-            
-            !droplet (rad,mus,mua,hgg,refindex,number)
-            sphs(num_spheres) = sphere(0.5_wp, 0._wp, 12.6671358198_wp, 0._wp, 1.601_wp, num_spheres)
-
-            allocate(array(num_spheres+1))
-            do i = 1, num_spheres
-                allocate(array(i)%p, source=sphs(i))
-                array(i)%p => sphs(i)
-            end do
-            
-            allocate(array(num_spheres+1)%p, source=bbox)
-            array(num_spheres+1)%p => bbox
-
-        end function setup_filled_sphere_drop
-
-        function setup_sphere_drop(dict) result(array)
-
-            use sdfs,  only : container, sphere, box
-
-            use vector_class
-
-            type(toml_table), intent(inout) :: dict
-            type(container), allocatable :: array(:)
-
-            type(sphere), target, save :: sph
-            type(box),    target, save :: bbox
-
-            real(kind=wp) :: mus, mua, hgg, n, tau
-
-            call get_value(dict, "tau", tau)
-
-            hgg = 0._wp
-            mua = 0.0053014376_wp !222nm
-            !mua = 0.00223846767_wp !260nm
-            !mua = 1e-17_wp
-            mus = 0._wp
-            
-            !n defined after hgg, final number points to which array is allocated (see below)
-            sph = sphere(0.00045_wp, mus, mua, hgg, 1.601_wp, 1)
-            bbox = box(0.0018_wp, mus, 1e-17_wp, hgg, 1._wp, 2)
-
-            allocate(array(2))
-            allocate(array(1)%p, source=sph)
-            allocate(array(2)%p, source=bbox)
-
-            array(1)%p => sph
-            array(2)%p => bbox
-
-        end function setup_sphere_drop
 
         function setup_slab_test(dict) result(array)
 
@@ -1194,7 +1096,7 @@ module subs
             use constants, only : homedir, fileplace, resdir
 
             character(len=256) :: cwd
-            logical :: dataExists, jmeanExists, depositExists, detectorsExists
+            logical :: dataExists, jmeanExists, depositExists, detectorsExists, phasorExists
 
             !get current working directory
             call get_environment_variable('PWD', cwd)
@@ -1218,10 +1120,7 @@ module subs
     error stop "Compiler not supported!"
 #endif
             if(.not. dirExists)then
-                mkdirCMD = "mkdir -p "//trim(fileplace)
-                call execute_command_line(mkdirCMD)
-                mkdirCMD = "mkdir -p "//trim(fileplace)//"phasor/"
-                call execute_command_line(mkdirCMD)
+                call create_directory("phasor/", phasorExists, "data/", .true.)
             end if
 
             ! get res dir
@@ -1263,6 +1162,10 @@ module subs
 
             phasor = 0._wp
             phasorGLOBAL = 0._wp
+            jmean = 0._wp
+            jmeanGLOBAL = 0._wp
+            absorb = 0.0_wp
+            absorbGLOBAL = 0.0_wp
 
         end subroutine zarray
 
@@ -1276,6 +1179,8 @@ module subs
             integer, intent(IN) :: nxg, nyg, nzg
 
             allocate(phasor(nxg, nyg, nzg), phasorGLOBAL(nxg, nyg, nzg))
+            allocate(jmean(nxg, nyg, nzg), jmeanGLOBAL(nxg, nyg, nzg))
+            allocate(absorb(nxg, nyg, nzg), absorbGLOBAL(nxg, nyg, nzg))
 
         end subroutine alloc_array
 

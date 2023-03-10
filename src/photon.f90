@@ -201,11 +201,7 @@ module photonMod
             
             integer :: cell(3)
 
-            if (ran2().lt.0.5_wp) then
-                this%pos = photon_origin%pos + vector(-0.3_wp,0._wp,0._wp)
-            else
-                this%pos = photon_origin%pos + vector(0.3_wp,0._wp,0._wp)
-            end if
+            this%pos = photon_origin%pos
 
 
             this%phi  = ran2()*twoPI
@@ -299,7 +295,7 @@ module photonMod
             class(photon) :: this
             type(toml_table), optional, intent(inout) :: dict
 
-            integer       :: cell(3), nphotons
+            integer       :: cell(3)
             type(vector)  :: pos1, pos2, pos3
             real(kind=wp) :: rx, ry
 
@@ -341,6 +337,7 @@ module photonMod
             this%wavelength = 2.22e-5_wp
             this%energy = 1._wp
             this%fact = TWOPI/(this%wavelength)
+            this%phase = 0._wp
 
             ! Linear Grid 
             cell = state%grid%get_voxel(this%pos)

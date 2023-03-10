@@ -52,10 +52,10 @@ module inttau2
             packet%cnts = packet%cnts + size(ds)
             d_sdf = minval(ds)
 
-            ! if(d_sdf < eps)then
-            !     packet%tflag=.true.
-            !     exit
-            ! end if
+            if(d_sdf < eps)then
+                packet%tflag=.true.
+                exit
+            end if
 
             do while(d_sdf > eps)
                 t_sdf = d_sdf * sdfs_array(packet%layer)%p%kappa
@@ -64,7 +64,7 @@ module inttau2
                     taurun = taurun + t_sdf
                     oldpos = pos
                     !comment out for phase screen
-                    call update_phasor(grid, oldpos, dir, d_sdf, packet, sdfs_array(packet%layer)%p%mua)
+                    call update_grids(grid, oldpos, dir, d_sdf, packet, sdfs_array(packet%layer)%p%mua)
                     pos = pos + d_sdf * dir
                     dtot = dtot + d_sdf
                 else
@@ -75,7 +75,7 @@ module inttau2
                     oldpos = pos
                     pos = pos + d_sdf * dir
                     !comment out for phase screen
-                    call update_phasor(grid, oldpos, dir, d_sdf, packet, sdfs_array(packet%layer)%p%mua)
+                    call update_grids(grid, oldpos, dir, d_sdf, packet, sdfs_array(packet%layer)%p%mua)
                     exit
                 end if
                 ! get distance to nearest sdf
@@ -206,7 +206,7 @@ module inttau2
     end subroutine tauint2
 
 
-    subroutine update_phasor(grid, pos, dir, d_sdf, packet, mua)
+    subroutine update_grids(grid, pos, dir, d_sdf, packet, mua)
     ! record fluence using path length estimators. Uses voxel grid
     ! grid stores voxel grid information (voxel walls and etc)
     ! pos is current position with origin in centre of medium (0,0,0)
@@ -265,7 +265,8 @@ module inttau2
                     phasec = packet%energy*cmplx(cos(packet%fact*packet%phase), sin(packet%fact*packet%phase))
 !$omp atomic
                     phasor(celli,cellj,cellk) = phasor(celli,cellj,cellk) + phasec!*mua_real
-                    !jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell*mua_real
+                    jmean(celli,cellj,cellk) = jmean(celli,cellj,cellk) + dcell
+                    absorb(celli,cellj,cellk) = absorb(celli,cellj,cellk) + dcell*mua_real
                 call update_pos(grid, old_pos, celli, cellj, cellk, dcell, .false., dir, ldir, delta)
                 exit
             else
@@ -274,7 +275,8 @@ module inttau2
                     phasec = packet%energy*cmplx(cos(packet%fact*packet%phase), sin(packet%fact*packet%phase))
 !$omp atomic
                     phasor(celli,cellj,cellk) = phasor(celli,cellj,cellk) + phasec!*mua_real
-                    !jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell*mua_real
+                    jmean(celli,cellj,cellk) = jmean(celli,cellj,cellk) + dcell
+                    absorb(celli,cellj,cellk) = absorb(celli,cellj,cellk) + dcell*mua_real
                 call update_pos(grid, old_pos, celli, cellj, cellk, dcell, .true., dir, ldir, delta)
             end if
             if(celli == -1 .or. cellj == -1 .or. cellk == -1)then
