@@ -15,7 +15,7 @@ module writer_mod
     end interface raw_write
 
     private
-    public :: normalise_fluence, write_data, write_detected_photons
+    public :: normalise_fluence, write_phase, write_detected_photons
 
     contains
         function normalise_fluence(grid, array, nphotons) result(out)
@@ -24,10 +24,10 @@ module writer_mod
             use gridMod
 
             type(cart_grid), intent(IN) :: grid
-            real(kind=wp),   intent(IN) :: array(:, :, :)
+            complex(kind=wp),   intent(IN) :: array(:, :, :)
             integer,         intent(IN) :: nphotons
             
-            real(kind=wp), allocatable :: out(:, :, :)
+            complex(kind=wp), allocatable :: out(:, :, :)
 
             real(kind=wp) :: xmax, ymax, zmax
             integer       :: nxg, nyg, nzg
@@ -35,9 +35,9 @@ module writer_mod
             nxg = grid%nxg
             nyg = grid%nyg
             nzg = grid%nzg
-            xmax = grid%xmax
-            ymax = grid%ymax
-            zmax = grid%zmax
+            xmax = (grid%xmax)
+            ymax = (grid%ymax)
+            zmax = (grid%zmax)
 
             allocate(out(size(array, 1), size(array, 2), size(array, 3)))
 
@@ -80,7 +80,7 @@ module writer_mod
         end subroutine write_detected_photons
 
 
-        subroutine write_data(array, filename, state, dict, overwrite)
+        subroutine write_phase(array, filename, dict, overwrite)
         ! routine automatically selects which way to write out results based upon file extension
             
             use sim_state_mod, only : settings_t
@@ -125,7 +125,7 @@ module writer_mod
 
             error stop "File type not supported!"
 
-        end subroutine write_data
+        end subroutine write_phase
 
         subroutine write_3d_r8_raw(array, filename, overwrite)
 

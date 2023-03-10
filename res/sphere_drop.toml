@@ -1,0 +1,27 @@
+[source]
+name='uniform'
+nphotons=1000000
+point1=[0.00045, 0.00045, -0.0009]
+point2=[-0.0009, 0.0, 0.0]
+point3=[0.0, -0.0009, 0.0]
+direction=[0.0, 0.0, 1.0]
+
+[grid]
+nxg = 200
+nyg = 200
+nzg = 200
+xmax = 0.00095
+ymax = 0.00095
+zmax = 0.00095
+
+[geometry]
+geom_name = "sphere_drop"
+tau = 3.16678395497
+
+[output]
+fluence = "fluence.nrrd"
+render = "geom_render.nrrd"
+render_geom = false
+
+[simulation]
+iseed = 123456789

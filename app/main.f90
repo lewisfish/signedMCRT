@@ -8,7 +8,7 @@ program mcpolar
     num_args = command_argument_count()
     if(num_args == 0)then
         allocate(args(1))
-        args(1) = "scat_test.toml"
+        args(1) = "slab_test.toml"
     else
         allocate(args(num_args))
         do i = 1, num_args

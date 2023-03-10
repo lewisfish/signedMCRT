@@ -1,0 +1,23 @@
+[source]
+name='dslit'
+nphotons=100000000
+
+[grid]
+nxg = 400
+nyg = 400
+nzg = 400
+xmax = 5.0
+ymax = 5.0
+zmax = 5.0
+
+[geometry]
+geom_name = "slab_test"
+tau = 3.16678395497
+
+[output]
+fluence = "fluence.nrrd"
+render = "geom.nrrd"
+render_geom = true
+
+[simulation]
+iseed = 123456789
