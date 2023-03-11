@@ -125,7 +125,7 @@ module writer_mod
 
             error stop "File type not supported!"
 
-        end subroutine write_phase
+        end subroutine write_data
 
         subroutine write_3d_r8_raw(array, filename, overwrite)
 

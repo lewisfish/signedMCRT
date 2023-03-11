@@ -244,7 +244,7 @@ subroutine finalise(dict, dects, nscatt, start, history)
     
     use historyStack, only : history_stack_t
     use detector_mod, only : dect_array
-    use writer_mod,   only : normalise_fluence, write_phase, write_detected_photons
+    use writer_mod,   only : normalise_fluence, write_data, write_detected_photons
     
     use utils, only : get_time, print_time, str
     use tomlf, only : toml_table, set_value
@@ -298,11 +298,11 @@ subroutine finalise(dict, dects, nscatt, start, history)
         phasorGLOBAL = normalise_fluence(state%grid, phasorGLOBAL, state%nphotons)
 
         !INTENSITY
-        call write_phase(abs(phasorGLOBAL)**2, trim(fileplace)//"phasor/"//state%outfile, dict)
+        call write_data(abs(phasorGLOBAL)**2, trim(fileplace)//"phasor/"//state%outfile, dict)
         !REAL
-        !call write_phase(real(phasorGLOBAL), trim(fileplace)//"phasor/"//state%outfile, dict)
+        !call write_data(real(phasorGLOBAL), trim(fileplace)//"phasor/"//state%outfile, dict)
         !IM
-        !call write_phase(aimag(phasorGLOBAL), trim(fileplace)//"phasor/"//state%outfile, dict)
+        !call write_data(aimag(phasorGLOBAL), trim(fileplace)//"phasor/"//state%outfile, dict)
     
     end if
     !write out detected photons
