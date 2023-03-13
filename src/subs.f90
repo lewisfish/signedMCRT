@@ -52,6 +52,8 @@ module subs
                     sdfarray = lens_test_setup()
                 case("blobby")
                     sdfarray = blobby()
+                case("slab_test")
+                    sdfarray = setup_slab_test(dict)
                 case("sphere_scene")
                     sdfarray = setup_sphere_scene(dict)
                 case("test_egg")
@@ -175,6 +177,40 @@ module subs
 
 
         ! end function dalek_start
+
+        function setup_slab_test(dict) result(array)
+
+            use sdfs,  only : container, box, translate
+            use vector_class, only : vector
+            use mat_class,    only : invert
+
+            type(toml_table), intent(inout) :: dict
+            type(container), allocatable :: array(:)
+
+            type(box),    target, save :: abox, bbox
+
+            real(kind=wp) :: mus, mua, hgg, n, tau, t(4,4)
+            type(vector) :: pos
+
+            call get_value(dict, "tau", tau)
+
+            hgg = 0._wp
+            mua = 1e-17_wp
+            mus = 0._wp
+            pos = vector(0._wp,0._wp,(10000._wp * 2.22e-5_wp) - 0.5_wp + 0.1_wp)
+            t = translate(pos)
+            
+            abox = box(10._wp, mus, mua, hgg, 1._wp, 1)
+            !bbox = box(vector(0.9999_wp, 0.9999_wp, 0.2_wp), mus, 0._wp, hgg, 1._wp, 2, transform=t)
+
+            allocate(array(1))
+            allocate(array(1)%p, source=abox)
+            !allocate(array(2)%p, source=bbox)
+
+            array(1)%p => abox
+            !array(2)%p => bbox
+
+        end function setup_slab_test
 
         function setup_sphere_scene(dict) result(array)
 
@@ -1060,7 +1096,7 @@ module subs
             use constants, only : homedir, fileplace, resdir
 
             character(len=256) :: cwd
-            logical :: dataExists, jmeanExists, depositExists, detectorsExists
+            logical :: dataExists, jmeanExists, depositExists, detectorsExists, phasorExists
 
             !get current working directory
             call get_environment_variable('PWD', cwd)
@@ -1092,6 +1128,9 @@ module subs
                 call create_directory("jmean/", jmeanExists, "data/", .true.)
                 call create_directory("deposit/", depositExists, "data/", .true.)
                 call create_directory("detectors/", detectorsExists, "data/", .true.)
+            end if
+            if(.not. dirExists)then
+                call create_directory("phasor/", phasorExists, "data/", .true.)
             end if
 
             ! get res dir
@@ -1131,6 +1170,8 @@ module subs
 
             !sets all arrays to zer
 
+            phasor = 0._wp
+            phasorGLOBAL = 0._wp
             jmean = 0._wp
             jmeanGLOBAL = 0._wp
             absorb = 0.0_wp
@@ -1147,6 +1188,7 @@ module subs
 
             integer, intent(IN) :: nxg, nyg, nzg
 
+            allocate(phasor(nxg, nyg, nzg), phasorGLOBAL(nxg, nyg, nzg))
             allocate(jmean(nxg, nyg, nzg), jmeanGLOBAL(nxg, nyg, nzg))
             allocate(absorb(nxg, nyg, nzg), absorbGLOBAL(nxg, nyg, nzg))
 

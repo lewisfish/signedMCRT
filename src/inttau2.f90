@@ -52,13 +52,19 @@ module inttau2
             packet%cnts = packet%cnts + size(ds)
             d_sdf = minval(ds)
 
+            if(d_sdf < eps)then
+                packet%tflag=.true.
+                exit
+            end if
+
             do while(d_sdf > eps)
                 t_sdf = d_sdf * sdfs_array(packet%layer)%p%kappa
                 if(taurun + t_sdf <= tau)then
                     !move full distance to sdf surface
                     taurun = taurun + t_sdf
                     oldpos = pos
-                    call update_jmean(grid, oldpos, dir, d_sdf, packet, sdfs_array(packet%layer)%p%mua)
+                    !comment out for phase screen
+                    call update_grids(grid, oldpos, dir, d_sdf, packet, sdfs_array(packet%layer)%p%mua)
                     pos = pos + d_sdf * dir
                     dtot = dtot + d_sdf
                 else
@@ -68,7 +74,8 @@ module inttau2
                     taurun = tau
                     oldpos = pos
                     pos = pos + d_sdf * dir
-                    call update_jmean(grid, oldpos, dir, d_sdf, packet, sdfs_array(packet%layer)%p%mua)
+                    !comment out for phase screen
+                    call update_grids(grid, oldpos, dir, d_sdf, packet, sdfs_array(packet%layer)%p%mua)
                     exit
                 end if
                 ! get distance to nearest sdf
@@ -197,9 +204,9 @@ module inttau2
             packet%tflag = .true.
         end if
     end subroutine tauint2
-   
 
-    subroutine update_jmean(grid, pos, dir, d_sdf, packet, mua)
+
+    subroutine update_grids(grid, pos, dir, d_sdf, packet, mua)
     ! record fluence using path length estimators. Uses voxel grid
     ! grid stores voxel grid information (voxel walls and etc)
     ! pos is current position with origin in centre of medium (0,0,0)
@@ -210,12 +217,13 @@ module inttau2
         use vector_class
         use photonMod
         use gridMod
-        use iarray,        only: jmean, absorb
+        use iarray,        only: phasor
         
         type(cart_grid), intent(IN)    :: grid
         type(vector),    intent(IN)    :: dir
         real(kind=wp),   intent(IN)    :: d_sdf
         real(kind=wp), optional, intent(IN) :: mua
+        complex(kind=wp) :: phasec
         type(vector),    intent(INOUT) :: pos
         type(photon),    intent(INOUT) :: packet
 
@@ -252,20 +260,23 @@ module inttau2
             if(d + dcell > d_sdf)then
                 dcell = d_sdf - d
                 d = d_sdf
-! needs to be atomic so don't write to same array address with more than 1 thread at a time
+! needs to be atomic so dont write to same array address with more than 1 thread at a time
+                    packet%phase = packet%phase + dcell
+                    phasec = packet%energy*cmplx(cos(packet%fact*packet%phase), sin(packet%fact*packet%phase))
 !$omp atomic
-                    jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell
-!$omp atomic
-                    absorb(celli, cellj, cellk) = absorb(celli, cellj, cellk) + dcell*mua_real
+                    phasor(celli,cellj,cellk) = phasor(celli,cellj,cellk) + phasec!*mua_real
+                    jmean(celli,cellj,cellk) = jmean(celli,cellj,cellk) + dcell
+                    absorb(celli,cellj,cellk) = absorb(celli,cellj,cellk) + dcell*mua_real
                 call update_pos(grid, old_pos, celli, cellj, cellk, dcell, .false., dir, ldir, delta)
                 exit
             else
                 d = d + dcell
+                    packet%phase = packet%phase + dcell
+                    phasec = packet%energy*cmplx(cos(packet%fact*packet%phase), sin(packet%fact*packet%phase))
 !$omp atomic
-                    jmean(celli, cellj, cellk) = jmean(celli, cellj, cellk) + dcell
-!$omp atomic
-                    absorb(celli, cellj, cellk) = absorb(celli, cellj, cellk) + dcell*mua_real
-
+                    phasor(celli,cellj,cellk) = phasor(celli,cellj,cellk) + phasec!*mua_real
+                    jmean(celli,cellj,cellk) = jmean(celli,cellj,cellk) + dcell
+                    absorb(celli,cellj,cellk) = absorb(celli,cellj,cellk) + dcell*mua_real
                 call update_pos(grid, old_pos, celli, cellj, cellk, dcell, .true., dir, ldir, delta)
             end if
             if(celli == -1 .or. cellj == -1 .or. cellk == -1)then
@@ -278,7 +289,7 @@ module inttau2
         packet%ycell = cellj
         packet%zcell = cellk
 
-    end subroutine update_jmean
+    end subroutine update_phasor
 
     function wall_dist(grid, celli, cellj, cellk, pos, dir, ldir) result(res)
     !funtion that returns distant to nearest wall and which wall that is (x, y, or z)

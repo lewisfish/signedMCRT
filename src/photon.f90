@@ -10,7 +10,8 @@ module photonMod
         type(vector)  :: pos                          ! position
         real(kind=wp) :: nxp, nyp, nzp                ! direction vectors
         real(kind=wp) :: sint, cost, sinp, cosp, phi  ! direction cosines
-        real(kind=wp) :: wavelength                   ! Only used if tracking the phase
+        real(kind=wp) :: wavelength, phase            ! Only used if tracking the phase
+        real(kind=wp) :: fact, energy, F, apwid       ! Only used if tracking the phase also
         integer       :: xcell, ycell, zcell          ! grid cell position
         logical       :: tflag                        ! Is photon dead?
         integer       :: layer                        ! id of sdf the packet is inside
@@ -74,6 +75,8 @@ module photonMod
             init_photon%cosp = val
             init_photon%phi = val
             init_photon%wavelength = val
+            init_photon%energy = val
+            init_photon%fact = val
             init_photon%zcell = int(val)
             init_photon%ycell = int(val)
             init_photon%zcell = int(val)
@@ -95,6 +98,10 @@ module photonMod
                 init_source%emit => uniform
             elseif(choice == "pencil")then
                 init_source%emit => pencil
+            elseif(choice == "dslit")then
+                init_source%emit => dslit
+            elseif(choice == "aperture")then
+                init_source%emit => aperture
             elseif(choice == "annulus")then
                 init_source%emit => annulus
             elseif(choice == "focus")then
@@ -195,9 +202,7 @@ module photonMod
             integer :: cell(3)
 
             this%pos = photon_origin%pos
-            this%nxp = photon_origin%nxp
-            this%nyp = photon_origin%nyp
-            this%nzp = photon_origin%nzp
+
 
             this%phi  = ran2()*twoPI
             this%cosp = cos(this%phi)
@@ -214,6 +219,10 @@ module photonMod
             this%bounces = 0
             this%layer  = 1
             this%weight = 1.0_wp
+
+            this%wavelength = 2.22e-5_wp
+            this%energy = 1._wp 
+            this%fact = TWOPI/(this%wavelength)
 
             ! Linear Grid 
             cell = state%grid%get_voxel(this%pos)
@@ -281,6 +290,7 @@ module photonMod
             use random,        only : ranu, ran2, randint
             use sim_state_mod, only : state
             use tomlf,         only : toml_table, get_value
+            use constants,     only : TWOPI
 
             class(photon) :: this
             type(toml_table), optional, intent(inout) :: dict
@@ -322,6 +332,12 @@ module photonMod
             this%cnts = 0
             this%bounces = 0
             this%weight = 1.0_wp
+
+            !FOR PHASE
+            this%wavelength = 2.22e-5_wp
+            this%energy = 1._wp
+            this%fact = TWOPI/(this%wavelength)
+            this%phase = 0._wp
 
             ! Linear Grid 
             cell = state%grid%get_voxel(this%pos)
@@ -365,6 +381,138 @@ module photonMod
             this%ycell = cell(2)
             this%zcell = cell(3)
         end subroutine pencil
+
+        subroutine dslit(this, dict)
+        !sample from double slit to produce diff pattern
+            use random,        only : ranu, ran2, randint
+            use sim_state_mod, only : state
+            use tomlf,         only : toml_table, get_value
+            use constants,     only : TWOPI
+
+            class(photon) :: this
+            type(toml_table), optional, intent(inout) :: dict
+
+            integer       :: cell(3), nphotons
+            type(vector)  :: pos1, pos2, pos3
+            real(kind=wp) :: rx, ry, x1, y1, z1, x2, y2, z2, a, b
+
+            this%wavelength = 488e-5_wp
+            this%energy = 1._wp 
+            this%fact = TWOPI/(this%wavelength)
+
+            a = 60._wp*this%wavelength !distance between slits
+            b = 20._wp*this%wavelength !2 slit width
+
+            if(ran2() > 0.5_wp)then ! pick slit and sample x, y position
+                x1 = ranu(a/2._wp,  a/2._wp + b)
+                y1 = ranu(-b*0.5_wp, b*0.5_wp)
+            else
+                x1 = ranu(-a/2._wp,  -a/2._wp - b)
+                y1 = ranu(-b*0.5_wp, b*0.5_wp)
+            end if
+
+            z2 = 5.0_wp - (1.e-5_wp*(2._wp*(5.0_wp/400._wp)))
+
+            x2 = ranu(-5.0_wp, 5.0_wp)
+            y2 = ranu(-5.0_wp, 5.0_wp)
+            z1 = (10000._wp * this%wavelength) - 5.0_wp !screen location
+
+            this%pos%x = x2
+            this%pos%y = y2
+            this%pos%z = z2
+
+            this%phase = sqrt((x2 - x1)**2 + (y2 - y1)**2 + (z2 - z1)**2)
+
+            this%nxp = (x2 - x1) / this%phase
+            this%nyp = (y2 - y1) / this%phase
+            this%nzp = -abs((z2 - z1)) / this%phase !eh
+
+            this%tflag = .false.
+            this%cnts = 0
+            this%bounces = 0
+            this%weight = 1.0_wp
+
+            !scattering stuff - not important
+            this%cost = this%nzp
+            this%sint = sqrt(1._wp - this%cost**2)
+
+            this%phi = atan2(this%nyp, this%nxp)
+            this%cosp = cos(this%phi)
+            this%sinp = sin(this%phi)
+            !/////
+
+            ! Linear Grid 
+            cell = state%grid%get_voxel(this%pos)
+            this%xcell = cell(1)
+            this%ycell = cell(2)
+            this%zcell = cell(3)
+
+        end subroutine dslit
+
+        subroutine aperture(this, dict)
+            !sample from square aperture to produce diff pattern
+            use random,        only : ranu, ran2, randint
+            use sim_state_mod, only : state
+            use tomlf,         only : toml_table, get_value
+            use constants,     only : TWOPI
+
+            class(photon) :: this
+            type(toml_table), optional, intent(inout) :: dict
+
+            integer       :: cell(3), nphotons
+            type(vector)  :: pos1, pos2, pos3
+            real(kind=wp) :: rx, ry, x1, y1, z1, x2, y2, z2, b
+
+            this%wavelength = 488e-5_wp
+            this%energy = 1._wp 
+            this%fact = TWOPI/(this%wavelength)
+
+            this%apwid = 200e-6_wp !aperture width
+            b = this%apwid/2._wp !slit width
+            ! Fresnel number
+            this%F = 4.95_wp
+
+            !sample aperture postiion
+            x1 = ranu(-b,b)
+            y1 = ranu(-b,b)
+
+            z1 = (1._wp/((((this%F / this%apwid)**2) / 2._wp)*this%wavelength)) - 0.5_wp
+
+            x2 = ranu(-0.5_wp, 0.5_wp)
+            y2 = ranu(-0.5_wp, 0.5_wp)
+            z2 = 0.5_wp - (1.e-5_wp*(2._wp*0.5_wp/400._wp))
+
+            this%pos%x = x2
+            this%pos%y = y2
+            this%pos%z = z2
+
+            this%phase = sqrt((x2 - x1)**2 + (y2 - y1)**2 + (z2 - z1)**2)
+
+            this%nxp = (x2 - x1) / this%phase
+            this%nyp = (y2 - y1) / this%phase
+            this%nzp = -abs((z2 - z1)) / this%phase 
+
+            this%tflag = .false.
+            this%cnts = 0
+            this%bounces = 0
+            this%weight = 1.0_wp
+
+            !scattering stuff - not important
+            this%cost = this%nzp
+            this%sint = sqrt(1._wp - this%cost**2)
+
+            this%phi = atan2(this%nyp, this%nxp)
+            this%cosp = cos(this%phi)
+            this%sinp = sin(this%phi)
+            !/////
+
+            ! Linear Grid 
+            cell = state%grid%get_voxel(this%pos)
+            this%xcell = cell(1)
+            this%ycell = cell(2)
+            this%zcell = cell(3)
+
+        end subroutine aperture
         
         subroutine annulus(this, dict)
 

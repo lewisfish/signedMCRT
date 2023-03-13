@@ -18,7 +18,7 @@ contains
 
         !Shared data
         use iarray
-        use constants, only : wp
+        use constants, only : wp, TWOPI
 
         !subroutines
         use detector_mod,  only : dect_array, hit_t
@@ -52,11 +52,15 @@ contains
         type(container),   allocatable :: array(:)
         real(kind=wp) :: ran, nscatt, start
         type(tevipc)      :: tev
+
+        integer :: idx, idy !screen vectors
+    
+
         call setup(input_file, tev, dects, array, packet, dict, distances, image, nscatt, start)
 
 #ifdef _OPENMP
         !is state%seed private, i dont think so...
-        !$omp parallel default(none) shared(dict, array, numproc, start, state, bar, jmean, tev, dects)&
+        !$omp parallel default(none) shared(dict, array, numproc, start, state, bar, jmean, phasor, tev, dects)&
         !$omp& private(ran, id, distances, image, dir, hpoint, history) reduction(+:nscatt) firstprivate(packet)
         numproc = omp_get_num_threads()
         id = omp_get_thread_num()
@@ -111,7 +115,21 @@ contains
                 ! !Find next scattering location
                 call tauint2(state%grid, packet, array)
             end do
-            if(state%trackHistory)call history%push(vec4(packet%pos, packet%step))
+            
+            !SCREEN FOR PHASE TESTING
+            if(packet%xcell /= -1 .and. packet%ycell /= -1 .and. packet%tflag)then                
+                idx = nint((packet%pos%x+5.0_wp)/0.025_wp)+1
+                idy = nint((packet%pos%y+5.0_wp)/0.025_wp)+1
+                if(idx.eq.401) then
+                    idx = idx-1
+                end if
+                if (idy.eq.401) then
+                    idy = idy-1
+                end if
+                phasor(idx, idy,1) = phasor(idx, idy,1) + cmplx(cos(packet%fact*packet%phase)&
+                , sin(packet%fact*packet%phase))
+            end if
+            !/////
 
             dir = vector(packet%nxp, packet%nyp, packet%nzp)
             hpoint = hit_t(packet%pos, dir, sqrt(packet%pos%x**2+packet%pos%y**2), packet%layer)
@@ -125,10 +143,10 @@ contains
                     image = reshape(jmean(:,100:100,:), [state%grid%nxg,state%grid%nzg,1])
                     call tev%update_image(state%experiment, real(image(:,:,1:1)), ["I"], 0, 0, .false., .false.)
 
-                    image = reshape(jmean(100:100,:,:), [state%grid%nyg,state%grid%nzg,1])
+                    image = reshape(phasor(100:100,:,:), [state%grid%nyg,state%grid%nzg,1])
                     call tev%update_image(state%experiment, real(image(:,:,1:1)), ["J"], 0, 0, .false., .false.)
 
-                    image = reshape(jmean(:,:,100:100), [state%grid%nxg,state%grid%nyg,1])
+                    image = reshape(phasor(:,:,100:100), [state%grid%nxg,state%grid%nyg,1])
                     call tev%update_image(state%experiment, real(image(:,:,1:1)), ["K"], 0, 0, .false., .false.)
 !$omp end critical
                 end if
@@ -221,13 +239,12 @@ end subroutine setup
 subroutine finalise(dict, dects, nscatt, start, history)
 
     use constants,     only : wp, fileplace
-    use iarray,        only : jmean, jmeanGLOBAL, absorb, absorbGLOBAL
+    use iarray,        only : phasor, phasorGLOBAL
     use sim_state_mod, only : state
     
     use historyStack, only : history_stack_t
     use detector_mod, only : dect_array
     use writer_mod,   only : normalise_fluence, write_data, write_detected_photons
-    use subs, only : dealloc_array
     
     use utils, only : get_time, print_time, str
     use tomlf, only : toml_table, set_value
@@ -247,10 +264,12 @@ subroutine finalise(dict, dects, nscatt, start, history)
     ! collate fluence from all processes
     call mpi_reduce(jmean, jmeanGLOBAL, size(jmean),MPI_DOUBLE_PRECISION, MPI_SUM,0,MPI_COMM_WORLD)
     call mpi_reduce(absorb, absorbGLOBAL, size(absorb),MPI_DOUBLE_PRECISION, MPI_SUM,0,MPI_COMM_WORLD)
+    call mpi_reduce(phasor, phasorGLOBAL, size(phasor),MPI_DOUBLE_COMPLEX, MPI_SUM,0,MPI_COMM_WORLD)
     call mpi_reduce(nscatt,nscattGLOBAL,1,MPI_DOUBLE_PRECISION,MPI_SUM,0,MPI_COMM_WORLD)
 #else
     jmeanGLOBAL = jmean
     absorbGLOBAL = absorb
+    phasorGLOBAL = phasor
     nscattGLOBAL = nscatt
 #endif
 
@@ -275,6 +294,16 @@ subroutine finalise(dict, dects, nscatt, start, history)
         jmeanGLOBAL = normalise_fluence(state%grid, jmeanGLOBAL, state%nphotons)
         call write_data(jmeanGLOBAL, trim(fileplace)//"jmean/"//state%outfile, state, dict)
         if(state%absorb)call write_data(absorbGLOBAL, trim(fileplace)//"deposit/"//state%outfile_absorb, state, dict)
+        
+        phasorGLOBAL = normalise_fluence(state%grid, phasorGLOBAL, state%nphotons)
+
+        !INTENSITY
+        call write_data(abs(phasorGLOBAL)**2, trim(fileplace)//"phasor/"//state%outfile, dict)
+        !REAL
+        !call write_data(real(phasorGLOBAL), trim(fileplace)//"phasor/"//state%outfile, dict)
+        !IM
+        !call write_data(aimag(phasorGLOBAL), trim(fileplace)//"phasor/"//state%outfile, dict)
+    
     end if
     !write out detected photons
     if(size(dects) > 0)then
