@@ -1119,6 +1119,16 @@ module subs
 #else 
     error stop "Compiler not supported!"
 #endif
+            if(.not. dataExists)then
+                call create_directory("", dataExists, "", .false.)
+                call create_directory("jmean/", jmeanExists, "data/", .false.)
+                call create_directory("deposit/", depositExists, "data/", .false.)
+                call create_directory("detectors/", detectorsExists, "data/", .true.)
+            else
+                call create_directory("jmean/", jmeanExists, "data/", .true.)
+                call create_directory("deposit/", depositExists, "data/", .true.)
+                call create_directory("detectors/", detectorsExists, "data/", .true.)
+            end if
             if(.not. dirExists)then
                 call create_directory("phasor/", phasorExists, "data/", .true.)
             end if

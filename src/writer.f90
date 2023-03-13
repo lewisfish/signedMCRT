@@ -80,7 +80,7 @@ module writer_mod
         end subroutine write_detected_photons
 
 
-        subroutine write_data(array, filename, dict, overwrite)
+        subroutine write_data(array, filename, state, dict, overwrite)
         ! routine automatically selects which way to write out results based upon file extension
             
             use sim_state_mod, only : settings_t
