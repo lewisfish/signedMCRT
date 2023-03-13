@@ -8,6 +8,7 @@ List of ToDo's for SignedMCRT.
 - [x] Add Code Coverage reports
 - [x] Remove spurious implicit nones
 - [x] Make sure all optical properties are the same for a model instance (SDF)
+
 ### Minor Features
 - [ ] Add more saved state to photon_origin to save compute time
 - [ ] Finish Circular, focus, and annulus source types
@@ -24,7 +25,6 @@ List of ToDo's for SignedMCRT.
 - [ ] Add "Scattering" kernels
     - [x] path length counter method
     - [ ] Weight method
-- [ ] Add phase tracking. To be done by Masters Student?
 ### Major Features
 - [ ] Make code work on Windows
 - [ ] Automate benchmarking so we can catch performance regressions
@@ -42,6 +42,8 @@ List of ToDo's for SignedMCRT.
         - [ ] Absorb
         - [ ] NScatt
 - [ ] Add optics to Camera type
+- [x] Add phase tracking (https://github.com/lewisfish/signedMCRT/pull/2).
+    - [ ] Add phase screen detector to camera
 
 ## Testing
 
@@ -75,6 +77,11 @@ List of ToDo's for SignedMCRT.
 - [ ] End to End tests
     - [x] Scattering Test
     - [ ] Others
+- [ ] test phase
+    - [ ] double slit
+    - [ ] square aperture
+    - [ ] gaussian beam
+    - [ ] bessel beam
 
 ## Bugs
 - [ ] Fix CI so that build on Macos run, and builds using Intel run.
