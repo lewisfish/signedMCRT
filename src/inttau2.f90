@@ -217,7 +217,7 @@ module inttau2
         use vector_class
         use photonMod
         use gridMod
-        use iarray,        only: phasor
+        use iarray,        only: phasor, jmean, absorb
         
         type(cart_grid), intent(IN)    :: grid
         type(vector),    intent(IN)    :: dir
@@ -262,20 +262,24 @@ module inttau2
                 d = d_sdf
 ! needs to be atomic so dont write to same array address with more than 1 thread at a time
                     packet%phase = packet%phase + dcell
-                    phasec = packet%energy*cmplx(cos(packet%fact*packet%phase), sin(packet%fact*packet%phase))
+                    phasec = packet%energy*cmplx(cos(packet%fact*packet%phase), sin(packet%fact*packet%phase), kind=wp)
 !$omp atomic
                     phasor(celli,cellj,cellk) = phasor(celli,cellj,cellk) + phasec!*mua_real
+!$omp atomic
                     jmean(celli,cellj,cellk) = jmean(celli,cellj,cellk) + dcell
+!$omp atomic
                     absorb(celli,cellj,cellk) = absorb(celli,cellj,cellk) + dcell*mua_real
                 call update_pos(grid, old_pos, celli, cellj, cellk, dcell, .false., dir, ldir, delta)
                 exit
             else
                 d = d + dcell
                     packet%phase = packet%phase + dcell
-                    phasec = packet%energy*cmplx(cos(packet%fact*packet%phase), sin(packet%fact*packet%phase))
+                    phasec = packet%energy*cmplx(cos(packet%fact*packet%phase), sin(packet%fact*packet%phase), kind=wp)
 !$omp atomic
                     phasor(celli,cellj,cellk) = phasor(celli,cellj,cellk) + phasec!*mua_real
+!$omp atomic
                     jmean(celli,cellj,cellk) = jmean(celli,cellj,cellk) + dcell
+!$omp atomic
                     absorb(celli,cellj,cellk) = absorb(celli,cellj,cellk) + dcell*mua_real
                 call update_pos(grid, old_pos, celli, cellj, cellk, dcell, .true., dir, ldir, delta)
             end if
@@ -289,7 +293,7 @@ module inttau2
         packet%ycell = cellj
         packet%zcell = cellk
 
-    end subroutine update_phasor
+    end subroutine update_grids
 
     function wall_dist(grid, celli, cellj, cellk, pos, dir, ldir) result(res)
     !funtion that returns distant to nearest wall and which wall that is (x, y, or z)

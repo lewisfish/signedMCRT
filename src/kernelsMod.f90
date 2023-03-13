@@ -115,21 +115,6 @@ contains
                 ! !Find next scattering location
                 call tauint2(state%grid, packet, array)
             end do
-            
-            !SCREEN FOR PHASE TESTING
-            if(packet%xcell /= -1 .and. packet%ycell /= -1 .and. packet%tflag)then                
-                idx = nint((packet%pos%x+5.0_wp)/0.025_wp)+1
-                idy = nint((packet%pos%y+5.0_wp)/0.025_wp)+1
-                if(idx.eq.401) then
-                    idx = idx-1
-                end if
-                if (idy.eq.401) then
-                    idy = idy-1
-                end if
-                phasor(idx, idy,1) = phasor(idx, idy,1) + cmplx(cos(packet%fact*packet%phase)&
-                , sin(packet%fact*packet%phase))
-            end if
-            !/////
 
             dir = vector(packet%nxp, packet%nyp, packet%nzp)
             hpoint = hit_t(packet%pos, dir, sqrt(packet%pos%x**2+packet%pos%y**2), packet%layer)
@@ -239,8 +224,9 @@ end subroutine setup
 subroutine finalise(dict, dects, nscatt, start, history)
 
     use constants,     only : wp, fileplace
-    use iarray,        only : phasor, phasorGLOBAL
+    use iarray,        only : phasor, phasorGLOBAL, jmean, jmeanGLOBAL, absorb, absorbGLOBAL
     use sim_state_mod, only : state
+    use subs,          only : dealloc_array
     
     use historyStack, only : history_stack_t
     use detector_mod, only : dect_array
@@ -294,16 +280,8 @@ subroutine finalise(dict, dects, nscatt, start, history)
         jmeanGLOBAL = normalise_fluence(state%grid, jmeanGLOBAL, state%nphotons)
         call write_data(jmeanGLOBAL, trim(fileplace)//"jmean/"//state%outfile, state, dict)
         if(state%absorb)call write_data(absorbGLOBAL, trim(fileplace)//"deposit/"//state%outfile_absorb, state, dict)
-        
-        phasorGLOBAL = normalise_fluence(state%grid, phasorGLOBAL, state%nphotons)
-
         !INTENSITY
-        call write_data(abs(phasorGLOBAL)**2, trim(fileplace)//"phasor/"//state%outfile, dict)
-        !REAL
-        !call write_data(real(phasorGLOBAL), trim(fileplace)//"phasor/"//state%outfile, dict)
-        !IM
-        !call write_data(aimag(phasorGLOBAL), trim(fileplace)//"phasor/"//state%outfile, dict)
-    
+        call write_data(abs(phasorGLOBAL)**2, trim(fileplace)//"phasor/"//state%outfile, state, dict)    
     end if
     !write out detected photons
     if(size(dects) > 0)then

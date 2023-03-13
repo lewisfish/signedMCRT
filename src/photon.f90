@@ -11,7 +11,7 @@ module photonMod
         real(kind=wp) :: nxp, nyp, nzp                ! direction vectors
         real(kind=wp) :: sint, cost, sinp, cosp, phi  ! direction cosines
         real(kind=wp) :: wavelength, phase            ! Only used if tracking the phase
-        real(kind=wp) :: fact, energy, F, apwid       ! Only used if tracking the phase also
+        real(kind=wp) :: fact, energy                 ! Only used if tracking the phase also
         integer       :: xcell, ycell, zcell          ! grid cell position
         logical       :: tflag                        ! Is photon dead?
         integer       :: layer                        ! id of sdf the packet is inside
@@ -221,7 +221,7 @@ module photonMod
             this%weight = 1.0_wp
 
             this%wavelength = 2.22e-5_wp
-            this%energy = 1._wp 
+            this%energy = 1._wp
             this%fact = TWOPI/(this%wavelength)
 
             ! Linear Grid 
@@ -384,6 +384,8 @@ module photonMod
 
         subroutine dslit(this, dict)
         !sample from double slit to produce diff pattern
+        !todo add in user defined slit widths
+        ! add correct normalisation
             use random,        only : ranu, ran2, randint
             use sim_state_mod, only : state
             use tomlf,         only : toml_table, get_value
@@ -392,9 +394,8 @@ module photonMod
             class(photon) :: this
             type(toml_table), optional, intent(inout) :: dict
 
-            integer       :: cell(3), nphotons
-            type(vector)  :: pos1, pos2, pos3
-            real(kind=wp) :: rx, ry, x1, y1, z1, x2, y2, z2, a, b
+            integer       :: cell(3)
+            real(kind=wp) :: x1, y1, z1, x2, y2, z2, a, b
 
             this%wavelength = 488e-5_wp
             this%energy = 1._wp 
@@ -425,21 +426,20 @@ module photonMod
 
             this%nxp = (x2 - x1) / this%phase
             this%nyp = (y2 - y1) / this%phase
-            this%nzp = -abs((z2 - z1)) / this%phase !eh
+            this%nzp = -abs((z2 - z1)) / this%phase
 
             this%tflag = .false.
             this%cnts = 0
             this%bounces = 0
             this%weight = 1.0_wp
 
-            !scattering stuff - not important
+            !Set direction cosine/sine
             this%cost = this%nzp
             this%sint = sqrt(1._wp - this%cost**2)
 
             this%phi = atan2(this%nyp, this%nxp)
             this%cosp = cos(this%phi)
             this%sinp = sin(this%phi)
-            !/////
 
             ! Linear Grid 
             cell = state%grid%get_voxel(this%pos)
@@ -451,6 +451,8 @@ module photonMod
 
         subroutine aperture(this, dict)
             !sample from square aperture to produce diff pattern
+            !add user defined apwid and F
+            ! add correct normalisation
             use random,        only : ranu, ran2, randint
             use sim_state_mod, only : state
             use tomlf,         only : toml_table, get_value
@@ -459,24 +461,23 @@ module photonMod
             class(photon) :: this
             type(toml_table), optional, intent(inout) :: dict
 
-            integer       :: cell(3), nphotons
-            type(vector)  :: pos1, pos2, pos3
-            real(kind=wp) :: rx, ry, x1, y1, z1, x2, y2, z2, b
+            integer       :: cell(3)
+            real(kind=wp) :: x1, y1, z1, x2, y2, z2, b, F, apwid
 
             this%wavelength = 488e-5_wp
             this%energy = 1._wp 
             this%fact = TWOPI/(this%wavelength)
 
-            this%apwid = 200e-6_wp !aperture width
-            b = this%apwid/2._wp !slit width
+            apwid = 200e-6_wp !aperture width
+            b = apwid/2._wp !slit width
             ! Fresnel number
-            this%F = 4.95_wp
+            F = 4.95_wp
 
             !sample aperture postiion
             x1 = ranu(-b,b)
             y1 = ranu(-b,b)
 
-            z1 = (1._wp/((((this%F / this%apwid)**2) / 2._wp)*this%wavelength)) - 0.5_wp
+            z1 = (1._wp/((((F / apwid)**2) / 2._wp)*this%wavelength)) - 0.5_wp
 
             x2 = ranu(-0.5_wp, 0.5_wp)
             y2 = ranu(-0.5_wp, 0.5_wp)
@@ -504,7 +505,6 @@ module photonMod
             this%phi = atan2(this%nyp, this%nxp)
             this%cosp = cos(this%phi)
             this%sinp = sin(this%phi)
-            !/////
 
             ! Linear Grid 
             cell = state%grid%get_voxel(this%pos)

@@ -1123,13 +1123,12 @@ module subs
                 call create_directory("", dataExists, "", .false.)
                 call create_directory("jmean/", jmeanExists, "data/", .false.)
                 call create_directory("deposit/", depositExists, "data/", .false.)
-                call create_directory("detectors/", detectorsExists, "data/", .true.)
+                call create_directory("detectors/", detectorsExists, "data/", .false.)
+                call create_directory("phasor/", phasorExists, "data/", .false.)
             else
                 call create_directory("jmean/", jmeanExists, "data/", .true.)
                 call create_directory("deposit/", depositExists, "data/", .true.)
                 call create_directory("detectors/", detectorsExists, "data/", .true.)
-            end if
-            if(.not. dirExists)then
                 call create_directory("phasor/", phasorExists, "data/", .true.)
             end if
 
@@ -1202,5 +1201,7 @@ module subs
             deallocate(jmeanGLOBAL)
             deallocate(absorb)
             deallocate(absorbGLOBAL)
+            deallocate(phasor)
+            deallocate(phasorGLOBAL)
         end subroutine dealloc_array
 end module subs
