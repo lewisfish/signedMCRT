@@ -1,7 +1,7 @@
 module testsVecMod
 
     use vector_class, only : vector, max, abs, nint, min
-    use testdrive, only : new_unittest, unittest_type, error_type, check, new_testsuite, testsuite_type
+    use testdrive, only : new_unittest, unittest_type, error_type, check, new_testsuite, testsuite_type, context_t
     use constants, only : wp
 
     implicit none
@@ -11,14 +11,15 @@ module testsVecMod
 
     contains
 
-    subroutine Vector_suite(testsuites)
+    subroutine Vector_suite(testsuites, context)
 
         type(testsuite_type), allocatable, intent(out) :: testsuites(:)
+        type(context_t) :: context
 
-        testsuites = [new_testsuite("Vector .op. vector", collect_suite1),&
-                      new_testsuite("Vector .op scalar", collect_suite2),&
-                      new_testsuite("Vector functions", collect_suite3),&
-                      new_testsuite("Vector .op. matrix", collect_suite4) &
+        testsuites = [new_testsuite("Vector .op. vector", collect_suite1, context),&
+                      new_testsuite("Vector .op scalar", collect_suite2, context),&
+                      new_testsuite("Vector functions", collect_suite3, context),&
+                      new_testsuite("Vector .op. matrix", collect_suite4, context) &
                      ]
 
     end subroutine Vector_suite

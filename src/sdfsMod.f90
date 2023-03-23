@@ -1999,7 +1999,7 @@ end function eval_neural
 
             use sim_state_mod, only : settings_t
             use utils,         only : pbar
-            use constants,     only : fileplace
+            use constants,     only : fileplace, sp
             use writer_mod
                       
             type(settings_t), intent(IN) :: state
@@ -2010,7 +2010,7 @@ end function eval_neural
             type(vector)               :: pos, wid
             integer                    :: i, j, k, u, id
             real(kind=wp)              :: x, y, z, ds(size(cnt)), ns(3), minvalue
-            real(kind=wp), allocatable :: image(:, :, :)
+            real(kind=sp), allocatable :: image(:, :, :)
             type(pbar)                 :: bar
 
             ns = nint(samples / 2._wp)

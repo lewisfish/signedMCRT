@@ -2,11 +2,11 @@ module iarray
 !
 !  Contains all array var names.
 !
-    use constants, only : wp
+    use constants, only : sp
 
     implicit none
 
-    complex(kind=wp), allocatable :: phasor(:,:,:), phasorGLOBAL(:,:,:)
-    real(kind=wp), allocatable :: jmean(:,:,:), jmeanGLOBAL(:,:,:)
-    real(kind=wp), allocatable :: absorb(:,:,:), absorbGLOBAL(:,:,:)
+    complex(kind=sp), allocatable :: phasor(:,:,:), phasorGLOBAL(:,:,:)
+    real(kind=sp), allocatable :: jmean(:,:,:), jmeanGLOBAL(:,:,:)
+    real(kind=sp), allocatable :: absorb(:,:,:), absorbGLOBAL(:,:,:)
 end module iarray

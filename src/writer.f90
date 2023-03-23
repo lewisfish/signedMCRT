@@ -7,11 +7,11 @@ module writer_mod
     implicit none
 
     interface nrrd_write
-        module procedure write_3d_r8_nrrd
+        module procedure write_3d_r8_nrrd, write_3d_r4_nrrd
     end interface nrrd_write
 
     interface raw_write
-        module procedure write_3d_r8_raw
+        module procedure write_3d_r8_raw, write_3d_r4_raw
     end interface raw_write
 
     private
@@ -22,12 +22,13 @@ module writer_mod
         ! normalise fluence in the Lucy 1999 way
             
             use gridMod
+            use constants, only : sp
 
             type(cart_grid), intent(IN) :: grid
-            real(kind=wp),   intent(IN) :: array(:, :, :)
+            real(kind=sp),   intent(IN) :: array(:, :, :)
             integer,         intent(IN) :: nphotons
             
-            real(kind=wp), allocatable :: out(:, :, :)
+            real(kind=sp), allocatable :: out(:, :, :)
 
             real(kind=wp) :: xmax, ymax, zmax
             integer       :: nxg, nyg, nzg
@@ -41,7 +42,7 @@ module writer_mod
 
             allocate(out(size(array, 1), size(array, 2), size(array, 3)))
 
-            out  = array * ((2._wp*xmax*2._wp*ymax)/(nphotons * (2._wp * xmax / nxg) * (2._wp * ymax / nyg) * (2._wp * zmax / nzg)))
+            out  = array * ((2._sp*xmax*2._sp*ymax)/(nphotons * (2._sp * xmax / nxg) * (2._sp * ymax / nyg) * (2._sp * zmax / nzg)))
 
         end function normalise_fluence
 
@@ -85,9 +86,10 @@ module writer_mod
             
             use sim_state_mod, only : settings_t
             use tomlf,         only : toml_table, get_value
+            use constants,     only : sp
 
             type(settings_t),           intent(IN)    :: state
-            real(kind=wp),              intent(IN)    :: array(:,:,:)
+            real(kind=sp),              intent(IN)    :: array(:,:,:)
             character(*),               intent(IN)    :: filename
             type(toml_table), optional, intent(INOUT) :: dict
             logical,          optional, intent(IN)    :: overwrite
@@ -147,6 +149,27 @@ module writer_mod
 
         end subroutine write_3d_r8_raw
 
+        subroutine write_3d_r4_raw(array, filename, overwrite)
+
+            use constants, only : sp
+
+            real(kind=sp), intent(IN) :: array(:, :, :)
+            character(*),  intent(IN) :: filename
+            logical,       intent(IN) :: overwrite
+
+            integer :: u
+            character(len=:), allocatable :: file
+
+            if(check_file(filename) .and. .not. overwrite)then
+                file = get_new_file_name(filename)
+            else
+                file = filename
+            end if
+            open(newunit=u,file=file,access='stream',status='REPLACE',form='unformatted')
+            write(u) array
+            close(u)
+
+        end subroutine write_3d_r4_raw
 
         function get_new_file_name(file) result(res)
 
@@ -240,4 +263,42 @@ module writer_mod
             close(u)
         
         end subroutine write_3d_r8_nrrd
+
+        subroutine write_3d_r4_nrrd(array, filename, overwrite, dict)
+            
+            use tomlf,           only : toml_table, toml_serializer
+            use iso_fortran_env, only : int32, int64, real32, real64
+            use utils,           only : str
+            use constants,       only : sp
+        
+            character(*),               intent(IN)    :: filename
+            real(kind=sp),              intent(IN)    :: array(:, :, :)
+            type(toml_table), optional, intent(INOUT) :: dict
+            logical,                    intent(IN)    :: overwrite
+
+            character(len=:), allocatable :: file
+            integer :: u
+            type(toml_serializer) :: ser
+
+            if(check_file(filename) .and. .not. overwrite)then
+                file = get_new_file_name(filename)
+            else
+                file = filename
+            end if
+
+            open(newunit=u,file=file,form="formatted")
+            !to do fix precision
+            call write_hdr(u, [size(array, 1), size(array, 2), size(array, 3)], "float")
+
+            if(present(dict))then
+                ser = toml_serializer(u)
+                call dict%accept(ser)
+            end if
+            write(u,"(A)")new_line("C")
+            close(u)
+            open(newunit=u,file=file,access="stream",form="unformatted",position="append")
+            write(u)array
+            close(u)
+        
+        end subroutine write_3d_r4_nrrd
 end module writer_mod

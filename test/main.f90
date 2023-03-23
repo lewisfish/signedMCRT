@@ -45,25 +45,25 @@ program test_all
     integer :: i, stat
     character(len=*), parameter :: fmt='("#", *(1x, a))'
 
-    testsuites = [new_testsuite("Suite: Detector Class", detector_suite), &
-                  new_testsuite("Suite: End to End tests", End_to_End_suite) &
+    testsuites = [new_testsuite("Suite: Detector Class", detector_suite, context), &
+                  new_testsuite("Suite: End to End tests", End_to_End_suite, context) &
                  ]
                  
-    call Vector_suite(tmp)
+    call Vector_suite(tmp, context)
     call grow_suite(tmp, testsuites)
 
-    call Matrix_suite(tmp)
+    call Matrix_suite(tmp, context)
     call grow_suite(tmp, testsuites)
 
-    call photon_suite(tmp)
+    call photon_suite(tmp, context)
     call grow_suite(tmp, testsuites)
 
-    call Fresnel_suite(tmp)
+    call Fresnel_suite(tmp, context)
     call grow_suite(tmp, testsuites)
 
     do i = 1, size(testsuites)
         write(error_unit, fmt) "Testing:", testsuites(i)%name
-        call run_testsuite(testsuites(i)%collect, error_unit, stat, context=context)
+        call run_testsuite(testsuites(i)%collect, error_unit, stat, parallel=.true., context=context)
     end do
     call context%report()
     if(stat > 0)error stop 1

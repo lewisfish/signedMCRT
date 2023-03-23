@@ -1111,11 +1111,13 @@ module subs
             inquire(file=trim(fileplace)//"/jmean/.", exist=jmeanExists)
             inquire(file=trim(fileplace)//"/deposit/.", exist=depositExists)
             inquire(file=trim(fileplace)//"/detectors/.", exist=detectorsExists)
+            inquire(file=trim(fileplace)//"/phasor/.", exist=phasorExists)
 #elif __INTEL_COMPILER
             inquire(directory=trim(fileplace), exist=dataExists)
             inquire(directory=trim(fileplace)//"/jmean", exist=jmeanExists)
             inquire(directory=trim(fileplace)//"/deposit", exist=depositExists)
             inquire(directory=trim(fileplace)//"/detectors", exist=detectorsExists)
+            inquire(directory=trim(fileplace)//"/phasor", exist=phasorExists)
 #else 
     error stop "Compiler not supported!"
 #endif

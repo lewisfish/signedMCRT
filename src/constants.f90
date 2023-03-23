@@ -1,6 +1,6 @@
 module constants
 
-    use iso_fortran_env, only : real64
+    use iso_fortran_env, only : real64, real32
 
 ! Module containing constants:
 !         PI, TWOPI
@@ -11,6 +11,7 @@ module constants
     implicit none
 
     integer,          parameter :: wp = real64 !can change this to other precision, not tested for lower or higher precisions.
+    integer,          parameter :: sp = real32
     real(kind=wp),    parameter :: PI=4._wp*atan(1._wp), TWOPI=2._wp*PI
     character(len=255)          :: homedir, fileplace, resdir
 

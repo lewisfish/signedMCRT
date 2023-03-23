@@ -1,7 +1,7 @@
 module testsMatrixMod
 
     use mat_class
-    use testdrive, only : new_unittest, unittest_type, error_type, check, new_testsuite, testsuite_type
+    use testdrive, only : new_unittest, unittest_type, error_type, check, new_testsuite, testsuite_type, context_t
     use constants, only : wp
 
     implicit none
@@ -11,12 +11,13 @@ module testsMatrixMod
 
     contains
 
-    subroutine Matrix_suite(testsuites)
+    subroutine Matrix_suite(testsuites, context)
 
         type(testsuite_type), allocatable, intent(out) :: testsuites(:)
+        type(context_t) :: context
 
-        testsuites = [new_testsuite("Matrix ops", collect_suite1),&
-                      new_testsuite("Matrix funcs", collect_suite2)&
+        testsuites = [new_testsuite("Matrix ops", collect_suite1, context),&
+                      new_testsuite("Matrix funcs", collect_suite2, context)&
                      ]
 
     end subroutine Matrix_suite

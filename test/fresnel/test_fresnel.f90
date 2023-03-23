@@ -1,18 +1,19 @@
 module testsFresnelMod
 
     use surfaces
-    use testdrive, only : new_unittest, unittest_type, error_type, check, testsuite_type, new_testsuite
+    use testdrive, only : new_unittest, unittest_type, error_type, check, testsuite_type, new_testsuite, context_t
     use constants, only : wp
 
     implicit none
 
     contains
 
-    subroutine Fresnel_suite(testsuites)
+    subroutine Fresnel_suite(testsuites, context)
 
         type(testsuite_type), allocatable, intent(out) :: testsuites(:)
+        type(context_t) :: context
 
-        testsuites = [new_testsuite("Fresnel", collect_suite1)&
+        testsuites = [new_testsuite("Fresnel", collect_suite1, context)&
                      ]
 
     end subroutine Fresnel_suite

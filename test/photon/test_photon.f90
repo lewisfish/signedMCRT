@@ -1,7 +1,7 @@
 module testsPhotonMod
 
     use photonMod
-    use testdrive, only : new_unittest, unittest_type, error_type, check, test_failed, new_testsuite, testsuite_type
+    use testdrive, only : new_unittest, unittest_type, error_type, check, test_failed, new_testsuite, testsuite_type, context_t
     use constants, only : wp
 
     implicit none
@@ -11,11 +11,12 @@ module testsPhotonMod
 
     contains
 
-    subroutine photon_suite(testsuites)
+    subroutine photon_suite(testsuites, context)
 
         type(testsuite_type), allocatable, intent(out) :: testsuites(:)
+        type(context_t) :: context
 
-        testsuites = [new_testsuite("Test Sources", collect_suite1)&
+        testsuites = [new_testsuite("Test Sources", collect_suite1, context)&
                      ]
 
     end subroutine photon_suite
