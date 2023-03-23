@@ -17,6 +17,7 @@ module vector_class
         generic   :: operator(.cross.) => vec_cross_vec
         generic   :: operator(/)       => vec_div_scal_r4, vec_div_scal_int
         generic   :: operator(*)       => vec_mult_vec, vec_mult_scal, scal_mult_vec
+        generic   :: operator(**)      => vec_mult_exp_scal_int, vec_mult_exp_scal_r4, vec_mult_exp_scal_r8
         generic   :: operator(+)       => vec_add_vec, vec_add_scal, scal_add_vec
         generic   :: operator(-)       => vec_minus_vec, vec_minus_scal, scal_minus_vec
         generic   :: operator(==)      => vec_equal_vec
@@ -32,6 +33,10 @@ module vector_class
         procedure, pass(a), private :: vec_mult_vec
         procedure, pass(a), private :: vec_mult_scal
         procedure, pass(b), private :: scal_mult_vec
+        
+        procedure, pass(a), private :: vec_mult_exp_scal_int
+        procedure, pass(a), private :: vec_mult_exp_scal_r4
+        procedure, pass(a), private :: vec_mult_exp_scal_r8
 
         procedure, pass(a), private :: vec_add_vec
         procedure, pass(a), private :: vec_add_scal
@@ -67,6 +72,36 @@ module vector_class
     end interface min
 
     contains
+
+        type(vector) pure elemental function vec_mult_exp_scal_int(a, b)
+            
+            class(vector), intent(in) :: a
+            integer,       intent(in) :: b
+
+            vec_mult_exp_scal_int = vector(a%x**b, a%y**b, a%z**b)
+
+        end function vec_mult_exp_scal_int
+
+        type(vector) pure elemental function vec_mult_exp_scal_r4(a, b)
+            
+            use constants, only : sp
+
+            class(vector), intent(in) :: a
+            real(kind=sp), intent(in) :: b
+
+            vec_mult_exp_scal_r4 = vector(a%x**b, a%y**b, a%z**b)
+
+        end function vec_mult_exp_scal_r4
+
+        type(vector) pure elemental function vec_mult_exp_scal_r8(a, b)
+            
+            class(vector), intent(in) :: a
+            real(kind=wp), intent(in) :: b
+
+            vec_mult_exp_scal_r8 = vector(a%x**b, a%y**b, a%z**b)
+
+        end function vec_mult_exp_scal_r8
+
 
         logical pure elemental function vec_equal_vec(a, b)
 

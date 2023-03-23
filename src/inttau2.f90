@@ -218,12 +218,13 @@ module inttau2
         use photonMod
         use gridMod
         use iarray,        only: phasor, jmean, absorb
+        use constants , only : sp
         
         type(cart_grid), intent(IN)    :: grid
         type(vector),    intent(IN)    :: dir
         real(kind=wp),   intent(IN)    :: d_sdf
         real(kind=wp), optional, intent(IN) :: mua
-        complex(kind=wp) :: phasec
+        complex(kind=sp) :: phasec
         type(vector),    intent(INOUT) :: pos
         type(photon),    intent(INOUT) :: packet
 
@@ -262,25 +263,25 @@ module inttau2
                 d = d_sdf
 ! needs to be atomic so dont write to same array address with more than 1 thread at a time
                     packet%phase = packet%phase + dcell
-                    phasec = packet%energy*cmplx(cos(packet%fact*packet%phase), sin(packet%fact*packet%phase), kind=wp)
+                phasec = real(packet%energy, kind=sp)*cmplx(cos(packet%fact*packet%phase), sin(packet%fact*packet%phase), kind=sp)
 !$omp atomic
-                    phasor(celli,cellj,cellk) = phasor(celli,cellj,cellk) + phasec!*mua_real
+        phasor(celli,cellj,cellk) = phasor(celli,cellj,cellk) + phasec!*mua_real
 !$omp atomic
-                    jmean(celli,cellj,cellk) = jmean(celli,cellj,cellk) + dcell
+                    jmean(celli,cellj,cellk) = jmean(celli,cellj,cellk) + real(dcell, kind=sp)
 !$omp atomic
-                    absorb(celli,cellj,cellk) = absorb(celli,cellj,cellk) + dcell*mua_real
+                    absorb(celli,cellj,cellk) = absorb(celli,cellj,cellk) + real(dcell*mua_real, kind=sp)
                 call update_pos(grid, old_pos, celli, cellj, cellk, dcell, .false., dir, ldir, delta)
                 exit
             else
                 d = d + dcell
                     packet%phase = packet%phase + dcell
-                    phasec = packet%energy*cmplx(cos(packet%fact*packet%phase), sin(packet%fact*packet%phase), kind=wp)
+                phasec = real(packet%energy, kind=sp)*cmplx(cos(packet%fact*packet%phase), sin(packet%fact*packet%phase), kind=sp)
 !$omp atomic
-                    phasor(celli,cellj,cellk) = phasor(celli,cellj,cellk) + phasec!*mua_real
+        phasor(celli,cellj,cellk) = phasor(celli,cellj,cellk) + phasec!*mua_real
 !$omp atomic
-                    jmean(celli,cellj,cellk) = jmean(celli,cellj,cellk) + dcell
+                    jmean(celli,cellj,cellk) = jmean(celli,cellj,cellk) + real(dcell, kind=sp)
 !$omp atomic
-                    absorb(celli,cellj,cellk) = absorb(celli,cellj,cellk) + dcell*mua_real
+                    absorb(celli,cellj,cellk) = absorb(celli,cellj,cellk) + real(dcell*mua_real, kind=sp)
                 call update_pos(grid, old_pos, celli, cellj, cellk, dcell, .true., dir, ldir, delta)
             end if
             if(celli == -1 .or. cellj == -1 .or. cellk == -1)then

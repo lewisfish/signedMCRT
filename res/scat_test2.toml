@@ -1,0 +1,28 @@
+[source]
+name = "pencil"
+nphotons = 10000000
+position = [0.0, 0.0, 0.0]
+direction= "z"
+
+[grid]
+nxg = 200
+nyg = 200
+nzg = 200
+xmax = 100.0
+ymax = 100.0
+zmax = 100.0
+
+[geometry]
+geom_name = "scat_test2"
+tau = 10.0
+hgg = 0.9
+
+[output]
+fluence = "fluence.nrrd"
+render = "geom_render.nrrd"
+render_geom = false
+overwrite = true
+
+[simulation]
+iseed = 123456789
+absorb=true

@@ -38,6 +38,8 @@ module subs
                     sdfarray = setup_omg_sdf()
                 case("scat_test")
                     sdfarray = setup_scat_test(dict)
+                case("scat_test2")
+                    sdfarray = setup_scat_test2(dict)
                 case("skin")
                     sdfarray = setup_skin_model()
                 case("aptran")
@@ -713,6 +715,37 @@ module subs
             array(2)%p => bbox
 
         end function setup_scat_test
+
+        function setup_scat_test2(dict) result(array)
+
+            use sdfs,  only : container, sphere, box, translate
+            use mat_class,    only : invert
+
+            use vector_class
+
+            type(toml_table), intent(inout) :: dict
+            type(container), allocatable :: array(:)
+
+            type(box),    target, save :: bbox
+
+            real(kind=wp) :: mus, mua, hgg, n, tau
+
+            call get_value(dict, "tau", tau)
+            call get_value(dict, "hgg", hgg)
+
+            n = 1._wp
+            hgg = hgg
+            mua = 1e-17_wp
+            mus = tau
+
+            bbox = box(200._wp, mus, mua, hgg, n, 2)
+
+            allocate(array(1))
+            allocate(array(1)%p, source=bbox)
+
+            array(1)%p => bbox
+
+        end function setup_scat_test2
 
         function setup_omg_sdf() result(array)
             

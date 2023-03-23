@@ -3,7 +3,7 @@ module kernels
     implicit none
     
     private
-    public :: weight_scatter, pathlength_scatter
+    public :: weight_scatter, pathlength_scatter, test_kernel
 
 contains
 !###############################################################################
@@ -18,7 +18,7 @@ contains
 
         !Shared data
         use iarray
-        use constants, only : wp, TWOPI
+        use constants, only : wp
 
         !subroutines
         use detector_mod,  only : dect_array, hit_t
@@ -52,9 +52,6 @@ contains
         type(container),   allocatable :: array(:)
         real(kind=wp) :: ran, nscatt, start
         type(tevipc)      :: tev
-
-        integer :: idx, idy !screen vectors
-    
 
         call setup(input_file, tev, dects, array, packet, dict, distances, image, nscatt, start)
 
@@ -99,8 +96,6 @@ contains
             ! Find scattering location
             call tauint2(state%grid, packet, array)
 
-            dir = vector(packet%nxp, packet%nyp, packet%nzp)
-
             do while(.not. packet%tflag)
                 if(state%trackHistory)call history%push(vec4(packet%pos, packet%step))
                 ran = ran2()
@@ -142,9 +137,134 @@ contains
 !$OMP end  do
 !$OMP end parallel
 #endif
-
     call finalise(dict, dects, nscatt, start, history)
     end subroutine pathlength_scatter
+
+    subroutine test_kernel(input_file, end_early)
+
+        !Shared data
+        use iarray
+        use constants, only : wp
+
+        !subroutines
+        use detector_mod,  only : dect_array
+        use historyStack,  only : history_stack_t
+        use inttau2,       only : tauint2
+        use photonMod,     only : photon
+        use random,        only : ran2, init_rng
+        use sdfs,          only : container
+        use sim_state_mod, only : state
+        use utils,         only : pbar
+        use vector_class,  only : vector
+        
+        !external deps
+        use tev_mod, only : tevipc
+        use tomlf,   only : toml_table
+#ifdef _OPENMP
+        use omp_lib
+#endif
+        character(len=*), intent(in) :: input_file
+        
+        integer :: numproc, id, j, i
+        type(history_stack_t) :: history
+        type(pbar)        :: bar
+        type(photon)      :: packet
+        type(toml_table)  :: dict
+        real(kind=wp), allocatable :: distances(:), image(:,:,:)
+        type(dect_array),  allocatable :: dects(:)
+        type(container),   allocatable :: array(:)
+        real(kind=wp) :: ran, nscatt, start
+        type(tevipc)      :: tev
+        type(vector)  :: pos(4), pos2(4)
+        logical, intent(in) :: end_early
+
+        pos = vector(0.0_wp, 0.0_wp, 0.0_wp)
+        pos2 = vector(0.0_wp, 0.0_wp, 0.0_wp)
+        call setup(input_file, tev, dects, array, packet, dict, distances, image, nscatt, start)
+
+#ifdef _OPENMP
+        !$omp parallel default(none) shared(dict, array, numproc, start, state, bar,)&
+        !$omp& private(ran, id, distances) reduction(+:nscatt,pos,pos2)&
+        !$omp firstprivate(packet)
+        numproc = omp_get_num_threads()
+        id = omp_get_thread_num()
+        if(numproc > state%nphotons .and. id == 0)print*,"Warning, simulation may be underministic due to low photon count!"
+#elif MPI
+    !nothing
+#else
+        numproc = 1
+        id = 0
+#endif
+        if(id == 0)print("(a,I3.1,a)"),'Photons now running on', numproc,' cores.'
+
+        ! set seed for rnd generator. id to change seed for each process
+        call init_rng(spread(state%iseed+id, 1, 8), fwd=.true.)
+
+        bar = pbar(state%nphotons/ 10)
+        !$OMP BARRIER
+        !$OMP do
+        !loop over photons 
+        do j = 1, state%nphotons
+            if(mod(j, 10) == 0)call bar%progress()
+
+            ! Release photon from point source
+            call packet%emit(dict)
+            packet%step = 0
+            packet%id = id
+            distances = 0._wp
+            do i = 1, size(distances)
+                distances(i) = array(i)%p%evaluate(packet%pos)
+                if(distances(i) > 0._wp)distances(i)=-999.0_wp
+            end do
+            packet%layer=minloc(abs(distances),dim=1)
+
+            ! Find scattering location
+            call tauint2(state%grid, packet, array)
+
+
+            do while(.not. packet%tflag)
+                ran = ran2()
+                if(ran < array(packet%layer)%p%albedo)then!interacts with tissue
+                    call packet%scatter(array(packet%layer)%p%hgg, array(packet%layer)%p%g2, dects)
+                    nscatt = nscatt + 1
+                    packet%step = packet%step + 1
+                    if(packet%step == 1)then
+                        pos(1) = pos(1) + packet%pos
+                        pos2(1) = pos2(1) + packet%pos**2
+                    elseif(packet%step == 2)then
+                        pos(2) = pos(2) + packet%pos
+                        pos2(2) = pos2(2) + packet%pos**2
+                    elseif(packet%step == 3)then
+                        pos(3) = pos(3) + packet%pos
+                        pos2(3) = pos2(3) + packet%pos**2
+                    elseif(packet%step == 4)then
+                        pos(4) = pos(4) + packet%pos
+                        pos2(4) = pos2(4) + packet%pos**2
+                    else
+                        if(end_early)packet%tflag = .true.
+                    end if
+                else
+                    packet%tflag = .true.
+                    exit
+                end if
+                ! !Find next scattering location
+                call tauint2(state%grid, packet, array)
+            end do
+        end do
+#ifdef _OPENMP
+!$OMP end  do
+!$OMP end parallel
+#endif
+    open(newunit=j,file="positions.dat")
+    do i = 1, 4
+        write(j,*)10.*pos(i)%x/state%nphotons,10.*pos(i)%y/state%nphotons,10.*pos(i)%z/state%nphotons
+    end do
+    do i = 1,4
+        write(j,*)100.*pos2(i)%x/state%nphotons,100.*pos2(i)%y/state%nphotons,100.*pos2(i)%z/state%nphotons
+    end do
+    close(j)
+    call finalise(dict, dects, nscatt, start, history)
+    end subroutine test_kernel
 
 
 !####################################################################################################
