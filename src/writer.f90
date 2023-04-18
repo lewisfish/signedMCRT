@@ -229,7 +229,7 @@ module writer_mod
 
         subroutine write_3d_r8_nrrd(array, filename, overwrite, dict)
             
-            use tomlf,           only : toml_table, toml_serializer
+            use tomlf,           only : toml_table, toml_dump, toml_error
             use iso_fortran_env, only : int32, int64, real32, real64
             use utils,    only : str
         
@@ -238,9 +238,9 @@ module writer_mod
             type(toml_table), optional, intent(INOUT) :: dict
             logical,                    intent(IN)    :: overwrite
 
+            type(toml_error), allocatable :: error
             character(len=:), allocatable :: file
             integer :: u
-            type(toml_serializer) :: ser
 
             if(check_file(filename) .and. .not. overwrite)then
                 file = get_new_file_name(filename)
@@ -253,8 +253,7 @@ module writer_mod
             call write_hdr(u, [size(array, 1), size(array, 2), size(array, 3)], "double")
 
             if(present(dict))then
-                ser = toml_serializer(u)
-                call dict%accept(ser)
+                call toml_dump(dict, u, error)
             end if
             write(u,"(A)")new_line("C")
             close(u)
@@ -266,7 +265,7 @@ module writer_mod
 
         subroutine write_3d_r4_nrrd(array, filename, overwrite, dict)
             
-            use tomlf,           only : toml_table, toml_serializer
+            use tomlf,           only : toml_table, toml_dump, toml_error
             use iso_fortran_env, only : int32, int64, real32, real64
             use utils,           only : str
             use constants,       only : sp
@@ -276,9 +275,9 @@ module writer_mod
             type(toml_table), optional, intent(INOUT) :: dict
             logical,                    intent(IN)    :: overwrite
 
+            type(toml_error), allocatable :: error
             character(len=:), allocatable :: file
             integer :: u
-            type(toml_serializer) :: ser
 
             if(check_file(filename) .and. .not. overwrite)then
                 file = get_new_file_name(filename)
@@ -291,8 +290,7 @@ module writer_mod
             call write_hdr(u, [size(array, 1), size(array, 2), size(array, 3)], "float")
 
             if(present(dict))then
-                ser = toml_serializer(u)
-                call dict%accept(ser)
+                call toml_dump(dict, u, error)
             end if
             write(u,"(A)")new_line("C")
             close(u)
