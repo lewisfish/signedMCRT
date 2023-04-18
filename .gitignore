@@ -1,3 +1,7 @@
+*.old
+*.mat
+*.so
+*.cpython*
 *.mod
 *.o
 *.dat

@@ -8,10 +8,155 @@ module kernels
 contains
 !###############################################################################
 !                   KERNELS
-    subroutine weight_scatter()
+    subroutine weight_scatter(input_file)
 
-        error stop "Not yet implmented!"
+        !Shared data
+        use iarray
+        use constants, only : wp, CHANCE, THRESHOLD
 
+        !subroutines
+        use detector_mod,  only : dect_array, hit_t
+        use historyStack,  only : history_stack_t
+        use inttau2,       only : tauint3, tauint2, update_voxels
+        use occGridMod
+        use photonMod,     only : photon
+        use random,        only : ran2, init_rng
+        use sdfs,          only : container
+        use sim_state_mod, only : state
+        use utils,         only : pbar
+        use vec4_class,    only : vec4
+        use vector_class,  only : vector
+        
+        !external deps
+        use tev_mod, only : tevipc
+        use tomlf,   only : toml_table
+#ifdef _OPENMP
+        use omp_lib
+#endif
+        character(len=*), intent(in) :: input_file
+        
+        integer :: numproc, id, j, i
+        type(history_stack_t) :: history
+        type(pbar)        :: bar
+        type(photon)      :: packet
+        type(toml_table)  :: dict
+        real(kind=wp), allocatable :: distances(:), image(:,:,:)
+        type(hit_t)       :: hpoint
+        type(vector)      :: dir
+        type(dect_array),  allocatable :: dects(:)
+        type(container),   allocatable :: array(:)
+        real(kind=wp) :: nscatt, start, weight_absorb
+        type(tevipc)      :: tev
+        integer :: celli, cellj, cellk
+
+        call setup(input_file, tev, dects, array, packet, dict, distances, image, nscatt, start)
+
+#ifdef _OPENMP
+        !is state%seed private, i dont think so...
+        !$omp parallel default(none) shared(dict, array, numproc, start, state, bar, jmean, tev, dects)&
+        !$omp& private(id, distances, image, dir, hpoint, history, weight_absorb, cellk, cellj, celli) &
+        !$omp& reduction(+:nscatt) firstprivate(packet)
+        numproc = omp_get_num_threads()
+        id = omp_get_thread_num()
+        if(numproc > state%nphotons .and. id == 0)print*,"Warning, simulation may be underministic due to low photon count!"
+        if(state%trackHistory)history = history_stack_t(state%historyFilename, id)
+#elif MPI
+    !nothing
+#else
+        numproc = 1
+        id = 0
+        if(state%trackHistory)history = history_stack_t(state%historyFilename, id)
+#endif
+        if(id == 0)print("(a,I3.1,a)"),'Photons now running on', numproc,' cores.'
+
+        ! set seed for rnd generator. id to change seed for each process
+        call init_rng(spread(state%iseed+id, 1, 8), fwd=.true.)
+
+        bar = pbar(state%nphotons/ 10)
+        !$OMP BARRIER
+        !$OMP do
+        !loop over photons 
+        do j = 1, state%nphotons
+            if(mod(j, 10) == 0)call bar%progress()
+
+            ! Release photon from point source
+            call packet%emit(dict)
+            packet%step = 0
+            packet%id = id
+            distances = 0._wp
+            do i = 1, size(distances)
+                distances(i) = array(i)%p%evaluate(packet%pos)
+                if(distances(i) > 0._wp)distances(i)=-999.0_wp
+            end do
+            packet%layer=minloc(abs(distances),dim=1)
+            if(state%trackHistory)call history%push(vec4(packet%pos, packet%step))
+            ! Find scattering location
+            call tauint2(state%grid, packet, array)!, occ)
+
+            do while(.not. packet%tflag)
+                if(state%trackHistory)call history%push(vec4(packet%pos, packet%step))
+                
+                weight_absorb = packet%weight * (1._wp - array(packet%layer)%p%albedo)
+
+                packet%weight = packet%weight - weight_absorb
+                call update_voxels(state%grid, &
+                packet%pos + vector(state%grid%xmax, state%grid%ymax, state%grid%zmax), celli, cellj, cellk)
+
+                if(celli < 1)then
+                    packet%tflag = .true.
+                    exit
+                end if
+                if(cellj < 1)then
+                    packet%tflag = .true.
+                    exit
+                end if
+                if(cellk < 1)then
+                    packet%tflag = .true.
+                    exit
+                end if
+                !$omp atomic
+                jmean(celli,cellj,cellk) = jmean(celli,cellj,cellk) + weight_absorb
+                call packet%scatter(array(packet%layer)%p%hgg, array(packet%layer)%p%g2, dects)
+                if(packet%weight < THRESHOLD)then
+                    if(ran2() < CHANCE)then
+                        packet%weight = packet%weight / CHANCE
+                    else
+                        packet%tflag = .true.
+                        exit
+                    end if
+                end if
+
+                ! !Find next scattering location
+                call tauint2(state%grid, packet, array)
+            end do
+
+            dir = vector(packet%nxp, packet%nyp, packet%nzp)
+            hpoint = hit_t(packet%pos, dir, packet%weight*packet%L, packet%layer)
+            do i = 1, size(dects)
+                call dects(i)%p%record_hit(hpoint, history)
+            end do
+
+            if(id == 0 .and. mod(j,1000) == 0)then
+                if(state%tev)then
+!$omp critical
+                    image = reshape(jmean(:,100:100,:), [state%grid%nxg,state%grid%nzg,1])
+                    call tev%update_image(state%experiment, real(image(:,:,1:1)), ["I"], 0, 0, .false., .false.)
+
+                    image = reshape(jmean(100:100,:,:), [state%grid%nyg,state%grid%nzg,1])
+                    call tev%update_image(state%experiment, real(image(:,:,1:1)), ["J"], 0, 0, .false., .false.)
+
+                    image = reshape(jmean(:,:,100:100), [state%grid%nxg,state%grid%nyg,1])
+                    call tev%update_image(state%experiment, real(image(:,:,1:1)), ["K"], 0, 0, .false., .false.)
+!$omp end critical
+                end if
+            end if
+        end do
+
+#ifdef _OPENMP
+!$OMP end  do
+!$OMP end parallel
+#endif
+    call finalise(dict, dects, nscatt, start, history)
     end subroutine weight_scatter
 
     subroutine pathlength_scatter(input_file)

@@ -8,6 +8,9 @@ List of ToDo's for SignedMCRT.
 - [x] Add Code Coverage reports
 - [x] Remove spurious implicit nones
 - [x] Make sure all optical properties are the same for a model instance (SDF)
+- [x] Add "Scattering" kernels
+    - [x] path length counter method
+    - [x] Weight method
 
 ### Minor Features
 - [ ] Add more saved state to photon_origin to save compute time
@@ -20,11 +23,9 @@ List of ToDo's for SignedMCRT.
     - [x] Camera
     - [ ] Annulus
 - [ ] Add photon trajectory history tracking
+    - [ ] Add to each detector separately 
     - [ ] Fix openMP troubles
     - [ ] Fix speed issues
-- [ ] Add "Scattering" kernels
-    - [x] path length counter method
-    - [ ] Weight method
 ### Major Features
 - [ ] Make code work on Windows
 - [ ] Automate benchmarking so we can catch performance regressions
@@ -89,3 +90,4 @@ List of ToDo's for SignedMCRT.
     - [ ] Intel
 - [ ] Can't operate trackHistory in parallel
     - [ ] Make each thread write to tmp file and finish method collate results
+- [x] Added default array option to get_vector in parse.f90

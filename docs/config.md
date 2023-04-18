@@ -53,13 +53,19 @@ This table defines the parameters for the light source used in the simulation it
 
 | Parameter | Type | Options | Default | Notes |
 |:---------:|:----:|:-------:|:-------:|:----:|
-| type | string | annulus, circle | - | - |
-| position | float array size 3 | - | - | Central position of detector |
+| type | string | annulus, circle, camera | - | - |
+| position | float array size 3 | - | NO DEFAULT! | Central position of detector |
+| direction | float array size 3 | - | [0.0, 0.0, -1.0] | Only used with circle detector |
 | radius1 | float | - | - | Radius of circular detector. Inner radius of annular detector |
 | radius2 | float | - | - | Outer radius of annulus detector. Must be larger than radius1 |
+| p1 | float array size 3 | - | [-1.0, -1.0, -1.0] | Used by camera detector only to set location and size of source|
+| p2 | float array size 3 | - | [2.0, 0.0, 0.0] | See above |
+| p3 | float array size 3 | - | [0.0, 2.0, 0.0] | See above |
 | layer | integer | - | 1 | layer to match SDF layer label |
 | nbins | integer | - | 100 | Number of bins in detector |
 | maxval | float | - | 100.0 | Maximum value to bin |
+| historyFileName | string | - | "photPos.obj" | Name of output file of detected photons histories |
+| trackHistory | boolean | - | false | If true record detected photons histories. !!!Does not work with openMP!!! |
 
 ## Output
 
