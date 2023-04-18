@@ -17,8 +17,7 @@ contains
         !subroutines
         use detector_mod,  only : dect_array, hit_t
         use historyStack,  only : history_stack_t
-        use inttau2,       only : tauint3, tauint2, update_voxels
-        use occGridMod
+        use inttau2,       only : tauint2, update_voxels
         use photonMod,     only : photon
         use random,        only : ran2, init_rng
         use sdfs,          only : container
@@ -91,7 +90,7 @@ contains
             packet%layer=minloc(abs(distances),dim=1)
             if(state%trackHistory)call history%push(vec4(packet%pos, packet%step))
             ! Find scattering location
-            call tauint2(state%grid, packet, array)!, occ)
+            call tauint2(state%grid, packet, array)
 
             do while(.not. packet%tflag)
                 if(state%trackHistory)call history%push(vec4(packet%pos, packet%step))
