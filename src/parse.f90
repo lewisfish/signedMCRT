@@ -68,7 +68,7 @@ module parse_mod
             call get_value(child, "type", dect_type, origin=origin)
             select case(dect_type)
             case default
-                print'(a)',context%report("Invalid detector type. Valid types are [circle, annulus]", &
+                print'(a)',context%report("Invalid detector type. Valid types are [circle, annulus, camera]", &
                            origin, "expected valid detector type")
                 stop 1
             case("circle")
@@ -135,9 +135,9 @@ module parse_mod
         type(vector)  :: p1, p2, p3
         logical       :: trackHistory
 
-        p1 = get_vector(child, "p1", context)
-        p2 = get_vector(child, "p2", context)
-        p3 = get_vector(child, "p3", context)
+        p1 = get_vector(child, "p1", default=vector(-1.0, -1.0, -1.0), context=context)
+        p2 = get_vector(child, "p2", default=vector(2.0, 0.0, 0.0), context=context)
+        p3 = get_vector(child, "p3", default=vector(0.0, 2.0, 0.0), context=context)
  
         call get_value(child, "layer", layer, 1)
         call get_value(child, "nbins", nbins, 100)
@@ -167,8 +167,8 @@ module parse_mod
         type(vector)  :: pos, dir
         logical       :: trackHistory
 
-        pos = get_vector(child, "position", context)
-        dir = get_vector(child, "direction", context)
+        pos = get_vector(child, "position", context=context)
+        dir = get_vector(child, "direction", default=vector(0.0, 0.0, -1.0), context=context)
         dir = dir%magnitude()
         call get_value(child, "layer", layer, 1)
         call get_value(child, "radius1", radius)
@@ -199,7 +199,7 @@ module parse_mod
         type(vector)  :: pos
         logical       :: trackHistory
 
-        pos = get_vector(child, "position", context)
+        pos = get_vector(child, "position", context=context)
         call get_value(child, "layer", layer, 1)
         call get_value(child, "radius1", radius1)
         call get_value(child, "radius2", radius2, origin=origin)
@@ -254,7 +254,7 @@ module parse_mod
             if(associated(children))then
                 nlen = len(children)
                 if(nlen < 3)then
-                    print'(a)',context%report("Need a vector of size 3 for position", origin, "expected vector of size 3")
+                    print'(a)',context%report("Need a vector of size 3 for position", origin, "expected vector of size 3 1")
                     stop 1
                 end if
                 do i = 1, len(children)
@@ -279,7 +279,7 @@ module parse_mod
                 end if
                 nlen = len(children)
                 if(nlen < 3)then
-                    print'(a)',context%report("Need a vector of size 3 for direction", origin, "expected vector of size 3")
+                    print'(a)',context%report("Need a vector of size 3 for direction", origin, "expected vector of size 3 2")
                     stop 1
                 end if
                 if(state%source == "circular")then
@@ -534,13 +534,14 @@ module parse_mod
 
     end subroutine parse_simulation
 
-    type(vector) function get_vector(child, key, context)
+    type(vector) function get_vector(child, key, default, context)
 
-        type(toml_context),        intent(in) :: context
-        type(toml_table), pointer, intent(in) :: child
-        character(*),              intent(in) :: key
+    type(toml_table),   pointer,  intent(in) :: child
+    character(*),                 intent(in) :: key
+    type(vector),       optional, intent(in) :: default
+    type(toml_context), optional, intent(in) :: context
 
-        type(toml_array), pointer  :: arr
+        type(toml_array), pointer  :: arr => null()
         real(kind=wp) :: tmp(3)
         integer :: j, origin
 
@@ -554,6 +555,8 @@ module parse_mod
                 call get_value(arr, j, tmp(j))
             end do
             get_vector = vector(tmp(1), tmp(2), tmp(3))
+        else
+            get_vector = default
         end if
 
     end function get_vector

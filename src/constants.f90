@@ -13,6 +13,7 @@ module constants
     integer,          parameter :: wp = real64 !can change this to other precision, not tested for lower or higher precisions.
     integer,          parameter :: sp = real32
     real(kind=wp),    parameter :: PI=4._wp*atan(1._wp), TWOPI=2._wp*PI
+    real(kind=wp),    parameter :: THRESHOLD = 0.01_wp, CHANCE = 0.1_wp ! used in russian roulette
     character(len=255)          :: homedir, fileplace, resdir
 
 end module constants
