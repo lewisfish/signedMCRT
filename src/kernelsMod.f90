@@ -25,7 +25,7 @@ contains
         use historyStack,  only : history_stack_t
         use inttau2,       only : tauint2
         use photonMod,     only : photon
-        use random,        only : ran2, init_rng
+        use random,        only : ran2, init_rng, seq
         use sdfs,          only : container
         use sim_state_mod, only : state
         use utils,         only : pbar
@@ -52,13 +52,14 @@ contains
         type(container),   allocatable :: array(:)
         real(kind=wp) :: ran, nscatt, start
         type(tevipc)      :: tev
+        type(seq) :: seqs(2)
 
         call setup(input_file, tev, dects, array, packet, dict, distances, image, nscatt, start)
 
 #ifdef _OPENMP
         !is state%seed private, i dont think so...
         !$omp parallel default(none) shared(dict, array, numproc, start, state, bar, jmean, phasor, tev, dects)&
-        !$omp& private(ran, id, distances, image, dir, hpoint, history) reduction(+:nscatt) firstprivate(packet)
+        !$omp& private(ran, id, distances, image, dir, hpoint, history, seqs) reduction(+:nscatt) firstprivate(packet)
         numproc = omp_get_num_threads()
         id = omp_get_thread_num()
         if(numproc > state%nphotons .and. id == 0)print*,"Warning, simulation may be underministic due to low photon count!"
@@ -74,6 +75,8 @@ contains
 
         ! set seed for rnd generator. id to change seed for each process
         call init_rng(spread(state%iseed+id, 1, 8), fwd=.true.)
+        seqs = [seq((id+1)*(state%nphotons/numproc), 2),&
+                seq((id+1)*(state%nphotons/numproc), 3)]
 
         bar = pbar(state%nphotons/ 10)
         !$OMP BARRIER
@@ -83,7 +86,7 @@ contains
             if(mod(j, 10) == 0)call bar%progress()
 
             ! Release photon from point source
-            call packet%emit(dict)
+            call packet%emit(dict, seqs)
             packet%step = 0
             packet%id = id
             distances = 0._wp

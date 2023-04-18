@@ -6,11 +6,38 @@ module random
     use constants, only : wp
 
     implicit none
-
+    
+    type :: seq
+        integer :: index, base
+        contains
+            procedure :: next
+    end type seq
+    
     private
-    public  :: ran2, ranu, rang, randint, init_rng
+    public  :: ran2, ranu, rang, randint, init_rng, seq
 
     contains
+
+        real(kind=wp) function next(this) result(res)
+
+            class(seq) :: this
+
+            real(kind=wp) :: fraction
+            integer :: i
+
+            fraction = 1.
+            res = 0.
+            i = this%index
+
+            do while(i > 0)
+                fraction = fraction / this%base
+                res = res + (fraction * mod(i, this%base))
+                i = floor(i / real(this%base, kind=wp))
+            end do
+
+            this%index = this%index + 1
+
+        end function next
 
         subroutine init_rng(input_seed, fwd)
         ! initiate RNG state with reproducible state

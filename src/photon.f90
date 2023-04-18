@@ -2,6 +2,7 @@ module photonMod
     
     use constants, only : wp
     use vector_class
+    use random, only : seq
 
     implicit none
     
@@ -30,13 +31,14 @@ module photonMod
     end interface photon
 
     abstract interface
-        subroutine generic_emit(this, dict)
+        subroutine generic_emit(this, dict, seqs)
             
             use tomlf, only : toml_table, get_value
-
+            use random, only : seq
             import :: photon
             class(photon) :: this
             type(toml_table), optional, intent(inout) :: dict
+            type(seq), optional, intent(inout) :: seqs(2)
 
         end subroutine generic_emit
     end interface
@@ -117,11 +119,11 @@ module photonMod
 
         end function init_source
 
-        subroutine circular(this, dict)
+        subroutine circular(this, dict, seqs)
         ! circular source
 
             use sim_state_mod, only : state
-            use random,        only : ran2
+            use random,        only : ran2, seq
             use constants,     only : twoPI
             use tomlf,         only : toml_table, get_value
             use sdfs,          only : rotationAlign, translate
@@ -130,7 +132,8 @@ module photonMod
         
             class(photon) :: this
             type(toml_table), optional, intent(inout) :: dict
-            
+            type(seq), optional, intent(inout) :: seqs(2)
+
             type(vector) :: a, b
             integer :: cell(3)
             real(kind=wp) :: t(4,4), radius, r, theta
@@ -188,17 +191,18 @@ module photonMod
         end subroutine circular
 
 
-        subroutine point(this, dict)
+        subroutine point(this, dict, seqs)
         !isotropic point source
 
             use sim_state_mod, only : state
-            use random,        only : ran2
+            use random,        only : ran2, seq
             use constants,     only : twoPI
             use tomlf,         only : toml_table, get_value
         
             class(photon) :: this
             type(toml_table), optional, intent(inout) :: dict
-            
+            type(seq), optional, intent(inout) :: seqs(2)
+
             integer :: cell(3)
 
             this%pos = photon_origin%pos
@@ -232,9 +236,9 @@ module photonMod
         
         end subroutine point
 
-        subroutine focus(this, dict)
+        subroutine focus(this, dict, seqs)
 
-            use random,        only : ranu
+            use random,        only : ranu, seq
             use sim_state_mod, only : state
             use utils,         only : deg2rad
             use vector_class,  only : length
@@ -242,6 +246,7 @@ module photonMod
 
             class(photon) :: this
             type(toml_table), optional, intent(inout) :: dict
+            type(seq), optional, intent(inout) :: seqs(2)
 
             type(vector)  :: targ, dir
             real(kind=wp) :: dist
@@ -285,15 +290,16 @@ module photonMod
         end subroutine focus
 
 
-        subroutine uniform(this, dict)
+        subroutine uniform(this, dict, seqs)
         !uniformly illuminate a surface of the simulation media
-            use random,        only : ranu, ran2, randint
+            use random,        only : ranu, ran2, randint, seq
             use sim_state_mod, only : state
             use tomlf,         only : toml_table, get_value
             use constants,     only : TWOPI
 
             class(photon) :: this
             type(toml_table), optional, intent(inout) :: dict
+            type(seq), optional, intent(inout) :: seqs(2)
 
             integer       :: cell(3)
             type(vector)  :: pos1, pos2, pos3
@@ -322,8 +328,8 @@ module photonMod
             call get_value(dict, "pos3%y", pos3%y)
             call get_value(dict, "pos3%z", pos3%z)
 
-            rx = ran2()
-            ry = ran2()
+            rx = ran2()!seqs(1)%next()
+            ry = ran2()!seqs(2)%next()
             this%pos%x = pos1%x + rx * pos2%x + ry * pos3%x
             this%pos%y = pos1%y + rx * pos2%y + ry * pos3%y
             this%pos%z = pos1%z + rx * pos2%z + ry * pos3%z
@@ -348,14 +354,15 @@ module photonMod
         end subroutine uniform
 
 
-        subroutine pencil(this, dict)
+        subroutine pencil(this, dict, seqs)
 
-            use random,        only : ranu
+            use random,        only : ranu, seq
             use sim_state_mod, only : state
             use tomlf,         only : toml_table, get_value
 
             class(photon) :: this
             type(toml_table), optional, intent(inout) :: dict
+            type(seq), optional, intent(inout) :: seqs(2)
 
             integer :: cell(3)
 
@@ -382,17 +389,18 @@ module photonMod
             this%zcell = cell(3)
         end subroutine pencil
 
-        subroutine dslit(this, dict)
+        subroutine dslit(this, dict, seqs)
         !sample from double slit to produce diff pattern
         !todo add in user defined slit widths
         ! add correct normalisation
-            use random,        only : ranu, ran2, randint
+            use random,        only : ranu, ran2, randint, seq
             use sim_state_mod, only : state
             use tomlf,         only : toml_table, get_value
             use constants,     only : TWOPI
 
             class(photon) :: this
             type(toml_table), optional, intent(inout) :: dict
+            type(seq), optional, intent(inout) :: seqs(2)
 
             integer       :: cell(3)
             real(kind=wp) :: x1, y1, z1, x2, y2, z2, a, b
@@ -449,17 +457,18 @@ module photonMod
 
         end subroutine dslit
 
-        subroutine aperture(this, dict)
+        subroutine aperture(this, dict, seqs)
             !sample from square aperture to produce diff pattern
             !add user defined apwid and F
             ! add correct normalisation
-            use random,        only : ranu, ran2, randint
+            use random,        only : ranu, ran2, randint, seq
             use sim_state_mod, only : state
             use tomlf,         only : toml_table, get_value
             use constants,     only : TWOPI
 
             class(photon) :: this
             type(toml_table), optional, intent(inout) :: dict
+            type(seq), optional, intent(inout) :: seqs(2)
 
             integer       :: cell(3)
             real(kind=wp) :: x1, y1, z1, x2, y2, z2, b, F, apwid
@@ -514,16 +523,17 @@ module photonMod
 
         end subroutine aperture
         
-        subroutine annulus(this, dict)
+        subroutine annulus(this, dict, seqs)
 
             use constants,     only : TWOPI 
             use utils,         only : deg2rad
             use tomlf,         only : toml_table, get_value
-            use random,        only : ran2, rang
+            use random,        only : ran2, rang, seq
             use sim_state_mod, only : state
 
             class(photon) :: this
             type(toml_table), optional, intent(inout) :: dict
+            type(seq), optional, intent(inout) :: seqs(2)
 
             character(len=:), allocatable :: beam_type
             real(kind=wp) :: beta, rlo, rhi, radius, tmp, mid, angle, x, y, z, phi, sinp, cosp
