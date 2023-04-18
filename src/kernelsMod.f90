@@ -130,7 +130,7 @@ contains
             end do
 
             dir = vector(packet%nxp, packet%nyp, packet%nzp)
-            hpoint = hit_t(packet%pos, dir, packet%weight*packet%L, packet%layer)
+            hpoint = hit_t(packet%pos, dir, packet%weight, packet%layer)
             do i = 1, size(dects)
                 call dects(i)%p%record_hit(hpoint, history)
             end do

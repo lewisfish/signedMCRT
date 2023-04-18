@@ -18,7 +18,7 @@ module photonMod
         integer       :: layer                        ! id of sdf the packet is inside
         integer       :: id                           ! thread running packet
         integer       :: cnts, bounces                ! number of sdf evals.
-        real(kind=wp) :: weight, step
+        real(kind=wp) :: weight, step!, L
 
         procedure(generic_emit), pointer :: emit => null()
         contains
@@ -223,6 +223,7 @@ module photonMod
             this%bounces = 0
             this%layer  = 1
             this%weight = 1.0_wp
+            ! this%L = 1.0
 
             this%wavelength = 2.22e-5_wp
             this%energy = 1._wp
