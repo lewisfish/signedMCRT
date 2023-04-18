@@ -5,9 +5,9 @@ module inttau2
     implicit none
     
     private
-    public :: tauint2
+    public :: tauint2, update_voxels
 
-    contains   
+    contains
 
     subroutine tauint2(grid, packet, sdfs_array)
     ! optical depth integration subroutine
@@ -20,7 +20,6 @@ module inttau2
         use vector_class, only : vector
         use surfaces,     only : reflect_refract
         use sdfs
-   
         type(cart_grid),   intent(in)    :: grid
         type(photon),      intent(inout) :: packet
         type(container),   intent(in)    :: sdfs_array(:)
@@ -262,10 +261,10 @@ module inttau2
                 dcell = d_sdf - d
                 d = d_sdf
 ! needs to be atomic so dont write to same array address with more than 1 thread at a time
-                    packet%phase = packet%phase + dcell
+                packet%phase = packet%phase + dcell
                 phasec = real(packet%energy, kind=sp)*cmplx(cos(packet%fact*packet%phase), sin(packet%fact*packet%phase), kind=sp)
 !$omp atomic
-        phasor(celli,cellj,cellk) = phasor(celli,cellj,cellk) + phasec!*mua_real
+        phasor(celli,cellj,cellk) = phasor(celli,cellj,cellk) + phasec
 !$omp atomic
                     jmean(celli,cellj,cellk) = jmean(celli,cellj,cellk) + real(dcell, kind=sp)
 !$omp atomic
@@ -274,10 +273,10 @@ module inttau2
                 exit
             else
                 d = d + dcell
-                    packet%phase = packet%phase + dcell
+                packet%phase = packet%phase + dcell
                 phasec = real(packet%energy, kind=sp)*cmplx(cos(packet%fact*packet%phase), sin(packet%fact*packet%phase), kind=sp)
 !$omp atomic
-        phasor(celli,cellj,cellk) = phasor(celli,cellj,cellk) + phasec!*mua_real
+        phasor(celli,cellj,cellk) = phasor(celli,cellj,cellk) + phasec
 !$omp atomic
                     jmean(celli,cellj,cellk) = jmean(celli,cellj,cellk) + real(dcell, kind=sp)
 !$omp atomic

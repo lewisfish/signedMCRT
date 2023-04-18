@@ -264,7 +264,6 @@ contains
             do i = 1, size(dects)
                 call dects(i)%p%record_hit(hpoint, history)
             end do
-
             if(id == 0 .and. mod(j,1000) == 0)then
                 if(state%tev)then
 !$omp critical
@@ -330,27 +329,15 @@ contains
         pos2 = vector(0.0_wp, 0.0_wp, 0.0_wp)
         call setup(input_file, tev, dects, array, packet, dict, distances, image, nscatt, start)
 
-#ifdef _OPENMP
-        !$omp parallel default(none) shared(dict, array, numproc, start, state, bar,)&
-        !$omp& private(ran, id, distances) reduction(+:nscatt,pos,pos2)&
-        !$omp firstprivate(packet)
-        numproc = omp_get_num_threads()
-        id = omp_get_thread_num()
-        if(numproc > state%nphotons .and. id == 0)print*,"Warning, simulation may be underministic due to low photon count!"
-#elif MPI
-    !nothing
-#else
         numproc = 1
         id = 0
-#endif
+
         if(id == 0)print("(a,I3.1,a)"),'Photons now running on', numproc,' cores.'
 
         ! set seed for rnd generator. id to change seed for each process
         call init_rng(spread(state%iseed+id, 1, 8), fwd=.true.)
 
         bar = pbar(state%nphotons/ 10)
-        !$OMP BARRIER
-        !$OMP do
         !loop over photons 
         do j = 1, state%nphotons
             if(mod(j, 10) == 0)call bar%progress()
@@ -373,7 +360,7 @@ contains
             do while(.not. packet%tflag)
                 ran = ran2()
                 if(ran < array(packet%layer)%p%albedo)then!interacts with tissue
-                    call packet%scatter(array(packet%layer)%p%hgg, array(packet%layer)%p%g2, dects)
+                    call packet%scatter(array(packet%layer)%p%hgg, array(packet%layer)%p%g2)
                     nscatt = nscatt + 1
                     packet%step = packet%step + 1
                     if(packet%step == 1)then
@@ -399,10 +386,7 @@ contains
                 call tauint2(state%grid, packet, array)
             end do
         end do
-#ifdef _OPENMP
-!$OMP end  do
-!$OMP end parallel
-#endif
+
     open(newunit=j,file="positions.dat")
     do i = 1, 4
         write(j,*)10.*pos(i)%x/state%nphotons,10.*pos(i)%y/state%nphotons,10.*pos(i)%z/state%nphotons

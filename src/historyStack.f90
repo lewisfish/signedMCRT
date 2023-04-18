@@ -61,7 +61,7 @@ contains
         if(res)then
             print*,"Deleting existing trackHistory files!"
             call execute_command_line("rm "//trim(fileplace)//new_filename)
-            call execute_command_line("rm "//trim(fileplace)//"scalars.dat")
+            call execute_command_line("rm "//trim(fileplace)//"scalars000.dat")
             call execute_command_line("rm "//trim(fileplace)//new_filename//"2")
         end if
 
@@ -130,7 +130,7 @@ contains
                 
         class(history_stack_t) :: this
 
-        deallocate(this%data)
+        if(allocated(this%data))deallocate(this%data)
         this%size = 0
 
     end subroutine histzero_sub
