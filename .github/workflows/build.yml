@@ -43,9 +43,6 @@ jobs:
       - name: Correct GFortran macOS
         if: contains(matrix.os, 'macos')
         run: |
-          ln -s /usr/local/bin/gfortran-${GCC_V} /usr/local/bin/gfortran
-          which gfortran-${GCC_V}
-          which gfortran
           # Backport gfortran shared libraries to version 9 folder. This is necessary because all macOS releases of fpm 
           # have these paths hardcoded in the executable (no PIC?). As the gcc ABIs have not changed from 9 to 10, we 
           # can just create symbolic links for now. This can be removed when an updated fpm release is built with gcc-10  
