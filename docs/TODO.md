@@ -45,6 +45,7 @@ List of ToDo's for SignedMCRT.
 - [ ] Add optics to Camera type
 - [x] Add phase tracking (https://github.com/lewisfish/signedMCRT/pull/2).
     - [ ] Add phase screen detector to camera
+- [x] Compress output data (https://github.com/aras-p/float_compr_tester/blob/main/src/compression_helpers.cpp) 
 
 ## Testing
 
