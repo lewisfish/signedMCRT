@@ -313,7 +313,7 @@ contains
         
         integer :: numproc, id, j, i
         type(history_stack_t) :: history
-        type(pbar)        :: bar
+        ! type(pbar)        :: bar
         type(photon)      :: packet
         type(toml_table)  :: dict
         real(kind=wp), allocatable :: distances(:), image(:,:,:)
@@ -336,10 +336,10 @@ contains
         ! set seed for rnd generator. id to change seed for each process
         call init_rng(spread(state%iseed+id, 1, 8), fwd=.true.)
 
-        bar = pbar(state%nphotons/ 10)
+        ! bar = pbar(state%nphotons/ 10)
         !loop over photons 
         do j = 1, state%nphotons
-            if(mod(j, 10) == 0)call bar%progress()
+            ! if(mod(j, 10) == 0)call bar%progress()
 
             ! Release photon from point source
             call packet%emit(dict)
