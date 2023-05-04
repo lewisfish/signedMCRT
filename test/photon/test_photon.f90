@@ -39,6 +39,7 @@ module testsPhotonMod
         use tomlf, only : set_value, toml_table
         use sim_state_mod, only : state
         use utils, only : str
+        use piecewiseMod
         use gridMod
 
         type(error_type), allocatable, intent(out) :: error
@@ -46,9 +47,11 @@ module testsPhotonMod
         type(photon) :: packet
         type(vector) :: pos, dir
         type(toml_table) :: dict
-        type(cart_grid) :: grid
+        type(spectrum_t) :: spectrum
         integer :: i
+        type(constant) :: const
 
+        const = constant(500._wp)
         state%grid = init_grid(200, 200, 200, 7.5_wp, 7.5_wp, 7.5_wp)
 
         pos = vector(0.0_wp,0.0_wp,0.0_wp)
@@ -70,8 +73,10 @@ module testsPhotonMod
         call set_value(dict, "pos3%y", 0.0_wp)
         call set_value(dict, "pos3%z", 2.0_wp)
 
+        allocate(spectrum%p, source=const)
+
         do i = 1, 10000
-            call packet%emit(dict)
+            call packet%emit(spectrum, dict)
             if(packet%pos%x /= -7.5_wp)then
                 call test_failed(error, "Uniform X coordinate failed!", "Pos%x="//str(packet%pos%x)//" should be -7.5")
                 return
@@ -94,14 +99,18 @@ module testsPhotonMod
         use sim_state_mod, only : state
         use utils, only : str
         use gridMod
+        use piecewiseMod
 
         type(error_type), allocatable, intent(out) :: error
 
         type(photon) :: packet
         type(vector) :: pos, dir
-        type(toml_table) :: dict
-        type(cart_grid) :: grid
         integer :: i
+        type(spectrum_t) :: spectrum
+        type(constant) :: const
+
+        const = constant(500._wp)
+        allocate(spectrum%p, source=const)
 
         state%grid = init_grid(200, 200, 200, 1._wp, 1._wp, 1._wp)
 
@@ -112,7 +121,7 @@ module testsPhotonMod
         packet = photon("point")
 
         do i = 1, 1000
-            call packet%emit()
+            call packet%emit(spectrum)
             if(packet%pos%x /= 0.0_wp)then
                 call test_failed(error, "Uniform X coordinate failed!", "Pos%x="//str(packet%pos%x)//" should be 0.0")
                 return
@@ -135,15 +144,18 @@ module testsPhotonMod
         use sim_state_mod, only : state
         use utils, only : str
         use gridMod
+        use piecewiseMod
 
         type(error_type), allocatable, intent(out) :: error
 
         type(photon) :: packet
         type(vector) :: pos, dir
-        type(toml_table) :: dict
-        type(cart_grid) :: grid
         integer :: i
+        type(spectrum_t) :: spectrum
+        type(constant), target :: const
 
+        const = constant(500._wp)
+        allocate(spectrum%p, source=const)
         state%grid = init_grid(200, 200, 200, 1._wp, 1._wp, 1._wp)
 
         pos = vector(0.0_wp,0.5_wp,-0.25_wp)
@@ -153,7 +165,7 @@ module testsPhotonMod
         packet = photon("pencil")
 
         do i = 1, 1000
-            call packet%emit()
+            call packet%emit(spectrum)
             if(packet%pos%x /= 0.0_wp)then
                 call test_failed(error, "Uniform X coordinate failed!", "Pos%x="//str(packet%pos%x)//" should be 0.0")
                 return

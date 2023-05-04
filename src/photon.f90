@@ -31,12 +31,14 @@ module photonMod
     end interface photon
 
     abstract interface
-        subroutine generic_emit(this, dict, seqs)
+        subroutine generic_emit(this, spectrum, dict, seqs)
             
             use tomlf, only : toml_table, get_value
             use random, only : seq
+            use piecewiseMod
             import :: photon
             class(photon) :: this
+            type(spectrum_t), intent(in) :: spectrum
             type(toml_table), optional, intent(inout) :: dict
             type(seq), optional, intent(inout) :: seqs(2)
 
@@ -119,7 +121,7 @@ module photonMod
 
         end function init_source
 
-        subroutine circular(this, dict, seqs)
+        subroutine circular(this, spectrum, dict, seqs)
         ! circular source
 
             use sim_state_mod, only : state
@@ -129,14 +131,16 @@ module photonMod
             use sdfs,          only : rotationAlign, translate
             use mat_class,     only : invert
             use vector_class
-        
+            use piecewiseMod
+
             class(photon) :: this
+            type(spectrum_t), intent(in) :: spectrum
             type(toml_table), optional, intent(inout) :: dict
             type(seq), optional, intent(inout) :: seqs(2)
 
             type(vector) :: a, b
             integer :: cell(3)
-            real(kind=wp) :: t(4,4), radius, r, theta
+            real(kind=wp) :: t(4,4), radius, r, theta, tmp
 
             this%nxp = photon_origin%nxp
             this%nyp = photon_origin%nyp
@@ -176,6 +180,8 @@ module photonMod
             this%sinp = sin(this%phi)
             this%cost = this%nzp
             this%sint = sqrt(1._wp - this%cost**2)  
+
+            call spectrum%p%sample(this%wavelength, tmp)
             
             this%tflag  = .false.
             this%cnts   = 0
@@ -191,22 +197,24 @@ module photonMod
         end subroutine circular
 
 
-        subroutine point(this, dict, seqs)
+        subroutine point(this, spectrum, dict, seqs)
         !isotropic point source
 
             use sim_state_mod, only : state
             use random,        only : ran2, seq
             use constants,     only : twoPI
             use tomlf,         only : toml_table, get_value
-        
+            use piecewiseMod
+
             class(photon) :: this
+            type(spectrum_t), intent(in) :: spectrum
             type(toml_table), optional, intent(inout) :: dict
             type(seq), optional, intent(inout) :: seqs(2)
 
             integer :: cell(3)
+            real(kind=wp) :: wavelength, tmp
 
             this%pos = photon_origin%pos
-
 
             this%phi  = ran2()*twoPI
             this%cosp = cos(this%phi)
@@ -225,7 +233,9 @@ module photonMod
             this%weight = 1.0_wp
             ! this%L = 1.0
 
-            this%wavelength = 2.22e-5_wp
+            call spectrum%p%sample(wavelength, tmp)
+            this%wavelength = wavelength
+
             this%energy = 1._wp
             this%fact = TWOPI/(this%wavelength)
 
@@ -237,20 +247,22 @@ module photonMod
         
         end subroutine point
 
-        subroutine focus(this, dict, seqs)
+        subroutine focus(this, spectrum, dict, seqs)
 
             use random,        only : ranu, seq
             use sim_state_mod, only : state
             use utils,         only : deg2rad
             use vector_class,  only : length
             use tomlf,         only : toml_table, get_value
+            use piecewiseMod
 
             class(photon) :: this
+            type(spectrum_t), intent(in) :: spectrum
             type(toml_table), optional, intent(inout) :: dict
             type(seq), optional, intent(inout) :: seqs(2)
 
             type(vector)  :: targ, dir
-            real(kind=wp) :: dist
+            real(kind=wp) :: dist, tmp
             integer       :: cell(3)
 
             targ = vector(0._wp,0._wp,0._wp)
@@ -281,6 +293,7 @@ module photonMod
             this%bounces = 0
             this%cnts = 0
             this%weight = 1.0_wp
+            call spectrum%p%sample(this%wavelength, tmp)
 
             ! Linear Grid 
             cell = state%grid%get_voxel(this%pos)
@@ -291,20 +304,22 @@ module photonMod
         end subroutine focus
 
 
-        subroutine uniform(this, dict, seqs)
+        subroutine uniform(this, spectrum, dict, seqs)
         !uniformly illuminate a surface of the simulation media
             use random,        only : ranu, ran2, randint, seq
             use sim_state_mod, only : state
             use tomlf,         only : toml_table, get_value
             use constants,     only : TWOPI
+            use piecewiseMod
 
             class(photon) :: this
+            type(spectrum_t), intent(in) :: spectrum
             type(toml_table), optional, intent(inout) :: dict
             type(seq), optional, intent(inout) :: seqs(2)
 
             integer       :: cell(3)
             type(vector)  :: pos1, pos2, pos3
-            real(kind=wp) :: rx, ry
+            real(kind=wp) :: rx, ry, tmp
 
             this%nxp = photon_origin%nxp
             this%nyp = photon_origin%nyp
@@ -341,7 +356,7 @@ module photonMod
             this%weight = 1.0_wp
 
             !FOR PHASE
-            this%wavelength = 2.22e-5_wp
+            call spectrum%p%sample(this%wavelength, tmp)
             this%energy = 1._wp
             this%fact = TWOPI/(this%wavelength)
             this%phase = 0._wp
@@ -355,17 +370,20 @@ module photonMod
         end subroutine uniform
 
 
-        subroutine pencil(this, dict, seqs)
+        subroutine pencil(this, spectrum, dict, seqs)
 
             use random,        only : ranu, seq
             use sim_state_mod, only : state
             use tomlf,         only : toml_table, get_value
+            use piecewiseMod
 
             class(photon) :: this
+            type(spectrum_t), intent(in) :: spectrum
             type(toml_table), optional, intent(inout) :: dict
             type(seq), optional, intent(inout) :: seqs(2)
 
             integer :: cell(3)
+            real(kind=wp) :: tmp
 
             this%pos = photon_origin%pos
             this%nxp = photon_origin%nxp
@@ -382,6 +400,7 @@ module photonMod
             this%bounces = 0
             this%cnts = 0
             this%weight = 1.0_wp
+            call spectrum%p%sample(this%wavelength, tmp)
 
             ! Linear Grid 
             cell = state%grid%get_voxel(this%pos)
@@ -390,7 +409,7 @@ module photonMod
             this%zcell = cell(3)
         end subroutine pencil
 
-        subroutine dslit(this, dict, seqs)
+        subroutine dslit(this, spectrum, dict, seqs)
         !sample from double slit to produce diff pattern
         !todo add in user defined slit widths
         ! add correct normalisation
@@ -398,15 +417,17 @@ module photonMod
             use sim_state_mod, only : state
             use tomlf,         only : toml_table, get_value
             use constants,     only : TWOPI
+            use piecewiseMod
 
             class(photon) :: this
+            type(spectrum_t), intent(in) :: spectrum
             type(toml_table), optional, intent(inout) :: dict
             type(seq), optional, intent(inout) :: seqs(2)
 
             integer       :: cell(3)
-            real(kind=wp) :: x1, y1, z1, x2, y2, z2, a, b
+            real(kind=wp) :: x1, y1, z1, x2, y2, z2, a, b, tmp
 
-            this%wavelength = 488e-5_wp
+            call spectrum%p%sample(this%wavelength, tmp)
             this%energy = 1._wp 
             this%fact = TWOPI/(this%wavelength)
 
@@ -458,7 +479,7 @@ module photonMod
 
         end subroutine dslit
 
-        subroutine aperture(this, dict, seqs)
+        subroutine aperture(this, spectrum, dict, seqs)
             !sample from square aperture to produce diff pattern
             !add user defined apwid and F
             ! add correct normalisation
@@ -466,15 +487,17 @@ module photonMod
             use sim_state_mod, only : state
             use tomlf,         only : toml_table, get_value
             use constants,     only : TWOPI
+            use piecewiseMod
 
             class(photon) :: this
+            type(spectrum_t), intent(in) :: spectrum
             type(toml_table), optional, intent(inout) :: dict
             type(seq), optional, intent(inout) :: seqs(2)
 
             integer       :: cell(3)
-            real(kind=wp) :: x1, y1, z1, x2, y2, z2, b, F, apwid
+            real(kind=wp) :: x1, y1, z1, x2, y2, z2, b, F, apwid, tmp
 
-            this%wavelength = 488e-5_wp
+            call spectrum%p%sample(this%wavelength, tmp)
             this%energy = 1._wp 
             this%fact = TWOPI/(this%wavelength)
 
@@ -524,15 +547,17 @@ module photonMod
 
         end subroutine aperture
         
-        subroutine annulus(this, dict, seqs)
+        subroutine annulus(this, spectrum, dict, seqs)
 
             use constants,     only : TWOPI 
             use utils,         only : deg2rad
             use tomlf,         only : toml_table, get_value
             use random,        only : ran2, rang, seq
             use sim_state_mod, only : state
+            use piecewiseMod
 
             class(photon) :: this
+            type(spectrum_t), intent(in) :: spectrum
             type(toml_table), optional, intent(inout) :: dict
             type(seq), optional, intent(inout) :: seqs(2)
 
@@ -581,6 +606,7 @@ module photonMod
             this%bounces = 0
             this%cnts = 0
             this%weight = 1.0_wp
+            call spectrum%p%sample(this%wavelength, tmp)
 
             ! Linear Grid 
             cell = state%grid%get_voxel(this%pos)

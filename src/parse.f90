@@ -11,15 +11,17 @@ module parse_mod
 
     contains
 
-    subroutine parse_params(filename, packet, dects, dict)
+    subroutine parse_params(filename, packet, dects, spectrum, dict)
     
         use photonmod
         use detector_mod, only : dect_array
+        use piecewiseMod
     
         character(*),      intent(IN)    :: filename
         type(toml_table),  intent(INOUT) :: dict
         type(photon),      intent(OUT)   :: packet
         type(dect_array), allocatable, intent(out) :: dects(:)
+        type(spectrum_t), intent(out) :: spectrum
 
         type(toml_table), allocatable :: table
         type(toml_context) :: context
@@ -31,7 +33,7 @@ module parse_mod
             stop 1
         end if
 
-        call parse_source(table, packet, dict, context)
+        call parse_source(table, packet, dict, spectrum, context)
         call parse_grid(table, dict)
         call parse_geometry(table, dict)
         call parse_detectors(table, dects, context)
@@ -218,14 +220,81 @@ module parse_mod
         counts = counts + 1
     end subroutine handle_annulus_dect
 
-    subroutine parse_source(table, packet, dict, context)
+    subroutine parse_spectrum(table, spectrum, dict, context)
+    ! TODO seperate out each case to seperate functions.
+    ! handle all possible errors
+    ! document code and update config.md
+        use piecewiseMod
+        use stdlib_io, only: loadtxt
+        use constants, only : fileplace
+
+        type(toml_table),  intent(INOUT) :: dict
+        type(toml_table), pointer :: table
+
+        type(toml_context) :: context
+        type(spectrum_t), intent(out) :: spectrum
+
+        type(toml_array), pointer :: children
+        integer :: origin, nlen, i
+        type(constant), save, target :: const
+        type(piecewise1D), save, target :: OneD
+        type(piecewise2D), save, target :: TwoD
+        character(len=:), allocatable :: stype, sfile
+        real(kind=wp) :: wavelength, cellsize(2)
+        real(kind=wp), allocatable :: array(:,:)
+
+        call get_value(table, "spectrum_type", stype, "constant", origin=origin)
+        select case(stype)
+            case("constant")
+                call get_value(table, "wavelength", wavelength, 500.0_wp)
+                const = constant(wavelength)
+                allocate(spectrum%p, source=const)
+                spectrum%p => const
+            case("1D")
+                allocate(spectrum%p, source=OneD)
+                call get_value(table, "spectrum_file", sfile)
+                call loadtxt("res/"//sfile, array)
+                OneD = piecewise1D(array)
+                allocate(spectrum%p, source=OneD)
+                spectrum%p => OneD
+            case("2D")
+                allocate(spectrum%p, source=TwoD)
+                call get_value(table, "spectrum_file", sfile)
+
+                call get_value(table, "cell_size", children, requested=.false., origin=origin)
+                if(associated(children))then
+                    nlen = len(children)
+                    if(nlen /= 2)then
+                        print'(a)',context%report("Need a vector of size 2 for cell_size", origin, "expected vector of size 2")
+                        stop 1
+                    end if
+                    do i = 1, len(children)
+                        call get_value(children, i, cellsize(i))
+                    end do
+                end if
+
+                call loadtxt(fileplace//sfile, array)
+                TwoD = piecewise2D(cellsize(1), cellsize(2), array)
+                allocate(spectrum%p, source=TwoD)
+                spectrum%p => TwoD
+            case default
+                print'(a)',context%report("Not a valid spectrum type!", origin, "expected one of either ['constant', '1D', '2D']")
+                stop 1
+        end select
+
+
+    end subroutine parse_spectrum
+
+    subroutine parse_source(table, packet, dict, spectrum, context)
     ! Parse source table
     ! any updates here MUST be reflected in docs/config.md
         use sim_state_mod, only : state
         use photonmod
+        use piecewiseMod
         
         type(toml_table),  intent(INOUT) :: table, dict
         type(photon),      intent(OUT)   :: packet
+        type(spectrum_t), intent(out) :: spectrum
         type(toml_context) :: context
 
         type(toml_table), pointer :: child
@@ -394,6 +463,8 @@ module parse_mod
             call get_value(child, "annulus_type", annulus_type, "gaussian")
             call set_value(dict, "annulus_type", annulus_type)
 
+            ! parse spectrum
+            call parse_spectrum(child, spectrum, dict, context)
         else
             print'(a)',context%report("Simulation needs Source table", origin, "Missing source table")
             stop 1

@@ -2,6 +2,8 @@
 name = "point"
 nphotons = 100000
 position = [0.0, 0.0, 0.0]
+spectrum_type = "constant"
+wavelength = 500.0
 
 [grid]
 nxg = 200

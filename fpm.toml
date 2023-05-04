@@ -12,6 +12,7 @@ test-drive.git = "https://github.com/lewisfish/test-drive"
 toml-f.git = "https://github.com/toml-f/toml-f"
 tev_bindings.git = "https://github.com/lewisfish/fortran_tev_bindings"
 utils.git = "https://github.com/lewisfish/fortran_utilities"
+stdlib = { git="https://github.com/fortran-lang/stdlib", branch="stdlib-fpm" }
 
 [preprocess]
 [preprocess.cpp]

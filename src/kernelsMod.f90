@@ -19,6 +19,7 @@ contains
         use historyStack,  only : history_stack_t
         use inttau2,       only : tauint2, update_voxels
         use photonMod,     only : photon
+        use piecewiseMod
         use random,        only : ran2, init_rng
         use sdfs,          only : container
         use sim_state_mod, only : state
@@ -47,8 +48,9 @@ contains
         real(kind=wp) :: nscatt, start, weight_absorb
         type(tevipc)      :: tev
         integer :: celli, cellj, cellk
+        type(spectrum_t) :: spectrum
 
-        call setup(input_file, tev, dects, array, packet, dict, distances, image, nscatt, start)
+        call setup(input_file, tev, dects, array, packet, spectrum, dict, distances, image, nscatt, start)
 
 #ifdef _OPENMP
         !is state%seed private, i dont think so...
@@ -79,7 +81,7 @@ contains
             if(mod(j, 10) == 0)call bar%progress()
 
             ! Release photon from point source
-            call packet%emit(dict)
+            call packet%emit(spectrum, dict)
             packet%step = 0
             packet%id = id
             distances = 0._wp
@@ -169,13 +171,15 @@ contains
         use historyStack,  only : history_stack_t
         use inttau2,       only : tauint2
         use photonMod,     only : photon
+        use piecewiseMod
         use random,        only : ran2, init_rng, seq
         use sdfs,          only : container
         use sim_state_mod, only : state
         use utils,         only : pbar
         use vec4_class,    only : vec4
         use vector_class,  only : vector
-        
+        use piecewiseMod
+
         !external deps
         use tev_mod, only : tevipc
         use tomlf,   only : toml_table
@@ -197,8 +201,9 @@ contains
         real(kind=wp) :: ran, nscatt, start
         type(tevipc)      :: tev
         type(seq) :: seqs(2)
+        type(spectrum_t) :: spectrum
 
-        call setup(input_file, tev, dects, array, packet, dict, distances, image, nscatt, start)
+        call setup(input_file, tev, dects, array, packet, spectrum, dict, distances, image, nscatt, start)
 
 #ifdef _OPENMP
         !is state%seed private, i dont think so...
@@ -230,7 +235,7 @@ contains
             if(mod(j, 10) == 0)call bar%progress()
 
             ! Release photon from point source
-            call packet%emit(dict, seqs)
+            call packet%emit(spectrum, dict, seqs)
             packet%step = 0
             packet%id = id
             distances = 0._wp
@@ -297,6 +302,7 @@ contains
         use historyStack,  only : history_stack_t
         use inttau2,       only : tauint2
         use photonMod,     only : photon
+        use piecewiseMod
         use random,        only : ran2, init_rng
         use sdfs,          only : container
         use sim_state_mod, only : state
@@ -323,10 +329,11 @@ contains
         type(tevipc)      :: tev
         type(vector)  :: pos(4), pos2(4)
         logical, intent(in) :: end_early
+        type(spectrum_t) :: spectrum
 
         pos = vector(0.0_wp, 0.0_wp, 0.0_wp)
         pos2 = vector(0.0_wp, 0.0_wp, 0.0_wp)
-        call setup(input_file, tev, dects, array, packet, dict, distances, image, nscatt, start)
+        call setup(input_file, tev, dects, array, packet, spectrum, dict, distances, image, nscatt, start)
 
         numproc = 1
         id = 0
@@ -342,7 +349,7 @@ contains
             ! if(mod(j, 10) == 0)call bar%progress()
 
             ! Release photon from point source
-            call packet%emit(dict)
+            call packet%emit(spectrum, dict)
             packet%step = 0
             packet%id = id
             distances = 0._wp
@@ -400,7 +407,7 @@ contains
 
 !####################################################################################################
 !                           Setup and break down helper routines
-    subroutine setup(input_file, tev, dects, array, packet, dict, distances, image, nscatt, start)
+    subroutine setup(input_file, tev, dects, array, packet, spectrum, dict, distances, image, nscatt, start)
 
         ! !shared data
         use iarray
@@ -411,12 +418,12 @@ contains
         use parse_mod,     only : parse_params
         use photonMod,     only : photon
         use random,        only : init_rng
+        use piecewiseMod
         use sdfs,          only : container, render
         use sim_state_mod, only : state
         use subs,          only : setup_simulation
         use utils,         only : get_time, print_time, str
         use vector_class,  only : vector
-        
         ! !external deps
         use tev_mod, only : tevipc, tev_init
         use tomlf,   only : toml_table
@@ -431,6 +438,7 @@ contains
         real(kind=wp), allocatable, intent(out) :: distances(:), image(:,:,:)
         real(kind=wp), intent(out) :: nscatt
         real(kind=wp), intent(out) :: start
+        type(spectrum_t), intent(out) :: spectrum
         
         ! mpi/mp variables
         integer       :: id
@@ -440,7 +448,7 @@ contains
         threshold = 1e-6_wp
         
         dict = toml_table()
-        call parse_params("res/"//trim(input_file), packet, dects, dict)
+        call parse_params("res/"//trim(input_file), packet, dects, spectrum, dict)
         allocate(image(state%grid%nxg,state%grid%nzg,1))
         
         call display_settings(state, input_file, packet, "Pathlength")
