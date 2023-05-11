@@ -11,12 +11,13 @@ module piecewiseMod
     end type piecewise
 
     abstract interface
-        subroutine sampleInterface(this, x, y)
+        subroutine sampleInterface(this, x, y, value)
             use constants, only : wp
             import piecewise
             implicit none
             class(piecewise), intent(in) :: this
-            real(kind=wp), intent(out), optional :: x, y
+            real(kind=wp), intent(out) :: x, y
+            real(kind=wp), intent(in), optional :: value
         end subroutine sampleInterface
     end interface
 
@@ -57,32 +58,42 @@ module piecewiseMod
 
     contains
 
-    subroutine getValue(this, x, y)
+    subroutine getValue(this, x, y, value)
 
         class(constant), intent(in) :: this
-        real(kind=wp),   intent(out), optional :: x, y
+        real(kind=wp),   intent(out) :: x, y
+        real(kind=wp), intent(in), optional :: value
 
         x = this%value
         y = -9999._wp
 
     end subroutine getValue
 
-    subroutine sample1D(this, x, y)
+    subroutine sample1D(this, x, y, value)
         
         use random, only : ran2, ranu
 
         class(piecewise1D), intent(in)  :: this
-        real(kind=wp),      intent(out),optional :: x, y
-        
+        real(kind=wp),      intent(out) :: x, y
+        real(kind=wp), intent(in), optional :: value
+
         integer(kind=int64) :: idx
         real(kind=wp)       :: val
 
-        val = ran2()
-        call search_1D(this%cdf, idx, val)
-
-        ! linear interpolation
-        x = this%array(idx, 1) + (this%array(idx+1, 1) - this%array(idx, 1)) * &
-               ((val - this%cdf(idx))/(this%cdf(idx+1) - this%cdf(idx)))
+        if(.not. present(value))then
+            !get random x coordinate then get corresponding y
+            val = ran2()
+            call search_1D(this%cdf, idx, val)
+            ! linear interpolation
+            ! offset by +1 if not get wrong values. e.g miss out on end values and get more near start.
+            x = this%array(idx+1, 1) + (this%array(idx+2, 1) - this%array(idx+1, 1)) * &
+                   ((val - this%cdf(idx))/(this%cdf(idx+1) - this%cdf(idx)))
+        else
+            !already have x so get y
+            call search_2D(this%array, idx, value)
+            x = this%array(idx, 2) + (this%array(idx+1, 2) - this%array(idx, 2)) * &
+                   ((value - this%array(idx, 1))/(this%array(idx+1, 1) - this%array(idx, 1)))
+        end if
 
     end subroutine sample1D
 
@@ -109,13 +120,14 @@ module piecewiseMod
     end function init_piecewise1D
 
 
-    subroutine sample2D(this, x, y)
+    subroutine sample2D(this, x, y, value)
         
         use random, only : ran2, ranu
 
         class(piecewise2D), intent(in)  :: this
-        real(kind=wp),      intent(out),optional :: x, y
-        
+        real(kind=wp),      intent(out) :: x, y
+        real(kind=wp), intent(in), optional :: value
+
         integer(kind=int32) :: xr, yr
         integer(kind=int64) :: idx
         real(kind=wp)       :: val
@@ -216,6 +228,32 @@ module piecewiseMod
             end if
         end do
     end subroutine search_1D
+
+    subroutine search_2D(array, nlow, value)
+        !
+        !  search by bisection for 1D array
+        !
+        
+        integer(kind=int64), intent(out) :: nlow
+        real(kind=wp),       intent(in)  :: array(:, :)
+        real(kind=wp),       intent(in)  :: value
+        
+        integer :: nup, middle
+        
+        nup = size(array, 1)
+        nlow = 1
+        middle = int((nup+nlow)/2.)
+
+        do while((nup - nlow) > 1)
+            middle = int((nup + nlow)/2.)
+            if(value > array(middle, 1))then
+                nlow = middle
+            else
+                nup = middle   
+            end if
+        end do
+    end subroutine search_2D
+
 
 
     integer(kind=int64) function split(a) result(x)
