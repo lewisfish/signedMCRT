@@ -57,24 +57,24 @@ module inttau2
             end if
 
             do while(d_sdf > eps)
-                t_sdf = d_sdf * sdfs_array(packet%layer)%p%kappa
+                t_sdf = d_sdf * sdfs_array(packet%layer)%p%optProps%p%kappa
                 if(taurun + t_sdf <= tau)then
                     !move full distance to sdf surface
                     taurun = taurun + t_sdf
                     oldpos = pos
                     !comment out for phase screen
-                    call update_grids(grid, oldpos, dir, d_sdf, packet, sdfs_array(packet%layer)%p%mua)
+                    call update_grids(grid, oldpos, dir, d_sdf, packet, sdfs_array(packet%layer)%p%optProps%p%mua)
                     pos = pos + d_sdf * dir
                     dtot = dtot + d_sdf
                 else
                     !run out of tau so move remaining tau and exit
-                    d_sdf = (tau - taurun) / sdfs_array(packet%layer)%p%kappa
+                    d_sdf = (tau - taurun) / sdfs_array(packet%layer)%p%optProps%p%kappa
                     dtot = dtot + d_sdf
                     taurun = tau
                     oldpos = pos
                     pos = pos + d_sdf * dir
                     !comment out for phase screen
-                    call update_grids(grid, oldpos, dir, d_sdf, packet, sdfs_array(packet%layer)%p%mua)
+                    call update_grids(grid, oldpos, dir, d_sdf, packet, sdfs_array(packet%layer)%p%optProps%p%mua)
                     exit
                 end if
                 ! get distance to nearest sdf
@@ -132,9 +132,9 @@ module inttau2
             end do
 
             !check for fresnel reflection
-            n1 = sdfs_array(packet%layer)%p%n
+            n1 = sdfs_array(packet%layer)%p%optProps%p%n
             new_layer = minloc(new, dim=1)
-            n2 = sdfs_array(new_layer)%p%n
+            n2 = sdfs_array(new_layer)%p%optProps%p%n
             !carry out refelction/refraction
             if (n1 /= n2)then
                 !get correct sdf normal

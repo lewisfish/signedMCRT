@@ -5,30 +5,33 @@ module opticalProperties
 
     implicit none
 
-    type, abstract :: opticalProp_t
+    type, abstract :: opticalProp
         real(kind=wp) :: mus, mua, hgg, g2, n, kappa, albedo
         contains
             procedure(updateInterface), deferred :: update
-    end type opticalProp_t
+    end type opticalProp
 
     abstract interface
         subroutine updateInterface(this, wavelength)
             use constants, only : wp
             use piecewiseMod
-            import opticalProp_t
+            import opticalProp
             implicit none
-            class(opticalProp_t), intent(inout) :: this
+            class(opticalProp), intent(inout) :: this
             real(kind=wp),        intent(out)   :: wavelength
         end subroutine updateInterface
     end interface
 
-    type, extends(opticalProp_t) :: mono
-        type(constant), private :: mus_a, mua_a, hgg_a, n_a
+    type :: opticalProp_t
+        class(opticalProp), pointer :: p => null()
+    end type opticalProp_t
+
+    type, extends(opticalProp) :: mono
         contains
             procedure :: update => updateMono
     end type mono
 
-    type, extends(opticalProp_t) :: spectral
+    type, extends(opticalProp) :: spectral
         type(piecewise1D), private :: mus_a, mua_a, hgg_a, n_a, flux
         contains
             procedure :: update => updateSpectral
@@ -38,7 +41,28 @@ module opticalProperties
         module procedure init_spectral
     end interface spectral
 
+    interface mono
+        module procedure init_mono
+    end interface mono
+
+    private
+    public :: spectral, mono, opticalProp, opticalProp_t
+
     contains
+
+    type(mono) function init_mono(mus, mua, hgg, n) result(res)
+
+        real(kind=wp), intent(in) :: mus, mua, hgg, n
+
+        res%mus = mus
+        res%mua = mua
+        res%kappa = mus + mua
+        res%albedo = mus / res%kappa
+        res%hgg = hgg
+        res%g2 = hgg**2
+        res%n = res%n
+
+    end function init_mono
 
     type(spectral) function init_spectral(mus, mua, hgg, n, flux) result(res)
 

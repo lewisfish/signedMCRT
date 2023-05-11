@@ -114,12 +114,64 @@ module photonMod
                 init_source%emit => point
             elseif(choice == "circular")then
                 init_source%emit => circular
+            elseif(choice == "slm")then
+                init_source%emit => slm
             else
                 error stop "No such source!"
             end if
 
 
         end function init_source
+
+        subroutine slm(this, spectrum, dict, seqs)
+            
+            use piecewiseMod
+            use tomlf,         only : toml_table, get_value
+            use random,        only : ran2, seq
+            use sim_state_mod, only : state
+            use constants,     only : TWOPI
+
+            class(photon) :: this
+            type(spectrum_t), intent(in) :: spectrum
+            type(toml_table), optional, intent(inout) :: dict
+            type(seq), optional, intent(inout) :: seqs(2)
+            
+            integer :: cell(3)
+            real(kind=wp) :: x, y
+
+            this%pos = photon_origin%pos
+            call spectrum%p%sample(x, y)
+            this%pos%x = (x-100) / (state%grid%nxg / (2.*state%grid%xmax))
+            this%pos%y = (y-100) / (state%grid%nyg / (2.*state%grid%ymax))
+
+            this%nxp = photon_origin%nxp
+            this%nyp = photon_origin%nyp
+            this%nzp = photon_origin%nzp
+
+            this%phi  = atan2(this%nyp, this%nxp)
+            this%cosp = cos(this%phi)
+            this%sinp = sin(this%phi)
+            this%cost = this%nzp
+            this%sint = sqrt(1._wp - this%cost**2)  
+
+            this%tflag  = .false.
+            this%cnts   = 0
+            this%bounces = 0
+            this%layer  = 1
+            this%weight = 1.0_wp
+
+            this%phase = 0.0_wp
+            this%wavelength = 500.e-9_wp
+            this%energy = 1._wp
+            this%fact = TWOPI/(this%wavelength)
+
+            ! Linear Grid 
+            cell = state%grid%get_voxel(this%pos)
+            this%xcell = cell(1)
+            this%ycell = cell(2)
+            this%zcell = cell(3)
+
+        end subroutine slm
 
         subroutine circular(this, spectrum, dict, seqs)
         ! circular source

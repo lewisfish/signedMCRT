@@ -53,10 +53,11 @@ List of ToDo's for SignedMCRT.
 - [ ] Compress output data (https://github.com/aras-p/float_compr_tester/blob/main/src/compression_helpers.cpp)
 - [ ] Add more error handling for spectrums in parse.f90
 - [ ] Add optical property type, to allow for multi-spectral input.
-    - [ ] base optical property type
+    - [x] base optical property type
         - [ ] function defined
-        - [ ] Tabulated
-    - [ ] propagate to SDFs
+        - [x] Tabulated
+    - [x] propagate to SDFs
+    - [ ] Document optical properties
 ## Testing
 
 - [x] Vec3 class

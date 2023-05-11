@@ -97,7 +97,7 @@ contains
             do while(.not. packet%tflag)
                 if(state%trackHistory)call history%push(vec4(packet%pos, packet%step))
                 
-                weight_absorb = packet%weight * (1._wp - array(packet%layer)%p%albedo)
+                weight_absorb = packet%weight * (1._wp - array(packet%layer)%p%optProps%p%albedo)
 
                 packet%weight = packet%weight - weight_absorb
                 call update_voxels(state%grid, &
@@ -117,7 +117,7 @@ contains
                 end if
                 !$omp atomic
                 jmean(celli,cellj,cellk) = jmean(celli,cellj,cellk) + weight_absorb
-                call packet%scatter(array(packet%layer)%p%hgg, array(packet%layer)%p%g2, dects)
+                call packet%scatter(array(packet%layer)%p%optProps%p%hgg, array(packet%layer)%p%optProps%p%g2, dects)
                 if(packet%weight < THRESHOLD)then
                     if(ran2() < CHANCE)then
                         packet%weight = packet%weight / CHANCE
@@ -251,8 +251,10 @@ contains
             do while(.not. packet%tflag)
                 if(state%trackHistory)call history%push(vec4(packet%pos, packet%step))
                 ran = ran2()
-                if(ran < array(packet%layer)%p%albedo)then!interacts with tissue
-                    call packet%scatter(array(packet%layer)%p%hgg, array(packet%layer)%p%g2, dects)
+
+                if(ran < array(packet%layer)%p%optProps%p%albedo)then!interacts with tissue
+                    call packet%scatter(array(packet%layer)%p%optProps%p%hgg, &
+                                        array(packet%layer)%p%optProps%p%g2, dects)
                     nscatt = nscatt + 1
                     packet%step = packet%step + 1
                 else
@@ -365,8 +367,9 @@ contains
 
             do while(.not. packet%tflag)
                 ran = ran2()
-                if(ran < array(packet%layer)%p%albedo)then!interacts with tissue
-                    call packet%scatter(array(packet%layer)%p%hgg, array(packet%layer)%p%g2)
+                if(ran < array(packet%layer)%p%optProps%p%albedo)then!interacts with tissue
+                    call packet%scatter(array(packet%layer)%p%optProps%p%hgg, &
+                                        array(packet%layer)%p%optProps%p%g2)
                     nscatt = nscatt + 1
                     packet%step = packet%step + 1
                     if(packet%step == 1)then

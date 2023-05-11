@@ -6,6 +6,7 @@ module sdfs
 !
     use vector_class
     use constants, only : wp
+    use opticalProperties, only : opticalProp_t
 
     implicit none
 
@@ -14,7 +15,8 @@ module sdfs
     ! provides deferred evaluation func to get distance to shape
     ! and gives the transform and optical prperties.
     ! Layer is an important bookeeping integer.
-        real(kind=wp) :: mus, mua, kappa, albedo, hgg, g2, n
+        ! real(kind=wp) :: mus, mua, kappa, albedo, hgg, g2, n
+        type(opticalProp_t) :: optProps
         real(kind=wp) :: transform(4, 4)
         integer :: layer
         contains
@@ -175,6 +177,9 @@ module sdfs
         module procedure neural_init
     end interface neural
 
+
+
+    
     type :: container
         class(sdf), pointer :: p => null()
     end type container
@@ -327,12 +332,12 @@ module sdfs
     contains
 
 
-        function segment_init(a, b, mus, mua, hgg, n, layer, transform) result(out)
+        function segment_init(a, b, optProp, layer, transform) result(out)
 
             type(segment) :: out
-
+            type(opticalProp_t), intent(in) :: optProp
             type(vector),            intent(IN) :: a, b
-            real(kind=wp),           intent(IN) :: mus, mua, hgg, n
+            ! real(kind=wp),           intent(IN) :: mus, mua, hgg, n
             integer,                 intent(IN) :: layer
             real(kind=wp), optional, intent(IN) :: transform(4, 4)
 
@@ -349,18 +354,8 @@ module sdfs
 
             out%layer = layer
             out%transform = t
-
-            out%mus = mus
-            out%mua = mua
-            out%kappa = mus + mua
-            if(out%mua < 1e-9_wp)then
-                out%albedo = 1.
-            else
-                out%albedo = mus / out%kappa
-            end if
-            out%hgg = hgg
-            out%g2 = hgg**2
-            out%n = n
+            
+            out%optProps = optProp
 
         end function segment_init
 
@@ -400,11 +395,10 @@ module sdfs
         end function segment_fn
 
 
-        function neural_init(mus, mua, hgg, n, layer, transform) result(out)
+        function neural_init(optProp, layer, transform) result(out)
                 
             type(neural) :: out
-            
-            real(kind=wp),           intent(IN) :: mus, mua, hgg, n
+            type(opticalProp_t) :: optProp
             integer,                 intent(IN) :: layer
             real(kind=wp), optional, intent(IN) :: transform(4, 4)
 
@@ -419,17 +413,7 @@ module sdfs
             out%layer = layer
             out%transform = t
 
-            out%mus = mus
-            out%mua = mua
-            out%kappa = mus + mua
-            if(out%mua < 1e-9_wp)then
-                out%albedo = 1._wp
-            else
-                out%albedo = mus / out%kappa
-            end if
-            out%hgg = hgg
-            out%g2 = hgg**2
-            out%n = n
+            out%optProps = optProp
 
         end function neural_init
 
@@ -576,21 +560,15 @@ end function eval_neural
             end if
 
             do i = 2, size(array)
-                if(array(1)%p%mus /= array(i)%p%mus)print*,"Error mismatch in model mus in object: ",i
-                if(array(1)%p%mua /= array(i)%p%mua)print*,"Error mismatch in model mua in object: ",i
-                if(array(1)%p%hgg /= array(i)%p%hgg)print*,"Error mismatch in model hgg in object: ",i
-                if(array(1)%p%n /= array(i)%p%n)print*,"Error mismatch in model n in object: ",i
+                if(array(1)%p%optProps%p%mus /= array(i)%p%optProps%p%mus)print*,"Error mismatch in model mus in object: ",i
+                if(array(1)%p%optProps%p%mua /= array(i)%p%optProps%p%mua)print*,"Error mismatch in model mua in object: ",i
+                if(array(1)%p%optProps%p%hgg /= array(i)%p%optProps%p%hgg)print*,"Error mismatch in model hgg in object: ",i
+                if(array(1)%p%optProps%p%n /= array(i)%p%optProps%p%n)print*,"Error mismatch in model n in object: ",i
                 if(array(1)%p%layer /= array(i)%p%layer)print*,"Error mismatch in model layer in object: ",i
             end do
 
             associate(member => array(1)%p)
-                out%mus = member%mus
-                out%mua = member%mua
-                out%kappa = member%kappa
-                out%albedo = member%albedo
-                out%g2 = member%g2
-                out%hgg = member%hgg
-                out%n = member%n
+                out%optProps = member%optProps
                 out%layer = member%layer
             end associate
 
@@ -612,11 +590,12 @@ end function eval_neural
         end function eval_model
 
 
-        function cylinder_init(a, b, radius, mus, mua, hgg, n, layer, transform) result(out)
+        function cylinder_init(a, b, radius, optProp, layer, transform) result(out)
                 
             type(cylinder) :: out
             
-            real(kind=wp),           intent(IN) :: radius, mus, mua, hgg, n
+            type(opticalProp_t),     intent(in) :: optProp
+            real(kind=wp),           intent(in) :: radius
             integer,                 intent(IN) :: layer
             type(vector),            intent(IN) :: a, b
             real(kind=wp), optional, intent(IN) :: transform(4, 4)
@@ -635,17 +614,7 @@ end function eval_neural
             out%layer = layer
             out%transform = t
 
-            out%mus = mus
-            out%mua = mua
-            out%kappa = mus + mua
-            if(out%mua < 1e-9_wp)then
-                out%albedo = 1._wp
-            else
-                out%albedo = mus / out%kappa
-            end if
-            out%hgg = hgg
-            out%g2 = hgg**2
-            out%n = n
+            out%optProps = optProp
 
         end function cylinder_init
 
@@ -702,12 +671,12 @@ end function eval_neural
 
         end function cylinder_fn
 
-        function box_init(lengths, mus, mua, hgg, n, layer, transform) result(out)
+        function box_init(lengths, optProp, layer, transform) result(out)
                 
             type(box) :: out
             
             type(vector),            intent(IN) :: lengths
-            real(kind=wp),           intent(IN) :: mus, mua, hgg, n
+            type(opticalProp_t),     intent(in) :: optProp
             integer,                 intent(IN) :: layer
             real(kind=wp), optional, intent(in) :: transform(4, 4)
 
@@ -723,38 +692,29 @@ end function eval_neural
             out%layer = layer
             out%transform = t
 
-            out%mus = mus
-            out%mua = mua
-            out%kappa = mus + mua
-            if(out%mua < 1e-9_wp)then
-                out%albedo = 1._wp
-            else
-                out%albedo = mus / out%kappa
-            end if
-            out%hgg = hgg
-            out%g2 = hgg**2
-            out%n = n
+            out%optProps = optProp
 
         end function box_init
 
-        function box_init_vec(widths, mus, mua, hgg, n, layer, transform) result(out)
+        function box_init_vec(widths, optProp, layer, transform) result(out)
                 
             type(box) :: out
-            
+
+            type(opticalProp_t),     intent(in) :: optProp
             type(vector),            intent(IN) :: widths
-            real(kind=wp),           intent(IN) :: mus, mua, hgg, n
             integer,                 intent(IN) :: layer
             real(kind=wp), optional, intent(in) :: transform(4, 4)
 
-            out = box_init(widths, mus, mua, hgg, n, layer, transform)
+            out = box_init(widths, optProp, layer, transform)
 
         end function box_init_vec
 
-        function box_init_scal(width, mus, mua, hgg, n, layer, transform) result(res)
+        function box_init_scal(width, optProp, layer, transform) result(res)
                 
             type(box) :: res
             
-            real(kind=wp),           intent(IN) :: width, mus, mua, hgg, n
+            type(opticalProp_t),     intent(in) :: optProp
+            real(kind=wp),           intent(IN) :: width
             integer,                 intent(IN) :: layer
             real(kind=wp), optional, intent(in) :: transform(4, 4)
 
@@ -762,7 +722,7 @@ end function eval_neural
 
             widths = vector(width, width, width)
 
-            res = box_init(widths, mus, mua, hgg, n, layer, transform)
+            res = box_init(widths, optProp, layer, transform)
 
         end function box_init_scal
 
@@ -792,12 +752,13 @@ end function eval_neural
         end function box_fn
 
 
-        function bevel_box_init(size, box_r, mus, mua, hgg, n, layer, transform) result(out)
+        function bevel_box_init(size, box_r, optProp, layer, transform) result(out)
                 
             type(bevel_box) :: out
             
+            type(opticalProp_t),     intent(in) :: optProp
             type(vector),            intent(IN) :: size
-            real(kind=wp),           intent(IN) :: box_r, mus, mua, hgg, n
+            real(kind=wp),           intent(IN) :: box_r
             integer,                 intent(IN) :: layer
             real(kind=wp), optional, intent(in) :: transform(4, 4)
 
@@ -813,18 +774,7 @@ end function eval_neural
             out%box_r = box_r
             out%layer = layer
             out%transform = t
-
-            out%mus = mus
-            out%mua = mua
-            out%kappa = mus + mua
-            if(out%mua < 1e-9_wp)then
-                out%albedo = 1._wp
-            else
-                out%albedo = mus / out%kappa
-            end if
-            out%hgg = hgg
-            out%g2 = hgg**2
-            out%n = n
+            out%optProps = optProp
 
         end function bevel_box_init
 
@@ -866,11 +816,12 @@ end function eval_neural
 
 
 
-        function sphere_init(radius, mus, mua, hgg, n, layer, transform) result(out)
+        function sphere_init(radius, optProp, layer, transform) result(out)
                 
             type(sphere) :: out
             
-            real(kind=wp),           intent(IN) :: radius, mus, mua, hgg, n
+            type(opticalProp_t),     intent(in) :: optProp
+            real(kind=wp),           intent(IN) :: radius
             integer,                 intent(IN) :: layer
             real(kind=wp), optional, intent(IN) :: transform(4, 4)
 
@@ -887,17 +838,7 @@ end function eval_neural
 
             out%transform = t
 
-            out%mus = mus
-            out%mua = mua
-            out%kappa = mus + mua
-            if(out%mua < 1e-9_wp)then
-                out%albedo = 1._wp
-            else
-                out%albedo = mus / out%kappa
-            end if
-            out%hgg = hgg
-            out%g2 = hgg**2
-            out%n = n
+            out%optProps = optProp
 
         end function sphere_init
 
@@ -925,11 +866,12 @@ end function eval_neural
         end function sphere_fn
 
 
-        function torus_init(oradius, iradius, mus, mua, hgg, n, layer, transform) result(out)
+        function torus_init(oradius, iradius, optProp, layer, transform) result(out)
         
             type(torus) :: out
             
-            real(kind=wp),           intent(IN) :: oradius, iradius, mus, mua, hgg, n
+            type(opticalProp_t),     intent(in) :: optProp
+            real(kind=wp),           intent(IN) :: oradius, iradius
             integer,                 intent(IN) :: layer
             real(kind=wp), optional, intent(IN) :: transform(4, 4)
 
@@ -946,17 +888,7 @@ end function eval_neural
             out%layer = layer
             out%transform = t
 
-            out%mus = mus
-            out%mua = mua
-            out%kappa = mus + mua
-            if(out%mua < 1e-9_wp)then
-                out%albedo = 1._wp
-            else
-                out%albedo = mus / out%kappa
-            end if
-            out%hgg = hgg
-            out%g2 = hgg**2
-            out%n = n
+            out%optProps = optProp
 
         end function torus_init
 
@@ -987,13 +919,14 @@ end function eval_neural
         end function torus_fn
 
 
-        function triprism_init(h1, h2, mus, mua, hgg, n, layer, transform) result(out)
+        function triprism_init(h1, h2, optProp, layer, transform) result(out)
         !h1 is height
         !h2 is length
         !        
             type(triprism) :: out
             
-            real(kind=wp),           intent(IN) :: h1, h2, mus, mua, hgg, n
+            type(opticalProp_t),     intent(in) :: optProp
+            real(kind=wp),           intent(IN) :: h1, h2
             integer,                 intent(IN) :: layer
             real(kind=wp), optional, intent(IN) :: transform(4, 4)
 
@@ -1009,18 +942,7 @@ end function eval_neural
             out%h2 = h2
             out%layer = layer
             out%transform = t
-
-            out%mus = mus
-            out%mua = mua
-            out%kappa = mus + mua
-            if(out%mua < 1e-9_wp)then
-                out%albedo = 1._wp
-            else
-                out%albedo = mus / out%kappa
-            end if
-            out%hgg = hgg
-            out%g2 = hgg**2
-            out%n = n
+            out%optProps = optProp
 
         end function triprism_init
 
@@ -1050,12 +972,13 @@ end function eval_neural
 
         end function triprism_fn
 
-        function cone_init(a, b, ra, rb, mus, mua, hgg, n, layer, transform) result(out)
+        function cone_init(a, b, ra, rb, optProp, layer, transform) result(out)
         
             type(cone) :: out
             
+            type(opticalProp_t),     intent(in) :: optProp
             type(vector),            intent(IN) :: a, b
-            real(kind=wp),           intent(IN) :: ra, rb, mus, mua, hgg, n
+            real(kind=wp),           intent(IN) :: ra, rb
             integer,                 intent(IN) :: layer
             real(kind=wp), optional, intent(IN) :: transform(4, 4)
 
@@ -1073,18 +996,7 @@ end function eval_neural
             out%rb = rb
             out%layer = layer
             out%transform = t
-
-            out%mus = mus
-            out%mua = mua
-            out%kappa = mus + mua
-            if(out%mua < 1e-9_wp)then
-                out%albedo = 1._wp
-            else
-                out%albedo = mus / out%kappa
-            end if
-            out%hgg = hgg
-            out%g2 = hgg**2
-            out%n = n
+            out%optProps = optProp
 
         end function cone_init
 
@@ -1135,12 +1047,13 @@ end function eval_neural
 
         end function cone_fn
 
-        function capsule_init(a, b, r, mus, mua, hgg, n, layer, transform) result(out)
+        function capsule_init(a, b, r, optProp, layer, transform) result(out)
         
             type(capsule) :: out
             
             type(vector),            intent(IN) :: a, b
-            real(kind=wp),           intent(IN) :: r, mus, mua, hgg, n
+            type(opticalProp_t),     intent(in) :: optProp
+            real(kind=wp),           intent(IN) :: r
             integer,                 intent(IN) :: layer
             real(kind=wp), optional, intent(IN) :: transform(4, 4)
 
@@ -1158,17 +1071,7 @@ end function eval_neural
             out%layer = layer
             out%transform = t
 
-            out%mus = mus
-            out%mua = mua
-            out%kappa = mus + mua
-            if(out%mua < 1e-9_wp)then
-                out%albedo = 1._wp
-            else
-                out%albedo = mus / out%kappa
-            end if
-            out%hgg = hgg
-            out%g2 = hgg**2
-            out%n = n
+            out%optProps = optProp
 
         end function capsule_init
 
@@ -1204,12 +1107,12 @@ end function eval_neural
         end function capsule_fn
 
 
-        function plane_init(a, mus, mua, hgg, n, layer, transform) result(out)
+        function plane_init(a, optProp, layer, transform) result(out)
         
             type(plane) :: out
             
+            type(opticalProp_t),      intent(in) :: optProp
             type(vector),             intent(IN) :: a
-            real(kind=wp),            intent(IN) :: mus, mua, hgg, n
             integer,                  intent(IN) :: layer
             real(kind=wp),  optional, intent(IN) :: transform(4, 4)
 
@@ -1225,17 +1128,7 @@ end function eval_neural
             out%layer = layer
             out%transform = t
 
-            out%mus = mus
-            out%mua = mua
-            out%kappa = mus + mua
-            if(out%mua < 1e-9_wp)then
-                out%albedo = 1._wp
-            else
-                out%albedo = mus / out%kappa
-            end if
-            out%hgg = hgg
-            out%g2 = hgg**2
-            out%n = n
+            out%optProps = optProp
 
         end function plane_init
 
@@ -1263,11 +1156,12 @@ end function eval_neural
         end function plane_fn
 
 
-        function moon_init(d, ra, rb, mus, mua, hgg, n, layer, transform) result(out)
+        function moon_init(d, ra, rb, optProp, layer, transform) result(out)
         
             type(moon) :: out
             
-            real(kind=wp),            intent(IN) :: d, ra, rb, mus, mua, hgg, n
+            type(opticalProp_t),      intent(in) :: optProp
+            real(kind=wp),            intent(IN) :: d, ra, rb
             integer,                  intent(IN) :: layer
             real(kind=wp),  optional, intent(IN) :: transform(4, 4)
 
@@ -1285,17 +1179,7 @@ end function eval_neural
             out%layer = layer
             out%transform = t
 
-            out%mus = mus
-            out%mua = mua
-            out%kappa = mus + mua
-            if(out%mua < 1e-9_wp)then
-                out%albedo = 1._wp
-            else
-                out%albedo = mus / out%kappa
-            end if
-            out%hgg = hgg
-            out%g2 = hgg**2
-            out%n = n
+            out%optProps = optProp
 
         end function moon_init
 
@@ -1335,14 +1219,15 @@ end function eval_neural
 
         end function moon_fn
 
-        function egg_init(r1, r2, h, mus, mua, hgg, n, layer, transform) result(out)
+        function egg_init(r1, r2, h, optProp, layer, transform) result(out)
         ! makes a Moss egg. https://www.shadertoy.com/view/WsjfRt
         ! R1 controls "fatness" of the egg. Actually controls the base circle radius.
         ! R2 contorls the pointiness of the egg. Actually controls radius of top circle.
         ! h controls the height of the egg. Actually controls y position of top circle.
             type(egg) :: out
             
-            real(kind=wp),            intent(IN) :: r1, r2, h, mus, mua, hgg, n
+            type(opticalProp_t),      intent(in) :: optProp
+            real(kind=wp),            intent(IN) :: r1, r2, h
             integer,                  intent(IN) :: layer
             real(kind=wp),  optional, intent(IN) :: transform(4, 4)
 
@@ -1359,18 +1244,7 @@ end function eval_neural
             out%r2 = r2
             out%layer = layer
             out%transform = t
-
-            out%mus = mus
-            out%mua = mua
-            out%kappa = mus + mua
-            if(out%mua < 1e-9_wp)then
-                out%albedo = 1._wp
-            else
-                out%albedo = mus / out%kappa
-            end if
-            out%hgg = hgg
-            out%g2 = hgg**2
-            out%n = n
+            out%optProps = optProp
 
         end function egg_init
 
@@ -1481,13 +1355,7 @@ end function eval_neural
             out%size = size
             out%prim => prim
 
-            out%mus = prim%mus
-            out%mua = prim%mua
-            out%hgg = prim%hgg
-            out%g2 = prim%g2
-            out%n = prim%n
-            out%kappa = prim%kappa
-            out%albedo = prim%kappa
+            out%optProps = prim%optProps
             out%layer = prim%layer
             out%transform = identity()
 
@@ -1529,13 +1397,8 @@ end function eval_neural
             out%k = k
             out%prim => prim
 
-            out%mus = prim%mus
-            out%mua = prim%mua
-            out%hgg = prim%hgg
-            out%g2 = prim%g2
-            out%n = prim%n
-            out%kappa = prim%kappa
-            out%albedo = prim%kappa
+            out%optProps = prim%optProps
+
             out%layer = prim%layer
             out%transform = identity()
 
@@ -1579,13 +1442,8 @@ end function eval_neural
             out%func => func
             out%prim => prim
 
-            out%mus = prim%mus
-            out%mua = prim%mua
-            out%hgg = prim%hgg
-            out%g2 = prim%g2
-            out%n = prim%n
-            out%kappa = prim%kappa
-            out%albedo = prim%kappa
+            out%optProps = prim%optProps
+
             out%layer = prim%layer
             out%transform = identity()
 
@@ -1624,13 +1482,8 @@ end function eval_neural
 
             out%k = k
             out%prim => prim
-            out%mus = prim%mus
-            out%mua = prim%mua
-            out%hgg = prim%hgg
-            out%g2 = prim%g2
-            out%n = prim%n
-            out%kappa = prim%kappa
-            out%albedo = prim%kappa
+            out%optProps = prim%optProps
+
             out%layer = prim%layer
             out%transform = identity()
 
@@ -1677,13 +1530,8 @@ end function eval_neural
             out%lb = lb
             out%prim => prim
 
-            out%mus = prim%mus
-            out%mua = prim%mua
-            out%hgg = prim%hgg
-            out%g2 = prim%g2
-            out%n = prim%n
-            out%kappa = prim%kappa
-            out%albedo = prim%kappa
+            out%optProps = prim%optProps
+
             out%layer = prim%layer
             out%transform = identity()
 
@@ -1724,13 +1572,8 @@ end function eval_neural
             out%h = h
             out%prim => prim
 
-            out%mus = prim%mus
-            out%mua = prim%mua
-            out%hgg = prim%hgg
-            out%g2 = prim%g2
-            out%n = prim%n
-            out%kappa = prim%kappa
-            out%albedo = prim%kappa
+            out%optProps = prim%optProps
+
             out%layer = prim%layer
             out%transform = identity()
 
@@ -1771,13 +1614,8 @@ end function eval_neural
             out%o = o
             out%prim => prim
 
-            out%mus = prim%mus
-            out%mua = prim%mua
-            out%hgg = prim%hgg
-            out%g2 = prim%g2
-            out%n = prim%n
-            out%kappa = prim%kappa
-            out%albedo = prim%kappa
+            out%optProps = prim%optProps
+
             out%layer = prim%layer
             out%transform = identity()
 
@@ -1817,13 +1655,8 @@ end function eval_neural
             out%thickness = thickness
             out%prim => prim
 
-            out%mus = prim%mus
-            out%mua = prim%mua
-            out%hgg = prim%hgg
-            out%g2 = prim%g2
-            out%n = prim%n
-            out%kappa = prim%kappa
-            out%albedo = prim%kappa
+            out%optProps = prim%optProps
+
             out%layer = prim%layer
             out%transform = identity()
 
