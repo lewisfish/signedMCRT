@@ -226,7 +226,9 @@ module parse_mod
     ! document code and update config.md
         use piecewiseMod
         use stdlib_io, only: loadtxt
-        use constants, only : fileplace
+        use constants, only : resdir
+
+        use stb_image_mod
 
         type(toml_table),  intent(INOUT) :: dict
         type(toml_table), pointer :: table
@@ -235,11 +237,12 @@ module parse_mod
         type(spectrum_t), intent(out) :: spectrum
 
         type(toml_array), pointer :: children
-        integer :: origin, nlen, i
+        integer :: origin, nlen, i, err, width, height, n_channels,u
+        integer, allocatable :: image(:,:,:)
         type(constant), save, target :: const
         type(piecewise1D), save, target :: OneD
         type(piecewise2D), save, target :: TwoD
-        character(len=:), allocatable :: stype, sfile
+        character(len=:), allocatable :: stype, sfile, filetype
         real(kind=wp) :: wavelength, cellsize(2)
         real(kind=wp), allocatable :: array(:,:)
 
@@ -261,7 +264,7 @@ module parse_mod
                 allocate(spectrum%p, source=TwoD)
                 call get_value(table, "spectrum_file", sfile)
 
-                call get_value(table, "cell_size", children, requested=.false., origin=origin)
+                call get_value(table, "cell_size", children, requested=.true., origin=origin)
                 if(associated(children))then
                     nlen = len(children)
                     if(nlen /= 2)then
@@ -273,7 +276,27 @@ module parse_mod
                     end do
                 end if
 
-                call loadtxt(fileplace//sfile, array)
+                filetype = sfile(len(sfile)-2:)
+                select case(filetype)
+                case("png")
+                    err = stbi_info(trim(resdir)//trim(sfile), width, height, n_channels)
+                    if(err == 0)then
+                        print'(2a,1x,a)', "Error reading file: ", trim(sfile),stbi_failure_reason()
+                        stop 1
+                    end if
+                    image = stbi_load(trim(resdir)//trim(sfile), width, height, n_channels, 0)
+                    allocate(array(size(image, 1), size(image, 2)))
+                    array = image(:,:,1)
+
+                    deallocate(image)
+
+                case("dat")
+                    call loadtxt(resdir//trim(sfile), array)
+                case("txt")
+                    call loadtxt(resdir//trim(sfile), array)
+                case default
+                    print'(2a)', "Unknown spectrum file type:", filetype
+                end select
                 TwoD = piecewise2D(cellsize(1), cellsize(2), array)
                 allocate(spectrum%p, source=TwoD)
                 spectrum%p => TwoD

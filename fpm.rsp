@@ -7,7 +7,6 @@ option build --compiler ifort
 @runmp
 option run sMCRT --compiler gfortran --profile release --flag "-fopenmp"
 
-
 @debug
 option run sMCRT --compiler gfortran --flag "-O2 -march=native -flto -mavx -g -fbacktrace -fcheck=all -fbounds-check -ffpe-trap=invalid,overflow,underflow,denormal"
 

@@ -11,6 +11,10 @@ List of ToDo's for SignedMCRT.
 - [x] Add "Scattering" kernels
     - [x] path length counter method
     - [x] Weight method
+- [x] Add documentation on piecewise
+    - [x] Constant
+    - [x] 1D
+    - [x] 2D
 
 ### Minor Features
 - [ ] Add more saved state to photon_origin to save compute time
@@ -45,8 +49,14 @@ List of ToDo's for SignedMCRT.
 - [ ] Add optics to Camera type
 - [x] Add phase tracking (https://github.com/lewisfish/signedMCRT/pull/2).
     - [ ] Add phase screen detector to camera
-- [x] Compress output data (https://github.com/aras-p/float_compr_tester/blob/main/src/compression_helpers.cpp) 
-
+    - [ ] Add refractive index accounting
+- [ ] Compress output data (https://github.com/aras-p/float_compr_tester/blob/main/src/compression_helpers.cpp)
+- [ ] Add more error handling for spectrums in parse.f90
+- [ ] Add optical property type, to allow for multi-spectral input.
+    - [ ] base optical property type
+        - [ ] function defined
+        - [ ] Tabulated
+    - [ ] propagate to SDFs
 ## Testing
 
 - [x] Vec3 class

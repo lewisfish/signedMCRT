@@ -54,7 +54,7 @@ contains
 
 #ifdef _OPENMP
         !is state%seed private, i dont think so...
-        !$omp parallel default(none) shared(dict, array, numproc, start, state, bar, jmean, tev, dects)&
+        !$omp parallel default(none) shared(dict, array, numproc, start, state, bar, jmean, tev, dects, spectrum)&
         !$omp& private(id, distances, image, dir, hpoint, history, weight_absorb, cellk, cellj, celli) &
         !$omp& reduction(+:nscatt) firstprivate(packet)
         numproc = omp_get_num_threads()
@@ -207,7 +207,7 @@ contains
 
 #ifdef _OPENMP
         !is state%seed private, i dont think so...
-        !$omp parallel default(none) shared(dict, array, numproc, start, state, bar, jmean, phasor, tev, dects)&
+        !$omp parallel default(none) shared(dict, array, numproc, start, state, bar, jmean, phasor, tev, dects, spectrum)&
         !$omp& private(ran, id, distances, image, dir, hpoint, history, seqs) reduction(+:nscatt) firstprivate(packet)
         numproc = omp_get_num_threads()
         id = omp_get_thread_num()
@@ -421,7 +421,7 @@ contains
         use piecewiseMod
         use sdfs,          only : container, render
         use sim_state_mod, only : state
-        use subs,          only : setup_simulation
+        use subs,          only : setup_simulation, directory
         use utils,         only : get_time, print_time, str
         use vector_class,  only : vector
         ! !external deps
@@ -447,6 +447,8 @@ contains
         chance = 1._wp/10._wp
         threshold = 1e-6_wp
         
+        call directory()
+
         dict = toml_table()
         call parse_params("res/"//trim(input_file), packet, dects, spectrum, dict)
         allocate(image(state%grid%nxg,state%grid%nzg,1))

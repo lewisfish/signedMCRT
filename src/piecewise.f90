@@ -124,8 +124,8 @@ module piecewiseMod
         call search_1D(this%cdf, idx, val)
         call decode(idx, xr, yr)
 
-        x = real(x - this%xoffset, kind=wp) + ranu(-this%cell_width, this%cell_width)
-        y = real(y - this%yoffset, kind=wp) + ranu(-this%cell_height, this%cell_height)
+        x = real(xr - this%xoffset, kind=wp) + ranu(-this%cell_width, this%cell_width)
+        y = real(yr - this%yoffset, kind=wp) + ranu(-this%cell_height, this%cell_height)
 
     end subroutine sample2D
 

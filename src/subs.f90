@@ -6,7 +6,7 @@ module subs
     implicit none
 
     private
-    public  :: setup_simulation, dealloc_array
+    public  :: setup_simulation, dealloc_array, directory
 
     contains
 
@@ -20,9 +20,6 @@ module subs
 
             type(toml_table),  optional,  intent(INOUT) :: dict
             type(container), allocatable, intent(OUT)   :: sdfarray(:)
-
-            !set directory paths
-            call directory
 
             !allocate and set arrays to 0
             call alloc_array(settings%grid%nxg, settings%grid%nyg, settings%grid%nzg)
@@ -423,7 +420,8 @@ module subs
             bbox = box(vector(10._wp, 10._wp, 2.001_wp), 0._wp, 0._wp, 0._wp, 1._wp, 2) 
             inquire(file="res/svg.f90", exist=fexists)
             if(.not. fexists)error stop "need to generate svg.f90 and place in res/"
-            include "../res/svg.f90"
+            error stop "need to uncomment inlcude line!"
+            ! include "../res/svg.f90"
 
             do i = 1, size(cnta)
                 allocate(cnta(i)%p, source=ex(i))

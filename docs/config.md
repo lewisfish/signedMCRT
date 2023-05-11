@@ -20,6 +20,10 @@ This table defines the parameters for the light source used in the simulation it
 | rhi | float | - | 0.6 | Annular source upper radius |
 | Beta | float | - | 5.0 | Annular source convergence angle (Bessel beam beta parameter) |
 | annulus_type | string | gaussian, tophat | gaussian | Type of annular beam |
+| spectrum_type | string | constant, 1D, 2D | constant | Type of spectrum used |
+| spectrum_file | string | - | - | filename of 1D or 2D spectrum/image |
+| cell_size | float array size 2 | - | - | size of pixel in 2D spectrum in simulation units. |
+| wavelength | float | - | 500 nm | Wavelength for constant spectrum |
 
 **Note** point1, point2, and point3 define a rectangle. Point1 is the origin,point2 and point3 are the vectors that describe the sides.
 

@@ -42,11 +42,15 @@ Below is the current list of dependencies:
 
 * [test drive](https://github.com/fortran-lang/test-drive)
 * [Fortran TEV Bindings](https://github.com/lewisfish/fortran_tev_bindings)
+* [stdlib](https://github.com/fortran-lang/stdlib)
+* [stb_image](https://github.com/lewisfish/fortran_stb_image)
 * [Fortran Utilities](https://github.com/lewisfish/fortran_utilities)
 
 Test drive is used to run all tests.
 Fortran [TEV](https://github.com/Tom94/tev/) Bindings is used to interface with TEV, to show live slices of fluences as the simulation is run, which is handy for debugging purposes.
-Finally, Fortran Utilities is my personal collection of useful fortran utilities such as mathematical functions, or progress bars.
+Stdlib is a collection of routines purposed for inclusion within the Fortran standard. Stdlib is used here for it's loadtxt function to load arbitrary plain text data into arrays. More of stdlib may be used in future.
+Fortran_stb_Image is used to load images into arrays. Fortran_stb_image are the Fortran bindings for [stb_image](https://github.com/nothings/stb).
+Finally, Fortran Utilities is my personal collection of useful Fortran utilities such as mathematical functions, or progress bars.
 
 ## Config file
 signedMCRT uses TOML as it's configuration file format.
@@ -160,6 +164,26 @@ parse_params is the only public function in this module. This function returns a
 Any additions to the toml input file should be added in here.
 
 Source code can be found [here](/src/parse.f90)
+
+### piecewise.f90
+
+This file contains the piecewise abstract type, for sampling from constants, 1D or 2D arrays. Inspired by [PBRT](https://www.pbr-book.org/) piecewise class.
+Currently, the following public types are defined:
+
+* Constant. Used in the case where there is only one value.
+* 1D. Used in the case where there is a spectrum
+* 2D. Used in the case where SLM or other image based source types are needed.
+
+The piecewise type ensures that there is a method (sample) that can be called on all inherited types, e.g
+
+call 2Dimage%p%sample(x, y)
+
+will return a position (x,y) from where to release a photon.
+
+This class can be used to have multi-spectral or single valued wavelength, or used as a 2D image input source i.e SLMs.
+NOTE: optical properties are not currently adjusted on wavelength change.
+
+Source code can be found [here](/src/piecewise.f90)
 
 ### random_mod.f90
 
