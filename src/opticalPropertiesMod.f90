@@ -56,11 +56,17 @@ module opticalProperties
 
         res%mus = mus
         res%mua = mua
+
         res%kappa = mus + mua
-        res%albedo = mus / res%kappa
+        if(res%mua < 1e-9_wp)then          
+            res%albedo = 1.
+        else
+            res%albedo = res%mus / res%kappa
+        end if
+
         res%hgg = hgg
         res%g2 = hgg**2
-        res%n = res%n
+        res%n = n
 
     end function init_mono
 
@@ -83,8 +89,11 @@ module opticalProperties
         call res%n_a%sample(res%n, tmp)
 
         res%kappa =  res%mus + res%mua
-        res%albedo = res%mus / res%kappa
-
+        if(res%mua < 1e-9_wp)then          
+            res%albedo = 1.
+        else
+            res%albedo = res%mus / res%kappa
+        end if
     end function init_spectral
 
     subroutine updateMono(this, wavelength)

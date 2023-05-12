@@ -428,6 +428,7 @@ module photonMod
             use sim_state_mod, only : state
             use tomlf,         only : toml_table, get_value
             use piecewiseMod
+            use constants,     only : TWOPI
 
             class(photon) :: this
             type(spectrum_t), intent(in) :: spectrum
@@ -453,6 +454,8 @@ module photonMod
             this%cnts = 0
             this%weight = 1.0_wp
             call spectrum%p%sample(this%wavelength, tmp)
+            this%energy = 1.0_wp
+            this%fact = TWOPI / this%wavelength
 
             ! Linear Grid 
             cell = state%grid%get_voxel(this%pos)
