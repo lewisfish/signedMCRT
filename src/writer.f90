@@ -18,18 +18,16 @@ module writer_mod
     public :: normalise_fluence, write_data, write_detected_photons
 
     contains
-        function normalise_fluence(grid, array, nphotons) result(out)
+        subroutine normalise_fluence(grid, array, nphotons)
         ! normalise fluence in the Lucy 1999 way
             
             use gridMod
             use constants, only : sp
 
             type(cart_grid), intent(IN) :: grid
-            real(kind=sp),   intent(IN) :: array(:, :, :)
+            real(kind=sp),   intent(INout) :: array(:, :, :)
             integer,         intent(IN) :: nphotons
             
-            real(kind=sp), allocatable :: out(:, :, :)
-
             real(kind=wp) :: xmax, ymax, zmax
             integer       :: nxg, nyg, nzg
 
@@ -40,11 +38,9 @@ module writer_mod
             ymax = grid%ymax
             zmax = grid%zmax
 
-            allocate(out(size(array, 1), size(array, 2), size(array, 3)))
+array  = array * ((2._sp*xmax*2._sp*ymax)/(nphotons * (2._sp * xmax / nxg) * (2._sp * ymax / nyg) * (2._sp * zmax / nzg)))
 
-            out  = array * ((2._sp*xmax*2._sp*ymax)/(nphotons * (2._sp * xmax / nxg) * (2._sp * ymax / nyg) * (2._sp * zmax / nzg)))
-
-        end function normalise_fluence
+        end subroutine normalise_fluence
 
 
         subroutine write_detected_photons(detectors)

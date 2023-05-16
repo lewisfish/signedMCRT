@@ -541,11 +541,11 @@ subroutine finalise(dict, dects, nscatt, start, history)
         call set_value(dict, "source", state%source)
         call set_value(dict, "experiment", state%experiment)
 
-        jmeanGLOBAL = normalise_fluence(state%grid, jmeanGLOBAL, state%nphotons)
+        call normalise_fluence(state%grid, jmeanGLOBAL, state%nphotons)
         call write_data(jmeanGLOBAL, trim(fileplace)//"jmean/"//state%outfile, state, dict)
-        if(state%absorb)call write_data(absorbGLOBAL, trim(fileplace)//"deposit/"//state%outfile_absorb, state, dict)
+        ! if(state%absorb)call write_data(absorbGLOBAL, trim(fileplace)//"deposit/"//state%outfile_absorb, state, dict)
         !INTENSITY
-        call write_data(abs(phasorGLOBAL)**2, trim(fileplace)//"phasor/"//state%outfile, state, dict)    
+        ! call write_data(abs(phasorGLOBAL)**2, trim(fileplace)//"phasor/"//state%outfile, state, dict)    
     end if
     !write out detected photons
     if(size(dects) > 0)then
