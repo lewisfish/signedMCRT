@@ -57,7 +57,15 @@ List of ToDo's for SignedMCRT.
         - [ ] function defined
         - [x] Tabulated
     - [x] propagate to SDFs
+    - [ ] propagate to subs.f90
     - [ ] Document optical properties
+    - [ ] Change API to match that of SDFs, i.e easier to use
+- [ ] Add MPI + openMP mode (e.g. run openMP on N nodes with minimal communication)
+- [ ] Finish new SDF API
+    - [ ] add all SDFs
+    - [ ] add adjustment functions (twist, union etc)
+    - [ ] propagate to subs.f90
+
 ## Testing
 
 - [x] Vec3 class

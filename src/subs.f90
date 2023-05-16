@@ -15,11 +15,11 @@ module subs
         ! Setup up various simulation parameters and routines
         !
             use vector_class
-            use sdfs,          only : container
+            use sdfNew,        only : sdf
             use sim_state_mod, only : settings => state
 
             type(toml_table),  optional,  intent(INOUT) :: dict
-            type(container), allocatable, intent(OUT)   :: sdfarray(:)
+            type(sdf), allocatable, intent(OUT)   :: sdfarray(:)
 
             !allocate and set arrays to 0
             call alloc_array(settings%grid%nxg, settings%grid%nyg, settings%grid%nzg)
@@ -27,8 +27,8 @@ module subs
 
             ! setup geometry using SDFs
             select case(settings%experiment)
-                case("logo")
-                    sdfarray = setup_logo()
+                ! case("logo")
+                !     sdfarray = setup_logo()
                 ! case("neural")
                 !     sdfarray = setup_neural_sdf()
                 case("omg")
@@ -37,8 +37,6 @@ module subs
                     sdfarray = setup_scat_test(dict)
                 case("scat_test2")
                     sdfarray = setup_scat_test2(dict)
-                ! case("hulst")
-                !     sdfarray = setup_hulst(dict)
                 ! case("skin")
                 !     sdfarray = setup_skin_model()
                 ! case("aptran")
@@ -51,20 +49,14 @@ module subs
                 !     sdfarray = get_vessels()
                 ! case("lens")
                 !     sdfarray = lens_test_setup()
-                ! case("blobby")
-                !     sdfarray = blobby()
                 ! case("slab_test")
                 !     sdfarray = setup_slab_test(dict)
-                ! case("sphere_scene")
-                !     sdfarray = setup_sphere_scene(dict)
+                case("sphere_scene")
+                    sdfarray = setup_sphere_scene(dict)
                 ! case("test_egg")
                 !     sdfarray = setup_egg()
-                ! case("raman_test")
-                !     sdfarray = raman_test()
-                case("slab_slm")
-                    sdfarray = slab_slm(dict)
-                ! case("dalek")
-                !     sdfarray = dalek_start()
+                ! case("slab_slm")
+                !     sdfarray = slab_slm(dict)
                 case default
                     error stop "no such routine"
             end select
@@ -72,79 +64,46 @@ module subs
         end subroutine setup_simulation
 
 
-        function slab_slm(dict) result(array)
+        ! function slab_slm(dict) result(array)
 
-            use sdfs,  only : container, box
-            use vector_class, only : vector
-            use mat_class,    only : invert
-            use opticalProperties
+        !     use sdfs,  only : container, box
+        !     use vector_class, only : vector
+        !     use mat_class,    only : invert
+        !     use opticalProperties
 
-            type(toml_table), intent(inout) :: dict
-            type(container), allocatable :: array(:)
+        !     type(toml_table), intent(inout) :: dict
+        !     type(container), allocatable :: array(:)
 
-            type(box), target, save :: slab, bbox
+        !     type(box), target, save :: slab, bbox
 
-            real(kind=wp) :: mus, mua, hgg, tau, n
-            type(mono), save, target :: optProp1, optProp2
-            type(opticalProp_t) :: opt(2)
-            call get_value(dict, "tau", tau)
+        !     real(kind=wp) :: mus, mua, hgg, tau, n
+        !     type(mono), save, target :: optProp1, optProp2
+        !     type(opticalProp_t) :: opt(2)
+        !     call get_value(dict, "tau", tau)
 
-            hgg = 0._wp
-            mua = 1e-17_wp
-            mus = tau
-            n = 1.0_wp
+        !     hgg = 0._wp
+        !     mua = 1e-17_wp
+        !     mus = tau
+        !     n = 1.0_wp
 
-            optProp1 = mono(0.0_wp, mua, hgg, n)
-            allocate(opt(1)%p, source=optProp1)
-            opt(1)%p => optProp1
-            bbox = box(2.0_wp, opt(1), 2)
+        !     optProp1 = mono(0.0_wp, mua, hgg, n)
+        !     allocate(opt(1)%p, source=optProp1)
+        !     opt(1)%p => optProp1
+        !     bbox = box(2.0_wp, opt(1), 2)
             
-            optProp2 = mono(mus, mua, hgg, n)
-            allocate(opt(2)%p, source=optProp2)
-            opt(2)%p => optProp2
-            slab = box(vector(2.0_wp, 2.0_wp, 0.5_wp), opt(2), 1)
+        !     optProp2 = mono(mus, mua, hgg, n)
+        !     allocate(opt(2)%p, source=optProp2)
+        !     opt(2)%p => optProp2
+        !     slab = box(vector(2.0_wp, 2.0_wp, 0.5_wp), opt(2), 1)
 
-            allocate(array(2))
-            allocate(array(2)%p, source=bbox)
-            allocate(array(1)%p, source=slab)
+        !     allocate(array(2))
+        !     allocate(array(2)%p, source=bbox)
+        !     allocate(array(1)%p, source=slab)
 
-            array(2)%p => bbox
-            array(1)%p => slab
+        !     array(2)%p => bbox
+        !     array(1)%p => slab
 
-        end function slab_slm
-
-!         function raman_test() result(array)
-            
-!             use sdfs, only : container, box
-!             use vector_class
-
-!             type(container), allocatable :: array(:)
-        
-!             type(box), target, save :: bbox, sample
-!             real(kind=wp) :: hgg, mus, mua, n
-!             integer       :: layer
-
-!             n = 1._wp
-!             mua = 1._wp
-!             mus = 1._wp
-!             hgg = 0._wp
-!             layer = 1
-
-!             sample = box(20._wp, mus, mua, hgg, n, layer)
-!             layer = 2
-!             mus = 0.0_wp
-!             mua = 100._wp
-!             bbox = box(20.001_wp, mus, mua, hgg, n, layer)
-            
-!             allocate(array(2))
-!             allocate(array(1)%p, source=sample)
-!             allocate(array(2)%p, source=bbox)
-
-!             array(1)%p => sample
-!             array(2)%p => bbox
-
-!         end function raman_test
-
+        ! end function slab_slm
 
 !         function setup_egg() result(array)
 
@@ -196,33 +155,6 @@ module subs
 
 !         end function setup_egg
 
-
-!         ! function dalek_start() result(array)
-
-!         !     use sdfs, only : container, box
-!         !     use models, only : dalek
-!         !     use vector_class
-
-!         !
-
-!         !     type(box), target, save :: bbox
-!         !     type(container), allocatable :: array(:)
-
-!         !     type(dalek), target, save :: d
-!         !               !mus, mua, hgg, n, layer, transform
-!         !     d = dalek(10._wp, 0.02_wp, 0.0_wp, 1._wp, 1)
-!         !     bbox = box(5.001_wp, 0.0_wp, 0.0_wp, 0.0_wp, 1._wp, 2)
-
-!         !     allocate(array(2))
-!         !     allocate(array(1)%p, source=d)
-!         !     allocate(array(2)%p, source=bbox)
-
-!         !     array(1)%p => d
-!         !     array(2)%p => bbox
-
-
-!         ! end function dalek_start
-
 !         function setup_slab_test(dict) result(array)
 
 !             use sdfs,  only : container, box, translate
@@ -257,132 +189,54 @@ module subs
 
 !         end function setup_slab_test
 
-!         function setup_sphere_scene(dict) result(array)
+        function setup_sphere_scene(dict) result(array)
 
-!             use sdfs,         only : container, sphere, box, translate
-!             use random,       only : ranu
-!             use vector_class, only : vector
-!             use mat_class,    only : invert
+            use sdfNew,       only : sdf, sphere, box
+            use sdfHelpers,   only : translate
+            use random,       only : ranu
+            use vector_class, only : vector
+            use mat_class,    only : invert
+            use opticalProperties, only : opticalProp_t, mono
 
-
-!             type(toml_table), intent(inout) :: dict
-!             type(container), allocatable :: array(:)
+            type(toml_table), intent(inout) :: dict
+            type(sdf), allocatable :: array(:)
             
-!             type(sphere), target, save, allocatable :: sphs(:)
-!             type(box),    target, save :: bbox
-!             integer :: num_spheres, i
-!             real(kind=wp) :: t(4,4), mus, mua, hgg, n, radius
-!             type(vector) :: pos
+            integer :: num_spheres, i
+            real(kind=wp) :: t(4,4), mus, mua, hgg, n, radius
+            type(vector) :: pos
+            type(opticalProp_t) :: opt(2)
+            type(mono), target, save :: opt_all(2)
 
-!             call get_value(dict, "num_spheres", num_spheres)
-!             allocate(sphs(num_spheres+1))
+            call get_value(dict, "num_spheres", num_spheres)
+            allocate(array(num_spheres+1))
 
-!             mus = 1e-17_wp
-!             mua = 1e-17_wp
-!             hgg = 0.0_wp
-!             n   = 1.0_wp
-!             bbox = box(2._wp, mus, mua, hgg, n, num_spheres+1)
+            mus = 1e-17_wp
+            mua = 1e-17_wp
+            hgg = 0.0_wp
+            n   = 1.0_wp
+            opt_all(2) = mono(mus, mua, hgg, n)
+            allocate(opt(2)%p, source=opt_all(2))
+            opt(2)%p => opt_all(2)
 
-!             do i = 1, num_spheres
-!                 radius = ranu(0.001_wp, 0.25_wp)
-!                 pos = vector(ranu(-1._wp+radius, 1._wp-radius), ranu(-1._wp+radius, 1._wp-radius),&
-!                              ranu(-1._wp+radius, 1._wp-radius))
-!                 t = invert(translate(pos))
-!                 mus = ranu(1._wp, 50._wp)
-!                 mua = ranu(0.01_wp, 1._wp)
-!                 hgg = 0.9_wp
-!                 n = 1.37_wp
-!                 sphs(i) = sphere(radius, mus, mua, hgg, n, i, transform=t)
-!             end do
-
-!             allocate(array(num_spheres+1))
-!             do i = 1, num_spheres
-!                 allocate(array(i)%p, source=sphs(i))
-!                 array(i)%p => sphs(i)
-!             end do
+            array(num_spheres+1) = box(vector(2._wp, 2._wp, 2._wp), opt(2), num_spheres+1)
             
-!             allocate(array(num_spheres+1)%p, source=bbox)
-!             array(num_spheres+1)%p => bbox
+            mus = 0.0_wp!ranu(1._wp, 50._wp)
+            mua = 0.0_wp!ranu(0.01_wp, 1._wp)
+            hgg = 0.9_wp
+            n = 1.37_wp
+            opt_all(1) = mono(mus, mua, hgg, n)
+            allocate(opt(1)%p, source=opt_all(1))
+            opt(1)%p => opt_all(1)
+            do i = 1, num_spheres
+                radius = ranu(0.001_wp, 0.25_wp)
+                pos = vector(ranu(-1._wp+radius, 1._wp-radius), ranu(-1._wp+radius, 1._wp-radius),&
+                             ranu(-1._wp+radius, 1._wp-radius))
+                t = invert(translate(pos))
+    
+                array(i) = sphere(radius, opt(1), i, transform=t)
+            end do
 
-!         end function setup_sphere_scene
-
-!         function blobby() result(array)
-            
-!             use sdfs, only : box, capsule, sphere, translate, rotate_x, rotate_y,&
-!                              rotate_z, container, model, smoothunion, model_init
-!             use vector_class, only : vector
-!             use mat_class,    only : invert
-
-            
-!             type(container), allocatable :: array(:)
-!             type(container), target, save, allocatable :: cnta(:)
-!             type(sphere), target, save :: sph(7)
-!             type(capsule), target, save :: cap(3)
-!             type(box), target, save :: boxy
-!             type(model), target, save :: m
-!             type(vector) :: a, b
-!             real(kind=wp) :: t(4,4)
-!             real(kind=wp) :: mus, mua, hgg,n 
-!             integer :: layer, i
-            
-!             mua = 0.1_wp
-!             mus = 10._wp
-!             n = 1.3_wp
-!             layer = 1
-
-!             sph(1) = sphere(1.5_wp, mus, mua, hgg, n, layer)
-
-!             a = vector(0._wp, 0._wp, 3._wp)
-!             t = invert(translate(a))
-!             sph(2) = sphere(0.75_wp, mus, mua, hgg, n, layer, transform=t)
-!             b = vector(0._wp, 0._wp, -3._wp)
-!             t = invert(translate(b))
-!             sph(3) = sphere(0.75_wp, mus, mua, hgg, n, layer, transform=t)
-
-!             a = vector(0._wp, 3._wp, 0._wp)
-!             t = invert(translate(a))
-!             sph(4) = sphere(0.75_wp, mus, mua, hgg, n, layer, transform=t)
-!             b = vector(0._wp, -3._wp, 0._wp)
-!             t = invert(translate(b))
-!             sph(5) = sphere(0.75_wp, mus, mua, hgg, n, layer, transform=t)
-
-!             a = vector(3._wp, 0._wp, 0._wp)
-!             t = invert(translate(a))
-!             sph(6) = sphere(0.75_wp, mus, mua, hgg, n, layer, transform=t)
-!             b = vector(-3._wp, 0._wp, 0._wp)
-!             t = invert(translate(b))
-!             sph(7) = sphere(0.75_wp, mus, mua, hgg, n, layer, transform=t)
-
-
-!             a = vector(0._wp, 0._wp, -3._wp)
-!             b = vector(0._wp, 0._wp, 3._wp)
-!             cap(1) = capsule(a, b, 0.5_wp, mus, mua, hgg, n, layer)
-!             a = vector(-3._wp, 0._wp, 0._wp)
-!             b = vector(3._wp, 0._wp, 0._wp)
-!             cap(2) = capsule(a, b, 0.5_wp, mus, mua, hgg, n, layer)
-!             a = vector(0._wp, -3._wp, 0._wp)
-!             b = vector(0._wp, 3._wp, 0._wp)
-!             cap(3) = capsule(a, b, 0.5_wp, mus, mua, hgg, n, layer)
-
-!             boxy = box(10._wp, 0.0_wp, 1.e-17_wp, 0.0_wp, n=1.0_wp, layer=2)
-
-!             allocate(array(2), cnta(10))
-!             do i = 1, 7
-!                 allocate(cnta(i)%p, source=sph(i))
-!                 cnta(i)%p => sph(i)
-!             end do
-            
-!             do i = 1, 3
-!                 allocate(cnta(i+7)%p, source=cap(i))
-!                 cnta(i+7)%p => cap(i)
-!             end do
-!             m = model_init(cnta, SmoothUnion, 0.5_wp)
-
-!             allocate(array(1)%p, source=m)
-!             array(1)%p => m
-!             allocate(array(2)%p, source=boxy)
-!             array(2)%p => boxy
-!         end function blobby
+        end function setup_sphere_scene
 
 
 !         function lens_test_setup() result(array)
@@ -437,62 +291,62 @@ module subs
 !         end function lens_test_setup
 
 
-        function setup_logo() result(array)
-        ! setup uni crest geometry
-        !
-        !
-            use vector_class
-            use sdfs, only : container, box, segment, extrude, model, union, model_init
-            use opticalProperties
+        ! function setup_logo() result(array)
+        ! ! setup uni crest geometry
+        ! !
+        ! !
+        !     use vector_class
+        !     use sdfs, only : container, box, segment, extrude, model, union, model_init
+        !     use opticalProperties
 
-            type(container), allocatable :: cnta(:), array(:)
-            type(box),     target, save :: bbox
-            type(segment), allocatable, target, save :: seg(:)
-            type(extrude), allocatable, target, save :: ex(:)
-            type(model), target, save :: m
+        !     type(container), allocatable :: cnta(:), array(:)
+        !     type(box),     target, save :: bbox
+        !     type(segment), allocatable, target, save :: seg(:)
+        !     type(extrude), allocatable, target, save :: ex(:)
+        !     type(model), target, save :: m
 
-            type(mono), target, save :: monos(2)
-            type(opticalProp_t) :: opt(2)
+        !     type(mono), target, save :: monos(2)
+        !     type(opticalProp_t) :: opt(2)
 
-            type(vector)  :: a, b
-            real(kind=wp) :: hgg, mus, mua, n
-            integer       :: layer, i
-            logical       :: fexists
+        !     type(vector)  :: a, b
+        !     real(kind=wp) :: hgg, mus, mua, n
+        !     integer       :: layer, i
+        !     logical       :: fexists
 
-            allocate(array(2), cnta(725), seg(725), ex(725))
+        !     allocate(array(2), cnta(725), seg(725), ex(725))
 
-            mus = 10._wp
-            mua = .1_wp
-            hgg = 0.9_wp
-            n = 1.5_wp
-            layer = 1
+        !     mus = 10._wp
+        !     mua = .1_wp
+        !     hgg = 0.9_wp
+        !     n = 1.5_wp
+        !     layer = 1
 
-            monos(1) = mono(0.0_wp, 0.0_wp, 0.0_wp, 1.0_wp)
-            monos(2) = mono(mus, mua, hgg, n)
+        !     monos(1) = mono(0.0_wp, 0.0_wp, 0.0_wp, 1.0_wp)
+        !     monos(2) = mono(mus, mua, hgg, n)
 
-            allocate(opt(1)%p, source=monos(1))
-            opt(1)%p => monos(1)
-            bbox = box(vector(10._wp, 10._wp, 2.001_wp), opt(1), 2) 
-            inquire(file="res/svg.f90", exist=fexists)
-            if(.not. fexists)error stop "need to generate svg.f90 and place in res/"
-            error stop "need to uncomment inlcude line!"
-            allocate(opt(2)%p, source=monos(2))
-            opt(2)%p => monos(2)
-            ! include "../res/svg.f90"
+        !     allocate(opt(1)%p, source=monos(1))
+        !     opt(1)%p => monos(1)
+        !     bbox = box(vector(10._wp, 10._wp, 2.001_wp), opt(1), 2) 
+        !     inquire(file="res/svg.f90", exist=fexists)
+        !     if(.not. fexists)error stop "need to generate svg.f90 and place in res/"
+        !     error stop "need to uncomment inlcude line!"
+        !     allocate(opt(2)%p, source=monos(2))
+        !     opt(2)%p => monos(2)
+        !     ! include "../res/svg.f90"
 
-            do i = 1, size(cnta)
-                allocate(cnta(i)%p, source=ex(i))
-                cnta(i)%p => ex(i)
-            end do
+        !     do i = 1, size(cnta)
+        !         allocate(cnta(i)%p, source=ex(i))
+        !         cnta(i)%p => ex(i)
+        !     end do
 
-            m = model_init(cnta, union)
-            allocate(array(1)%p, source=m)
-            array(1)%p => m
+        !     m = model_init(cnta, union)
+        !     allocate(array(1)%p, source=m)
+        !     array(1)%p => m
 
-            allocate(array(2)%p, source=bbox)
-            array(2)%p => bbox
+        !     allocate(array(2)%p, source=bbox)
+        !     array(2)%p => bbox
 
-        end function setup_logo
+        ! end function setup_logo
 
 
 !         function setup_neural_sdf() result(array)
@@ -587,106 +441,6 @@ module subs
 !         end function setup_sphere
 
 
-!         function interior_test() result(array)
-
-!             use sdfs,      only : container, model, union, sphere, box, translate, model_init
-!             use mat_class, only : invert
-!             use vector_class
-
-!             type(container) :: array(1), cnta(3)
-!             type(sphere), target, save :: sph
-!             type(box),    target, save :: boxes(2), bbox
-!             type(model),  target, save :: m
-
-!             real(kind=wp) :: t(4, 4)
-
-!             ! packet = photon("point")
-
-!             bbox = box(2._wp, 0._wp, 0._wp, 0._wp, 1._wp, 2)
-
-!             t = invert(translate(vector(.25_wp-.2_wp, -.1_wp, 0._wp)))
-!             boxes(1) = box(vector(.5_wp, 1._wp, 1._wp), 0._wp, 0._wp, 0._wp, 1._wp, 1, transform=t)
-
-!             t = invert(translate(vector(0._wp-.2_wp, .6_wp, 0._wp)))
-!             boxes(2) = box(vector(1._wp, .5_wp, 1._wp), -.1_wp, 0._wp, 0._wp, 1._wp, 1, transform=t)
-
-!             t = invert(translate(vector(.5_wp-.2_wp, -.1_wp, 0._wp)))
-!             sph = sphere(0.5_wp, 0._wp, 0._wp, 0._wp, 1._wp, 1, transform=t)
-
-!             allocate(cnta(1)%p, source=sph)
-!             allocate(cnta(2)%p, source=boxes(1))
-!             allocate(cnta(3)%p, source=boxes(2))
-
-!             allocate(array(1)%p, source=m)
-
-!             cnta(1)%p => sph
-!             cnta(2)%p => boxes(1)
-!             cnta(3)%p => boxes(2)
-
-!             m = model_init(cnta, union)
-
-!             array(1)%p => m
-!             ! array(2)%p => bbox
-
-!         end function interior_test
-
-
-!         function exterior_test() result(array)
-
-!             use sdfs,      only : container, moon, box, translate
-!             use mat_class, only : invert
-!             use vector_class
-
-!             type(container) :: array(1)
-!             ! type(sphere), target, save :: sph
-!             type(box),    target, save :: boxes(6), bbox
-!             ! type(model),  target, save :: m
-!             type(moon), target, save :: luna
-!             ! type(extrude), target, save :: ex
-!             real(kind=wp) :: t(4, 4)
-!             ! integer :: i
-
-!             ! packet = photon("point")
-! ! d, ra, rb, mus, mua, hgg, n, layer, transform
-!             t = invert(translate(vector(-0.4_wp-1.0_wp, .3_wp, 0._wp)))
-
-!             luna = moon(1.2_wp+cos(3.9_wp), 1._wp, .8_wp, 0._wp, 0._wp, 0._wp, 0._wp, 1)
-!             ! ex = extrude(luna, 5.)
-
-!             bbox = box(2._wp, 0._wp, 0._wp, 0._wp, 1._wp, 2)
-!             t = invert(translate(vector(0.0_wp, 1.0_wp, 0._wp)))
-!             boxes(1) = box(2._wp*vector(2._wp, 0.2_wp, 0._wp), 0._wp, 0._wp, 0._wp, 1._wp, 1, transform=t)
-
-!             t = invert(translate(vector(1.2_wp, 1.0_wp, 0._wp)))
-!             boxes(2) = box(2._wp*vector(0.8_wp, 1._wp, 0._wp), 0._wp, 0._wp, 0._wp, 1._wp, 1, transform=t)
-
-!             t = invert(translate(vector(1.4_wp, -0.3_wp, 0._wp)))
-!             boxes(3) = box(2._wp*vector(0.6_wp, 0.9_wp, 0._wp), 0._wp, 0._wp, 0._wp, 1._wp, 1, transform=t)
-
-!             t = invert(translate(vector(0.0_wp, -1.0_wp, 0._wp)))
-!             boxes(4) = box(2._wp*vector(1.0_wp, 0.2_wp, 0._wp), 0._wp, 0._wp, 0._wp, 1._wp, 1, transform=t)
-
-!             t = invert(translate(vector(-1.2_wp, -0.8_wp, 0._wp)))
-!             boxes(5) = box(2._wp*vector(0.8_wp, 0.6_wp, 0._wp), 0._wp, 0._wp, 0._wp, 1._wp, 1, transform=t)
-            
-!             t = invert(translate(vector(-1.5_wp, 0.3_wp, 0._wp)))
-!             boxes(6) = box(2._wp*vector(0.6_wp, 0.7_wp, 0._wp), 0._wp, 0._wp, 0._wp, 1._wp, 1, transform=t)
-
-
-!             ! allocate(array(7))
-!             ! do i = 1, 6
-!             !     allocate(array(i)%p, source=boxes(i))
-!             !     array(i)%p => boxes(i)
-!             ! end do
-!             allocate(array(1)%p, source=luna)
-!             array(1)%p => luna
-
-!             ! allocate(array(7)%p, source=bbox)
-!             ! array(7)%p => bbox
-
-!         end function exterior_test
-
-
 !         function setup_exp(dict) result(array)
 !         ! Setup experimental geometry from Georgies paper. i.e a glass bottle with contents
 !         !
@@ -740,16 +494,13 @@ module subs
 
         function setup_scat_test(dict) result(array)
 
-            use sdfs,  only : container, sphere, box
+            use sdfNew, only : sdf, sphere, box
 
             use vector_class
             use opticalProperties
 
             type(toml_table), intent(inout) :: dict
-            type(container), allocatable :: array(:)
-
-            type(sphere), target, save :: sph
-            type(box),    target, save :: bbox
+            type(sdf), allocatable :: array(:)
 
             type(mono), target, save :: opt_box, opt_sphere
             type(opticalProp_t) :: opt(2)
@@ -757,7 +508,7 @@ module subs
             real(kind=wp) :: mus, mua, hgg, n, tau
 
             call get_value(dict, "tau", tau)
-
+            allocate(array(2))
             n = 1._wp
             hgg = 0.0_wp
             mua = 0.00_wp
@@ -766,40 +517,31 @@ module subs
             opt_sphere = mono(mus, mua, hgg, n)
             allocate(opt(1)%p, source=opt_sphere)
             opt(1)%p => opt_sphere
-            sph = sphere(1._wp, opt(1), 1)
+            array(1) = sphere(1._wp, opt(1), 1)
 
             opt_box = mono(0.0_wp, mua, hgg, n)
             allocate(opt(2)%p, source=opt_box)
             opt(2)%p => opt_box
-            bbox = box(2._wp, opt(2), 2)
-
-            allocate(array(2))
-            allocate(array(1)%p, source=sph)
-            allocate(array(2)%p, source=bbox)
-
-            array(1)%p => sph
-            array(2)%p => bbox
+            array(2) = box(vector(2._wp, 2._wp, 2._wp), opt(2), 2)
 
         end function setup_scat_test
 
         function setup_scat_test2(dict) result(array)
 
-            use sdfs,  only : container, box, translate
-            use mat_class,    only : invert
+            use sdfNew,    only : sdf, box
 
             use vector_class
             use opticalProperties
 
             type(toml_table), intent(inout) :: dict
-            type(container), allocatable :: array(:)
+            type(sdf), allocatable :: array(:)
 
             type(mono), target, save :: opt_box
             type(opticalProp_t) :: opt
 
-            type(box),    target, save :: bbox
-
             real(kind=wp) :: mus, mua, hgg, n, tau
 
+            allocate(array(1))
             call get_value(dict, "tau", tau)
             call get_value(dict, "hgg", hgg)
 
@@ -811,66 +553,28 @@ module subs
             opt_box = mono(mus, mua, hgg, n)
             allocate(opt%p, source=opt_box)
             opt%p => opt_box
-            bbox = box(200._wp, opt, 2)
-
-            allocate(array(1))
-            allocate(array(1)%p, source=bbox)
-
-            array(1)%p => bbox
+            array(1) = box(vector(200._wp, 200._wp, 200._wp), opt, 2)
 
         end function setup_scat_test2
 
-
-!         function setup_hulst(dict) result(array)
-
-!             use sdfs,  only : container, box
-
-!             use vector_class
-
-!             type(toml_table), intent(inout) :: dict
-!             type(container), allocatable :: array(:)
-
-!             type(box),    target, save :: bbox
-
-!             real(kind=wp) :: mus, mua, hgg, n
-!             type(vector) :: sizes
-
-!             sizes = vector(2._wp, 2._wp, 0.02_wp)
-!             n = 1._wp
-!             hgg = 0.0_wp
-!             mua = 10._wp
-!             mus = 90._wp
-
-!             bbox = box(200._wp, mus, mua, hgg, n, 1)
-
-!             allocate(array(1))
-!             allocate(array(1)%p, source=bbox)
-
-!             array(1)%p => bbox
-
-!         end function setup_hulst
-
         function setup_omg_sdf() result(array)
             
-            use sdfs,         only : container, cylinder, torus, model, box, union, rotate_y, model_init, translate
+            use sdfNew, only : sdf, cylinder, torus, box
+            use sdfHelpers, only : translate, rotate_y
             use vector_class, only : vector
             use mat_class,    only : invert
             use opticalProperties
 
-            type(container), allocatable :: array(:)
-
-            type(container) :: cnta(10)
-            type(cylinder), target, save :: m(4), g(5)!save needed as these
-            type(torus),    target, save :: sph       !are deallocated on sub exit
-            type(box),      target, save :: boxy      !should be safe as this sub only called once
-            type(model),    target, save :: omg_sdf
+            type(sdf), allocatable :: array(:)
             
             type(opticalProp_t) :: opt(2)
             type(mono), target, save :: monos(2)
 
             type(vector)  :: a, b
             real(kind=wp) :: t(4, 4), mus, mua, hgg, n
-            integer       :: j, layer
+            integer       :: layer
+
+            allocate(array(11))
 
             mus = 10._wp
             mua = 0.16_wp
@@ -895,77 +599,77 @@ module subs
             !O letter
             a = vector(0._wp, 0._wp, -0.7_wp)
             t = invert(translate(a))
-            sph = torus(.2_wp, 0.05_wp, opt(1), layer, transform=t)
+            array(1) = torus(.2_wp, 0.05_wp, opt(1), layer, transform=t)
 
             !M letter
             a = vector(-.25_wp, 0._wp, -.25_wp)
             b = vector(-.25_wp, 0._wp, .25_wp)
             t = invert(rotate_y(90._wp))
-            m(1) = cylinder(a, b, .05_wp, opt(1), layer, transform=t)
+            array(2) = cylinder(a, b, .05_wp, opt(1), layer, transform=t)
             
             a = vector(-.25_wp, 0._wp, -.25_wp)
             b = vector(.25_wp, 0._wp, .0_wp)
-            m(2) = cylinder(a, b, .05_wp, opt(1), layer)
+            array(3) = cylinder(a, b, .05_wp, opt(1), layer)
             
             a = vector(.25_wp, 0._wp, .0_wp)
             b = vector(-.25_wp, 0._wp, .25_wp)
-            m(3) = cylinder(a, b, .05_wp, opt(1), layer)
+            array(4) = cylinder(a, b, .05_wp, opt(1), layer)
 
             a = vector(-.25_wp, 0._wp, .25_wp)
             b = vector(.25_wp, 0._wp, .25_wp)
-            m(4) = cylinder(a, b, .05_wp, opt(1), layer)
+            array(5) = cylinder(a, b, .05_wp, opt(1), layer)
 
             !G letter
             a = vector(-.25_wp, 0._wp, .5_wp)
             b = vector(.25_wp, 0._wp, .5_wp)
-            g(1) = cylinder(a, b, .05_wp, opt(1), layer)
+            array(6) = cylinder(a, b, .05_wp, opt(1), layer)
 
             a = vector(-.25_wp, 0._wp, .5_wp)
             b = vector(-.25_wp, 0._wp, .75_wp)
-            g(2) = cylinder(a, b, .05_wp, opt(1), layer)
+            array(7) = cylinder(a, b, .05_wp, opt(1), layer)
 
             a = vector(.25_wp, 0._wp, .5_wp)
             b = vector(.25_wp, 0._wp, .75_wp)
-            g(3) = cylinder(a, b, .05_wp, opt(1), layer)
+            array(8) = cylinder(a, b, .05_wp, opt(1), layer)
 
             a = vector(.25_wp, 0._wp, .75_wp)
             b = vector(0._wp, 0._wp, .75_wp)
-            g(4) = cylinder(a, b, .05_wp, opt(1), layer)
+            array(9) = cylinder(a, b, .05_wp, opt(1), layer)
 
             a = vector(0._wp, 0._wp, .625_wp)
             b = vector(0._wp, 0._wp, .75_wp)
-            g(5) = cylinder(a, b, .05_wp, opt(1), layer)
+            array(10) = cylinder(a, b, .05_wp, opt(1), layer)
 
             !bbox
-            boxy = box(2._wp, opt(2), 2)
+            array(11) = box(vector(2._wp, 2._wp, 2._wp), opt(2), 2)
 
-            allocate(array(2))
-            allocate(array(1)%p, source=omg_sdf)
-            allocate(array(2)%p, source=boxy)
+            ! allocate(array(2))
+            ! allocate(array(1)%p, source=omg_sdf)
+            ! allocate(array(2)%p, source=boxy)
 
-            do j = 1, size(m)
-                allocate(cnta(j)%p, source=m(j))
-            end do
+            ! do j = 1, size(m)
+            !     allocate(cnta(j)%p, source=m(j))
+            ! end do
 
-            do j = 1, size(g)
-                allocate(cnta(j+size(m))%p, source=g(j))
-            end do
+            ! do j = 1, size(g)
+            !     allocate(cnta(j+size(m))%p, source=g(j))
+            ! end do
 
-            cnta(1)%p => m(1)
-            cnta(2)%p => m(2)
-            cnta(3)%p => m(3)
-            cnta(4)%p => m(4)
-            cnta(5)%p => sph
-            cnta(6)%p => g(1)
-            cnta(7)%p => g(2)
-            cnta(8)%p => g(3)
-            cnta(9)%p => g(4)
-            cnta(10)%p => g(5)
+            ! cnta(1)%p => m(1)
+            ! cnta(2)%p => m(2)
+            ! cnta(3)%p => m(3)
+            ! cnta(4)%p => m(4)
+            ! cnta(5)%p => sph
+            ! cnta(6)%p => g(1)
+            ! cnta(7)%p => g(2)
+            ! cnta(8)%p => g(3)
+            ! cnta(9)%p => g(4)
+            ! cnta(10)%p => g(5)
 
-            omg_sdf = model_init(cnta, union, 0.05_wp)
+            ! omg_sdf = model_init(cnta, union, 0.05_wp)
 
-            array(1)%p => omg_sdf ! model
-            array(2)%p => boxy    ! bbox
+            ! array(1)%p => omg_sdf ! model
+            ! array(2)%p => boxy    ! bbox
 
         end function setup_omg_sdf
 

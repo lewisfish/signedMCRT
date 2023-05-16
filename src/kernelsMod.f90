@@ -21,7 +21,7 @@ contains
         use photonMod,     only : photon
         use piecewiseMod
         use random,        only : ran2, init_rng
-        use sdfs,          only : container
+        use sdfNew, only : sdf
         use sim_state_mod, only : state
         use utils,         only : pbar
         use vec4_class,    only : vec4
@@ -44,7 +44,7 @@ contains
         type(hit_t)       :: hpoint
         type(vector)      :: dir
         type(dect_array),  allocatable :: dects(:)
-        type(container),   allocatable :: array(:)
+        type(sdf),   allocatable :: array(:)
         real(kind=wp) :: nscatt, start, weight_absorb
         type(tevipc)      :: tev
         integer :: celli, cellj, cellk
@@ -86,7 +86,7 @@ contains
             packet%id = id
             distances = 0._wp
             do i = 1, size(distances)
-                distances(i) = array(i)%p%evaluate(packet%pos)
+                distances(i) = array(i)%evaluate(packet%pos)
                 if(distances(i) > 0._wp)distances(i)=-999.0_wp
             end do
             packet%layer=minloc(abs(distances),dim=1)
@@ -97,7 +97,7 @@ contains
             do while(.not. packet%tflag)
                 if(state%trackHistory)call history%push(vec4(packet%pos, packet%step))
                 
-                weight_absorb = packet%weight * (1._wp - array(packet%layer)%p%optProps%p%albedo)
+                weight_absorb = packet%weight * (1._wp - array(packet%layer)%getAlbedo())
 
                 packet%weight = packet%weight - weight_absorb
                 call update_voxels(state%grid, &
@@ -117,7 +117,7 @@ contains
                 end if
                 !$omp atomic
                 jmean(celli,cellj,cellk) = jmean(celli,cellj,cellk) + weight_absorb
-                call packet%scatter(array(packet%layer)%p%optProps%p%hgg, array(packet%layer)%p%optProps%p%g2, dects)
+                call packet%scatter(array(packet%layer)%gethgg(), array(packet%layer)%getg2(), dects)
                 if(packet%weight < THRESHOLD)then
                     if(ran2() < CHANCE)then
                         packet%weight = packet%weight / CHANCE
@@ -173,7 +173,7 @@ contains
         use photonMod,     only : photon
         use piecewiseMod
         use random,        only : ran2, init_rng, seq
-        use sdfs,          only : container
+        use sdfNew, only : sdf
         use sim_state_mod, only : state
         use utils,         only : pbar
         use vec4_class,    only : vec4
@@ -197,7 +197,7 @@ contains
         type(hit_t)       :: hpoint
         type(vector)      :: dir
         type(dect_array),  allocatable :: dects(:)
-        type(container),   allocatable :: array(:)
+        type(sdf),   allocatable :: array(:)
         real(kind=wp) :: ran, nscatt, start
         type(tevipc)      :: tev
         type(seq) :: seqs(2)
@@ -240,7 +240,7 @@ contains
             packet%id = id
             distances = 0._wp
             do i = 1, size(distances)
-                distances(i) = array(i)%p%evaluate(packet%pos)
+                distances(i) = array(i)%evaluate(packet%pos)
                 if(distances(i) > 0._wp)distances(i)=-999.0_wp
             end do
             packet%layer=minloc(abs(distances),dim=1)
@@ -252,9 +252,9 @@ contains
                 if(state%trackHistory)call history%push(vec4(packet%pos, packet%step))
                 ran = ran2()
 
-                if(ran < array(packet%layer)%p%optProps%p%albedo)then!interacts with tissue
-                    call packet%scatter(array(packet%layer)%p%optProps%p%hgg, &
-                                        array(packet%layer)%p%optProps%p%g2, dects)
+                if(ran < array(packet%layer)%getAlbedo())then!interacts with tissue
+                    call packet%scatter(array(packet%layer)%gethgg(), &
+                                        array(packet%layer)%getg2(), dects)
                     nscatt = nscatt + 1
                     packet%step = packet%step + 1
                 else
@@ -306,7 +306,7 @@ contains
         use photonMod,     only : photon
         use piecewiseMod
         use random,        only : ran2, init_rng
-        use sdfs,          only : container
+        use sdfNew, only : sdf
         use sim_state_mod, only : state
         use utils,         only : pbar
         use vector_class,  only : vector
@@ -326,7 +326,8 @@ contains
         type(toml_table)  :: dict
         real(kind=wp), allocatable :: distances(:), image(:,:,:)
         type(dect_array),  allocatable :: dects(:)
-        type(container),   allocatable :: array(:)
+
+        type(sdf),   allocatable :: array(:)
         real(kind=wp) :: ran, nscatt, start
         type(tevipc)      :: tev
         type(vector)  :: pos(4), pos2(4)
@@ -356,7 +357,7 @@ contains
             packet%id = id
             distances = 0._wp
             do i = 1, size(distances)
-                distances(i) = array(i)%p%evaluate(packet%pos)
+                distances(i) = array(i)%evaluate(packet%pos)
                 if(distances(i) > 0._wp)distances(i)=-999.0_wp
             end do
             packet%layer=minloc(abs(distances),dim=1)
@@ -367,9 +368,9 @@ contains
 
             do while(.not. packet%tflag)
                 ran = ran2()
-                if(ran < array(packet%layer)%p%optProps%p%albedo)then!interacts with tissue
-                    call packet%scatter(array(packet%layer)%p%optProps%p%hgg, &
-                                        array(packet%layer)%p%optProps%p%g2)
+                if(ran < array(packet%layer)%getalbedo())then!interacts with tissue
+                    call packet%scatter(array(packet%layer)%gethgg(), &
+                                        array(packet%layer)%getg2())
                     nscatt = nscatt + 1
                     packet%step = packet%step + 1
                     if(packet%step == 1)then
@@ -422,7 +423,8 @@ contains
         use photonMod,     only : photon
         use random,        only : init_rng
         use piecewiseMod
-        use sdfs,          only : container, render
+
+        use sdfNew, only : sdf
         use sim_state_mod, only : state
         use subs,          only : setup_simulation, directory
         use utils,         only : get_time, print_time, str
@@ -433,7 +435,7 @@ contains
         
         character(*), intent(in) :: input_file
 
-        type(container),  allocatable, intent(out) :: array(:)
+        type(sdf),  allocatable, intent(out) :: array(:)
         type(dect_array), allocatable, intent(out) :: dects(:)
         type(toml_table), intent(out)  :: dict
         type(tevipc),     intent(out)  :: tev
@@ -470,10 +472,10 @@ contains
         
         call setup_simulation(array, dict)
         ! render geometry to voxel format for debugging
-        if(state%render_geom)then
-            print*,"Rendering geometry to file"
-            call render(array, state)
-        end if
+        ! if(state%render_geom)then
+        !     print*,"Rendering geometry to file"
+        !     call render(array, state)
+        ! end if
         
         allocate(distances(size(array)))
         
