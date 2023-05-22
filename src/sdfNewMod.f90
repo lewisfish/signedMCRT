@@ -34,7 +34,6 @@ module sdfNew
         procedure :: evaluate => evaluate_box
     end type box
 
-
     type, public, extends(sdf_base) :: sphere
         real(kind=wp) :: radius
         contains
@@ -53,6 +52,44 @@ module sdfNew
         contains
         procedure :: evaluate => evaluate_torus
     end type torus
+
+    type, extends(sdf) :: triprism
+        real(kind=wp) :: h1, h2
+        contains
+        procedure :: evaluate => evaluate_triprism
+    end type triprism
+
+    type, extends(sdf) :: cone
+        type(vector)  :: a, b
+        real(kind=wp) :: ra, rb
+        contains
+        procedure :: evaluate => evaluate_cone
+    end type cone
+
+    type, extends(sdf) :: capsule
+        type(vector)  :: a, b
+        real(kind=wp) :: r
+        contains
+        procedure :: evaluate => evaluate_capsule
+    end type capsule
+
+    type, extends(sdf) :: plane
+        type(vector) :: a
+        contains
+        procedure :: evaluate => evaluate_plane
+    end type plane
+
+    type, extends(sdf) :: segment
+        type(vector) :: a, b
+        contains
+        procedure :: evaluate => evaluate_segment
+    end type segment
+
+    type, extends(sdf) :: egg
+        real(kind=wp) :: r1, r2, h
+        contains
+        procedure :: evaluate => evaluate_egg
+    end type egg
 
     abstract interface
         pure elemental function evalInterface(this, pos) result(res)
@@ -73,11 +110,9 @@ module sdfNew
         module procedure sphere_init
     end interface sphere
 
-
     interface box
         module procedure box_init
     end interface box
-
 
     interface torus
         module procedure torus_init
@@ -87,8 +122,196 @@ module sdfNew
         module procedure cylinder_init
     end interface cylinder
 
+    interface triprism
+        module procedure triprism_init
+    end interface triprism
+
+    interface egg
+        module procedure egg_init
+    end interface egg
+
+    interface segment
+        module procedure segment_init
+    end interface segment
+
+    interface cone
+        module procedure cone_init
+    end interface cone
+
+    interface capsule
+        module procedure capsule_init
+    end interface capsule
+
+    interface plane
+        module procedure plane_init
+    end interface plane
+
     contains
 
+    function segment_init(a, b, optProp, layer, transform) result(out)
+
+        type(segment) :: out
+        type(opticalProp_t), intent(in) :: optProp
+        type(vector),            intent(IN) :: a, b
+        ! real(kind=wp),           intent(IN) :: mus, mua, hgg, n
+        integer,                 intent(IN) :: layer
+        real(kind=wp), optional, intent(IN) :: transform(4, 4)
+
+        real(kind=wp) :: t(4, 4)
+
+        if(present(transform))then
+            t = transform
+        else
+            t = identity()
+        end if
+
+        out%a = a
+        out%b = b
+
+        out%layer = layer
+        out%transform = t
+        
+        out%optProps = optProp
+
+    end function segment_init
+
+    function egg_init(r1, r2, h, optProp, layer, transform) result(out)
+        ! makes a Moss egg. https://www.shadertoy.com/view/WsjfRt
+        ! R1 controls "fatness" of the egg. Actually controls the base circle radius.
+        ! R2 contorls the pointiness of the egg. Actually controls radius of top circle.
+        ! h controls the height of the egg. Actually controls y position of top circle.
+            type(egg) :: out
+            
+            type(opticalProp_t),      intent(in) :: optProp
+            real(kind=wp),            intent(IN) :: r1, r2, h
+            integer,                  intent(IN) :: layer
+            real(kind=wp),  optional, intent(IN) :: transform(4, 4)
+
+            real(kind=wp) :: t(4, 4)
+
+            if(present(transform))then
+                t = transform
+            else
+                t = identity()
+            end if
+
+            out%h = h
+            out%r1 = r1
+            out%r2 = r2
+            out%layer = layer
+            out%transform = t
+            out%optProps = optProp
+
+        end function egg_init
+
+    function plane_init(a, optProp, layer, transform) result(out)
+        
+        type(plane) :: out
+        
+        type(opticalProp_t),      intent(in) :: optProp
+        type(vector),             intent(IN) :: a
+        integer,                  intent(IN) :: layer
+        real(kind=wp),  optional, intent(IN) :: transform(4, 4)
+
+        real(kind=wp) :: t(4, 4)
+
+        if(present(transform))then
+            t = transform
+        else
+            t = identity()
+        end if
+
+        out%a = a
+        out%layer = layer
+        out%transform = t
+
+        out%optProps = optProp
+
+    end function plane_init
+
+
+    function capsule_init(a, b, r, optProp, layer, transform) result(out)
+        
+        type(capsule) :: out
+        
+        type(vector),            intent(IN) :: a, b
+        type(opticalProp_t),     intent(in) :: optProp
+        real(kind=wp),           intent(IN) :: r
+        integer,                 intent(IN) :: layer
+        real(kind=wp), optional, intent(IN) :: transform(4, 4)
+
+        real(kind=wp) :: t(4, 4)
+
+        if(present(transform))then
+            t = transform
+        else
+            t = identity()
+        end if
+
+        out%a = a
+        out%b = b
+        out%r = r
+        out%layer = layer
+        out%transform = t
+
+        out%optProps = optProp
+
+    end function capsule_init
+
+    function triprism_init(h1, h2, optProp, layer, transform) result(out)
+        !h1 is height
+        !h2 is length
+        !        
+            type(triprism) :: out
+            
+            type(opticalProp_t),     intent(in) :: optProp
+            real(kind=wp),           intent(IN) :: h1, h2
+            integer,                 intent(IN) :: layer
+            real(kind=wp), optional, intent(IN) :: transform(4, 4)
+
+            real(kind=wp) :: t(4, 4)
+
+            if(present(transform))then
+                t = transform
+            else
+                t = identity()
+            end if
+
+            out%h1 = h1
+            out%h2 = h2
+            out%layer = layer
+            out%transform = t
+            out%optProps = optProp
+
+        end function triprism_init
+
+    function cone_init(a, b, ra, rb, optProp, layer, transform) result(out)
+        
+        type(cone) :: out
+        
+        type(opticalProp_t),     intent(in) :: optProp
+        type(vector),            intent(IN) :: a, b
+        real(kind=wp),           intent(IN) :: ra, rb
+        integer,                 intent(IN) :: layer
+        real(kind=wp), optional, intent(IN) :: transform(4, 4)
+
+        real(kind=wp) :: t(4, 4)
+
+        if(present(transform))then
+            t = transform
+        else
+            t = identity()
+        end if
+
+        out%a = a
+        out%b = b
+        out%ra = ra
+        out%rb = rb
+        out%layer = layer
+        out%transform = t
+        out%optProps = optProp
+
+    end function cone_init
 
     function cylinder_init(a, b, radius, optProp, layer, transform) result(out)
                 
@@ -348,6 +571,148 @@ module sdfNew
 
     end function evaluate_cylinder
 
+    pure elemental function evaluate_triprism(this, pos) result(res)
+
+        class(triprism), intent(in) :: this
+        type(vector),  intent(IN) :: pos
+        real(kind=wp) :: res
+
+        type(vector) :: q, p
+
+        p = pos .dot. this%transform
+        q = abs(p)
+        res = max(q%z - this%h2, max(q%x*.866025_wp + p%y*.5_wp, -p%y) - this%h1*.5_wp) 
+
+    end function evaluate_triprism
+
+    pure elemental function evaluate_segment(this, pos) result(res)
+        !p = pos
+        !a = pt1
+        !b = pt2
+        !draws segment along the axis between 2 points a and b
+
+        use utils, only : clamp
+
+        class(segment), intent(in) :: this
+        type(vector), intent(IN) :: pos
+        real(kind=wp) :: res
+
+        type(vector)  :: pa, ba, p
+        real(kind=wp) :: h
+       
+        p = pos .dot. this%transform
+
+        pa = p - this%a
+        ba = this%b - this%a
+        h = clamp((pa .dot. ba) / (ba .dot. ba), 0.0_wp, 1.0_wp)
+
+        res = length(pa - ba*h) - 0.1_wp
+
+    end function evaluate_segment
+
+    pure elemental function evaluate_capsule(this, pos) result(res)
+
+        use utils, only : clamp
+
+        class(capsule), intent(in) :: this
+        type(vector), intent(in) :: pos
+        real(kind=wp) :: res
+
+        type(vector) :: pa, ba, p
+        real(kind=wp) :: h
+
+        p = pos .dot. this%transform
+
+        pa = p - this%a
+        ba = this%b - this%a
+        h = clamp((pa .dot. ba) / (ba .dot. ba), 0._wp, 1._wp)
+        res = length(pa - ba*h) - this%r
+
+    end function evaluate_capsule
+
+    pure elemental function evaluate_cone(this, pos) result(res)
+
+        use utils, only : clamp
+
+        class(cone), intent(in) :: this
+        type(vector),  intent(IN) :: pos
+        real(kind=wp) :: res
+
+        real(kind=wp) :: rba, baba, papa, paba, x, cax, cay, k, f, cbx, cby, s
+        type(vector) :: p
+
+        p = pos .dot. this%transform
+
+        rba = this%rb - this%ra
+        baba = (this%b-this%a) .dot. (this%b-this%a)
+        papa = (p-this%a) .dot. (p-this%a)
+        paba =  ((p-this%a) .dot. (this%b-this%a))/ baba
+        x = sqrt(papa - baba*paba**2)
+        if(paba < 0.5_wp)then
+            cax = max(0._wp, x - this%ra)
+        else
+            cax = max(0._wp, x - this%rb)
+        end if
+        cay = abs(paba - 0.5_wp) - .5_wp
+        k = rba**2 + baba
+        f = clamp((rba * (x - this%ra) + paba*baba) / k, 0._wp, 1._wp)
+        cbx = x - this%ra - f*rba
+        cby = paba - f
+        if(cbx < 0._wp .and. cay < 0._wp)then
+            s = -1._wp
+        else
+            s = 1._wp
+        end if 
+        res = s * sqrt(min(cax**2 + baba*cay**2, cbx**2 + baba*cby**2)) 
+
+    end function evaluate_cone
+
+
+    pure elemental function evaluate_egg(this, pos) result(res)
+        !https://www.shadertoy.com/view/WsjfRt
+
+            class(egg), intent(in) :: this
+            type(vector),  intent(IN) :: pos
+            real(kind=wp) :: res
+
+            real(kind=wp) :: r, l, h_in
+            type(vector) :: p_in, p
+
+            p = pos .dot. this%transform
+
+            p_in = p
+
+            p_in%x = abs(p%x)
+            r = this%r1 - this%r2
+            h_in = this%h + r
+            l = (h_in**2 - r**2) / (2._wp * r)
+
+            if(p_in%y <= 0._wp)then
+                res = length(p_in) - this%r1
+            else
+                if((p_in%y - h_in) * l > p_in%x*h_in)then
+                    res = length(p_in - vector(0._wp, h_in, 0._wp)) - ((this%r1+l) - length(vector(h_in,l, 0._wp)))
+                else
+                    res = length(p_in + vector(l, 0._wp, 0._wp)) - (this%r1+l)
+                end if
+            end if
+    end function evaluate_egg
+
+    pure elemental function evaluate_plane(this, pos) result(res)
+
+        class(plane), intent(in) :: this
+        type(vector), intent(IN) :: pos
+        real(kind=wp) :: res
+
+        type(vector) :: p
+
+        p = pos .dot. this%transform
+
+        !a must be normalised
+        res = (p .dot. this%a)
+
+    end function evaluate_plane
+
     pure elemental function sdf_evaluate(this, pos) result(res)
 
        class(sdf), intent(in) :: this
@@ -378,8 +743,8 @@ module sdfNew
     type(sdf) function sdf_new(rhs) result(lhs)
 
         class(sdf_base), intent(in) :: rhs
+
         allocate(lhs%value,source=rhs)
 
     end function sdf_new
-
 end module sdfNew
