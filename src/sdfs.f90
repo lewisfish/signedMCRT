@@ -1,60 +1,33 @@
-!   Module provides signed distance functions (SDFs) for various shapes 
-!   and some operations to modify them
-!   All SDF functions are adapted from Inigo Quilex exhaustive list at:
-!   https://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm!
-!   API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in-fortran/4402/2
-module sdfNew
-
+module sdfs
+    
     use constants,         only : wp
     use opticalProperties, only : opticalProp_t
+    use sdf_baseMod,       only : sdf, sdf_base, model, calcNormal
     use sdfHelpers,        only : identity
     use vector_class
 
-    ! displacement, bend, twist, elongate, repeat
-
     implicit none
-
-    type, abstract :: sdf_base
-        type(opticalProp_t) :: optProps
-        real(kind=wp) :: transform(4, 4)
-        integer :: layer
-        contains
-            procedure(evalInterface), deferred :: evaluate
-    end type sdf_base
-        
-    type, public, extends(sdf_base) :: sdf
-        class(sdf_base), allocatable :: value
-        contains
-            procedure :: getKappa
-            procedure :: getAlbedo
-            procedure :: getMua, gethgg, getG2, getN
-            procedure :: evaluate => sdf_evaluate
-            procedure, private :: sdf_assign
-            generic :: assignment(=) => sdf_assign
-    end type sdf
-
-!    shapes
-!################################################################
-    type, public, extends(sdf_base) :: box
+    
+    type, extends(sdf_base) :: box
         type(vector) :: lengths
         contains
         procedure :: evaluate => evaluate_box
     end type box
 
-    type, public, extends(sdf_base) :: sphere
+    type, extends(sdf_base) :: sphere
         real(kind=wp) :: radius
         contains
         procedure :: evaluate => evaluate_sphere
     end type sphere
 
-    type, public, extends(sdf_base) :: cylinder
+    type, extends(sdf_base) :: cylinder
         real(kind=wp) :: radius
         type(vector) :: a, b
         contains
         procedure :: evaluate => evaluate_cylinder
     end type cylinder
 
-    type, public, extends(sdf_base) :: torus
+    type, extends(sdf_base) :: torus
         real(kind=wp) :: oradius, iradius
         contains
         procedure :: evaluate => evaluate_torus
@@ -97,104 +70,7 @@ module sdfNew
         contains
         procedure :: evaluate => evaluate_egg
     end type egg
-!####################################################################
-!   modifiers
-!####################################################################
-    type, extends(sdf_base) :: revolution
-        real(kind=wp) :: o
-        class(sdf_base), pointer :: prim
-        contains
-        procedure :: evaluate => eval_revolution
-    end type revolution
 
-    type, extends(sdf_base) :: extrude
-        real(kind=wp) :: h
-        class(sdf_base), pointer :: prim
-        contains
-        procedure :: evaluate => eval_extrude
-    end type extrude
-
-    type, extends(sdf_base) :: onion
-        real(kind=wp) :: thickness
-        class(sdf_base), pointer :: prim
-        contains
-        procedure :: evaluate => eval_onion
-    end type onion
-
-    type, extends(sdf_base) :: twist
-        real(kind=wp) :: k
-        class(sdf_base), pointer :: prim
-        contains
-        procedure :: evaluate => eval_twist
-    end type twist
-
-    type, extends(sdf_base) :: displacement
-        procedure(primitive), nopass, pointer :: func
-        class(sdf_base), pointer :: prim
-        contains
-        procedure :: evaluate => eval_disp
-    end type displacement
-
-    type, extends(sdf_base) :: bend
-        real(kind=wp) :: k
-        class(sdf_base), pointer :: prim
-        contains
-        procedure :: evaluate => eval_bend
-    end type bend
-
-    type, extends(sdf_base) :: elongate
-        type(vector) :: size
-        class(sdf_base), pointer :: prim
-        contains
-        procedure :: evaluate => eval_elongate
-    end type elongate
-
-    type, extends(sdf_base) :: repeat
-        real(kind=wp) :: c
-        type(vector) :: la, lb
-        class(sdf_base), pointer :: prim
-        contains
-        procedure :: evaluate => eval_repeat
-    end type repeat
-!####################################################################
-    
-    abstract interface
-        pure elemental function evalInterface(this, pos) result(res)
-            use vector_class
-            use constants, only : wp
-            import sdf_base
-            class(sdf_base), intent(in) :: this
-            type(vector),    intent(in) :: pos
-            real(kind=wp) :: res
-        end function
-    end interface
-
-    abstract interface
-        pure function primitive(pos) result(res)
-            use vector_class, only : vector
-            use constants,    only : wp
-            implicit none
-            type(vector), intent(IN) :: pos
-            real(kind=wp) :: res
-        end function primitive
-    end interface
-
-    interface sdf
-        module procedure sdf_new
-    end interface
-    
-    interface revolution
-        module procedure revolution_init
-    end interface revolution
-
-    interface extrude
-        module procedure extrude_init
-    end interface extrude
-
-    interface onion
-        module procedure onion_init
-    end interface onion
-    
     interface sphere
         module procedure sphere_init
     end interface sphere
@@ -235,189 +111,11 @@ module sdfNew
         module procedure plane_init
     end interface plane
 
-    interface twist
-        module procedure twist_init
-    end interface twist
-
-    interface displacement
-        module procedure displacement_init
-    end interface displacement
-
-    interface bend
-        module procedure bend_init
-    end interface bend
-
-    interface elongate
-        module procedure elongate_init
-    end interface elongate
-
-    interface repeat
-        module procedure repeat_init
-    end interface repeat
+    private
+    public :: plane, capsule, cone, segment, egg, triprism, cylinder, torus, box, sphere, sdf, model, calcNormal
 
     contains
-
-    type(twist) function twist_init(prim, k) result(out)
-
-        class(sdf_base), target :: prim
-        real :: k
-
-        out%k = k
-        out%prim => prim
-        out%optProps = prim%optProps
-
-        out%layer = prim%layer
-        out%transform = identity()
-
-    end function twist_init
-
-    type(extrude) function extrude_init(prim, h) result(out)
-
-        class(sdf_base), target :: prim
-        real(kind=wp), intent(IN)   :: h
-
-        out%h = h
-        out%prim => prim
-
-        out%optProps = prim%optProps
-
-        out%layer = prim%layer
-        out%transform = identity()
-
-    end function extrude_init
-
-    type(elongate) function elongate_init(prim, size) result(out)
-
-        class(sdf_base), target :: prim
-        type(vector), intent(IN) :: size
-
-        out%size = size
-        out%prim => prim
-
-        out%optProps = prim%optProps
-        out%layer = prim%layer
-        out%transform = identity()
-
-    end function elongate_init
-
-    type(displacement) function displacement_init(prim, func) result(out)
-
-        class(sdf_base), target :: prim
-        procedure(primitive) :: func
-
-        out%func => func
-        out%prim => prim
-
-        out%optProps = prim%optProps
-
-        out%layer = prim%layer
-        out%transform = identity()
-
-    end function displacement_init
-
-    type(bend) function bend_init(prim, k) result(out)
-
-        class(sdf_base), target :: prim
-        real(kind=wp), intent(IN) :: k
-
-        out%k = k
-        out%prim => prim
-
-        out%optProps = prim%optProps
-
-        out%layer = prim%layer
-        out%transform = identity()
-
-    end function bend_init
-
-    type(repeat) function repeat_init(prim, c, la, lb) result(out)
-
-        class(sdf_base), target :: prim
-        type(vector),  intent(IN) :: la, lb
-        real(kind=wp), intent(IN) :: c
-
-        out%c = c
-        out%la = la
-        out%lb = lb
-        out%prim => prim
-
-        out%optProps = prim%optProps
-
-        out%layer = prim%layer
-        out%transform = identity()
-
-    end function repeat_init
-
-    pure elemental function eval_extrude(this, pos) result(res)
-
-        class(extrude), intent(in) :: this
-        type(vector),   intent(IN) :: pos
-        real(kind=wp) :: res
-
-        type(vector)  :: w
-        real(kind=wp) :: d
-
-        d = this%prim%evaluate(pos)
-        w = vector(d, abs(pos%z) - this%h, 0._wp)
-        res = min(max(w%x, w%y), 0._wp) + length(max(w, 0._wp))
-
-    end function eval_extrude
-
-    type(revolution) function revolution_init(prim, o) result(out)
-
-        class(sdf_base), target :: prim
-        real(kind=wp), intent(IN) :: o
-
-        out%o = o
-        out%prim => prim
-
-        out%optProps = prim%optProps
-
-        out%layer = prim%layer
-        out%transform = identity()
-
-    end function revolution_init
-
-    pure elemental function eval_revolution(this, pos) result(res)
-
-        class(revolution), intent(in) :: this
-        type(vector), intent(IN) :: pos
-        real(kind=wp) :: res
-
-        type(vector) :: pxz, q
-
-        pxz = vector(pos%x, pos%z, 0._wp)
-
-        q = vector(length(pxz) - this%o, pos%y, 0._wp)
-        res = this%prim%evaluate(q)
     
-    end function eval_revolution
-
-    type(onion) function onion_init(prim, thickness) result(out)
-
-        class(sdf_base), target :: prim
-        real(kind=wp), intent(IN) :: thickness
-
-        out%thickness = thickness
-        out%prim => prim
-
-        out%optProps = prim%optProps
-
-        out%layer = prim%layer
-        out%transform = identity()
-
-    end function onion_init
-
-    pure elemental function eval_onion(this, pos) result(res)
-
-        class(onion), intent(in) :: this
-        type(vector), intent(IN) :: pos
-        real(kind=wp) :: res
-
-        res = abs(this%prim%evaluate(pos)) - this%thickness
-
-    end function eval_onion
-
     function segment_init(a, b, optProp, layer, transform) result(out)
 
         type(segment) :: out
@@ -901,203 +599,4 @@ module sdfNew
         res = (p .dot. this%a)
 
     end function evaluate_plane
-
-    pure elemental function eval_elongate(this, pos) result(res)
-
-        class(elongate), intent(in) :: this
-        type(vector),    intent(IN) :: pos
-        real(kind=wp) :: res
-
-        real(kind=wp) :: w
-        type(vector) :: q
-
-        q = abs(pos) - this%size
-        w = min(max(q%x, max(q%y, q%z)), 0._wp)
-
-        res = this%prim%evaluate(max(q, 0._wp)) + w
-
-    end function eval_elongate
-
-    pure elemental function eval_twist(this, pos) result(res)
-
-        class(twist), intent(in) :: this
-        type(vector), intent(IN) :: pos
-        real(kind=wp) :: res
-
-        real(kind=wp) :: c, s, x2, y2, z2
-
-        c = cos(this%k * pos%z)
-        s = sin(this%k * pos%z)
-        x2 = c*pos%x - s*pos%y
-        y2 = s*pos%x + c*pos%y
-        z2 = pos%z
-
-        res = this%prim%evaluate(vector(x2, y2, z2))
-
-    end function eval_twist
-
-    pure elemental function eval_bend(this, pos) result(res)
-
-        class(bend),  intent(in) :: this
-        type(vector), intent(IN) :: pos
-        real(kind=wp) :: res
-
-        real(kind=wp) :: c, s, x2, y2, z2
-
-        c = cos(this%k * pos%x)
-        s = sin(this%k * pos%x)
-        x2 = c * pos%x - s * pos%y
-        y2 = s * pos%x + c * pos%y
-        z2 = pos%z
-
-        res = this%prim%evaluate(vector(x2, y2, z2))
-
-    end function eval_bend
-
-    pure elemental function eval_disp(this, pos) result(res)
-
-        class(displacement), intent(in) :: this
-        type(vector),        intent(IN) :: pos
-        real(kind=wp) :: res
-
-        real(kind=wp) :: d1, d2
-
-        d1 = this%prim%evaluate(pos)
-        d2 = this%func(pos)
-
-        res = d1 + d2
-
-    end function eval_disp
-
-    pure elemental function eval_repeat(this, pos) result(res)
-        
-        ! use utils, only : clamp
-
-        class(repeat), intent(in) :: this
-        type(vector), intent(IN) :: pos
-        real(kind=wp) :: res
-
-        type(vector) :: q
-
-        error stop "Not implmented as no vector dependacny in utils yet!"
-        ! q = pos - this%c*clamp(nint(pos/this%c), this%la, this%lb)
-        res = this%prim%evaluate(q)
-
-    end function eval_repeat
-
-!#############################################################
-!           Helpers
-!#############################################################
-    type(vector) function calcNormal(p, obj)
-
-        type(vector), intent(IN) :: p
-        class(sdf_base) :: obj
-
-        real(kind=wp) :: h
-        type(vector) :: xyy, yyx, yxy, xxx
-
-        h = 1e-6_wp
-        xyy = vector(1._wp, -1._wp, -1._wp)
-        yyx = vector(-1._wp, -1._wp, 1._wp)
-        yxy = vector(-1._wp, 1._wp, -1._wp)
-        xxx = vector(1._wp, 1._wp, 1._wp)
-
-        calcNormal = xyy*obj%evaluate(p + xyy*h) +  &
-                    yyx*obj%evaluate(p + yyx*h) +  &
-                    yxy*obj%evaluate(p + yxy*h) +  &
-                    xxx*obj%evaluate(p + xxx*h)
-
-        calcNormal = calcNormal%magnitude()
-
-    end function calcNormal
-
-    function getKappa(this) result(res)
-
-        class(sdf) :: this
-        real(kind=wp) :: res
-
-        res = this%value%optProps%value%kappa
-
-    end function getKappa
-
-    function getMua(this) result(res)
-
-        class(sdf) :: this
-        real(kind=wp) :: res
-
-        res = this%value%optProps%value%mua
-
-    end function getMua
-
-    function gethgg(this) result(res)
-
-        class(sdf) :: this
-        real(kind=wp) :: res
-
-        res = this%value%optProps%value%hgg
-
-    end function gethgg
-
-
-    function getg2(this) result(res)
-
-        class(sdf) :: this
-        real(kind=wp) :: res
-
-        res = this%value%optProps%value%g2
-
-    end function getg2
-    function getN(this) result(res)
-
-        class(sdf) :: this
-        real(kind=wp) :: res
-
-        res = this%value%optProps%value%n
-
-    end function getN
-
-    function getAlbedo(this) result(res)
-
-        class(sdf) :: this
-        real(kind=wp) :: res
-
-        res = this%value%optProps%value%albedo
-
-    end function getAlbedo
-!#########################################################################
-!       SDF bound procedures
-!#########################################################################
-    pure elemental function sdf_evaluate(this, pos) result(res)
-
-        class(sdf), intent(in) :: this
-        type(vector), intent(in) :: pos
-        real(kind=wp) :: res
-
-        res = this%value%evaluate(pos)
-
-    end function sdf_evaluate
- 
-    ! sdf initializer
-    subroutine sdf_assign(lhs, rhs)
-
-        class(sdf),      intent(inout) :: lhs
-        class(sdf_base), intent(in)    :: rhs
-
-        if (allocated(lhs%value))deallocate(lhs%value)
-        ! Prevent nested derived type
-        select type (rhsT=>rhs)
-            class is (sdf)
-                if(allocated(rhsT%value))allocate(lhs%value,source=rhsT%value)
-            class default
-                allocate(lhs%value,source=rhsT)
-        end select
-    end subroutine sdf_assign
- 
-    ! sdf initializer
-    type(sdf) function sdf_new(rhs) result(lhs)
-
-        class(sdf_base), intent(in) :: rhs
-        allocate(lhs%value,source=rhs)
-
-    end function sdf_new
-end module sdfNew
+end module sdfs

@@ -14,9 +14,9 @@ module subs
         ! Read in parameters
         ! Setup up various simulation parameters and routines
         !
-            use vector_class
-            use sdfNew,        only : sdf
+            use sdfs,          only : sdf
             use sim_state_mod, only : settings => state
+            use vector_class
 
             type(toml_table),  optional,  intent(INOUT) :: dict
             type(sdf), allocatable, intent(OUT)   :: sdfarray(:)
@@ -51,7 +51,8 @@ module subs
 
         function setup_egg() result(array)
 
-            use sdfNew, only : sdf, onion, sphere, box, revolution, egg
+            use sdfs, only : sdf, sphere, box, egg
+            use sdfModifiers, only : onion, revolution
             use vector_class
             use opticalProperties
 
@@ -102,12 +103,12 @@ module subs
 
         function setup_sphere_scene(dict) result(array)
 
-            use sdfNew,       only : sdf, sphere, box
-            use sdfHelpers,   only : translate
-            use random,       only : ranu
-            use vector_class, only : vector
-            use mat_class,    only : invert
+            use mat_class,         only : invert
             use opticalProperties, only : opticalProp_t, mono
+            use sdfs,              only : sdf, sphere, box
+            use sdfHelpers,        only : translate
+            use random,            only : ranu
+            use vector_class,      only : vector
 
             type(toml_table), intent(inout) :: dict
             type(sdf), allocatable :: array(:)
@@ -150,9 +151,10 @@ module subs
         ! setup uni crest geometry
         !
         !
-            use vector_class
-            use sdfNew, only : sdf, box, segment, extrude
+            use sdfs,         only : sdf, box, segment
+            use sdfModifiers, only : extrude
             use opticalProperties
+            use vector_class
 
             type(sdf), allocatable :: array(:)
             type(segment), allocatable, save :: seg(:)
@@ -188,11 +190,11 @@ module subs
         ! setup the sphere test case from tran and jacques paper.
         !
         !
-            use sdfNew,       only : sdf, box, sphere
-            use sdfHelpers,   only : translate
-            use vector_class, only : vector
-            use mat_class,    only : invert
+            use mat_class,         only : invert
             use opticalProperties, only : mono, opticalProp_t
+            use sdfs,              only : sdf, box, sphere
+            use sdfHelpers,        only : translate
+            use vector_class,      only : vector
             
             type(sdf), allocatable :: array(:)
             type(opticalProp_t) :: opt(3)
@@ -220,7 +222,7 @@ module subs
         ! Setup experimental geometry from Georgies paper. i.e a glass bottle with contents
         !
         !
-            use sdfNew,       only : sdf, box, cylinder!, subtraction
+            use sdfs,         only : sdf, box, cylinder!, subtraction
             use sdfHelpers,   only : rotate_y, translate
             use utils,        only : deg2rad
             use vector_class, only : vector
@@ -233,8 +235,9 @@ module subs
             type(opticalProp_t) :: opt(3)
 
             type(vector)  :: a, b
-            real(kind=wp) :: n, t(4, 4), optprop(5)
+            real(kind=wp) :: n, optprop(5)
 
+            error stop "add model and subtraction here"
             call get_value(dict, "musb", optprop(1))
             call get_value(dict, "muab", optprop(2))
             call get_value(dict, "musc", optprop(3))
@@ -261,10 +264,9 @@ module subs
 
         function setup_scat_test(dict) result(array)
 
-            use sdfNew, only : sdf, sphere, box
-
-            use vector_class
             use opticalProperties
+            use sdfs, only : sdf, sphere, box
+            use vector_class
 
             type(toml_table), intent(inout) :: dict
             type(sdf), allocatable :: array(:)
@@ -289,10 +291,9 @@ module subs
 
         function setup_scat_test2(dict) result(array)
 
-            use sdfNew,    only : sdf, box
-
-            use vector_class
             use opticalProperties
+            use sdfs,             only : sdf, box
+            use vector_class
 
             type(toml_table), intent(inout) :: dict
             type(sdf), allocatable :: array(:)
@@ -316,20 +317,22 @@ module subs
 
         function setup_omg_sdf() result(array)
             
-            use sdfNew, only : sdf, cylinder, torus, box
-            use sdfHelpers, only : translate, rotate_y
-            use vector_class, only : vector
-            use mat_class,    only : invert
+            use mat_class,        only : invert
             use opticalProperties
+            use sdfHelpers,       only : translate, rotate_y
+            use sdfModifiers,     only : SmoothUnion
+            use sdfs,             only : sdf, cylinder, torus, box, model
+            use vector_class,     only : vector
 
             type(sdf), allocatable :: array(:)
+            type(sdf), allocatable, save :: cnta(:)
             
-            type(opticalProp_t) :: opt(2)
-            type(vector)  :: a, b
-            real(kind=wp) :: t(4, 4), mus, mua, hgg, n
-            integer       :: layer
+            type(opticalProp_t), save :: opt(2)
+            type(vector)        :: a, b
+            real(kind=wp)       :: t(4, 4), mus, mua, hgg, n
+            integer             :: layer
 
-            allocate(array(11))
+            allocate(array(2), cnta(10))
 
             mus = 10._wp
             mua = 0.16_wp
@@ -338,8 +341,8 @@ module subs
             layer = 1
 
             opt(1) = mono(mus, mua, hgg, n)
-
             opt(2) = mono(0._wp, 0._wp, 0._wp, 1.0_wp)
+
             ! x
             ! |
             ! |
@@ -350,88 +353,58 @@ module subs
             !O letter
             a = vector(0._wp, 0._wp, -0.7_wp)
             t = invert(translate(a))
-            array(1) = torus(.2_wp, 0.05_wp, opt(1), layer, transform=t)
+            cnta(1) = torus(.2_wp, 0.05_wp, opt(1), layer, transform=t)
 
             !M letter
             a = vector(-.25_wp, 0._wp, -.25_wp)
             b = vector(-.25_wp, 0._wp, .25_wp)
             t = invert(rotate_y(90._wp))
-            array(2) = cylinder(a, b, .05_wp, opt(1), layer, transform=t)
+            cnta(2) = cylinder(a, b, .05_wp, opt(1), layer, transform=t)
             
             a = vector(-.25_wp, 0._wp, -.25_wp)
             b = vector(.25_wp, 0._wp, .0_wp)
-            array(3) = cylinder(a, b, .05_wp, opt(1), layer)
+            cnta(3) = cylinder(a, b, .05_wp, opt(1), layer)
             
             a = vector(.25_wp, 0._wp, .0_wp)
             b = vector(-.25_wp, 0._wp, .25_wp)
-            array(4) = cylinder(a, b, .05_wp, opt(1), layer)
+            cnta(4) = cylinder(a, b, .05_wp, opt(1), layer)
 
             a = vector(-.25_wp, 0._wp, .25_wp)
             b = vector(.25_wp, 0._wp, .25_wp)
-            array(5) = cylinder(a, b, .05_wp, opt(1), layer)
+            cnta(5) = cylinder(a, b, .05_wp, opt(1), layer)
 
             !G letter
             a = vector(-.25_wp, 0._wp, .5_wp)
             b = vector(.25_wp, 0._wp, .5_wp)
-            array(6) = cylinder(a, b, .05_wp, opt(1), layer)
+            cnta(6) = cylinder(a, b, .05_wp, opt(1), layer)
 
             a = vector(-.25_wp, 0._wp, .5_wp)
             b = vector(-.25_wp, 0._wp, .75_wp)
-            array(7) = cylinder(a, b, .05_wp, opt(1), layer)
+            cnta(7) = cylinder(a, b, .05_wp, opt(1), layer)
 
             a = vector(.25_wp, 0._wp, .5_wp)
             b = vector(.25_wp, 0._wp, .75_wp)
-            array(8) = cylinder(a, b, .05_wp, opt(1), layer)
+            cnta(8) = cylinder(a, b, .05_wp, opt(1), layer)
 
             a = vector(.25_wp, 0._wp, .75_wp)
             b = vector(0._wp, 0._wp, .75_wp)
-            array(9) = cylinder(a, b, .05_wp, opt(1), layer)
+            cnta(9) = cylinder(a, b, .05_wp, opt(1), layer)
 
             a = vector(0._wp, 0._wp, .625_wp)
             b = vector(0._wp, 0._wp, .75_wp)
-            array(10) = cylinder(a, b, .05_wp, opt(1), layer)
+            cnta(10) = cylinder(a, b, .05_wp, opt(1), layer)
 
-            !bbox
-            array(11) = box(vector(2._wp, 2._wp, 2._wp), opt(2), 2)
-
-            ! allocate(array(2))
-            ! allocate(array(1)%p, source=omg_sdf)
-            ! allocate(array(2)%p, source=boxy)
-
-            ! do j = 1, size(m)
-            !     allocate(cnta(j)%p, source=m(j))
-            ! end do
-
-            ! do j = 1, size(g)
-            !     allocate(cnta(j+size(m))%p, source=g(j))
-            ! end do
-
-            ! cnta(1)%p => m(1)
-            ! cnta(2)%p => m(2)
-            ! cnta(3)%p => m(3)
-            ! cnta(4)%p => m(4)
-            ! cnta(5)%p => sph
-            ! cnta(6)%p => g(1)
-            ! cnta(7)%p => g(2)
-            ! cnta(8)%p => g(3)
-            ! cnta(9)%p => g(4)
-            ! cnta(10)%p => g(5)
-
-            ! omg_sdf = model_init(cnta, union, 0.05_wp)
-
-            ! array(1)%p => omg_sdf ! model
-            ! array(2)%p => boxy    ! bbox
+            array(1) = model(cnta, smoothunion, 0.09_wp)
+            array(2) = box(vector(2._wp, 2._wp, 2._wp), opt(2), 2)
 
         end function setup_omg_sdf
 
 
         function get_vessels() result(array)
 
-            ! use sdfs,         only : container, model, capsule, model_init, union, box, union
-            use sdfNew, only : sdf, capsule, box
-            use vector_class, only : vector
-
             use opticalProperties
+            use sdfs,             only : sdf, capsule, box
+            use vector_class,     only : vector
 
             type(sdf), allocatable :: array(:)
 

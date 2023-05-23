@@ -21,7 +21,7 @@ contains
         use photonMod,     only : photon
         use piecewiseMod
         use random,        only : ran2, init_rng
-        use sdfNew, only : sdf
+        use sdfs,          only : sdf
         use sim_state_mod, only : state
         use utils,         only : pbar
         use vec4_class,    only : vec4
@@ -33,22 +33,22 @@ contains
 #ifdef _OPENMP
         use omp_lib
 #endif
-        character(len=*), intent(in) :: input_file
+        character(len=*), intent(in)   :: input_file
         
-        integer :: numproc, id, j, i
-        type(history_stack_t) :: history
-        type(pbar)        :: bar
-        type(photon)      :: packet
-        type(toml_table)  :: dict
-        real(kind=wp), allocatable :: distances(:), image(:,:,:)
-        type(hit_t)       :: hpoint
-        type(vector)      :: dir
+        integer                        :: numproc, id, j, i
+        type(history_stack_t)          :: history
+        type(pbar)                     :: bar
+        type(photon)                   :: packet
+        type(toml_table)               :: dict
+        real(kind=wp),     allocatable :: distances(:), image(:,:,:)
+        type(hit_t)                    :: hpoint
+        type(vector)                   :: dir
         type(dect_array),  allocatable :: dects(:)
-        type(sdf),   allocatable :: array(:)
-        real(kind=wp) :: nscatt, start, weight_absorb
-        type(tevipc)      :: tev
-        integer :: celli, cellj, cellk
-        type(spectrum_t) :: spectrum
+        type(sdf),         allocatable :: array(:)
+        real(kind=wp)                  :: nscatt, start, weight_absorb
+        type(tevipc)                   :: tev
+        integer                        :: celli, cellj, cellk
+        type(spectrum_t)               :: spectrum
 
         call setup(input_file, tev, dects, array, packet, spectrum, dict, distances, image, nscatt, start)
 
@@ -173,7 +173,7 @@ contains
         use photonMod,     only : photon
         use piecewiseMod
         use random,        only : ran2, init_rng, seq
-        use sdfNew, only : sdf
+        use sdfs,          only : sdf
         use sim_state_mod, only : state
         use utils,         only : pbar
         use vec4_class,    only : vec4
@@ -188,20 +188,20 @@ contains
 #endif
         character(len=*), intent(in) :: input_file
         
-        integer :: numproc, id, j, i
-        type(history_stack_t) :: history
-        type(pbar)        :: bar
-        type(photon)      :: packet
-        type(toml_table)  :: dict
-        real(kind=wp), allocatable :: distances(:), image(:,:,:)
-        type(hit_t)       :: hpoint
-        type(vector)      :: dir
-        type(dect_array),  allocatable :: dects(:)
-        type(sdf),   allocatable :: array(:)
-        real(kind=wp) :: ran, nscatt, start
-        type(tevipc)      :: tev
-        type(seq) :: seqs(2)
-        type(spectrum_t) :: spectrum
+        integer                       :: numproc, id, j, i
+        type(history_stack_t)         :: history
+        type(pbar)                    :: bar
+        type(photon)                  :: packet
+        type(toml_table)              :: dict
+        real(kind=wp),    allocatable :: distances(:), image(:,:,:)
+        type(hit_t)                   :: hpoint
+        type(vector)                  :: dir
+        type(dect_array), allocatable :: dects(:)
+        type(sdf),        allocatable :: array(:)
+        real(kind=wp)                 :: ran, nscatt, start
+        type(tevipc)                  :: tev
+        type(seq)                     :: seqs(2)
+        type(spectrum_t)              :: spectrum
 
         call setup(input_file, tev, dects, array, packet, spectrum, dict, distances, image, nscatt, start)
 
@@ -306,7 +306,7 @@ contains
         use photonMod,     only : photon
         use piecewiseMod
         use random,        only : ran2, init_rng
-        use sdfNew, only : sdf
+        use sdfs,          only : sdf
         use sim_state_mod, only : state
         use utils,         only : pbar
         use vector_class,  only : vector
@@ -424,7 +424,7 @@ contains
         use random,        only : init_rng
         use piecewiseMod
 
-        use sdfNew, only : sdf
+        use sdfs,          only : sdf
         use sim_state_mod, only : state
         use subs,          only : setup_simulation, directory
         use utils,         only : get_time, print_time, str

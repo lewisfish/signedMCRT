@@ -41,6 +41,10 @@ module opticalProperties
             procedure :: update => updateSpectral
     end type spectral
 
+    interface opticalProp_t
+        module procedure opticaProp_new
+    end interface
+
     interface spectral
         module procedure init_spectral
     end interface spectral
@@ -69,6 +73,14 @@ module opticalProperties
         end select
 
     end subroutine opticalProp_t_assign
+
+    ! optical_property initializer
+    type(opticalProp_t) function opticaProp_new(rhs) result(lhs)
+
+        class(opticalProp_base), intent(in) :: rhs
+        allocate(lhs%value,source=rhs)
+
+    end function opticaProp_new
 
     subroutine update_opticalProp_t(this, wavelength)
 

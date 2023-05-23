@@ -14,13 +14,13 @@ module inttau2
     ! Moves photons to interaction location
     ! Calculated is any reflection or refraction happens whilst moving
     !
-        use random,       only : ran2
-        use photonMod,    only : photon
         use gridMod,      only : cart_grid
-        use vector_class, only : vector
+        use photonMod,    only : photon
+        use random,       only : ran2
+        use sdfs,         only : sdf, calcNormal
         use surfaces,     only : reflect_refract
+        use vector_class, only : vector
 
-        use sdfNew, only : sdf, calcNormal
         type(cart_grid),   intent(in)    :: grid
         type(photon),      intent(inout) :: packet
         type(sdf),   intent(in)    :: sdfs_array(:)
@@ -135,6 +135,7 @@ module inttau2
             !check for fresnel reflection
             n1 = sdfs_array(packet%layer)%getn()
             new_layer = minloc(new, dim=1)
+
             n2 = sdfs_array(new_layer)%getn()
             !carry out refelction/refraction
             if (n1 /= n2)then

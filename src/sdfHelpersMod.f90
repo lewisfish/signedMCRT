@@ -5,6 +5,9 @@ module sdfHelpers
 
     implicit none
     
+    private
+    public :: rotate_x, rotate_y, rotate_z, rotmat, rotationAlign, identity, skewSymm, translate
+
 contains
 
     function rotate_x(angle) result(r)

@@ -180,7 +180,7 @@ module photonMod
             use random,        only : ran2, seq
             use constants,     only : twoPI
             use tomlf,         only : toml_table, get_value
-            use sdfs,          only : rotationAlign, translate
+            use sdfHelpers,    only : rotationAlign, translate
             use mat_class,     only : invert
             use vector_class
             use piecewiseMod

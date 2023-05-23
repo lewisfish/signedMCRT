@@ -15,6 +15,10 @@ List of ToDo's for SignedMCRT.
     - [x] Constant
     - [x] 1D
     - [x] 2D
+- [x] Finish new SDF API
+    - [x] add all SDFs
+    - [x] add adjustment functions (twist, union etc)
+    - [x] propagate to subs.f90
 
 ### Minor Features
 - [ ] Add more saved state to photon_origin to save compute time
@@ -61,10 +65,6 @@ List of ToDo's for SignedMCRT.
     - [ ] Document optical properties
     - [x] Change API to match that of SDFs, i.e easier to use
 - [ ] Add MPI + openMP mode (e.g. run openMP on N nodes with minimal communication)
-- [ ] Finish new SDF API
-    - [ ] add all SDFs
-    - [ ] add adjustment functions (twist, union etc)
-    - [ ] propagate to subs.f90
 
 ## Testing
 
