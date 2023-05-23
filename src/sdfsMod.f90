@@ -1359,7 +1359,7 @@ end function eval_neural
             out%layer = prim%layer
             out%transform = identity()
 
-            end function elongate_init
+        end function elongate_init
 
         function eval_elongate(this, pos) result(res)
 
@@ -1402,7 +1402,7 @@ end function eval_neural
             out%layer = prim%layer
             out%transform = identity()
 
-            end function bend_init
+        end function bend_init
 
         function eval_bend(this, pos) result(res)
 
@@ -1447,7 +1447,7 @@ end function eval_neural
             out%layer = prim%layer
             out%transform = identity()
 
-            end function displacement_init
+        end function displacement_init
 
         function eval_disp(this, pos) result(res)
 
@@ -1535,7 +1535,7 @@ end function eval_neural
             out%layer = prim%layer
             out%transform = identity()
 
-            end function repeat_init
+        end function repeat_init
 
         function eval_repeat(this, pos) result(res)
 

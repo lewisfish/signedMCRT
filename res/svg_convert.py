@@ -34,8 +34,8 @@ def write_segment(x1, x2, y1, y2, i, fh):
 
     fh.write(f"a = vector({x1:.7f}_wp, {y1:.7f}_wp, 0.0_wp)\n")
     fh.write(f"b = vector({x2:.7f}_wp, {y2:.7f}_wp, 0.0_wp)\n")
-    fh.write(f"seg({i}) = segment(a, b, mus, mua, hgg, n, layer)\n")
-    fh.write(f"ex({i}) = extrude(seg({i}), .5_wp)\n\n")
+    fh.write(f"seg({i}) = segment(a, b, opt(2), layer)\n")
+    fh.write(f"array({i}) = extrude(seg({i}), .5_wp)\n\n")
     i += 1
     return i
 
@@ -52,7 +52,7 @@ with open("svg.f90", "w") as fh:
     x = []
     y = []
     k = 1
-    svg = parse('sMCRT.svg')
+    svg = parse('crest-simple.svg')
     paths = svg.getAllElements()[2].getElementsByType(Path)
     for path in paths:
         # dicts = a[i].getAttributes()
