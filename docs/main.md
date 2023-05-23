@@ -142,6 +142,11 @@ Matrix class module. Defines a matrix type (4x4 matrix) and associated operation
 
 Source code can be found [here](/src/mat_class.f90)
 
+### opticalPropertiesMod.f90
+
+Source code can be found [here](/src/opticalProps/opticalProperties.f90)
+
+
 ### photon.f90
 
 This source file contains the photon type, all the photon launch routines for different light sources, and the scattering code.
@@ -153,6 +158,9 @@ Below are the current types of light sources available. Check [here](config.md) 
 - focus
 - point
 - circular
+- SLM (2D image source)
+- double slit
+- square aperture
 
 Source code can be found [here](/src/photon.f90)
 
@@ -197,7 +205,50 @@ This module defines a set of functions that return random numbers in different d
 
 Source code can be found [here](/src/random_mod.f90)
 
-### sdfsMod.f90
+### sdf_base.f90
+
+This module defines the signed distance function (SDF) abstract type, sdf_base type, and model type.
+The SDF abstract type defines the optical properties of an SDF (mus, mua, kappa, albedo, hgg, g2,and n), as well as a transform (4x4 matrix), and the layer ID code of the SDF. The SDF abstract type also provides an abstract interface (evaluate) which each inheriting function must implement. This evaluate function is the heart of the SDF implementation. Each individual evaluate is the direct implementation of that SDF, e.g. that function defines the mathematical SDF. For more information on SDFs, check out Inigo Quilez's [website](https://iquilezles.org/articles/) from which most of the below SDFs and transforms have been taken.
+
+The sdf_base type acts as a container for all SDFs derived from the abstract SDF type.
+
+Source code can be found [here](/src/sdfs/sdf_base.f90)
+
+### sdfHelpers.f90
+
+Collection of helper functions for SDFs:
+
+This module defines transforms that can be applied to each SDF:
+
+- Rotate_{x,y,z}
+- Translate
+- RotationAlign (not tested)
+- RotMat (not tested)
+- Identity
+- SkewSymm
+
+Source code can be found [here](/src/sdfs/sdfHelpers.f90)
+
+### sdfModifiers.f90
+
+This module defines transforms that can be applied to each SDF:
+
+- Union
+- Intersection
+- Subtraction
+- Displacement
+- Bend
+- Twist
+- Elongate
+- Repeat
+- Extrude
+- Revolution
+- Onion
+- Translate
+
+Source code can be found [here](/src/sdfs/sdfModifiers.f90)
+
+### sdfs.f90
 
 This module defines the signed distance function (SDF) abstract type and all types that inherit from it.
 The SDF abstract type defines the optical properties of an SDF (mus, mua, kappa, albedo, hgg, g2,and n), as well as a transform (4x4 matrix), and the layer ID code of the SDF. The SDF abstract type also provides an abstract interface (evaluate) which each inheriting function must implement. This evaluate function is the heart of the SDF implementation. Each individual evaluate is the direct implementation of that SDF, e.g. that function defines the mathematical SDF. For more information on SDFs, check out Inigo Quilez's [website](https://iquilezles.org/articles/) from which most of the below SDFs and transforms have been taken.
@@ -210,36 +261,12 @@ The SDF abstract type defines the optical properties of an SDF (mus, mua, kappa,
 - triprism (triangular prism)
 - capsule
 - plane
-- moon (not tested)
-- neural (requires the use of separate python scripts to generate SDF. Current model is the Stanford bunny.)
 - segment
 - egg
 
-This module also defines tow meta-container for dealing with multiple SDFs at the same time:
+**This is the module the user should import to other module not sdf_base!**
 
-- model. This joins multiple SDFs into one SDF type.
-- container. This is essentially an array type for storing multiple SDFs at once.
-
-This module also defines transforms that can be applied to each SDF:
-
-- Union
-- Intersection
-- Subtraction
-- SmoothUnion
-- Rotate_{x,y,z}
-- Translate
-- RotationAlign (not tested)
-- RotMat (not tested)
-- Displacement
-- Bend
-- Twist
-- Elongate
-- Repeat
-- Extrude
-- Revolution
-- Onion
-
-Source code can be found [here](/src/sdfsMod.f90)
+Source code can be found [here](/src/sdfs.f90)
 
 ### sim_state.f90
 
@@ -259,12 +286,16 @@ This module defines the setting_t type which holds simulation metadata:
 
 Source code can be found [here](/src/sim_state.f90)
 
-### subs.f90
+### setup.f90
 
-This file sets up some simulations variables and initialises the geometry for the simulation.
+This file sets up some simulations variables and assigns the geometry for the simulation.
+
+Source code can be found [here](/src/setup.f90)
+
+### setupGeometry.f90
+
 Add any new geometry setups here.
-
-Source code can be found [here](/src/subs.f90)
+Source code can be found [here](/src/setupGeometry.f90)
 
 ### surfaces.f90
 
