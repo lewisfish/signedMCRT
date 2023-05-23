@@ -1,6 +1,6 @@
 [source]
 name = "uniform"
-nphotons = 10
+nphotons = 1000000
 direction = [1.0, 0.0, 0.0]
 point1 = [-7.5, -1.0, -1.0]
 point2 = [0.0, 2.0, 0.0]

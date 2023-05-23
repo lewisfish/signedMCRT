@@ -185,7 +185,7 @@ module sdfNew
 
     end function revolution_init
 
-    function eval_revolution(this, pos) result(res)
+    pure elemental function eval_revolution(this, pos) result(res)
 
         class(revolution), intent(in) :: this
         type(vector), intent(IN) :: pos
@@ -200,7 +200,7 @@ module sdfNew
     
     end function eval_revolution
 
-    function eval_onion(this, pos) result(res)
+    pure elemental function eval_onion(this, pos) result(res)
 
         class(onion), intent(in) :: this
         type(vector), intent(IN) :: pos

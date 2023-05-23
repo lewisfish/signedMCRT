@@ -113,11 +113,12 @@ module subs
 
             type(sdf), allocatable :: array(:)
             type(box) :: bbox
-            type(revolution) :: albumen
+            type(revolution), save :: albumen, rev1
             type(onion) :: shell
             type(sphere) :: yolk
             type(opticalProp_t) :: opt(4)
             type(mono), target, save :: monos(4)
+            type(egg), save :: egg_shell, egg_albumen
 
             real(kind=wp) :: r1, r2, h
             
@@ -132,13 +133,16 @@ module subs
             monos(1) = mono(100._wp, 10._wp, 0.0_wp, 1.37_wp)
             allocate(opt(1)%p, source=monos(1))
             opt(1)%p => monos(1)
-            shell = onion(revolution(egg(r1, r2, h, opt(1), 2), .2_wp), .2_wp)
+            egg_shell = egg(r1, r2, h, opt(1), 2)
+            rev1 = revolution(egg_shell, .2_wp)
+            shell = onion(rev1, .2_wp)
 
             !albumen
             monos(2) = mono(1._wp, 0._wp, 0.0_wp, 1.37_wp)
             allocate(opt(2)%p, source=monos(2))
             opt(2)%p => monos(2)
-            albumen = revolution(egg(r1-.2_wp, r2, h, opt(2), 3), .2_wp)
+            egg_albumen = egg(r1-.2_wp, r2, h, opt(2), 3)
+            albumen = revolution(egg_albumen, .2_wp)
 
             !yolk
             monos(3) = mono(10._wp, 1._wp, 0.9_wp, 1.37_wp)
