@@ -28,13 +28,13 @@ module testsSDFMod
                 new_unittest("sphere_test", test_sphere), &
                 new_unittest("box_test", test_box), &
                 new_unittest("cylinder_test", test_cylinder), &
-                new_unittest("torus_test", test_torus) &
+                new_unittest("torus_test", test_torus), &
                 ! new_unittest("triprism_test", test_triprism), &
                 ! new_unittest("cone_test", test_cone), &
                 ! new_unittest("capsule_test", test_capsule), &
                 ! new_unittest("plane_test", test_plane), &
-                ! new_unittest("segment_test", test_segment), &
-                ! new_unittest("egg_test", test_egg)&
+                new_unittest("segment_test", test_segment), &
+                new_unittest("egg_test", test_egg)&
                 ]
     end subroutine collect_suite1
 
@@ -195,4 +195,84 @@ module testsSDFMod
         if(allocated(error))return
 
     end subroutine test_torus
+
+    subroutine test_segment(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(segment)  :: seg
+        type(opticalProp_t) :: opt
+        type(vector) :: pos, a, b
+
+        a = vector(-1._wp, 0., 0._wp)
+        b = vector(1._wp, 0., 0._wp)
+        opt = mono(0._wp, 0._wp, 0._wp, 0._wp)
+        seg = segment(a, b, opt, 1)
+
+        pos = vector(0._wp, 0._wp, 0._wp)
+        call check(error, seg%evaluate(pos), -0.1_wp)
+        if(allocated(error))return
+
+        pos = vector(-1._wp, 0._wp, 0._wp)
+        call check(error, seg%evaluate(pos), -0.1_wp)
+        if(allocated(error))return
+
+        pos = vector(1._wp, 0._wp, 0._wp)
+        call check(error, seg%evaluate(pos), -0.1_wp)
+        if(allocated(error))return
+
+        pos = vector(1._wp, 1.1_wp, 0._wp)
+        call check(error, seg%evaluate(pos), 1._wp)
+        if(allocated(error))return
+
+        pos = vector(0._wp, 1.1_wp, 0._wp)
+        call check(error, seg%evaluate(pos), 1._wp)
+        if(allocated(error))return
+
+        pos = vector(0._wp, 0._wp, 1.1_wp)
+        call check(error, seg%evaluate(pos), 1._wp)
+        if(allocated(error))return
+
+    end subroutine test_segment
+
+    subroutine test_egg(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(egg)  :: eggy
+        type(opticalProp_t) :: opt
+        type(vector) :: pos
+        real(kind=wp) :: r1, r2, h
+
+        opt = mono(0._wp, 0._wp, 0._wp, 0._wp)
+        ! makes a Moss egg. https://www.shadertoy.com/view/WsjfRt
+        ! R1 controls "fatness" of the egg. Actually controls the base circle radius.
+        ! R2 contorls the pointiness of the egg. Actually controls radius of top circle.
+        ! h controls the height of the egg. Actually controls y position of top circle.
+        r1 = 2.5_wp
+        r2 = 0.75_wp
+        h = 1.5_wp
+        eggy = egg(r1, r2, h, opt, 1)
+
+        pos = vector(0._wp, 0._wp, 0._wp)
+        call check(error, eggy%evaluate(pos), -r1)
+        if(allocated(error))return
+
+        pos = vector(r1, 0._wp, 0._wp)
+        call check(error, eggy%evaluate(pos), 0.0_wp)
+        if(allocated(error))return
+
+        pos = vector(r1, 0._wp, 0._wp)
+        call check(error, eggy%evaluate(pos), 0.0_wp)
+        if(allocated(error))return
+
+        pos = vector(0.0_wp, r1+2._wp*r2, 0._wp)
+        call check(error, eggy%evaluate(pos), 0.0_wp, thr=1e-5_wp)
+        if(allocated(error))return
+
+        pos = vector(r1, r1, 0._wp)
+        call check(error, eggy%evaluate(pos), 0.630294_wp, thr=1e-5_wp)
+        if(allocated(error))return
+
+    end subroutine test_egg
 end module testsSDFMod
