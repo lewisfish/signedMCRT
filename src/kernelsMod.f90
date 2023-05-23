@@ -426,7 +426,7 @@ contains
 
         use sdfs,          only : sdf, render
         use sim_state_mod, only : state
-        use subs,          only : setup_simulation, directory
+        use setupMod,      only : setup_simulation, directory
         use utils,         only : get_time, print_time, str
         use vector_class,  only : vector
         ! !external deps
@@ -492,7 +492,7 @@ subroutine finalise(dict, dects, nscatt, start, history)
     use historyStack,  only : history_stack_t
     use iarray,        only : phasor, phasorGLOBAL, jmean, jmeanGLOBAL, absorb, absorbGLOBAL
     use sim_state_mod, only : state
-    use subs,          only : dealloc_array
+    use setupMod,      only : dealloc_array
     use writer_mod,    only : normalise_fluence, write_data, write_detected_photons
     
     use utils, only : get_time, print_time, str
