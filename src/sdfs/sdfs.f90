@@ -119,9 +119,8 @@ module sdfs
     function segment_init(a, b, optProp, layer, transform) result(out)
 
         type(segment) :: out
-        type(opticalProp_t), intent(in) :: optProp
+        type(opticalProp_t),     intent(in) :: optProp
         type(vector),            intent(IN) :: a, b
-        ! real(kind=wp),           intent(IN) :: mus, mua, hgg, n
         integer,                 intent(IN) :: layer
         real(kind=wp), optional, intent(IN) :: transform(4, 4)
 

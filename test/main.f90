@@ -61,6 +61,9 @@ program test_all
     call Fresnel_suite(tmp, context)
     call grow_suite(tmp, testsuites)
 
+    call SDF_suite(tmp, context)
+    call grow_suite(tmp, testsuites)
+
     do i = 1, size(testsuites)
         write(error_unit, fmt) "Testing:", testsuites(i)%name
         call run_testsuite(testsuites(i)%collect, error_unit, stat, parallel=.true., context=context)
