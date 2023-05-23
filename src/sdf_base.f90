@@ -31,10 +31,6 @@ module sdf_baseMod
             generic :: assignment(=) => sdf_assign
     end type sdf
 
-!####################################################################
-!       META
-!####################################################################
-
     type, extends(sdf_base) :: model
         type(sdf), allocatable         :: array(:)
         procedure(op), nopass, pointer :: func
@@ -43,7 +39,6 @@ module sdf_baseMod
             procedure :: evaluate => eval_model
     end type model
 !####################################################################
-
     abstract interface
         pure elemental function evalInterface(this, pos) result(res)
             use vector_class
@@ -78,8 +73,12 @@ module sdf_baseMod
         module procedure model_init
     end interface
 
+    interface render
+        module procedure render_sub, render_vec
+    end interface
+
     private
-    public :: model, sdf, sdf_base, primitive, op, calcNormal
+    public :: model, sdf, sdf_base, primitive, op, calcNormal, render
 
     contains
 
@@ -254,4 +253,87 @@ module sdf_baseMod
         allocate(lhs%value,source=rhs)
 
     end function sdf_new
+
+
+    subroutine render_vec(cnt, state)
+
+        use sim_state_mod, only : settings_t
+
+        type(settings_t), intent(IN) :: state
+        type(sdf),  intent(IN) :: cnt(:)
+        
+        type(vector):: extent
+
+        extent = vector(state%grid%xmax, state%grid%ymax, state%grid%zmax)
+    
+        call render_sub(cnt, extent, state%render_size, state)
+
+    end subroutine render_vec
+
+    subroutine render_sub(cnt, extent, samples, state)
+
+        use sim_state_mod, only : settings_t
+        use utils,         only : pbar
+        use constants,     only : fileplace, sp
+        use writer_mod
+                  
+        type(settings_t), intent(IN) :: state
+        type(sdf),  intent(IN) :: cnt(:)
+        integer,          intent(IN) :: samples(3)
+        type(vector),     intent(IN) :: extent
+
+        type(vector)               :: pos, wid
+        integer                    :: i, j, k, u, id
+        real(kind=wp)              :: x, y, z, ds(size(cnt)), ns(3), minvalue
+        real(kind=sp), allocatable :: image(:, :, :)
+        type(pbar)                 :: bar
+
+        ns = nint(samples / 2._wp)
+        allocate(image(samples(1), samples(2), samples(3)))
+        wid = vector(extent%x/ns(1), extent%y/ns(2), extent%z/ns(3))
+        bar = pbar(samples(1))
+!$omp parallel default(none) shared(cnt, ns, wid, image, samples, bar)&
+!$omp private(i, x, y, z, pos, j, k, u, ds, id, minvalue)
+!$omp do
+        do i = 1, samples(1)
+            x = (i-ns(1)) *wid%x
+            do j = 1, samples(2)
+                y = (j-ns(2)) *wid%y
+                do k = 1, samples(3)
+                    z = (k-ns(3)) * wid%z
+                    pos = vector(x, y, z)
+                    ds = 0._wp
+                    do u = 1, size(ds)
+                        ds(u) = cnt(u)%evaluate(pos)
+                    end do
+                    if(all(ds > 0._wp))then
+                        id=0
+                    else
+                        if(all(ds < 0._wp))then
+                            id = cnt(maxloc(ds,dim=1))%layer
+                        else
+                            ds = -1.*ds
+                            minvalue = 1000000._wp
+                            do u = 1, size(ds)
+                                if(ds(u) > 0. .and. ds(u) < minvalue)then
+                                    minvalue = ds(u)
+                                    id = u
+                                end if
+                            end do
+                            ! id = cnt(minloc(ds),dim=1))%p%layer
+                        end if
+                    end if
+                    ! if(id == 0._wp)then
+                    !     image(i,j,k)=-99._wp
+                    ! else
+                        image(i, j, k) = real(id)!cnt(id)%p%mua
+                    ! end if
+                end do
+            end do
+            call bar%progress()
+        end do
+!$OMP end  do
+!$OMP end parallel
+        call write_data(image, trim(fileplace)//state%renderfile, state, overwrite=.true.)
+    end subroutine render_sub
 end module sdf_baseMod

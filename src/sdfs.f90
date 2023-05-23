@@ -2,7 +2,7 @@ module sdfs
     
     use constants,         only : wp
     use opticalProperties, only : opticalProp_t
-    use sdf_baseMod,       only : sdf, sdf_base, model, calcNormal
+    use sdf_baseMod,       only : sdf, sdf_base, model, calcNormal, render
     use sdfHelpers,        only : identity
     use vector_class
 
@@ -112,7 +112,7 @@ module sdfs
     end interface plane
 
     private
-    public :: plane, capsule, cone, segment, egg, triprism, cylinder, torus, box, sphere, sdf, model, calcNormal
+    public :: plane, capsule, cone, segment, egg, triprism, cylinder, torus, box, sphere, sdf, model, calcNormal, render
 
     contains
     

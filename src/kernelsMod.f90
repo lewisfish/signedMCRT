@@ -424,7 +424,7 @@ contains
         use random,        only : init_rng
         use piecewiseMod
 
-        use sdfs,          only : sdf
+        use sdfs,          only : sdf, render
         use sim_state_mod, only : state
         use subs,          only : setup_simulation, directory
         use utils,         only : get_time, print_time, str
@@ -433,17 +433,15 @@ contains
         use tev_mod, only : tevipc, tev_init
         use tomlf,   only : toml_table
         
-        character(*), intent(in) :: input_file
-
-        type(sdf),  allocatable, intent(out) :: array(:)
+        character(*),                  intent(in)  :: input_file
+        type(sdf),        allocatable, intent(out) :: array(:)
         type(dect_array), allocatable, intent(out) :: dects(:)
-        type(toml_table), intent(out)  :: dict
-        type(tevipc),     intent(out)  :: tev
-        type(photon),     intent(out)  :: packet
-        real(kind=wp), allocatable, intent(out) :: distances(:), image(:,:,:)
-        real(kind=wp), intent(out) :: nscatt
-        real(kind=wp), intent(out) :: start
-        type(spectrum_t), intent(out) :: spectrum
+        type(toml_table),              intent(out) :: dict
+        type(tevipc),                  intent(out) :: tev
+        type(photon),                  intent(out) :: packet
+        real(kind=wp),    allocatable, intent(out) :: distances(:), image(:,:,:)
+        real(kind=wp),                 intent(out) :: nscatt, start
+        type(spectrum_t),              intent(out) :: spectrum
         
         ! mpi/mp variables
         integer       :: id
@@ -472,10 +470,10 @@ contains
         
         call setup_simulation(array, dict)
         ! render geometry to voxel format for debugging
-        ! if(state%render_geom)then
-        !     print*,"Rendering geometry to file"
-        !     call render(array, state)
-        ! end if
+        if(state%render_geom)then
+            print*,"Rendering geometry to file"
+            call render(array, state)
+        end if
         
         allocate(distances(size(array)))
         
@@ -490,23 +488,22 @@ end subroutine setup
 subroutine finalise(dict, dects, nscatt, start, history)
 
     use constants,     only : wp, fileplace
+    use detector_mod,  only : dect_array
+    use historyStack,  only : history_stack_t
     use iarray,        only : phasor, phasorGLOBAL, jmean, jmeanGLOBAL, absorb, absorbGLOBAL
     use sim_state_mod, only : state
     use subs,          only : dealloc_array
-    
-    use historyStack, only : history_stack_t
-    use detector_mod, only : dect_array
-    use writer_mod,   only : normalise_fluence, write_data, write_detected_photons
+    use writer_mod,    only : normalise_fluence, write_data, write_detected_photons
     
     use utils, only : get_time, print_time, str
     use tomlf, only : toml_table, set_value
 
-    real(kind=wp),         intent(in) :: nscatt, start
-    type(dect_array),      intent(in) :: dects(:)
-    type(history_stack_t), intent(in) :: history
+    real(kind=wp),         intent(in)    :: nscatt, start
+    type(dect_array),      intent(in)    :: dects(:)
+    type(history_stack_t), intent(in)    :: history
     type(toml_table),      intent(inout) :: dict
 
-    integer :: id, numproc, i
+    integer       :: id, numproc, i
     real(kind=wp) :: nscattGLOBAL, time_taken
 
     id = 0
