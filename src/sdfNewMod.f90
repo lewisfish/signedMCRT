@@ -447,7 +447,7 @@ module sdfNew
         class(sdf) :: this
         real(kind=wp) :: res
 
-        res = this%value%optProps%p%kappa
+        res = this%value%optProps%value%kappa
 
     end function getKappa
 
@@ -456,7 +456,7 @@ module sdfNew
         class(sdf) :: this
         real(kind=wp) :: res
 
-        res = this%value%optProps%p%mua
+        res = this%value%optProps%value%mua
 
     end function getMua
 
@@ -465,7 +465,7 @@ module sdfNew
         class(sdf) :: this
         real(kind=wp) :: res
 
-        res = this%value%optProps%p%hgg
+        res = this%value%optProps%value%hgg
 
     end function gethgg
 
@@ -475,7 +475,7 @@ module sdfNew
         class(sdf) :: this
         real(kind=wp) :: res
 
-        res = this%value%optProps%p%g2
+        res = this%value%optProps%value%g2
 
     end function getg2
     function getN(this) result(res)
@@ -483,7 +483,7 @@ module sdfNew
         class(sdf) :: this
         real(kind=wp) :: res
 
-        res = this%value%optProps%p%n
+        res = this%value%optProps%value%n
 
     end function getN
 
@@ -492,7 +492,7 @@ module sdfNew
         class(sdf) :: this
         real(kind=wp) :: res
 
-        res = this%value%optProps%p%albedo
+        res = this%value%optProps%value%albedo
 
     end function getAlbedo
 
@@ -799,7 +799,7 @@ module sdfNew
 
         res = this%value%evaluate(pos)
 
-    end function
+    end function sdf_evaluate
  
     ! sdf initializer
     subroutine sdf_assign(lhs, rhs)

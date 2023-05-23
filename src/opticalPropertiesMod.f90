@@ -5,33 +5,37 @@ module opticalProperties
 
     implicit none
 
-    type, abstract :: opticalProp
+    type, abstract :: opticalProp_base
         real(kind=wp) :: mus, mua, hgg, g2, n, kappa, albedo
         contains
             procedure(updateInterface), deferred :: update
-    end type opticalProp
+    end type opticalProp_base
 
     abstract interface
         subroutine updateInterface(this, wavelength)
             use constants, only : wp
             use piecewiseMod
-            import opticalProp
+            import opticalProp_base
             implicit none
-            class(opticalProp), intent(inout) :: this
-            real(kind=wp),        intent(out)   :: wavelength
+            class(opticalProp_base), intent(inout) :: this
+            real(kind=wp),           intent(out)   :: wavelength
         end subroutine updateInterface
     end interface
 
-    type :: opticalProp_t
-        class(opticalProp), pointer :: p => null()
+    type, extends(opticalProp_base) :: opticalProp_t
+        class(opticalProp_base), allocatable :: value
+        contains
+            procedure :: update => update_opticalProp_t
+            procedure, private :: opticalProp_t_assign
+            generic :: assignment(=) => opticalProp_t_assign
     end type opticalProp_t
 
-    type, extends(opticalProp) :: mono
+    type, extends(opticalProp_base) :: mono
         contains
             procedure :: update => updateMono
     end type mono
 
-    type, extends(opticalProp) :: spectral
+    type, extends(opticalProp_base) :: spectral
         type(piecewise1D), private :: mus_a, mua_a, hgg_a, n_a, flux
         contains
             procedure :: update => updateSpectral
@@ -46,9 +50,34 @@ module opticalProperties
     end interface mono
 
     private
-    public :: spectral, mono, opticalProp, opticalProp_t
+    public :: spectral, mono, opticalProp_base, opticalProp_t
 
     contains
+
+    subroutine opticalProp_t_assign(lhs, rhs)
+
+        class(opticalProp_t),    intent(inout) :: lhs
+        class(opticalProp_base), intent(in)    :: rhs
+
+        if (allocated(lhs%value))deallocate(lhs%value)
+        ! Prevent nested derived type
+        select type (rhsT=>rhs)
+            class is (opticalProp_t)
+                if(allocated(rhsT%value))allocate(lhs%value,source=rhsT%value)
+            class default
+                allocate(lhs%value,source=rhsT)
+        end select
+
+    end subroutine opticalProp_t_assign
+
+    subroutine update_opticalProp_t(this, wavelength)
+
+        class(opticalProp_t), intent(inout) :: this
+        real(kind=wp),        intent(out)   :: wavelength
+
+        call this%value%update(wavelength)
+
+    end subroutine update_opticalProp_t
 
     type(mono) function init_mono(mus, mua, hgg, n) result(res)
 

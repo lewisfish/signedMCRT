@@ -117,7 +117,6 @@ module subs
             type(onion) :: shell
             type(sphere) :: yolk
             type(opticalProp_t) :: opt(4)
-            type(mono), target, save :: monos(4)
             type(egg), save :: egg_shell, egg_albumen
 
             real(kind=wp) :: r1, r2, h
@@ -130,30 +129,22 @@ module subs
             !height = 62mm
 
             !shell
-            monos(1) = mono(100._wp, 10._wp, 0.0_wp, 1.37_wp)
-            allocate(opt(1)%p, source=monos(1))
-            opt(1)%p => monos(1)
+            opt(1) = mono(100._wp, 10._wp, 0.0_wp, 1.37_wp)
             egg_shell = egg(r1, r2, h, opt(1), 2)
             rev1 = revolution(egg_shell, .2_wp)
             shell = onion(rev1, .2_wp)
 
             !albumen
-            monos(2) = mono(1._wp, 0._wp, 0.0_wp, 1.37_wp)
-            allocate(opt(2)%p, source=monos(2))
-            opt(2)%p => monos(2)
+            opt(2) = mono(1._wp, 0._wp, 0.0_wp, 1.37_wp)
             egg_albumen = egg(r1-.2_wp, r2, h, opt(2), 3)
             albumen = revolution(egg_albumen, .2_wp)
 
             !yolk
-            monos(3) = mono(10._wp, 1._wp, 0.9_wp, 1.37_wp)
-            allocate(opt(3)%p, source=monos(3))
-            opt(3)%p => monos(3)
+            opt(3) = mono(10._wp, 1._wp, 0.9_wp, 1.37_wp)
             yolk = sphere(1.5_wp, opt(3), 1)
 
             !bounding box
-            monos(4) = mono(0._wp, 0._wp, 0.0_wp, 1._wp)
-            allocate(opt(4)%p, source=monos(4))
-            opt(4)%p => monos(4)
+            opt(4) = mono(0._wp, 0._wp, 0.0_wp, 1._wp)
             bbox = box(vector(20.001_wp, 20.001_wp, 20.001_wp), opt(4), 4)
             
             allocate(array(4))
@@ -215,7 +206,6 @@ module subs
             real(kind=wp) :: t(4,4), mus, mua, hgg, n, radius
             type(vector) :: pos
             type(opticalProp_t) :: opt(2)
-            type(mono), target, save :: opt_all(2)
 
             call get_value(dict, "num_spheres", num_spheres)
             allocate(array(num_spheres+1))
@@ -224,9 +214,8 @@ module subs
             mua = 1e-17_wp
             hgg = 0.0_wp
             n   = 1.0_wp
-            opt_all(2) = mono(mus, mua, hgg, n)
-            allocate(opt(2)%p, source=opt_all(2))
-            opt(2)%p => opt_all(2)
+
+            opt(2) = mono(mus, mua, hgg, n)
 
             array(num_spheres+1) = box(vector(2._wp, 2._wp, 2._wp), opt(2), num_spheres+1)
             
@@ -234,9 +223,7 @@ module subs
             mua = 0.0_wp!ranu(0.01_wp, 1._wp)
             hgg = 0.9_wp
             n = 1.37_wp
-            opt_all(1) = mono(mus, mua, hgg, n)
-            allocate(opt(1)%p, source=opt_all(1))
-            opt(1)%p => opt_all(1)
+            opt(1) = mono(mus, mua, hgg, n)
             do i = 1, num_spheres
                 radius = ranu(0.001_wp, 0.25_wp)
                 pos = vector(ranu(-1._wp+radius, 1._wp-radius), ranu(-1._wp+radius, 1._wp-radius),&
@@ -512,9 +499,7 @@ module subs
             type(toml_table), intent(inout) :: dict
             type(sdf), allocatable :: array(:)
 
-            type(mono), target, save :: opt_box, opt_sphere
             type(opticalProp_t) :: opt(2)
-
             real(kind=wp) :: mus, mua, hgg, n, tau
 
             call get_value(dict, "tau", tau)
@@ -524,14 +509,10 @@ module subs
             mua = 0.00_wp
             mus = tau
 
-            opt_sphere = mono(mus, mua, hgg, n)
-            allocate(opt(1)%p, source=opt_sphere)
-            opt(1)%p => opt_sphere
+            opt(1) = mono(mus, mua, hgg, n)
             array(1) = sphere(1._wp, opt(1), 1)
 
-            opt_box = mono(0.0_wp, mua, hgg, n)
-            allocate(opt(2)%p, source=opt_box)
-            opt(2)%p => opt_box
+            opt(2) = mono(0.0_wp, mua, hgg, n)
             array(2) = box(vector(2._wp, 2._wp, 2._wp), opt(2), 2)
 
         end function setup_scat_test
@@ -546,9 +527,7 @@ module subs
             type(toml_table), intent(inout) :: dict
             type(sdf), allocatable :: array(:)
 
-            type(mono), target, save :: opt_box
             type(opticalProp_t) :: opt
-
             real(kind=wp) :: mus, mua, hgg, n, tau
 
             allocate(array(1))
@@ -560,9 +539,7 @@ module subs
             mua = 1e-17_wp
             mus = tau
 
-            opt_box = mono(mus, mua, hgg, n)
-            allocate(opt%p, source=opt_box)
-            opt%p => opt_box
+            opt = mono(mus, mua, hgg, n)
             array(1) = box(vector(200._wp, 200._wp, 200._wp), opt, 2)
 
         end function setup_scat_test2
@@ -578,8 +555,6 @@ module subs
             type(sdf), allocatable :: array(:)
             
             type(opticalProp_t) :: opt(2)
-            type(mono), target, save :: monos(2)
-
             type(vector)  :: a, b
             real(kind=wp) :: t(4, 4), mus, mua, hgg, n
             integer       :: layer
@@ -592,13 +567,9 @@ module subs
             n = 2.65_wp
             layer = 1
 
-            monos(1) = mono(mus, mua, hgg, n)
-            allocate(opt(1)%p, source=monos(1))
-            opt(1)%p => monos(1)
+            opt(1) = mono(mus, mua, hgg, n)
 
-            monos(2) = mono(0._wp, 0._wp, 0._wp, 1.0_wp)
-            allocate(opt(2)%p, source=monos(2))
-            opt(2)%p => monos(2)
+            opt(2) = mono(0._wp, 0._wp, 0._wp, 1.0_wp)
             ! x
             ! |
             ! |
@@ -703,11 +674,7 @@ module subs
             type(vector) :: a, b
 
             type(opticalProp_t) :: opt(2)
-            type(mono), target, save :: monos(2)
 
-
-            ! packet = photon("uniform")
-            ! mua, mus, g, n]
             !MCmatlab: an open-source, user-friendly, MATLAB-integrated three-dimensional Monte Carlo light transport solver with heat diffusion and tissue damage
             muav = 231._wp
             musv = 94._wp
@@ -719,14 +686,8 @@ module subs
             gd = 0.9_wp
             nd = 1.37_wp
 
-            monos(1) = mono(musv, muav, gv, nv)
-            allocate(opt(1)%p, source=monos(1))
-            opt(1)%p => monos(1)
-
-            monos(2) = mono(musd, muad, gd, nd)
-            allocate(opt(2)%p, source=monos(2))
-            opt(2)%p => monos(2)
-
+            opt(1) = mono(musv, muav, gv, nv)
+            opt(2) = mono(musd, muad, gd, nd)
 
             !get number of edges
             open(newunit=u, file="res/edges.dat", iostat=io)

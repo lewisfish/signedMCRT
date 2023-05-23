@@ -560,10 +560,10 @@ end function eval_neural
             end if
 
             do i = 2, size(array)
-                if(array(1)%p%optProps%p%mus /= array(i)%p%optProps%p%mus)print*,"Error mismatch in model mus in object: ",i
-                if(array(1)%p%optProps%p%mua /= array(i)%p%optProps%p%mua)print*,"Error mismatch in model mua in object: ",i
-                if(array(1)%p%optProps%p%hgg /= array(i)%p%optProps%p%hgg)print*,"Error mismatch in model hgg in object: ",i
-                if(array(1)%p%optProps%p%n /= array(i)%p%optProps%p%n)print*,"Error mismatch in model n in object: ",i
+                if(array(1)%p%optProps%value%mus /= array(i)%p%optProps%value%mus)print*,"Error mismatch in model mus in object: ",i
+                if(array(1)%p%optProps%value%mua /= array(i)%p%optProps%value%mua)print*,"Error mismatch in model mua in object: ",i
+                if(array(1)%p%optProps%value%hgg /= array(i)%p%optProps%value%hgg)print*,"Error mismatch in model hgg in object: ",i
+                if(array(1)%p%optProps%value%n /= array(i)%p%optProps%value%n)print*,"Error mismatch in model n in object: ",i
                 if(array(1)%p%layer /= array(i)%p%layer)print*,"Error mismatch in model layer in object: ",i
             end do
 
