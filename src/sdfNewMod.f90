@@ -53,43 +53,65 @@ module sdfNew
         procedure :: evaluate => evaluate_torus
     end type torus
 
-    type, extends(sdf) :: triprism
+    type, extends(sdf_base) :: triprism
         real(kind=wp) :: h1, h2
         contains
         procedure :: evaluate => evaluate_triprism
     end type triprism
 
-    type, extends(sdf) :: cone
+    type, extends(sdf_base) :: cone
         type(vector)  :: a, b
         real(kind=wp) :: ra, rb
         contains
         procedure :: evaluate => evaluate_cone
     end type cone
 
-    type, extends(sdf) :: capsule
+    type, extends(sdf_base) :: capsule
         type(vector)  :: a, b
         real(kind=wp) :: r
         contains
         procedure :: evaluate => evaluate_capsule
     end type capsule
 
-    type, extends(sdf) :: plane
+    type, extends(sdf_base) :: plane
         type(vector) :: a
         contains
         procedure :: evaluate => evaluate_plane
     end type plane
 
-    type, extends(sdf) :: segment
+    type, extends(sdf_base) :: segment
         type(vector) :: a, b
         contains
         procedure :: evaluate => evaluate_segment
     end type segment
 
-    type, extends(sdf) :: egg
+    type, extends(sdf_base) :: egg
         real(kind=wp) :: r1, r2, h
         contains
         procedure :: evaluate => evaluate_egg
     end type egg
+
+    type, extends(sdf_base) :: revolution
+        real(kind=wp) :: o
+        class(sdf_base), pointer :: prim
+        contains
+        procedure :: evaluate => eval_revolution
+    end type revolution
+
+    interface revolution
+        module procedure revolution_init
+    end interface revolution
+
+    type, extends(sdf_base) :: onion
+        real(kind=wp) :: thickness
+        class(sdf_base), pointer :: prim
+        contains
+        procedure :: evaluate => eval_onion
+    end type onion
+
+    interface onion
+        module procedure onion_init
+    end interface onion
 
     abstract interface
         pure elemental function evalInterface(this, pos) result(res)
@@ -147,6 +169,62 @@ module sdfNew
     end interface plane
 
     contains
+
+    type(revolution) function revolution_init(prim, o) result(out)
+
+        class(sdf_base), target :: prim
+        real(kind=wp), intent(IN) :: o
+
+        out%o = o
+        out%prim => prim
+
+        out%optProps = prim%optProps
+
+        out%layer = prim%layer
+        out%transform = identity()
+
+    end function revolution_init
+
+    function eval_revolution(this, pos) result(res)
+
+        class(revolution), intent(in) :: this
+        type(vector), intent(IN) :: pos
+        real(kind=wp) :: res
+
+        type(vector) :: pxz, q
+
+        pxz = vector(pos%x, pos%z, 0._wp)
+
+        q = vector(length(pxz) - this%o, pos%y, 0._wp)
+        res = this%prim%evaluate(q)
+    
+    end function eval_revolution
+
+    function eval_onion(this, pos) result(res)
+
+        class(onion), intent(in) :: this
+        type(vector), intent(IN) :: pos
+        real(kind=wp) :: res
+
+        res = abs(this%prim%evaluate(pos)) - this%thickness
+
+    end function eval_onion
+
+    type(onion) function onion_init(prim, thickness) result(out)
+
+        class(sdf_base), target :: prim
+        real(kind=wp), intent(IN) :: thickness
+
+        out%thickness = thickness
+        out%prim => prim
+
+        out%optProps = prim%optProps
+
+        out%layer = prim%layer
+        out%transform = identity()
+
+    end function onion_init
+
 
     function segment_init(a, b, optProp, layer, transform) result(out)
 
@@ -715,11 +793,11 @@ module sdfNew
 
     pure elemental function sdf_evaluate(this, pos) result(res)
 
-       class(sdf), intent(in) :: this
-       type(vector), intent(in) :: pos
-       real(kind=wp) :: res
+        class(sdf), intent(in) :: this
+        type(vector), intent(in) :: pos
+        real(kind=wp) :: res
 
-       res = this%value%evaluate(pos)
+        res = this%value%evaluate(pos)
 
     end function
  
@@ -733,7 +811,7 @@ module sdfNew
         ! Prevent nested derived type
         select type (rhsT=>rhs)
             class is (sdf)
-                if (allocated(rhsT%value)) allocate(lhs%value,source=rhsT%value)
+                if(allocated(rhsT%value))allocate(lhs%value,source=rhsT%value)
             class default
                 allocate(lhs%value,source=rhsT)
         end select
@@ -743,7 +821,6 @@ module sdfNew
     type(sdf) function sdf_new(rhs) result(lhs)
 
         class(sdf_base), intent(in) :: rhs
-
         allocate(lhs%value,source=rhs)
 
     end function sdf_new

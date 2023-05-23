@@ -45,16 +45,16 @@ module subs
                 !     sdfarray = setup_exp(dict)
                 ! case("jacques")
                 !     sdfarray = setup_jacques()
-                ! case("vessels")
-                !     sdfarray = get_vessels()
+                case("vessels")
+                    sdfarray = get_vessels()
                 ! case("lens")
                 !     sdfarray = lens_test_setup()
                 ! case("slab_test")
                 !     sdfarray = setup_slab_test(dict)
                 case("sphere_scene")
                     sdfarray = setup_sphere_scene(dict)
-                ! case("test_egg")
-                !     sdfarray = setup_egg()
+                case("test_egg")
+                    sdfarray = setup_egg()
                 ! case("slab_slm")
                 !     sdfarray = slab_slm(dict)
                 case default
@@ -105,55 +105,61 @@ module subs
 
         ! end function slab_slm
 
-!         function setup_egg() result(array)
+        function setup_egg() result(array)
 
-!             use sdfs, only : container, egg, box, revolution, onion, sphere
-!             use vector_class
+            use sdfNew, only : sdf, onion, sphere, box, revolution, egg
+            use vector_class
+            use opticalProperties
 
-!             type(container), allocatable :: array(:)
-!             type(egg), target, save :: shell_2D, albumen_2D
-!             type(box), target, save :: bbox
-!             type(revolution), target, save :: shell_3D, albumen
-!             type(onion), target, save :: shell
-!             type(sphere), target, save :: yolk
+            type(sdf), allocatable :: array(:)
+            type(box) :: bbox
+            type(revolution) :: albumen
+            type(onion) :: shell
+            type(sphere) :: yolk
+            type(opticalProp_t) :: opt(4)
+            type(mono), target, save :: monos(4)
 
-!             real(kind=wp) :: r1, r2, h
+            real(kind=wp) :: r1, r2, h
             
-!             r1 = 3._wp
-!             r2 = 3._wp * sqrt(2._wp - sqrt(2._wp))
-!             h = r2
+            r1 = 3._wp
+            r2 = 3._wp * sqrt(2._wp - sqrt(2._wp))
+            h = r2
             
-!             !width = 42mm
-!             !height = 62mm
+            !width = 42mm
+            !height = 62mm
 
-!             !shell
-!             shell_2D = egg(r1, r2, h, 100.0_wp, 10.0_wp, 0.0_wp, 1.37_wp, 2)
-!             shell_3D = revolution(shell_2D, .2_wp)
-!             shell = onion(shell_3D, .2_wp)
+            !shell
+            monos(1) = mono(100._wp, 10._wp, 0.0_wp, 1.37_wp)
+            allocate(opt(1)%p, source=monos(1))
+            opt(1)%p => monos(1)
+            shell = onion(revolution(egg(r1, r2, h, opt(1), 2), .2_wp), .2_wp)
 
-!             !albumen
-!             albumen_2D = egg(r1-.2_wp, r2, h, 1._wp, 0._wp, 0._wp, 1.37_wp, 3)
-!             albumen = revolution(albumen_2D, .2_wp)
+            !albumen
+            monos(2) = mono(1._wp, 0._wp, 0.0_wp, 1.37_wp)
+            allocate(opt(2)%p, source=monos(2))
+            opt(2)%p => monos(2)
+            albumen = revolution(egg(r1-.2_wp, r2, h, opt(2), 3), .2_wp)
 
-!             !yolk
-!             yolk = sphere(1.5_wp, 10._wp, 1._wp, .9_wp, 1.37_wp, 1)
+            !yolk
+            monos(3) = mono(10._wp, 1._wp, 0.9_wp, 1.37_wp)
+            allocate(opt(3)%p, source=monos(3))
+            opt(3)%p => monos(3)
+            yolk = sphere(1.5_wp, opt(3), 1)
 
-!             !bounding box
-!             bbox = box(20.001_wp, 0.0_wp, 0.0_wp, 0.0_wp, 1._wp, 4)
+            !bounding box
+            monos(4) = mono(0._wp, 0._wp, 0.0_wp, 1._wp)
+            allocate(opt(4)%p, source=monos(4))
+            opt(4)%p => monos(4)
+            bbox = box(vector(20.001_wp, 20.001_wp, 20.001_wp), opt(4), 4)
             
-!             allocate(array(4))
+            allocate(array(4))
             
-!             allocate(array(1)%p, source=yolk)
-!             allocate(array(2)%p, source=albumen)
-!             allocate(array(3)%p, source=shell)
-!             allocate(array(4)%p, source=bbox)
-            
-!             array(1)%p => yolk
-!             array(2)%p => albumen
-!             array(3)%p => shell
-!             array(4)%p => bbox
+            array(1) = yolk
+            array(2) = albumen
+            array(3) = shell
+            array(4) = bbox
 
-!         end function setup_egg
+        end function setup_egg
 
 !         function setup_slab_test(dict) result(array)
 
@@ -674,124 +680,118 @@ module subs
         end function setup_omg_sdf
 
 
-!         function get_vessels() result(array)
+        function get_vessels() result(array)
 
-!             use sdfs,         only : container, model, capsule, model_init, union, box, union
-!             use vector_class, only : vector
-!             use mat_class,    only : invert
+            ! use sdfs,         only : container, model, capsule, model_init, union, box, union
+            use sdfNew, only : sdf, capsule, box
+            use vector_class, only : vector
 
-!             type(container), allocatable :: array(:), cnta(:)
-!             type(model), target, save :: vessels
-!             type(capsule), allocatable, target, save :: cyls(:)
-!             type(box), target, save :: bbox
+            use opticalProperties
 
-!             real(kind=wp), allocatable :: nodes(:, :), radii(:)
-!             integer, allocatable :: edges(:, :)
-!             integer :: io, edge_cnt, tmp1, tmp2, u, node_cnt, i, counter
-!             real(kind=wp) :: x, y, z, radius, res, maxx, maxy, maxz
-!             real(kind=wp) :: musv, muav, gv, nv
-!             real(kind=wp) :: musd, muad, gd, nd
-!             type(vector) :: a, b
+            type(sdf), allocatable :: array(:)
 
-!             ! packet = photon("uniform")
-!             ! mua, mus, g, n]
-!             !MCmatlab: an open-source, user-friendly, MATLAB-integrated three-dimensional Monte Carlo light transport solver with heat diffusion and tissue damage
-!             muav = 231._wp
-!             musv = 94._wp
-!             gv = 0.9_wp
-!             nv = 1.37_wp
+            real(kind=wp), allocatable :: nodes(:, :), radii(:)
+            integer, allocatable :: edges(:, :)
+            integer :: io, edge_cnt, tmp1, tmp2, u, node_cnt, i
+            real(kind=wp) :: x, y, z, radius, res, maxx, maxy, maxz
+            real(kind=wp) :: musv, muav, gv, nv
+            real(kind=wp) :: musd, muad, gd, nd
+            type(vector) :: a, b
 
-!             muad = 0.458_wp
-!             musd = 357._wp
-!             gd = 0.9_wp
-!             nd = 1.37_wp
+            type(opticalProp_t) :: opt(2)
+            type(mono), target, save :: monos(2)
 
-!             !get number of edges
-!             open(newunit=u, file="res/edges.dat", iostat=io)
-!             edge_cnt = 0
-!             do
-!                 read(u,*,iostat=io)tmp1, tmp2
-!                 if(io /= 0)exit
-!                 edge_cnt = edge_cnt + 1
-!             end do
-!             close(u)
 
-!             !get number of nodes and radii
-!             open(newunit=u, file="res/nodes.dat", iostat=io)
-!             node_cnt = 0
-!             do
-!                 read(u,*,iostat=io)x, y, z
-!                 if(io /= 0)exit
-!                 node_cnt = node_cnt + 1
-!             end do
-!             allocate(edges(edge_cnt, 2), nodes(node_cnt, 3), radii(node_cnt))
-!             ! print*,node_cnt,edge_cnt
-!             ! stop
-!             !read in edges
-!             open(newunit=u, file="res/edges.dat", iostat=io)
-!             do i = 1, edge_cnt
-!                 read(u,*,iostat=io)edges(i, :)
-!                 if(io /= 0)exit
-!             end do
-!             close(u)
+            ! packet = photon("uniform")
+            ! mua, mus, g, n]
+            !MCmatlab: an open-source, user-friendly, MATLAB-integrated three-dimensional Monte Carlo light transport solver with heat diffusion and tissue damage
+            muav = 231._wp
+            musv = 94._wp
+            gv = 0.9_wp
+            nv = 1.37_wp
 
-!             !read in nodes
-!             open(newunit=u, file="res/nodes.dat", iostat=io)
-!             do i = 1, edge_cnt
-!                 read(u,*,iostat=io)nodes(i, :)
-!                 if(io /= 0)exit
-!             end do
-!             close(u)
+            muad = 0.458_wp
+            musd = 357._wp
+            gd = 0.9_wp
+            nd = 1.37_wp
 
-!             !read in radii
-!             open(newunit=u, file="res/radii.dat", iostat=io)
-!             do i = 1, node_cnt
-!                 read(u,*,iostat=io)radii(i)
-!                 if(io /= 0)exit
-!             end do
-!             close(u)
+            monos(1) = mono(musv, muav, gv, nv)
+            allocate(opt(1)%p, source=monos(1))
+            opt(1)%p => monos(1)
 
-!             res = 0.001_wp!0.01mm
-!             maxx = maxval(abs(nodes(:, 1)))
-!             maxy = maxval(abs(nodes(:, 2)))
-!             maxz = maxval(abs(nodes(:, 3)))
+            monos(2) = mono(musd, muad, gd, nd)
+            allocate(opt(2)%p, source=monos(2))
+            opt(2)%p => monos(2)
 
-!             nodes(:, 1) = (nodes(:, 1) / maxx) - 0.5_wp
-!             nodes(:, 2) = (nodes(:, 2) / maxy) - 0.5_wp
-!             nodes(:, 3) = (nodes(:, 3) / maxz) - 0.5_wp
-!             nodes(:, 1) = nodes(:, 1) * maxx * res
-!             nodes(:, 2) = nodes(:, 2) * maxy * res
-!             nodes(:, 3) = nodes(:, 3) * maxz * res
 
-!             !allocate SDFs and container
-!             allocate(cyls(edge_cnt), cnta(edge_cnt))
-!             do i = 1, edge_cnt
-!                 allocate(cnta(i)%p, source=cyls(1))
-!             end do
+            !get number of edges
+            open(newunit=u, file="res/edges.dat", iostat=io)
+            edge_cnt = 0
+            do
+                read(u,*,iostat=io)tmp1, tmp2
+                if(io /= 0)exit
+                edge_cnt = edge_cnt + 1
+            end do
+            close(u)
 
-!             counter = 1
-!             do i = 1, edge_cnt
-!                 a = vector(nodes(edges(i, 1), 1), nodes(edges(i, 1), 2), nodes(edges(i, 1), 3))
-!                 b = vector(nodes(edges(i, 2), 1), nodes(edges(i, 2), 2), nodes(edges(i, 2), 3))
-!                 radius = radii(edges(i, 1)) * res
+            !get number of nodes and radii
+            open(newunit=u, file="res/nodes.dat", iostat=io)
+            node_cnt = 0
+            do
+                read(u,*,iostat=io)x, y, z
+                if(io /= 0)exit
+                node_cnt = node_cnt + 1
+            end do
+            allocate(edges(edge_cnt, 2), nodes(node_cnt, 3), radii(node_cnt))
 
-!                                                      ! mus, mua, hgg, n, layer
-!                 cyls(counter) = capsule(a, b, radius, musv, muav, gv, nv, 1)
-!                 cnta(counter)%p => cyls(counter)
-!                 counter = counter + 1
-!             end do
+            !read in edges
+            open(newunit=u, file="res/edges.dat", iostat=io)
+            do i = 1, edge_cnt
+                read(u,*,iostat=io)edges(i, :)
+                if(io /= 0)exit
+            end do
+            close(u)
 
-!             allocate(array(2))
-!             allocate(array(1)%p, source=vessels)
-!             vessels = model_init(cnta, union, 0.005_wp)
+            !read in nodes
+            open(newunit=u, file="res/nodes.dat", iostat=io)
+            do i = 1, edge_cnt
+                read(u,*,iostat=io)nodes(i, :)
+                if(io /= 0)exit
+            end do
+            close(u)
 
-!             bbox = box(vector(.32_wp, .18_wp, .26_wp), musd, muad, gd, nd, 2)
-!             allocate(array(2)%p, source=bbox)
+            !read in radii
+            open(newunit=u, file="res/radii.dat", iostat=io)
+            do i = 1, node_cnt
+                read(u,*,iostat=io)radii(i)
+                if(io /= 0)exit
+            end do
+            close(u)
 
-!             array(1)%p => vessels
-!             array(2)%p => bbox
+            res = 0.001_wp!0.01mm
+            maxx = maxval(abs(nodes(:, 1)))
+            maxy = maxval(abs(nodes(:, 2)))
+            maxz = maxval(abs(nodes(:, 3)))
 
-!         end function get_vessels
+            nodes(:, 1) = (nodes(:, 1) / maxx) - 0.5_wp
+            nodes(:, 2) = (nodes(:, 2) / maxy) - 0.5_wp
+            nodes(:, 3) = (nodes(:, 3) / maxz) - 0.5_wp
+            nodes(:, 1) = nodes(:, 1) * maxx * res
+            nodes(:, 2) = nodes(:, 2) * maxy * res
+            nodes(:, 3) = nodes(:, 3) * maxz * res
+
+            allocate(array(edge_cnt+1))
+
+            do i = 1, edge_cnt
+                a = vector(nodes(edges(i, 1), 1), nodes(edges(i, 1), 2), nodes(edges(i, 1), 3))
+                b = vector(nodes(edges(i, 2), 1), nodes(edges(i, 2), 2), nodes(edges(i, 2), 3))
+                radius = radii(edges(i, 1)) * res
+                array(i) = capsule(a, b, radius, opt(1), 1)
+            end do
+
+            array(i) = box(vector(.32_wp, .18_wp, .26_wp), opt(2), 2)
+
+        end function get_vessels
 
 
 !         function setup_skin_model() result(array)
