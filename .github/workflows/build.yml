@@ -70,6 +70,7 @@ jobs:
         if: ${{ contains(matrix.os, 'ubuntu') && contains(matrix.toolchain.compiler, 'gcc') }}
         run: |
           pip install ford
+          pip install markdown-checklist
           ford docs.md
         
       - uses: JamesIves/github-pages-deploy-action@3.7.1
