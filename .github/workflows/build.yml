@@ -69,9 +69,7 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: '3.x'
-        name: Install dependencies
         run: pip install ford
-        name: Build Documentation
         run: ford docs.md
         uses: JamesIves/github-pages-deploy-action@3.7.1
         with:
