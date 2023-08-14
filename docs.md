@@ -2,7 +2,7 @@
 project: signedMCRT
 src_dir: ./src
          ./app
-output_dir: ./doc
+output_dir: ./docs
 media_dir: ./images
 project_github: https://github.com/lewisfish/signedMCRT
 project_download: https://github.com/lewisfish/signedMCRT/releases/latest
