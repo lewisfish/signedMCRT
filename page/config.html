@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Monte Carlo radiation transfer (MCRT) using Signed Distance functions (SDF)">
+    <meta name="author" content="Lewis McMillan" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>config &ndash; signedMCRT</title>
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/local.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+         <script src="../js/jquery-2.1.3.min.js"></script>
+         <script src="../js/svg-pan-zoom.min.js"></script>
+
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">signedMCRT </a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+              <li><a href='../page/index.html'>main</a></li>
+            <li class="dropdown hidden-xs visible-sm visible-md hidden-lg">
+              <a href="#" class="dropdown-toggle"
+                 data-toggle="dropdown" role="button"
+                 aria-haspopup="true"
+                 aria-expanded="false">
+                 Contents <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                    <li><a href="../lists/files.html">Source Files</a></li>
+                  <li><a href="../lists/modules.html">Modules</a></li>
+                  <li><a href="../lists/procedures.html">Procedures</a></li>
+                  <li><a href="../lists/absint.html">Abstract Interfaces</a></li>
+                  <li><a href="../lists/types.html">Derived Types</a></li>
+                  <li><a href="../program/mcpolar.html">Program</a></li>
+              </ul>
+            </li>
+                <li class="visible-xs hidden-sm visible-lg">
+                  <a href="../lists/files.html">Source Files</a>
+                </li>
+              <li class="visible-xs hidden-sm visible-lg">
+                <a href="../lists/modules.html">Modules</a>
+              </li>
+              <li class="visible-xs hidden-sm visible-lg">
+                <a href="../lists/procedures.html">Procedures</a>
+              </li>
+              <li class="visible-xs hidden-sm visible-lg">
+                <a href="../lists/absint.html">Abstract Interfaces</a>
+              </li>
+              <li class="visible-xs hidden-sm visible-lg">
+                <a href="../lists/types.html">Derived Types</a>
+              </li>
+              <li class="visible-xs hidden-sm visible-lg">
+                <a href="../program/mcpolar.html">Program</a>
+              </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+  <div class="row">
+    <h1>config</h1>
+    <div class="row">
+    <div class="col-lg-12">
+    <div class="well well-sm" style="min-height: 40px;">
+      <ul class="list-inline" style="margin-bottom:0px; display:inline">
+<!--
+-->
+      </ul>
+        <ol class="breadcrumb in-well">
+         <li><a href='../page/index.html'>main</a></li>
+         <li class="active">config</li>
+      </ol>
+    </div>
+    </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-md-9 col-md-push-3" id='text'>
+      <h1 id="config-file-settings">Config file settings</h1>
+<p>The configuration file format used is Tom's Obvious Minimal Language (<a href="https://toml.io/en/">TOML</a>).
+The below sections describe the tables (dictionaries) that are able to be defined for SignedMCRT.</p>
+<h2 id="source">Source</h2>
+<p>This table defines the parameters for the light source used in the simulation it can have the following:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Parameter</th>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Options</th>
+<th style="text-align: center;">Default</th>
+<th style="text-align: center;">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">name</td>
+<td style="text-align: center;">string</td>
+<td style="text-align: center;">point, circular, uniform, pencil, annulus, focus</td>
+<td style="text-align: center;">point</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">nphotons</td>
+<td style="text-align: center;">integer</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">1000000</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">position</td>
+<td style="text-align: center;">float array size 3</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">[0.0, 0.0, 0.0]</td>
+<td style="text-align: center;">Default value only set for point source type</td>
+</tr>
+<tr>
+<td style="text-align: center;">direction</td>
+<td style="text-align: center;">float array size 3 or string</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-z</td>
+<td style="text-align: center;">String type applies to all source types bar: Uniform and circular</td>
+</tr>
+<tr>
+<td style="text-align: center;">point1</td>
+<td style="text-align: center;">float array size 3</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">[-1.0, -1.0, -1.0]</td>
+<td style="text-align: center;">Used by uniform source only to set location and size of source</td>
+</tr>
+<tr>
+<td style="text-align: center;">point2</td>
+<td style="text-align: center;">float array size 3</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">[2.0, 0.0, 0.0]</td>
+<td style="text-align: center;">See Above</td>
+</tr>
+<tr>
+<td style="text-align: center;">point3</td>
+<td style="text-align: center;">float array size 3</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">[0.0, 2.0, 0.0]</td>
+<td style="text-align: center;">See Above</td>
+</tr>
+<tr>
+<td style="text-align: center;">Radius</td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">Used by circular source and annular source (as lower radius)</td>
+</tr>
+<tr>
+<td style="text-align: center;">rhi</td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">0.6</td>
+<td style="text-align: center;">Annular source upper radius</td>
+</tr>
+<tr>
+<td style="text-align: center;">Beta</td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">5.0</td>
+<td style="text-align: center;">Annular source convergence angle (Bessel beam beta parameter)</td>
+</tr>
+<tr>
+<td style="text-align: center;">annulus_type</td>
+<td style="text-align: center;">string</td>
+<td style="text-align: center;">gaussian, tophat</td>
+<td style="text-align: center;">gaussian</td>
+<td style="text-align: center;">Type of annular beam</td>
+</tr>
+<tr>
+<td style="text-align: center;">spectrum_type</td>
+<td style="text-align: center;">string</td>
+<td style="text-align: center;">constant, 1D, 2D</td>
+<td style="text-align: center;">constant</td>
+<td style="text-align: center;">Type of spectrum used</td>
+</tr>
+<tr>
+<td style="text-align: center;">spectrum_file</td>
+<td style="text-align: center;">string</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">filename of 1D or 2D spectrum/image</td>
+</tr>
+<tr>
+<td style="text-align: center;">cell_size</td>
+<td style="text-align: center;">float array size 2</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">size of pixel in 2D spectrum in simulation units.</td>
+</tr>
+<tr>
+<td style="text-align: center;">wavelength</td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">500 nm</td>
+<td style="text-align: center;">Wavelength for constant spectrum</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note</strong> point1, point2, and point3 define a rectangle. Point1 is the origin,point2 and point3 are the vectors that describe the sides.</p>
+<h2 id="grid">Grid</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Parameter</th>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Default</th>
+<th style="text-align: center;">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">nxg</td>
+<td style="text-align: center;">integer</td>
+<td style="text-align: center;">200</td>
+<td style="text-align: center;">Number of voxel in x direction</td>
+</tr>
+<tr>
+<td style="text-align: center;">nyg</td>
+<td style="text-align: center;">integer</td>
+<td style="text-align: center;">200</td>
+<td style="text-align: center;">Number of voxel in y direction</td>
+</tr>
+<tr>
+<td style="text-align: center;">nyg</td>
+<td style="text-align: center;">integer</td>
+<td style="text-align: center;">200</td>
+<td style="text-align: center;">Number of voxel in z direction</td>
+</tr>
+<tr>
+<td style="text-align: center;">xmax</td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">Half size of simulated medium in x direction</td>
+</tr>
+<tr>
+<td style="text-align: center;">ymax</td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">Half size of simulated medium in y direction</td>
+</tr>
+<tr>
+<td style="text-align: center;">zmax</td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">Half size of simulated medium in z direction</td>
+</tr>
+<tr>
+<td style="text-align: center;">units</td>
+<td style="text-align: center;">string</td>
+<td style="text-align: center;">cm</td>
+<td style="text-align: center;">Units of simulation (currently need to manually adjust optical properties to account)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="geometry">Geometry</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Parameter</th>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Default</th>
+<th style="text-align: center;">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">geom_name</td>
+<td style="text-align: center;">string</td>
+<td style="text-align: center;">sphere</td>
+<td style="text-align: center;">Name of experiment for metadata</td>
+</tr>
+<tr>
+<td style="text-align: center;">tau</td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">10.0</td>
+<td style="text-align: center;">Tau value for MCRT scattering test experiment</td>
+</tr>
+<tr>
+<td style="text-align: center;">num_spheres</td>
+<td style="text-align: center;">integer</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">Number of random spheres for sphere scene</td>
+</tr>
+<tr>
+<td style="text-align: center;">musb</td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">0.0</td>
+<td style="text-align: center;">Optical properties for experimental geometry for whiskey Raman sensing paper</td>
+</tr>
+<tr>
+<td style="text-align: center;">muab</td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">0.01</td>
+<td style="text-align: center;">See above</td>
+</tr>
+<tr>
+<td style="text-align: center;">musc</td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">0.0</td>
+<td style="text-align: center;">See Above</td>
+</tr>
+<tr>
+<td style="text-align: center;">muac</td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">0.01</td>
+<td style="text-align: center;">See Above</td>
+</tr>
+<tr>
+<td style="text-align: center;">hgg</td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">0.7</td>
+<td style="text-align: center;">See Above</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detectors">Detectors</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Parameter</th>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Options</th>
+<th style="text-align: center;">Default</th>
+<th style="text-align: center;">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">type</td>
+<td style="text-align: center;">string</td>
+<td style="text-align: center;">annulus, circle, camera</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td style="text-align: center;">position</td>
+<td style="text-align: center;">float array size 3</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">NO DEFAULT!</td>
+<td style="text-align: center;">Central position of detector</td>
+</tr>
+<tr>
+<td style="text-align: center;">direction</td>
+<td style="text-align: center;">float array size 3</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">[0.0, 0.0, -1.0]</td>
+<td style="text-align: center;">Only used with circle detector</td>
+</tr>
+<tr>
+<td style="text-align: center;">radius1</td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">Radius of circular detector. Inner radius of annular detector</td>
+</tr>
+<tr>
+<td style="text-align: center;">radius2</td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">Outer radius of annulus detector. Must be larger than radius1</td>
+</tr>
+<tr>
+<td style="text-align: center;">p1</td>
+<td style="text-align: center;">float array size 3</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">[-1.0, -1.0, -1.0]</td>
+<td style="text-align: center;">Used by camera detector only to set location and size of source</td>
+</tr>
+<tr>
+<td style="text-align: center;">p2</td>
+<td style="text-align: center;">float array size 3</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">[2.0, 0.0, 0.0]</td>
+<td style="text-align: center;">See above</td>
+</tr>
+<tr>
+<td style="text-align: center;">p3</td>
+<td style="text-align: center;">float array size 3</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">[0.0, 2.0, 0.0]</td>
+<td style="text-align: center;">See above</td>
+</tr>
+<tr>
+<td style="text-align: center;">layer</td>
+<td style="text-align: center;">integer</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">layer to match SDF layer label</td>
+</tr>
+<tr>
+<td style="text-align: center;">nbins</td>
+<td style="text-align: center;">integer</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: center;">Number of bins in detector</td>
+</tr>
+<tr>
+<td style="text-align: center;">maxval</td>
+<td style="text-align: center;">float</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">100.0</td>
+<td style="text-align: center;">Maximum value to bin</td>
+</tr>
+<tr>
+<td style="text-align: center;">historyFileName</td>
+<td style="text-align: center;">string</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">"photPos.obj"</td>
+<td style="text-align: center;">Name of output file of detected photons histories</td>
+</tr>
+<tr>
+<td style="text-align: center;">trackHistory</td>
+<td style="text-align: center;">boolean</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">false</td>
+<td style="text-align: center;">If true record detected photons histories. !!!Does not work with openMP!!!</td>
+</tr>
+</tbody>
+</table>
+<h2 id="output">Output</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Parameter</th>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Default</th>
+<th style="text-align: center;">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">fluence</td>
+<td style="text-align: center;">string</td>
+<td style="text-align: center;">fluence.nrrd</td>
+<td style="text-align: center;">Filename for fluence output</td>
+</tr>
+<tr>
+<td style="text-align: center;">absorb</td>
+<td style="text-align: center;">string</td>
+<td style="text-align: center;">absorb.nrrd</td>
+<td style="text-align: center;">Filename for energy absorbed output</td>
+</tr>
+<tr>
+<td style="text-align: center;">render</td>
+<td style="text-align: center;">string</td>
+<td style="text-align: center;">geom_render.nrrd</td>
+<td style="text-align: center;">Filename for render geometry output</td>
+</tr>
+<tr>
+<td style="text-align: center;">render_geom</td>
+<td style="text-align: center;">boolean</td>
+<td style="text-align: center;">false</td>
+<td style="text-align: center;">Render geometry out. For debugging purposes</td>
+</tr>
+<tr>
+<td style="text-align: center;">render_size</td>
+<td style="text-align: center;">integer array size 3</td>
+<td style="text-align: center;">[200, 200, 200]</td>
+<td style="text-align: center;">Size in voxels of render</td>
+</tr>
+<tr>
+<td style="text-align: center;">overwrite</td>
+<td style="text-align: center;">boolean</td>
+<td style="text-align: center;">false</td>
+<td style="text-align: center;">Overwrite files if they have the same name</td>
+</tr>
+</tbody>
+</table>
+<h2 id="simulation">Simulation</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Parameter</th>
+<th style="text-align: center;">Type</th>
+<th style="text-align: center;">Default</th>
+<th style="text-align: center;">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">iseed</td>
+<td style="text-align: center;">integer</td>
+<td style="text-align: center;">123456789</td>
+<td style="text-align: center;">seed for simulation. Each thread get its own copy + threadID</td>
+</tr>
+<tr>
+<td style="text-align: center;">tev</td>
+<td style="text-align: center;">boolean</td>
+<td style="text-align: center;">false</td>
+<td style="text-align: center;">Enables TEV image viewer to display simulation as it runs. Must have opened TEV prior to launching simulation.</td>
+</tr>
+<tr>
+<td style="text-align: center;">absorb</td>
+<td style="text-align: center;">boolean</td>
+<td style="text-align: center;">false</td>
+<td style="text-align: center;">Enables writing to file of absorbed energy.</td>
+</tr>
+</tbody>
+</table>
+    </div>
+    <div class="col-md-3 col-md-pull-9">
+      <hr class="visible-xs visible-sm">
+        <div class="well toc">
+          <ul class="nav nav-stacked nav-pills">
+            <li role="presentation" class="title"><a href='../page/index.html'>main</a></li>
+          </ul>
+          <hr>
+          <ul class="nav nav-stacked nav-pills">
+            <li role="presentation">
+            <a href='../page/./TODO.html'>todos</a>
+            </li>
+            <li role="presentation" class="disabled">
+            <a href='../page/./config.html'>config</a>
+            </li>
+          </ul>
+        </div>
+    </div>
+  </div>
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-6 col-md-6"><p>signedMCRT was developed by Lewis McMillan<br>&copy; 2023 
+</p>
+          </div>
+          <div class="col-xs-6 col-md-6">
+            <p class="text-right">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+            </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+         ================================================== -->
+         <!-- Placed at the end of the document so the pages load faster -->
+    <!--
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        -->
+        <script src="../js/bootstrap.min.js"></script>
+        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+        <script src="../js/ie10-viewport-bug-workaround.js"></script>
+
+        <!-- MathJax JavaScript
+             ================================================== -->
+             <!-- Placed at the end of the document so the pages load faster -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+          TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+          jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+          extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+          });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  </body>
+</html>

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Monte Carlo radiation transfer (MCRT) using Signed Distance functions (SDF)">
+    <meta name="author" content="Lewis McMillan" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>main &ndash; signedMCRT</title>
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/local.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+         <script src="../js/jquery-2.1.3.min.js"></script>
+         <script src="../js/svg-pan-zoom.min.js"></script>
+
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">signedMCRT </a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+              <li><a href='../page/index.html'>main</a></li>
+            <li class="dropdown hidden-xs visible-sm visible-md hidden-lg">
+              <a href="#" class="dropdown-toggle"
+                 data-toggle="dropdown" role="button"
+                 aria-haspopup="true"
+                 aria-expanded="false">
+                 Contents <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                    <li><a href="../lists/files.html">Source Files</a></li>
+                  <li><a href="../lists/modules.html">Modules</a></li>
+                  <li><a href="../lists/procedures.html">Procedures</a></li>
+                  <li><a href="../lists/absint.html">Abstract Interfaces</a></li>
+                  <li><a href="../lists/types.html">Derived Types</a></li>
+                  <li><a href="../program/mcpolar.html">Program</a></li>
+              </ul>
+            </li>
+                <li class="visible-xs hidden-sm visible-lg">
+                  <a href="../lists/files.html">Source Files</a>
+                </li>
+              <li class="visible-xs hidden-sm visible-lg">
+                <a href="../lists/modules.html">Modules</a>
+              </li>
+              <li class="visible-xs hidden-sm visible-lg">
+                <a href="../lists/procedures.html">Procedures</a>
+              </li>
+              <li class="visible-xs hidden-sm visible-lg">
+                <a href="../lists/absint.html">Abstract Interfaces</a>
+              </li>
+              <li class="visible-xs hidden-sm visible-lg">
+                <a href="../lists/types.html">Derived Types</a>
+              </li>
+              <li class="visible-xs hidden-sm visible-lg">
+                <a href="../program/mcpolar.html">Program</a>
+              </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+  <div class="row">
+    <h1>main</h1>
+    <div class="row">
+    <div class="col-lg-12">
+    <div class="well well-sm" style="min-height: 40px;">
+      <ul class="list-inline" style="margin-bottom:0px; display:inline">
+<!--
+        <li><i class="fa fa-sitemap"></i> Subsections:</li>
+        <li><a href='../page/./TODO.html'>todos</a></li>
+        <li><a href='../page/./config.html'>config</a></li>
+-->
+      </ul>
+        <ol class="breadcrumb in-well">
+         <li class="active">main</li>
+      </ol>
+    </div>
+    </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-md-9 col-md-push-3" id='text'>
+      <h1 id="documentation">Documentation</h1>
+<p>This document is the incomplete documentation of <strong>signedMCRT</strong>.</p>
+<h2 id="build-system">Build system</h2>
+<p>To build signedMCRT, the only current method is using <a href="https://fpm.fortran-lang.org/en/index.html">FPM</a>.
+FPM can be easily installed on any platform, and is simple to use to pull all dependencies, and build and compile signedMCRT.
+We also provide several commands via FPM response file (<a href="fpm.rsp">found here</a>), to enable the use of OpenMP, other compliers, and various debug modes.</p>
+<h2 id="running-the-code">Running the code</h2>
+<p>The code is run using FPM. To run on a single core with no debug flags enabled:</p>
+<div class="codehilite"><pre><span></span><code>fpm run
+</code></pre></div>
+
+<p>To run on all available threads on current computer with no debug flags:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">fpm</span><span class="w"> </span><span class="nv">@runmp</span><span class="w"></span>
+</code></pre></div>
+
+<p>To run the code on one thread with all debug flags enabled:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">fpm</span><span class="w"> </span><span class="nv">@debug</span><span class="w"></span>
+</code></pre></div>
+
+<p>To run the code on all threads with all debug flags enabled:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">fpm</span><span class="w"> </span><span class="nv">@debugmp</span><span class="w"></span>
+</code></pre></div>
+
+<p>Please see (<a href="fpm.rsp">here</a>) for other possible options.</p>
+<h2 id="dependencies">Dependencies</h2>
+<p>Below is the current list of dependencies:</p>
+<ul>
+<li><a href="https://github.com/fortran-lang/test-drive">test drive</a></li>
+<li><a href="https://github.com/lewisfish/fortran_tev_bindings">Fortran TEV Bindings</a></li>
+<li><a href="https://github.com/fortran-lang/stdlib">stdlib</a></li>
+<li><a href="https://github.com/lewisfish/fortran_stb_image">stb_image</a></li>
+<li><a href="https://github.com/lewisfish/fortran_utilities">Fortran Utilities</a></li>
+</ul>
+<p>Test drive is used to run all tests.
+Fortran <a href="https://github.com/Tom94/tev/">TEV</a> Bindings is used to interface with TEV, to show live slices of fluences as the simulation is run, which is handy for debugging purposes.
+Stdlib is a collection of routines purposed for inclusion within the Fortran standard. Stdlib is used here for it's loadtxt function to load arbitrary plain text data into arrays. More of stdlib may be used in future.
+Fortran_stb_Image is used to load images into arrays. Fortran_stb_image are the Fortran bindings for <a href="https://github.com/nothings/stb">stb_image</a>.
+Finally, Fortran Utilities is my personal collection of useful Fortran utilities such as mathematical functions, or progress bars.</p>
+<h2 id="config-file">Config file</h2>
+<p>signedMCRT uses TOML as it's configuration file format.
+Documentation of the input file format can be found in <a href="config.md">here</a></p>
+<h2 id="code-structure">Code Structure</h2>
+<p>See below for a brief description of each source code file.
+See <a href="relations.pdf">this</a> for rat's nest diagram of the relationships and dependencies between each source code file. 
+Blue is a module with functions.
+Grey is a external dependency.
+Red is a module with only data components.</p>
+<h3 id="constantsf90">constants.f90</h3>
+<p>This module contains mathematical constants and strings that contain the various directories used by the program.
+Math constants:
+- PI
+- 2 PI
+- wp (working precision of the whole program). Default is double precision (64bit floats)
+Directories:
+- homedir. Root directory of this code
+- fileplace. data folder directory
+- resdir. holds the path to the directory that holds the parameter and other associated input files</p>
+<p>Source code can be found <a href="/src/constants.f90">here</a></p>
+<h3 id="detectormodf90">detectorMod.f90</h3>
+<p>Currently in development.</p>
+<p>Source code can be found <a href="/src/detectorMod.f90">here</a></p>
+<h3 id="geometerymodf90">geometeryMod.f90</h3>
+<p>Defines a set of functions for intersecting a line and a surface.</p>
+<ul>
+<li>Circle</li>
+<li>Plane</li>
+<li>Cone</li>
+<li>Cylinder</li>
+<li>Ellipse</li>
+<li>Sphere</li>
+</ul>
+<p>Source code can be found <a href="/src/geometryMod.f90">here</a></p>
+<h3 id="gridf90">grid.f90</h3>
+<p>This module defines the cartesian grid type (cart_grid) and associated routines.</p>
+<p>The cart_grid type contains information related to the grid used to record the fluence. This includes the number of voxels in each cardinal direction (nxg, nyg, nzg), the <strong>half</strong> size of the grid in each direction (xmax, ymax, zmax), and the locations of the voxels walls in each direction (xface, yface, zface).
+The type-bound function get_voxel takes a position (vector) and returns the voxel the position falls in. </p>
+<p>Init_grid initialises a cart_grid instance.</p>
+<p>Source code can be found <a href="/src/grid.f90">here</a></p>
+<h3 id="historystackf90">historyStack.f90</h3>
+<p>Currently in development.</p>
+<p>Source code can be found <a href="/src/historyStack.f90">here</a></p>
+<h3 id="iarrayf90">iarray.f90</h3>
+<p>The iarray module contains the variables that record the fluence. These are 3D arrays, with roughly the same dimensions as the cart_grid type.
+Jmean is the <em>local</em> fluence. JmeanGLOBAL is the <em>global</em> fluence grid. The global version is the one that is written to disk at the simulations end.</p>
+<p>Source code can be found <a href="/src/iarray.f90">here</a></p>
+<h3 id="inttau2f90">inttau2.f90</h3>
+<p>inttau2 is the heart of the MCRT simulation. It moves the photons though the simulated media.
+tauint2 is the only public function here and is the main function that moves the photon.
+Changes should only be made here if bugs are discovered or new methods of tracking photons (i.e phase tracking) or moving photons (i.e new geometry method) is needed.</p>
+<p>Source code can be found <a href="/src/inttau2.f90">here</a></p>
+<h3 id="kernelsmodf90">kernelsMod.f90</h3>
+<p>Contains the main program and scattering loop. Calls all other routine to setup, run and break down the simulation.</p>
+<p>Source code can be found <a href="/src/kernelsMod.f90">here</a></p>
+<h3 id="mat_classf90">mat_class.f90</h3>
+<p>Matrix class module. Defines a matrix type (4x4 matrix) and associated operations on matrices and other types.</p>
+<p>Source code can be found <a href="/src/mat_class.f90">here</a></p>
+<h3 id="opticalpropertiesmodf90">opticalPropertiesMod.f90</h3>
+<p>Source code can be found <a href="/src/opticalProps/opticalProperties.f90">here</a></p>
+<h3 id="photonf90">photon.f90</h3>
+<p>This source file contains the photon type, all the photon launch routines for different light sources, and the scattering code.</p>
+<p>Below are the current types of light sources available. Check <a href="config.md">here</a> for parameters needed for each light source.
+- uniform
+- pencil
+- annulus
+- focus
+- point
+- circular
+- SLM (2D image source)
+- double slit
+- square aperture</p>
+<p>Source code can be found <a href="/src/photon.f90">here</a></p>
+<h3 id="parsef90">parse.f90</h3>
+<p>This file contains all the logic for parsing the toml input file using the toml-f library.
+parse_params is the only public function in this module. This function returns a dictionary (toml_table) of parameters needed to setup the simulation and an array of detectors if any are defined.</p>
+<p>Any additions to the toml input file should be added in here.</p>
+<p>Source code can be found <a href="/src/parse.f90">here</a></p>
+<h3 id="piecewisef90">piecewise.f90</h3>
+<p>This file contains the piecewise abstract type, for sampling from constants, 1D or 2D arrays. Inspired by <a href="https://www.pbr-book.org/">PBRT</a> piecewise class.
+Currently, the following public types are defined:</p>
+<ul>
+<li>Constant. Used in the case where there is only one value.</li>
+<li>1D. Used in the case where there is a spectrum</li>
+<li>2D. Used in the case where SLM or other image based source types are needed.</li>
+</ul>
+<p>The piecewise type ensures that there is a method (sample) that can be called on all inherited types, e.g</p>
+<p>call 2Dimage%p%sample(x, y)</p>
+<p>will return a position (x,y) from where to release a photon.</p>
+<p>This class can be used to have multi-spectral or single valued wavelength, or used as a 2D image input source i.e SLMs.
+NOTE: optical properties are not currently adjusted on wavelength change.</p>
+<p>Source code can be found <a href="/src/piecewise.f90">here</a></p>
+<h3 id="random_modf90">random_mod.f90</h3>
+<p>This module defines a set of functions that return random numbers in different distributions.</p>
+<ul>
+<li>ran2. Returns a single float uniformly in the range [0, 1)</li>
+<li>ranu. Return a single float uniformly in the range [a, b)</li>
+<li>randint. Returns a single integer uniformly in the range [a, b)</li>
+<li>rang. Returns a single float from a Gaussian distribution with mean <em>avg</em> and std <em>sigma</em>.</li>
+<li>init_rng. Seeds the internal random number generator with a reproducible seed.</li>
+</ul>
+<p>Source code can be found <a href="/src/random_mod.f90">here</a></p>
+<h3 id="sdf_basef90">sdf_base.f90</h3>
+<p>This module defines the signed distance function (SDF) abstract type, sdf_base type, and model type.
+The SDF abstract type defines the optical properties of an SDF (mus, mua, kappa, albedo, hgg, g2,and n), as well as a transform (4x4 matrix), and the layer ID code of the SDF. The SDF abstract type also provides an abstract interface (evaluate) which each inheriting function must implement. This evaluate function is the heart of the SDF implementation. Each individual evaluate is the direct implementation of that SDF, e.g. that function defines the mathematical SDF. For more information on SDFs, check out Inigo Quilez's <a href="https://iquilezles.org/articles/">website</a> from which most of the below SDFs and transforms have been taken.</p>
+<p>The sdf_base type acts as a container for all SDFs derived from the abstract SDF type.</p>
+<p>Source code can be found <a href="/src/sdfs/sdf_base.f90">here</a></p>
+<h3 id="sdfhelpersf90">sdfHelpers.f90</h3>
+<p>Collection of helper functions for SDFs:</p>
+<p>This module defines transforms that can be applied to each SDF:</p>
+<ul>
+<li>Rotate_{x,y,z}</li>
+<li>Translate</li>
+<li>RotationAlign (not tested)</li>
+<li>RotMat (not tested)</li>
+<li>Identity</li>
+<li>SkewSymm</li>
+</ul>
+<p>Source code can be found <a href="/src/sdfs/sdfHelpers.f90">here</a></p>
+<h3 id="sdfmodifiersf90">sdfModifiers.f90</h3>
+<p>This module defines transforms that can be applied to each SDF:</p>
+<ul>
+<li>Union</li>
+<li>Intersection</li>
+<li>Subtraction</li>
+<li>Displacement</li>
+<li>Bend</li>
+<li>Twist</li>
+<li>Elongate</li>
+<li>Repeat</li>
+<li>Extrude</li>
+<li>Revolution</li>
+<li>Onion</li>
+<li>Translate</li>
+</ul>
+<p>Source code can be found <a href="/src/sdfs/sdfModifiers.f90">here</a></p>
+<h3 id="sdfsf90">sdfs.f90</h3>
+<p>This module defines the signed distance function (SDF) abstract type and all types that inherit from it.
+The SDF abstract type defines the optical properties of an SDF (mus, mua, kappa, albedo, hgg, g2,and n), as well as a transform (4x4 matrix), and the layer ID code of the SDF. The SDF abstract type also provides an abstract interface (evaluate) which each inheriting function must implement. This evaluate function is the heart of the SDF implementation. Each individual evaluate is the direct implementation of that SDF, e.g. that function defines the mathematical SDF. For more information on SDFs, check out Inigo Quilez's <a href="https://iquilezles.org/articles/">website</a> from which most of the below SDFs and transforms have been taken.</p>
+<ul>
+<li>cylinder</li>
+<li>sphere</li>
+<li>box</li>
+<li>torus</li>
+<li>cone</li>
+<li>triprism (triangular prism)</li>
+<li>capsule</li>
+<li>plane</li>
+<li>segment</li>
+<li>egg</li>
+</ul>
+<p><strong>This is the module the user should import to other module not sdf_base!</strong></p>
+<p>Source code can be found <a href="/src/sdfs.f90">here</a></p>
+<h3 id="sim_statef90">sim_state.f90</h3>
+<p>This module defines the setting_t type which holds simulation metadata:</p>
+<ul>
+<li>nphotons. Number of photons to run</li>
+<li>iseed. initial seed</li>
+<li>render_size. Size of voxel grid to render SDFs to </li>
+<li>experiment. Name of experiment/simulation</li>
+<li>outfile. Name of fluence output file</li>
+<li>renderfile. Name of voxel render file</li>
+<li>source. Light source used</li>
+<li>historyFilename. Name of photon history file</li>
+<li>grid. Cart_grid type</li>
+<li>render_geom. Boolean to indicate wether to render SDF to voxels or not.</li>
+<li>tev. Boolean to indicate wether to use TEV as debug viewer.</li>
+</ul>
+<p>Source code can be found <a href="/src/sim_state.f90">here</a></p>
+<h3 id="setupf90">setup.f90</h3>
+<p>This file sets up some simulations variables and assigns the geometry for the simulation.</p>
+<p>Source code can be found <a href="/src/setup.f90">here</a></p>
+<h3 id="setupgeometryf90">setupGeometry.f90</h3>
+<p>Add any new geometry setups here.
+Source code can be found <a href="/src/setupGeometry.f90">here</a></p>
+<h3 id="surfacesf90">surfaces.f90</h3>
+<p>Contains the routines that handle reflection, and refraction via the Fresnel equations.</p>
+<p>Source code can be found <a href="/src/surfaces.f90">here</a></p>
+<h3 id="vec4_classf90">vec4_class.f90</h3>
+<p>Vector4 class module. Defines a vector4 type (x, y, z, p) and associated operations on vectors and other types.</p>
+<p>Source code can be found <a href="/src/vec4_class.f90">here</a></p>
+<h3 id="vector_classf90">vector_class.f90</h3>
+<p>Vector class module. Defines a vector type (x, y, z) and associated operations on vectors and other types.</p>
+<p>Source code can be found <a href="/src/vector_class.f90">here</a></p>
+<h3 id="writerf90">writer.f90</h3>
+<p>This module defines all functions that write simulation data to the disk or pre-process data before writing.</p>
+<ul>
+<li>normalise_fluence. Normalises fluence by number of photons run and size of each voxel. <strong>!Does not normalise by power!</strong></li>
+<li>write_fluence. Write out fluence in either raw or nrrd format. Default is nrrd.</li>
+<li>write_detected_photons. Write out photons detected by detectors.</li>
+</ul>
+<p>Changes should only be made here if there is a bug or new data types need to be written to disk (phase information) or new file format is needed.</p>
+<p>Source code can be found <a href="/src/writer.f90">here</a></p>
+<h2 id="plotting-results">Plotting Results</h2>
+<p>To view the output of simulations you can use <a href="https://github.com/lewisfish/data_cube_viewer">this</a>.
+Alternatively to customise the plot you can adjust the following <a href="../tools/plot_nrrd.py">script</a>.</p>
+<h2 id="monte-carlo-radiation-transfer-mcrt-method">Monte Carlo Radiation Transfer (MCRT) method</h2>
+<p>Please see my <a href="main.pdf">thesis</a> for an overview of the MCRT method</p>
+<h2 id="citation">Citation</h2>
+<p>SignedMCRT has so far been used in 2 papers:</p>
+<ul>
+<li>MESHLESS MONTE CARLO RADIATION TRANSFER METHOD FOR CURVED GEOMETRIES USING SIGNED DISTANCE FUNCTIONS
+L. McMillan, G. D. Bruce, K. Dholakia, <a href="https://doi.org/10.1117/1.JBO.27.8.083003">J. Biomed. Opt. 27(8), 083003 (2022)</a>/<a href="https://arxiv.org/abs/2112.08035">arXiv:2112.08035 (2021)</a></li>
+<li>TO FOCUS-MATCH OR NOT TO FOCUS-MATCH INVERSE SPATIALLY OFFSET RAMAN SPECTROSCOPY: A QUESTION OF LIGHT PENETRATION
+G.E. Shillito, L. McMillan, G. D. Bruce, K. Dholakia, <a href="https://doi.org/10.1364/OE.451496">Opt. Express 30, 8876 (2022)</a>/<a href="https://arxiv.org/abs/2112.08877">arXiv:2112.08877</a></li>
+</ul>
+<h2 id="todos">TODO's</h2>
+<p>The current TODO list of planned features and current bugs can be found <a href="TODO.md">here</a>.</p>
+    </div>
+    <div class="col-md-3 col-md-pull-9">
+      <hr class="visible-xs visible-sm">
+        <div class="well toc">
+          <ul class="nav nav-stacked nav-pills">
+            <li role="presentation" class="title disabled"><a href='../page/index.html'>main</a></li>
+          </ul>
+          <hr>
+          <ul class="nav nav-stacked nav-pills">
+            <li role="presentation">
+            <a href='../page/./TODO.html'>todos</a>
+            </li>
+            <li role="presentation">
+            <a href='../page/./config.html'>config</a>
+            </li>
+          </ul>
+        </div>
+    </div>
+  </div>
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-6 col-md-6"><p>signedMCRT was developed by Lewis McMillan<br>&copy; 2023 
+</p>
+          </div>
+          <div class="col-xs-6 col-md-6">
+            <p class="text-right">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+            </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+         ================================================== -->
+         <!-- Placed at the end of the document so the pages load faster -->
+    <!--
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        -->
+        <script src="../js/bootstrap.min.js"></script>
+        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+        <script src="../js/ie10-viewport-bug-workaround.js"></script>
+
+        <!-- MathJax JavaScript
+             ================================================== -->
+             <!-- Placed at the end of the document so the pages load faster -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+          TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+          jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+          extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+          });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  </body>
+</html>

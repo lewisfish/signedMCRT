@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="Monte Carlo radiation transfer (MCRT) using Signed Distance functions (SDF)">
+    <meta name="author" content="Lewis McMillan" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>parse_spectrum &ndash; signedMCRT</title>
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/local.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+         <script src="../js/jquery-2.1.3.min.js"></script>
+         <script src="../js/svg-pan-zoom.min.js"></script>
+
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">signedMCRT </a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+              <li><a href='../page/index.html'>main</a></li>
+            <li class="dropdown hidden-xs visible-sm visible-md hidden-lg">
+              <a href="#" class="dropdown-toggle"
+                 data-toggle="dropdown" role="button"
+                 aria-haspopup="true"
+                 aria-expanded="false">
+                 Contents <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                    <li><a href="../lists/files.html">Source Files</a></li>
+                  <li><a href="../lists/modules.html">Modules</a></li>
+                  <li><a href="../lists/procedures.html">Procedures</a></li>
+                  <li><a href="../lists/absint.html">Abstract Interfaces</a></li>
+                  <li><a href="../lists/types.html">Derived Types</a></li>
+                  <li><a href="../program/mcpolar.html">Program</a></li>
+              </ul>
+            </li>
+                <li class="visible-xs hidden-sm visible-lg">
+                  <a href="../lists/files.html">Source Files</a>
+                </li>
+              <li class="visible-xs hidden-sm visible-lg">
+                <a href="../lists/modules.html">Modules</a>
+              </li>
+              <li class="visible-xs hidden-sm visible-lg">
+                <a href="../lists/procedures.html">Procedures</a>
+              </li>
+              <li class="visible-xs hidden-sm visible-lg">
+                <a href="../lists/absint.html">Abstract Interfaces</a>
+              </li>
+              <li class="visible-xs hidden-sm visible-lg">
+                <a href="../lists/types.html">Derived Types</a>
+              </li>
+              <li class="visible-xs hidden-sm visible-lg">
+                <a href="../program/mcpolar.html">Program</a>
+              </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+  <div class="row">
+    <h1>parse_spectrum
+      <small>Subroutine</small>
+      
+    </h1>
+      <div class="row" id="info-bar">
+    <div class="col-lg-12">
+      <div class="well well-sm">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+
+          <li id="statements"><i class="fa fa-list-ol"></i>
+            <a data-toggle="tooltip"
+               data-placement="bottom" data-html="true"
+               title=" 1.6% of total for procedures.">73 statements</a>
+          </li>
+
+            <li id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/parse.f90"> Source File</a>
+            </li>
+        </ul>
+        <ol class="breadcrumb in-well text-right">
+              <li><a href='../sourcefile/parse.f90.html'>parse.f90</a></li>
+              <li><a href='../module/parse_mod.html'>parse_mod</a></li>
+          <li class="active">parse_spectrum</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+  <script>
+    $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+    })
+  </script>
+
+  </div>
+  
+  <div class="row">
+    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+      <div id="sidebar">
+      <h3>Contents</h3>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <div class="panel panel-primary">
+      <div class="panel-heading text-left"><h3 class="panel-title">Source Code</h3></div>
+      <div class="list-group">
+        <a class="list-group-item" href="../proc/parse_spectrum.html#src">parse_spectrum</a>
+      </div>
+    </div>
+
+
+  </div>
+
+    </div>
+    
+    <div class="col-md-9" id='text'>
+    <h2>private  subroutine parse_spectrum(table, spectrum, dict, context)  
+</h2>
+        <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Uses</h3>
+      </div>
+      <ul class="list-group">
+          <li class="list-group-item">
+            <ul class="list-inline">
+                <li>stdlib_io</li>
+                <li>stb_image_mod</li>
+                <li><a href='../module/piecewisemod.html'>piecewiseMod</a></li>
+                <li><a href='../module/constants.html'>constants</a></li>
+            </ul>
+          </li>
+      </ul>
+    </div>
+
+
+
+
+    <h3>Arguments</h3>
+        <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-table~7"></span>
+              type(toml_table),
+            </td>
+<td></td>
+              <td></td>            <td>
+              pointer
+            </td>
+            <td>::</td>
+            <td><strong>table</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-spectrum~4"></span>
+              type(<a href='../type/spectrum_t.html'>spectrum_t</a>),
+            </td>
+<td>intent(out)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>spectrum</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dict~15"></span>
+              type(toml_table),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dict</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-context~7"></span>
+              type(toml_context)
+            </td>
+<td></td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>context</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <br>
+
+    <section class="visible-xs visible-sm hidden-md">
+        <h3>Contents</h3>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    <div class="panel panel-primary">
+      <div class="panel-heading text-left"><h3 class="panel-title">Source Code</h3></div>
+      <div class="list-group">
+        <a class="list-group-item" href="../proc/parse_spectrum.html#src">parse_spectrum</a>
+      </div>
+    </div>
+
+
+    </section>
+    <br class="visible-xs visible-sm hidden-md">
+
+
+    
+    
+
+    
+    
+
+
+    
+    <section>
+    <h2><span class="anchor" id="src"></span>Source Code</h2>
+    <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">parse_spectrum</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="n">spectrum</span><span class="p">,</span><span class="w"> </span><span class="n">dict</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="c">! TODO seperate out each case to seperate functions.</span>
+<span class="w">    </span><span class="c">! handle all possible errors</span>
+<span class="w">    </span><span class="c">! document code and update config.md</span>
+<span class="w">        </span><span class="k">use </span><span class="n">piecewiseMod</span><span class="w"></span>
+<span class="w">        </span><span class="k">use </span><span class="n">stdlib_io</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">loadtxt</span><span class="w"></span>
+<span class="w">        </span><span class="k">use </span><span class="n">constants</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">resdir</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">use </span><span class="n">stb_image_mod</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_table</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">INOUT</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dict</span><span class="w"></span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_table</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">table</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_context</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">context</span><span class="w"></span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">spectrum_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">spectrum</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_array</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">children</span><span class="w"></span>
+<span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="n">nlen</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">err</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="n">n_channels</span><span class="p">,</span><span class="n">u</span><span class="w"></span>
+<span class="w">        </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">image</span><span class="p">(:,:,:)</span><span class="w"></span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">constant</span><span class="p">),</span><span class="w"> </span><span class="k">save</span><span class="p">,</span><span class="w"> </span><span class="k">target</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">const</span><span class="w"></span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">piecewise1D</span><span class="p">),</span><span class="w"> </span><span class="k">save</span><span class="p">,</span><span class="w"> </span><span class="k">target</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">OneD</span><span class="w"></span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">piecewise2D</span><span class="p">),</span><span class="w"> </span><span class="k">save</span><span class="p">,</span><span class="w"> </span><span class="k">target</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">TwoD</span><span class="w"></span>
+<span class="w">        </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="p">:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">stype</span><span class="p">,</span><span class="w"> </span><span class="n">sfile</span><span class="p">,</span><span class="w"> </span><span class="n">filetype</span><span class="w"></span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">wavelength</span><span class="p">,</span><span class="w"> </span><span class="n">cellsize</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">array</span><span class="p">(:,:)</span><span class="w"></span>
+
+<span class="w">        </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;spectrum_type&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">stype</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;constant&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="k">select case</span><span class="p">(</span><span class="n">stype</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="k">case</span><span class="p">(</span><span class="s2">&quot;constant&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;wavelength&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">wavelength</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="mf">0.0_wp</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="n">const</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">constant</span><span class="p">(</span><span class="n">wavelength</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="k">allocate</span><span class="p">(</span><span class="n">spectrum</span><span class="p">%</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">source</span><span class="o">=</span><span class="n">const</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="n">spectrum</span><span class="p">%</span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">const</span><span class="w"></span>
+<span class="w">            </span><span class="k">case</span><span class="p">(</span><span class="s2">&quot;1D&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="k">allocate</span><span class="p">(</span><span class="n">spectrum</span><span class="p">%</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">source</span><span class="o">=</span><span class="n">OneD</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;spectrum_file&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">sfile</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="k">call </span><span class="n">loadtxt</span><span class="p">(</span><span class="s2">&quot;res/&quot;</span><span class="o">//</span><span class="n">sfile</span><span class="p">,</span><span class="w"> </span><span class="k">array</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="n">OneD</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">piecewise1D</span><span class="p">(</span><span class="k">array</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="k">allocate</span><span class="p">(</span><span class="n">spectrum</span><span class="p">%</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">source</span><span class="o">=</span><span class="n">OneD</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="n">spectrum</span><span class="p">%</span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">OneD</span><span class="w"></span>
+<span class="w">            </span><span class="k">case</span><span class="p">(</span><span class="s2">&quot;2D&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="k">allocate</span><span class="p">(</span><span class="n">spectrum</span><span class="p">%</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">source</span><span class="o">=</span><span class="n">TwoD</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;spectrum_file&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">sfile</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">                </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;cell_size&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">children</span><span class="p">,</span><span class="w"> </span><span class="n">requested</span><span class="o">=</span><span class="p">.</span><span class="n">true</span><span class="p">.,</span><span class="w"> </span><span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="k">if</span><span class="p">(</span><span class="nb">associated</span><span class="p">(</span><span class="n">children</span><span class="p">))</span><span class="k">then</span>
+<span class="k">                    </span><span class="n">nlen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="k">if</span><span class="p">(</span><span class="n">nlen</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="k">then</span>
+<span class="k">                        print</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Need a vector of size 2 for cell_size&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;expected vector of size 2&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">                        </span><span class="k">stop </span><span class="mi">1</span><span class="w"></span>
+<span class="w">                    </span><span class="k">end if</span>
+<span class="k">                    do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">)</span><span class="w"></span>
+<span class="w">                        </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">children</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">cellsize</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="w"></span>
+<span class="w">                    </span><span class="k">end do</span>
+<span class="k">                end if</span>
+
+<span class="k">                </span><span class="n">filetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sfile</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sfile</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">:)</span><span class="w"></span>
+<span class="w">                </span><span class="k">select case</span><span class="p">(</span><span class="n">filetype</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="k">case</span><span class="p">(</span><span class="s2">&quot;png&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="n">err</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">stbi_info</span><span class="p">(</span><span class="nb">trim</span><span class="p">(</span><span class="n">resdir</span><span class="p">)</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="n">sfile</span><span class="p">),</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="n">n_channels</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="k">if</span><span class="p">(</span><span class="n">err</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="k">then</span>
+<span class="k">                        print</span><span class="s1">&#39;(2a,1x,a)&#39;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Error reading file: &quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="n">sfile</span><span class="p">),</span><span class="n">stbi_failure_reason</span><span class="p">()</span><span class="w"></span>
+<span class="w">                        </span><span class="k">stop </span><span class="mi">1</span><span class="w"></span>
+<span class="w">                    </span><span class="k">end if</span>
+<span class="k">                    </span><span class="n">image</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">stbi_load</span><span class="p">(</span><span class="nb">trim</span><span class="p">(</span><span class="n">resdir</span><span class="p">)</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="n">sfile</span><span class="p">),</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="n">n_channels</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="k">allocate</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">image</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">image</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)))</span><span class="w"></span>
+<span class="w">                    </span><span class="k">array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">image</span><span class="p">(:,:,</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">                    </span><span class="k">deallocate</span><span class="p">(</span><span class="n">image</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">                </span><span class="k">case</span><span class="p">(</span><span class="s2">&quot;dat&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="k">call </span><span class="n">loadtxt</span><span class="p">(</span><span class="n">resdir</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="n">sfile</span><span class="p">),</span><span class="w"> </span><span class="k">array</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="k">case</span><span class="p">(</span><span class="s2">&quot;txt&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="k">call </span><span class="n">loadtxt</span><span class="p">(</span><span class="n">resdir</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="n">sfile</span><span class="p">),</span><span class="w"> </span><span class="k">array</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="k">case </span><span class="n">default</span><span class="w"></span>
+<span class="w">                    </span><span class="k">print</span><span class="s1">&#39;(2a)&#39;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Unknown spectrum file type:&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">filetype</span><span class="w"></span>
+<span class="w">                </span><span class="k">end select</span>
+<span class="k">                </span><span class="n">TwoD</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">piecewise2D</span><span class="p">(</span><span class="n">cellsize</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">cellsize</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="k">array</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="k">allocate</span><span class="p">(</span><span class="n">spectrum</span><span class="p">%</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">source</span><span class="o">=</span><span class="n">TwoD</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="n">spectrum</span><span class="p">%</span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">TwoD</span><span class="w"></span>
+<span class="w">            </span><span class="k">case </span><span class="n">default</span><span class="w"></span>
+<span class="w">                </span><span class="k">print</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Not a valid spectrum type!&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;expected one of either [&#39;constant&#39;, &#39;1D&#39;, &#39;2D&#39;]&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="k">stop </span><span class="mi">1</span><span class="w"></span>
+<span class="w">        </span><span class="k">end select</span>
+
+
+<span class="k">    end subroutine </span><span class="n">parse_spectrum</span><span class="w"></span>
+</pre></div>
+
+    </section>
+    <br>
+    
+    </div>
+  </div>
+
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-6 col-md-6"><p>signedMCRT was developed by Lewis McMillan<br>&copy; 2023 
+</p>
+          </div>
+          <div class="col-xs-6 col-md-6">
+            <p class="text-right">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+            </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+         ================================================== -->
+         <!-- Placed at the end of the document so the pages load faster -->
+    <!--
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        -->
+        <script src="../js/bootstrap.min.js"></script>
+        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+        <script src="../js/ie10-viewport-bug-workaround.js"></script>
+
+        <!-- MathJax JavaScript
+             ================================================== -->
+             <!-- Placed at the end of the document so the pages load faster -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+          TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+          jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+          extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+          });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  </body>
+</html>
