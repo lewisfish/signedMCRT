@@ -63,16 +63,17 @@ jobs:
         if: ${{ contains(matrix.os, 'ubuntu') && contains(matrix.toolchain.compiler, 'gcc') }}
         uses: codecov/codecov-action@v3.1.1
       
-      - name: Build Docs
-        if: ${{ contains(matrix.os, 'ubuntu') && contains(matrix.toolchain.compiler, 'gcc') }}
- 
-        uses: actions/setup-python@v1
+      - uses: actions/setup-python@v1
         with:
           python-version: '3.x'
+      - name: build docs
+        if: ${{ contains(matrix.os, 'ubuntu') && contains(matrix.toolchain.compiler, 'gcc') }}
         run: |
           pip install ford
           ford docs.md
-        uses: JamesIves/github-pages-deploy-action@3.7.1
+        
+      - uses: JamesIves/github-pages-deploy-action@3.7.1
+        if: ${{ contains(matrix.os, 'ubuntu') && contains(matrix.toolchain.compiler, 'gcc') }}
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages
