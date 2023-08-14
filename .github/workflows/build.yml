@@ -1,6 +1,8 @@
 name: CI
 
 on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: write
 
 env:
   BUILD_DIR: _build
@@ -60,3 +62,22 @@ jobs:
       - name: Codecov
         if: ${{ contains(matrix.os, 'ubuntu') && contains(matrix.toolchain.compiler, 'gcc') }}
         uses: codecov/codecov-action@v3.1.1
+      
+      - name: Build Docs
+        if: ${{ contains(matrix.os, 'ubuntu') && contains(matrix.toolchain.compiler, 'gcc') }}
+ 
+        uses: actions/setup-python@v1
+        with:
+          python-version: '3.x'
+        name: Install dependencies
+        run: pip install ford
+        name: Build Documentation
+        run: ford docs.md
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: docs
+          CLEAN: true
+          clean-exclude: |
+            CNAME
