@@ -80,5 +80,5 @@ jobs:
           BRANCH: gh-pages
           FOLDER: docs
           CLEAN: true
-          clean-exclude: |
+          CLEAN_EXCLUDE: |
             CNAME
