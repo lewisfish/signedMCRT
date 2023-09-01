@@ -165,26 +165,27 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li>utils</li>
                 <li><a href='../module/detector_mod.html'>detector_mod</a></li>
-                <li><a href='../module/parse_mod.html'>parse_mod</a></li>
                 <li><a href='../module/iarray.html'>iarray</a></li>
+                <li>utils</li>
+                <li>tev_mod</li>
+                <li><a href='../module/photonmod.html'>photonMod</a></li>
+                <li><a href='../module/sdfs.html'>sdfs</a></li>
+                <li>tomlf</li>
+                <li><a href='../module/vector_class.html'>vector_class</a></li>
+                <li><a href='../module/random.html'>random</a></li>
+                <li><a href='../module/setupmod.html'>setupMod</a></li>
+                <li><a href='../module/parse_mod.html'>parse_mod</a></li>
                 <li><a href='../module/piecewisemod.html'>piecewiseMod</a></li>
                 <li><a href='../module/sim_state_mod.html'>sim_state_mod</a></li>
-                <li><a href='../module/sdfs.html'>sdfs</a></li>
-                <li><a href='../module/setupmod.html'>setupMod</a></li>
-                <li>tomlf</li>
-                <li>tev_mod</li>
                 <li><a href='../module/constants.html'>constants</a></li>
-                <li><a href='../module/random.html'>random</a></li>
-                <li><a href='../module/vector_class.html'>vector_class</a></li>
-                <li><a href='../module/photonmod.html'>photonMod</a></li>
             </ul>
           </li>
       </ul>
     </div>
 
 
+    <p>setup simulation by reading in setting file, and setup variables to be used.</p>
 
 
     <h3>Arguments</h3>
@@ -200,7 +201,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-input_file~3"></span>
+              <span class="anchor" id="variable-input_file"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -210,12 +211,12 @@
             <td>::</td>
             <td><strong>input_file</strong></td>
             <td>
-                
+                <p>Filename for toml settings to be used</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-tev~2"></span>
+              <span class="anchor" id="variable-tev"></span>
               type(tevipc),
             </td>
 <td>intent(out)</td>
@@ -225,12 +226,12 @@
             <td>::</td>
             <td><strong>tev</strong></td>
             <td>
-                
+                <p>handle for communicating with TEV</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dects~8"></span>
+              <span class="anchor" id="variable-dects"></span>
               type(<a href='../type/dect_array.html'>dect_array</a>),
             </td>
 <td>intent(out),</td>
@@ -240,12 +241,12 @@
             <td>::</td>
             <td><strong>dects</strong>(:)</td>
             <td>
-                
+                <p>array of photon detectors</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-array~21"></span>
+              <span class="anchor" id="variable-array"></span>
               type(<a href='../type/sdf.html'>sdf</a>),
             </td>
 <td>intent(out),</td>
@@ -255,12 +256,12 @@
             <td>::</td>
             <td><strong>array</strong>(:)</td>
             <td>
-                
+                <p>array of SDF objects that create the geometry</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-packet~6"></span>
+              <span class="anchor" id="variable-packet"></span>
               type(<a href='../type/photon.html'>photon</a>),
             </td>
 <td>intent(out)</td>
@@ -270,12 +271,12 @@
             <td>::</td>
             <td><strong>packet</strong></td>
             <td>
-                
+                <p>photon that is to be simulated</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-spectrum~5"></span>
+              <span class="anchor" id="variable-spectrum~14"></span>
               type(<a href='../type/spectrum_t.html'>spectrum_t</a>),
             </td>
 <td>intent(out)</td>
@@ -290,7 +291,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dict~17"></span>
+              <span class="anchor" id="variable-dict"></span>
               type(toml_table),
             </td>
 <td>intent(out)</td>
@@ -300,7 +301,7 @@
             <td>::</td>
             <td><strong>dict</strong></td>
             <td>
-                
+                <p>toml table of meta-data to be written to output files.</p>
             </td>
         </tr>
         <tr>
@@ -412,12 +413,13 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">setup</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span><span class="w"> </span><span class="n">tev</span><span class="p">,</span><span class="w"> </span><span class="n">dects</span><span class="p">,</span><span class="w"> </span><span class="k">array</span><span class="p">,</span><span class="w"> </span><span class="n">packet</span><span class="p">,</span><span class="w"> </span><span class="n">spectrum</span><span class="p">,</span><span class="w"> </span><span class="n">dict</span><span class="p">,</span><span class="w"> </span><span class="n">distances</span><span class="p">,</span><span class="w"> </span><span class="n">image</span><span class="p">,</span><span class="w"> </span><span class="n">nscatt</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="p">)</span><span class="w"></span>
-
-<span class="w">        </span><span class="c">! !shared data</span>
+<span class="w">        </span><span class="c">!! setup simulation by reading in setting file, and setup variables to be used.</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="c">!shared data</span>
 <span class="w">        </span><span class="k">use </span><span class="n">iarray</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">constants</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">wp</span><span class="w"></span>
 <span class="w">        </span>
-<span class="w">        </span><span class="c">! !subroutines</span>
+<span class="w">        </span><span class="c">!subroutines</span>
 <span class="w">        </span><span class="k">use </span><span class="n">detector_mod</span><span class="p">,</span><span class="w">  </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">dect_array</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">parse_mod</span><span class="p">,</span><span class="w">     </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">parse_params</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">photonMod</span><span class="p">,</span><span class="w">     </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">photon</span><span class="w"></span>
@@ -433,11 +435,17 @@
 <span class="w">        </span><span class="k">use </span><span class="n">tev_mod</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">tevipc</span><span class="p">,</span><span class="w"> </span><span class="n">tev_init</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">tomlf</span><span class="p">,</span><span class="w">   </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">toml_table</span><span class="w"></span>
 <span class="w">        </span>
+<span class="w">        </span><span class="c">!&gt; Filename for toml settings to be used</span>
 <span class="w">        </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w">                  </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">input_file</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; array of SDF objects that create the geometry</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">sdf</span><span class="p">),</span><span class="w">        </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">array</span><span class="p">(:)</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; array of photon detectors</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">dect_array</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dects</span><span class="p">(:)</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; toml table of meta-data to be written to output files.</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_table</span><span class="p">),</span><span class="w">              </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dict</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; handle for communicating with TEV</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">tevipc</span><span class="p">),</span><span class="w">                  </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tev</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; photon that is to be simulated</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">photon</span><span class="p">),</span><span class="w">                  </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">packet</span><span class="w"></span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w">    </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">distances</span><span class="p">(:),</span><span class="w"> </span><span class="n">image</span><span class="p">(:,:,:)</span><span class="w"></span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w">                 </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nscatt</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="w"></span>

@@ -412,12 +412,13 @@ contains
 !####################################################################################################
 !                           Setup and break down helper routines
     subroutine setup(input_file, tev, dects, array, packet, spectrum, dict, distances, image, nscatt, start)
-
-        ! !shared data
+        !! setup simulation by reading in setting file, and setup variables to be used.
+        
+        !shared data
         use iarray
         use constants, only : wp
         
-        ! !subroutines
+        !subroutines
         use detector_mod,  only : dect_array
         use parse_mod,     only : parse_params
         use photonMod,     only : photon
@@ -433,11 +434,17 @@ contains
         use tev_mod, only : tevipc, tev_init
         use tomlf,   only : toml_table
         
+        !> Filename for toml settings to be used
         character(*),                  intent(in)  :: input_file
+        !> array of SDF objects that create the geometry
         type(sdf),        allocatable, intent(out) :: array(:)
+        !> array of photon detectors
         type(dect_array), allocatable, intent(out) :: dects(:)
+        !> toml table of meta-data to be written to output files.
         type(toml_table),              intent(out) :: dict
+        !> handle for communicating with TEV
         type(tevipc),                  intent(out) :: tev
+        !> photon that is to be simulated
         type(photon),                  intent(out) :: packet
         real(kind=wp),    allocatable, intent(out) :: distances(:), image(:,:,:)
         real(kind=wp),                 intent(out) :: nscatt, start
