@@ -96,7 +96,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 0.2% of total for source files.">9 statements</a>
+               title=" 0.3% of total for source files.">13 statements</a>
           </li>
 
             <li id="source-file">
@@ -214,24 +214,32 @@
     <section>
       <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="hl"><pre><span></span><a id="ln-1" name="ln-1" href="#ln-1"></a><span class="k">module </span><span class="n">constants</span><span class="w"></span>
-<a id="ln-2" name="ln-2" href="#ln-2"></a>
-<a id="ln-3" name="ln-3" href="#ln-3"></a><span class="w">    </span><span class="k">use </span><span class="n">iso_fortran_env</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">real64</span><span class="p">,</span><span class="w"> </span><span class="n">real32</span><span class="w"></span>
-<a id="ln-4" name="ln-4" href="#ln-4"></a>
-<a id="ln-5" name="ln-5" href="#ln-5"></a><span class="c">! Module containing constants:</span>
-<a id="ln-6" name="ln-6" href="#ln-6"></a><span class="c">!         PI, TWOPI</span>
-<a id="ln-7" name="ln-7" href="#ln-7"></a><span class="c">!         and the vars for the filepaths.</span>
-<a id="ln-8" name="ln-8" href="#ln-8"></a><span class="c">!         resdir holds the path to the directory that holds the parameter and other associated input files</span>
-<a id="ln-9" name="ln-9" href="#ln-9"></a><span class="c">!         homedir is the root directory of this code</span>
-<a id="ln-10" name="ln-10" href="#ln-10"></a><span class="c">!         fileplace is the data folder directory</span>
-<a id="ln-11" name="ln-11" href="#ln-11"></a><span class="w">    </span><span class="k">implicit none</span>
-<a id="ln-12" name="ln-12" href="#ln-12"></a>
-<a id="ln-13" name="ln-13" href="#ln-13"></a><span class="k">    </span><span class="kt">integer</span><span class="p">,</span><span class="w">          </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">wp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">real64</span><span class="w"> </span><span class="c">!can change this to other precision, not tested for lower or higher precisions.</span>
-<a id="ln-14" name="ln-14" href="#ln-14"></a><span class="w">    </span><span class="kt">integer</span><span class="p">,</span><span class="w">          </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">sp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">real32</span><span class="w"></span>
-<a id="ln-15" name="ln-15" href="#ln-15"></a><span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w">    </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">PI</span><span class="o">=</span><span class="mf">4._wp</span><span class="o">*</span><span class="nb">atan</span><span class="p">(</span><span class="mf">1._wp</span><span class="p">),</span><span class="w"> </span><span class="n">TWOPI</span><span class="o">=</span><span class="mf">2._wp</span><span class="o">*</span><span class="n">PI</span><span class="w"></span>
-<a id="ln-16" name="ln-16" href="#ln-16"></a><span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w">    </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">THRESHOLD</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.01_wp</span><span class="p">,</span><span class="w"> </span><span class="n">CHANCE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1_wp</span><span class="w"> </span><span class="c">! used in russian roulette</span>
-<a id="ln-17" name="ln-17" href="#ln-17"></a><span class="w">    </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span><span class="w">          </span><span class="kd">::</span><span class="w"> </span><span class="n">homedir</span><span class="p">,</span><span class="w"> </span><span class="n">fileplace</span><span class="p">,</span><span class="w"> </span><span class="n">resdir</span><span class="w"></span>
-<a id="ln-18" name="ln-18" href="#ln-18"></a>
-<a id="ln-19" name="ln-19" href="#ln-19"></a><span class="k">end module </span><span class="n">constants</span><span class="w"></span>
+<a id="ln-2" name="ln-2" href="#ln-2"></a><span class="w">    </span><span class="c">!! Module contains the various constants used in the simulation.</span>
+<a id="ln-3" name="ln-3" href="#ln-3"></a><span class="w">    </span><span class="c">!! Also defines the working precision and variables for folder operations.</span>
+<a id="ln-4" name="ln-4" href="#ln-4"></a><span class="w">    </span><span class="k">use </span><span class="n">iso_fortran_env</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">real64</span><span class="p">,</span><span class="w"> </span><span class="n">real32</span><span class="w"></span>
+<a id="ln-5" name="ln-5" href="#ln-5"></a>
+<a id="ln-6" name="ln-6" href="#ln-6"></a><span class="w">    </span><span class="k">implicit none</span><span class="w"></span>
+<a id="ln-7" name="ln-7" href="#ln-7"></a>
+<a id="ln-8" name="ln-8" href="#ln-8"></a><span class="w">    </span><span class="c">!&gt; current working precision</span>
+<a id="ln-9" name="ln-9" href="#ln-9"></a><span class="w">    </span><span class="kt">integer</span><span class="p">,</span><span class="w">           </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">wp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">real64</span><span class="w"> </span><span class="c">!can change this to other precision, not tested for lower or higher precisions.</span>
+<a id="ln-10" name="ln-10" href="#ln-10"></a><span class="w">    </span><span class="c">!&gt; single precision variable.</span>
+<a id="ln-11" name="ln-11" href="#ln-11"></a><span class="w">    </span><span class="kt">integer</span><span class="p">,</span><span class="w">           </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">sp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">real32</span><span class="w"></span>
+<a id="ln-12" name="ln-12" href="#ln-12"></a><span class="w">    </span><span class="c">!&gt; \[\pi\]</span>
+<a id="ln-13" name="ln-13" href="#ln-13"></a><span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w">     </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">PI</span><span class="o">=</span><span class="mf">4._wp</span><span class="o">*</span><span class="nb">atan</span><span class="p">(</span><span class="mf">1._wp</span><span class="p">)</span><span class="w"></span>
+<a id="ln-14" name="ln-14" href="#ln-14"></a><span class="w">    </span><span class="c">!&gt; \[2 \pi\]</span>
+<a id="ln-15" name="ln-15" href="#ln-15"></a><span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w">     </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">TWOPI</span><span class="o">=</span><span class="mf">2._wp</span><span class="o">*</span><span class="n">PI</span><span class="w"></span>
+<a id="ln-16" name="ln-16" href="#ln-16"></a><span class="w">    </span><span class="c">!&gt; Weight threshold for roulette</span>
+<a id="ln-17" name="ln-17" href="#ln-17"></a><span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w">     </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">THRESHOLD</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.01_wp</span><span class="w"></span>
+<a id="ln-18" name="ln-18" href="#ln-18"></a><span class="w">    </span><span class="c">!&gt; Proportion of packet that survive roulette</span>
+<a id="ln-19" name="ln-19" href="#ln-19"></a><span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w">     </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">CHANCE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1_wp</span><span class="w"></span>
+<a id="ln-20" name="ln-20" href="#ln-20"></a><span class="w">    </span><span class="c">!&gt; root directory</span>
+<a id="ln-21" name="ln-21" href="#ln-21"></a><span class="w">    </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span><span class="w">          </span><span class="kd">::</span><span class="w"> </span><span class="n">homedir</span><span class="w"></span>
+<a id="ln-22" name="ln-22" href="#ln-22"></a><span class="w">    </span><span class="c">!&gt; place where output files are saved</span>
+<a id="ln-23" name="ln-23" href="#ln-23"></a><span class="w">    </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span><span class="w">          </span><span class="kd">::</span><span class="w"> </span><span class="n">fileplace</span><span class="w"></span>
+<a id="ln-24" name="ln-24" href="#ln-24"></a><span class="w">    </span><span class="c">!&gt; directory to input files</span>
+<a id="ln-25" name="ln-25" href="#ln-25"></a><span class="w">    </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="mi">255</span><span class="p">)</span><span class="w">          </span><span class="kd">::</span><span class="w"> </span><span class="n">resdir</span><span class="w"></span>
+<a id="ln-26" name="ln-26" href="#ln-26"></a>
+<a id="ln-27" name="ln-27" href="#ln-27"></a><span class="k">end module </span><span class="n">constants</span><span class="w"></span>
 </pre></div>
 
     </section>

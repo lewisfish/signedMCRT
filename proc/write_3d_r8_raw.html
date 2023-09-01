@@ -160,6 +160,7 @@
 </h2>
     
 
+    <p>write 3D array of float64s to disk as raw binary data</p>
 
 
     <h3>Arguments</h3>
@@ -175,7 +176,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-array~11"></span>
+              <span class="anchor" id="variable-array~3"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -185,12 +186,12 @@
             <td>::</td>
             <td><strong>array</strong>(:,:,:)</td>
             <td>
-                
+                <p>array to write to disk</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-filename~6"></span>
+              <span class="anchor" id="variable-filename~2"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -200,12 +201,12 @@
             <td>::</td>
             <td><strong>filename</strong></td>
             <td>
-                
+                <p>filename to save array as</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-overwrite~5"></span>
+              <span class="anchor" id="variable-overwrite~2"></span>
               logical,
             </td>
 <td>intent(in)</td>
@@ -215,7 +216,7 @@
             <td>::</td>
             <td><strong>overwrite</strong></td>
             <td>
-                
+                <p>overwrite flag</p>
             </td>
         </tr>
     </tbody>
@@ -267,9 +268,13 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">        </span><span class="k">subroutine </span><span class="n">write_3d_r8_raw</span><span class="p">(</span><span class="k">array</span><span class="p">,</span><span class="w"> </span><span class="n">filename</span><span class="p">,</span><span class="w"> </span><span class="n">overwrite</span><span class="p">)</span><span class="w"></span>
-
+<span class="w">        </span><span class="c">!! write 3D array of float64s to disk as raw binary data</span>
+<span class="w">            </span>
+<span class="w">            </span><span class="c">!&gt; array to write to disk</span>
 <span class="w">            </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">array</span><span class="p">(:,</span><span class="w"> </span><span class="p">:,</span><span class="w"> </span><span class="p">:)</span><span class="w"></span>
+<span class="w">            </span><span class="c">!&gt; filename to save array as</span>
 <span class="w">            </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">filename</span><span class="w"></span>
+<span class="w">            </span><span class="c">!&gt; overwrite flag</span>
 <span class="w">            </span><span class="kt">logical</span><span class="p">,</span><span class="w">       </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">overwrite</span><span class="w"></span>
 
 <span class="w">            </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">u</span><span class="w"></span>

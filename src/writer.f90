@@ -1,7 +1,6 @@
 module writer_mod
-! module provides output routines in raw binary and .nrrd formats
-!
-!
+!! module provides output routines in raw binary and .nrrd formats
+
     use constants, only : wp
 
     implicit none
@@ -19,14 +18,17 @@ module writer_mod
 
     contains
         subroutine normalise_fluence(grid, array, nphotons)
-        ! normalise fluence in the Lucy 1999 way
+        !! normalise fluence in the Lucy 1999 way
             
             use gridMod
             use constants, only : sp
 
-            type(cart_grid), intent(IN) :: grid
-            real(kind=sp),   intent(INout) :: array(:, :, :)
-            integer,         intent(IN) :: nphotons
+            !> grid class
+            type(cart_grid), intent(in) :: grid
+            !> array to normalise
+            real(kind=sp),   intent(inout) :: array(:, :, :)
+            !> number of photons run
+            integer,         intent(in) :: nphotons
             
             real(kind=wp) :: xmax, ymax, zmax
             integer       :: nxg, nyg, nzg
@@ -78,16 +80,21 @@ array  = array * ((2._sp*xmax*2._sp*ymax)/(nphotons * (2._sp * xmax / nxg) * (2.
 
 
         subroutine write_data(array, filename, state, dict, overwrite)
-        ! routine automatically selects which way to write out results based upon file extension
+        !! routine automatically selects which way to write out results based upon file extension
             
             use sim_state_mod, only : settings_t
             use tomlf,         only : toml_table, get_value
             use constants,     only : sp
 
+            !> simulation state
             type(settings_t),           intent(IN)    :: state
+            !> array to write out
             real(kind=sp),              intent(IN)    :: array(:,:,:)
+            !> filename to save array as
             character(*),               intent(IN)    :: filename
+            !> dictionary of metadata
             type(toml_table), optional, intent(INOUT) :: dict
+            !> overwrite flag
             logical,          optional, intent(IN)    :: overwrite
 
             Logical :: over_write
@@ -126,9 +133,13 @@ array  = array * ((2._sp*xmax*2._sp*ymax)/(nphotons * (2._sp * xmax / nxg) * (2.
         end subroutine write_data
 
         subroutine write_3d_r8_raw(array, filename, overwrite)
-
+        !! write 3D array of float64s to disk as raw binary data
+            
+            !> array to write to disk
             real(kind=wp), intent(IN) :: array(:, :, :)
+            !> filename to save array as
             character(*),  intent(IN) :: filename
+            !> overwrite flag
             logical,       intent(IN) :: overwrite
 
             integer :: u
@@ -146,11 +157,14 @@ array  = array * ((2._sp*xmax*2._sp*ymax)/(nphotons * (2._sp * xmax / nxg) * (2.
         end subroutine write_3d_r8_raw
 
         subroutine write_3d_r4_raw(array, filename, overwrite)
-
+        !! write 3D array of float32's to disk as raw binary data
             use constants, only : sp
 
+            !> array to write to disk
             real(kind=sp), intent(IN) :: array(:, :, :)
+            !> filename to save array as
             character(*),  intent(IN) :: filename
+            !> overwrite flag
             logical,       intent(IN) :: overwrite
 
             integer :: u
@@ -168,10 +182,13 @@ array  = array * ((2._sp*xmax*2._sp*ymax)/(nphotons * (2._sp * xmax / nxg) * (2.
         end subroutine write_3d_r4_raw
 
         function get_new_file_name(file) result(res)
+            !! If file exits, get numeral to append to filename 
 
             use utils, only : str
 
+            !> file to be checked
             character(len=*), intent(IN) :: file
+
             character(len=:), allocatable :: res
             integer :: pos, i
 
@@ -186,7 +203,9 @@ array  = array * ((2._sp*xmax*2._sp*ymax)/(nphotons * (2._sp * xmax / nxg) * (2.
         end function get_new_file_name
 
         logical function check_file(file) result(res)
-                    
+            !! Functional wrapper around inquire to check if file exits
+
+            !> file to be checked
             character(len=*), intent(IN) :: file
 
             inquire(file=trim(file), exist=res)
@@ -194,11 +213,15 @@ array  = array * ((2._sp*xmax*2._sp*ymax)/(nphotons * (2._sp * xmax / nxg) * (2.
         end function check_file
 
         subroutine write_hdr(u, sizes, type)
-
+            !! write out header information for .nrrd file format
             use utils, only : str
 
+            !> data dtype
             character(*), intent(IN) :: type
-            integer,      intent(IN) :: sizes(:), u
+            !> file handle
+            integer,      intent(IN) :: u
+            !> dimensions of data
+            integer,      intent(IN) :: sizes(:)
             
             character(len=100) :: string
             integer :: i
@@ -220,18 +243,22 @@ array  = array * ((2._sp*xmax*2._sp*ymax)/(nphotons * (2._sp * xmax / nxg) * (2.
             write(u,"(A)")"encoding: raw"
             write(u,"(A)")"endian: little"
 
-
         end subroutine write_hdr
 
         subroutine write_3d_r8_nrrd(array, filename, overwrite, dict)
-            
+            !! write 3D array of float64's to .nrrd fileformat
+
             use tomlf,           only : toml_table, toml_dump, toml_error
             use iso_fortran_env, only : int32, int64, real32, real64
             use utils,    only : str
-        
+            
+            !> filename
             character(*),               intent(IN)    :: filename
+            !> array to be written to disk
             real(kind=wp),              intent(IN)    :: array(:, :, :)
+            !> dictionary of metadata
             type(toml_table), optional, intent(INOUT) :: dict
+            !> overwrite flag
             logical,                    intent(IN)    :: overwrite
 
             type(toml_error), allocatable :: error
@@ -260,15 +287,20 @@ array  = array * ((2._sp*xmax*2._sp*ymax)/(nphotons * (2._sp * xmax / nxg) * (2.
         end subroutine write_3d_r8_nrrd
 
         subroutine write_3d_r4_nrrd(array, filename, overwrite, dict)
-            
+            !! write 3D array of float32's to .nrrd fileformat
+
             use tomlf,           only : toml_table, toml_dump, toml_error
             use iso_fortran_env, only : int32, int64, real32, real64
             use utils,           only : str
             use constants,       only : sp
-        
+            
+            !> filename
             character(*),               intent(IN)    :: filename
+            !> array to be written to disk
             real(kind=sp),              intent(IN)    :: array(:, :, :)
+            !> dictionary of metadata
             type(toml_table), optional, intent(INOUT) :: dict
+            !> overwrite flag
             logical,                    intent(IN)    :: overwrite
 
             type(toml_error), allocatable :: error

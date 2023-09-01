@@ -1,12 +1,25 @@
 module opticalProperties
-
+    !! module implments the optical property abstract type and the types that inheirt from it
     use constants, only : wp
     use piecewiseMod
 
     implicit none
-
+    !! abstract optica property type
     type, abstract :: opticalProp_base
-        real(kind=wp) :: mus, mua, hgg, g2, n, kappa, albedo
+        !> scattering coeff. \[cm^{-1}\]    
+        real(kind=wp) :: mus
+        !> absoprtion coeff. \[cm^{-1}\]    
+        real(kind=wp) :: mua
+        !> g factor
+        real(kind=wp) :: hgg
+        !> g factor squared
+        real(kind=wp) :: g2
+        !> refractive index
+        real(kind=wp) :: n
+        !> \[\kappa = \mu_s + \mu_a\]
+        real(kind=wp) :: kappa
+        !> \[a = \frac{\mu_s}{\mu_s + \mu_a}\]
+        real(kind=wp) :: albedo
         contains
             procedure(updateInterface), deferred :: update
     end type opticalProp_base

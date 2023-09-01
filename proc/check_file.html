@@ -160,6 +160,7 @@
 </h2>
     
 
+    <p>Functional wrapper around inquire to check if file exits</p>
 
 
     <h3>Arguments</h3>
@@ -175,7 +176,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-file"></span>
+              <span class="anchor" id="variable-file~2"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -185,7 +186,7 @@
             <td>::</td>
             <td><strong>file</strong></td>
             <td>
-                
+                <p>file to be checked</p>
             </td>
         </tr>
     </tbody>
@@ -244,7 +245,9 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">        </span><span class="kt">logical </span><span class="k">function </span><span class="n">check_file</span><span class="p">(</span><span class="k">file</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"></span>
-<span class="w">                    </span>
+<span class="w">            </span><span class="c">!! Functional wrapper around inquire to check if file exits</span>
+
+<span class="w">            </span><span class="c">!&gt; file to be checked</span>
 <span class="w">            </span><span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">file</span>
 
 <span class="k">            inquire</span><span class="p">(</span><span class="k">file</span><span class="o">=</span><span class="nb">trim</span><span class="p">(</span><span class="k">file</span><span class="p">),</span><span class="w"> </span><span class="n">exist</span><span class="o">=</span><span class="n">res</span><span class="p">)</span><span class="w"></span>

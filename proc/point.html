@@ -166,16 +166,17 @@
           <li class="list-group-item">
             <ul class="list-inline">
                 <li>tomlf</li>
-                <li><a href='../module/random.html'>random</a></li>
                 <li><a href='../module/piecewisemod.html'>piecewiseMod</a></li>
                 <li><a href='../module/sim_state_mod.html'>sim_state_mod</a></li>
                 <li><a href='../module/constants.html'>constants</a></li>
+                <li><a href='../module/random.html'>random</a></li>
             </ul>
           </li>
       </ul>
     </div>
 
 
+    <p>isotropic point source</p>
 
 
     <h3>Arguments</h3>
@@ -221,7 +222,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dict~9"></span>
+              <span class="anchor" id="variable-dict~12"></span>
               type(toml_table),
             </td>
 <td>intent(inout),</td>
@@ -298,7 +299,7 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">        </span><span class="k">subroutine </span><span class="n">point</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">spectrum</span><span class="p">,</span><span class="w"> </span><span class="n">dict</span><span class="p">,</span><span class="w"> </span><span class="n">seqs</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="c">!isotropic point source</span>
+<span class="w">        </span><span class="c">!! isotropic point source</span>
 
 <span class="w">            </span><span class="k">use </span><span class="n">sim_state_mod</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">state</span><span class="w"></span>
 <span class="w">            </span><span class="k">use </span><span class="n">random</span><span class="p">,</span><span class="w">        </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ran2</span><span class="p">,</span><span class="w"> </span><span class="n">seq</span><span class="w"></span>

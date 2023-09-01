@@ -1,19 +1,27 @@
 module constants
-
+    !! Module contains the various constants used in the simulation.
+    !! Also defines the working precision and variables for folder operations.
     use iso_fortran_env, only : real64, real32
 
-! Module containing constants:
-!         PI, TWOPI
-!         and the vars for the filepaths.
-!         resdir holds the path to the directory that holds the parameter and other associated input files
-!         homedir is the root directory of this code
-!         fileplace is the data folder directory
     implicit none
 
-    integer,          parameter :: wp = real64 !can change this to other precision, not tested for lower or higher precisions.
-    integer,          parameter :: sp = real32
-    real(kind=wp),    parameter :: PI=4._wp*atan(1._wp), TWOPI=2._wp*PI
-    real(kind=wp),    parameter :: THRESHOLD = 0.01_wp, CHANCE = 0.1_wp ! used in russian roulette
-    character(len=255)          :: homedir, fileplace, resdir
+    !> current working precision
+    integer,           parameter :: wp = real64 !can change this to other precision, not tested for lower or higher precisions.
+    !> single precision variable.
+    integer,           parameter :: sp = real32
+    !> \[\pi\]
+    real(kind=wp),     parameter :: PI=4._wp*atan(1._wp)
+    !> \[2 \pi\]
+    real(kind=wp),     parameter :: TWOPI=2._wp*PI
+    !> Weight threshold for roulette
+    real(kind=wp),     parameter :: THRESHOLD = 0.01_wp
+    !> Proportion of packet that survive roulette
+    real(kind=wp),     parameter :: CHANCE = 0.1_wp
+    !> root directory
+    character(len=255)          :: homedir
+    !> place where output files are saved
+    character(len=255)          :: fileplace
+    !> directory to input files
+    character(len=255)          :: resdir
 
 end module constants

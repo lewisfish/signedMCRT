@@ -96,7 +96,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p> 1.1% of total for derived types.</p>Including implementation: 5 statements,  0.4% of total for derived types.">5 statements</a>
+               title="<p> 2.5% of total for derived types.</p>Including implementation: 11 statements,  0.8% of total for derived types.">11 statements</a>
           </li>
 
             <li id="source-file">
@@ -139,7 +139,7 @@
             <a class="list-group-item" href="../type/opticalprop_base.html#variable-kappa">kappa</a>
             <a class="list-group-item" href="../type/opticalprop_base.html#variable-mua">mua</a>
             <a class="list-group-item" href="../type/opticalprop_base.html#variable-mus">mus</a>
-            <a class="list-group-item" href="../type/opticalprop_base.html#variable-n~2">n</a>
+            <a class="list-group-item" href="../type/opticalprop_base.html#variable-n">n</a>
         </div>
       </div>
     </div>
@@ -207,7 +207,7 @@
             <a class="list-group-item" href="../type/opticalprop_base.html#variable-kappa">kappa</a>
             <a class="list-group-item" href="../type/opticalprop_base.html#variable-mua">mua</a>
             <a class="list-group-item" href="../type/opticalprop_base.html#variable-mus">mus</a>
-            <a class="list-group-item" href="../type/opticalprop_base.html#variable-n~2">n</a>
+            <a class="list-group-item" href="../type/opticalprop_base.html#variable-n">n</a>
         </div>
       </div>
     </div>
@@ -278,7 +278,9 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>
+<script type="math/tex; mode=display">a = \frac{\mu_s}{\mu_s + \mu_a}</script>
+</p>
             </td>
         </tr>
         <tr>
@@ -295,7 +297,7 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>g factor squared</p>
             </td>
         </tr>
         <tr>
@@ -312,7 +314,7 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>g factor</p>
             </td>
         </tr>
         <tr>
@@ -329,7 +331,9 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>
+<script type="math/tex; mode=display">\kappa = \mu_s + \mu_a</script>
+</p>
             </td>
         </tr>
         <tr>
@@ -346,7 +350,8 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>absoprtion coeff. <script type="math/tex; mode=display">cm^{-1}</script>
+</p>
             </td>
         </tr>
         <tr>
@@ -363,12 +368,13 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>scattering coeff. <script type="math/tex; mode=display">cm^{-1}</script>
+</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-n~2"></span>
+              <span class="anchor" id="variable-n"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -380,7 +386,7 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>refractive index</p>
             </td>
         </tr>
     </tbody>
@@ -457,7 +463,20 @@
     <section>
     <h3><span class="anchor" id="src"></span>Source Code</h3>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">type</span><span class="p">,</span><span class="w"> </span><span class="k">abstract</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">opticalProp_base</span><span class="w"></span>
-<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">mus</span><span class="p">,</span><span class="w"> </span><span class="n">mua</span><span class="p">,</span><span class="w"> </span><span class="n">hgg</span><span class="p">,</span><span class="w"> </span><span class="n">g2</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">kappa</span><span class="p">,</span><span class="w"> </span><span class="n">albedo</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; scattering coeff. \[cm^{-1}\]    </span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">mus</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; absoprtion coeff. \[cm^{-1}\]    </span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">mua</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; g factor</span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hgg</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; g factor squared</span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">g2</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; refractive index</span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">n</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; \[\kappa = \mu_s + \mu_a\]</span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">kappa</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; \[a = \frac{\mu_s}{\mu_s + \mu_a}\]</span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">albedo</span><span class="w"></span>
 <span class="w">        </span><span class="k">contains</span>
 <span class="k">            procedure</span><span class="p">(</span><span class="n">updateInterface</span><span class="p">),</span><span class="w"> </span><span class="k">deferred</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">update</span><span class="w"></span>
 <span class="w">    </span><span class="k">end type </span><span class="n">opticalProp_base</span><span class="w"></span>

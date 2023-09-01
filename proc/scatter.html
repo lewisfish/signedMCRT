@@ -96,7 +96,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 1.0% of total for procedures.">47 statements</a>
+               title=" 1.1% of total for procedures.">48 statements</a>
           </li>
 
             <li id="source-file">
@@ -165,8 +165,8 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='../module/detector_mod.html'>detector_mod</a></li>
                 <li><a href='../module/constants.html'>constants</a></li>
+                <li><a href='../module/detector_mod.html'>detector_mod</a></li>
                 <li><a href='../module/random.html'>random</a></li>
             </ul>
           </li>
@@ -174,6 +174,8 @@
     </div>
 
 
+    <p>Scattering routine. Implments both isotropic and henyey-greenstein scattering
+taken from mcxyz https://omlc.org/software/mc/mcxyz/index.html</p>
 
     <h3>Type Bound</h3>
     <p><a href='../type/photon.html'>photon</a></p>
@@ -216,7 +218,7 @@
             <td>::</td>
             <td><strong>hgg</strong></td>
             <td>
-                
+                <p>g factor</p>
             </td>
         </tr>
         <tr>
@@ -231,12 +233,12 @@
             <td>::</td>
             <td><strong>g2</strong></td>
             <td>
-                
+                <p>g factor squared</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dects~2"></span>
+              <span class="anchor" id="variable-dects"></span>
               type(<a href='../type/dect_array.html'>dect_array</a>),
             </td>
 <td>intent(in),</td>
@@ -246,7 +248,7 @@
             <td>::</td>
             <td><strong>dects</strong>(:)</td>
             <td>
-                
+                <p>array of detectors. Only used if biased scattering is enabled.</p>
             </td>
         </tr>
     </tbody>
@@ -298,14 +300,19 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">        </span><span class="k">subroutine </span><span class="n">scatter</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">hgg</span><span class="p">,</span><span class="w"> </span><span class="n">g2</span><span class="p">,</span><span class="w"> </span><span class="n">dects</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="c">! taken from mcxyz https://omlc.org/software/mc/mcxyz/index.html</span>
+<span class="w">            </span><span class="c">!! Scattering routine. Implments both isotropic and henyey-greenstein scattering</span>
+<span class="w">            </span><span class="c">!! taken from mcxyz https://omlc.org/software/mc/mcxyz/index.html</span>
 
 <span class="w">            </span><span class="k">use </span><span class="n">constants</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">PI</span><span class="p">,</span><span class="w"> </span><span class="n">TWOPI</span><span class="p">,</span><span class="w"> </span><span class="n">wp</span><span class="w"></span>
 <span class="w">            </span><span class="k">use </span><span class="n">random</span><span class="p">,</span><span class="w">    </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ran2</span><span class="w"></span>
 <span class="w">            </span><span class="k">use </span><span class="n">detector_mod</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">dect_array</span><span class="w"></span>
 
 <span class="w">            </span><span class="k">class</span><span class="p">(</span><span class="n">photon</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">this</span><span class="w"></span>
-<span class="w">            </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">hgg</span><span class="p">,</span><span class="w"> </span><span class="n">g2</span><span class="w"></span>
+<span class="w">            </span><span class="c">!&gt; g factor</span>
+<span class="w">            </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">hgg</span><span class="w"></span>
+<span class="w">            </span><span class="c">!&gt; g factor squared</span>
+<span class="w">            </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">g2</span><span class="w"></span>
+<span class="w">            </span><span class="c">!&gt; array of detectors. Only used if biased scattering is enabled.</span>
 <span class="w">            </span><span class="k">type</span><span class="p">(</span><span class="n">dect_array</span><span class="p">),</span><span class="w"> </span><span class="k">optional</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dects</span><span class="p">(:)</span><span class="w"></span>
 
 <span class="w">            </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">temp</span><span class="p">,</span><span class="w"> </span><span class="n">uxx</span><span class="p">,</span><span class="w"> </span><span class="n">uyy</span><span class="p">,</span><span class="w"> </span><span class="n">uzz</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="w"></span>
