@@ -37,12 +37,6 @@ Brief description
 
 A Monte Carlo radiation transfer code with signed distance functions representing the geometry, written in modern Fortran.
 
-| Month    | Savings |
-| -------- | ------- |
-| January  | $250    |
-| February | $80     |
-| March    | $420    |
-
 
 License
 -------
