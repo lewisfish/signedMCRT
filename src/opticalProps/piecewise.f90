@@ -121,7 +121,7 @@ module piecewiseMod
 
 
     subroutine sample2D(this, x, y, value)
-        
+        ! TODO cite where you got this from...
         use random, only : ran2, ranu
 
         class(piecewise2D), intent(in)  :: this
