@@ -1,5 +1,5 @@
 program mcpolar
-
+!! Entry point for program
     use kernels, only : weight_scatter, pathlength_scatter
 
     integer :: num_args, i

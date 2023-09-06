@@ -3,8 +3,8 @@ module mat_class
     use constants, only : wp
     use vec4_class
 
-    !not fully implmented matix class
-    !minimum implmented for neural sdf type
+    !! not fully implmented matix class
+    !! minimum implmented for neural sdf type
     type :: mat
         real(kind=wp) :: vals(4, 4)
         contains

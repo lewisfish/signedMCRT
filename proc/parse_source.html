@@ -166,14 +166,16 @@
           <li class="list-group-item">
             <ul class="list-inline">
                 <li><a href='../module/photonmod.html'>photonMod</a></li>
-                <li><a href='../module/piecewisemod.html'>piecewiseMod</a></li>
                 <li><a href='../module/sim_state_mod.html'>sim_state_mod</a></li>
+                <li><a href='../module/piecewisemod.html'>piecewiseMod</a></li>
             </ul>
           </li>
       </ul>
     </div>
 
 
+    <p>Parse source table
+any updates here MUST be reflected in docs/config.md</p>
 
 
     <h3>Arguments</h3>
@@ -311,8 +313,8 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">parse_source</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="n">packet</span><span class="p">,</span><span class="w"> </span><span class="n">dict</span><span class="p">,</span><span class="w"> </span><span class="n">spectrum</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="c">! Parse source table</span>
-<span class="w">    </span><span class="c">! any updates here MUST be reflected in docs/config.md</span>
+<span class="w">    </span><span class="c">!! Parse source table</span>
+<span class="w">    </span><span class="c">!! any updates here MUST be reflected in docs/config.md</span>
 <span class="w">        </span><span class="k">use </span><span class="n">sim_state_mod</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">state</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">photonmod</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">piecewiseMod</span><span class="w"></span>

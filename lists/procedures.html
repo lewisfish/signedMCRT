@@ -154,9 +154,9 @@
 			   <tr><td><a href='../proc/focus.html'>focus</a></td><td><a href='../module/photonmod.html'>photonMod</a></td><td>Subroutine</td><td></td></tr>
 			   <tr><td><a href='../proc/fresnel.html'>fresnel</a></td><td><a href='../module/surfaces.html'>surfaces</a></td><td>Function</td><td></td></tr>
 			   <tr><td><a href='../proc/get_new_file_name.html'>get_new_file_name</a></td><td><a href='../module/writer_mod.html'>writer_mod</a></td><td>Function</td><td><p>If file exits, get numeral to append to filename </p></td></tr>
-			   <tr><td><a href='../proc/get_vector.html'>get_vector</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Function</td><td></td></tr>
+			   <tr><td><a href='../proc/get_vector.html'>get_vector</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Function</td><td><p>vector helper function for parsing toml</p></td></tr>
 			   <tr><td><a href='../proc/get_vessels.html'>get_vessels</a></td><td><a href='../module/setupgeometry.html'>setupGeometry</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/get_voxel.html'>get_voxel</a></td><td><a href='../module/gridmod.html'>gridMod</a></td><td>Function</td><td></td></tr>
+			   <tr><td><a href='../proc/get_voxel.html'>get_voxel</a></td><td><a href='../module/gridmod.html'>gridMod</a></td><td>Function</td><td><p>get current voxel the photon packet is in</p></td></tr>
 			   <tr><td><a href='../proc/getalbedo.html'>getAlbedo</a></td><td><a href='../module/sdf_basemod.html'>sdf_baseMod</a></td><td>Function</td><td></td></tr>
 			   <tr><td><a href='../proc/getg2.html'>getg2</a></td><td><a href='../module/sdf_basemod.html'>sdf_baseMod</a></td><td>Function</td><td></td></tr>
 			   <tr><td><a href='../proc/gethgg.html'>gethgg</a></td><td><a href='../module/sdf_basemod.html'>sdf_baseMod</a></td><td>Function</td><td></td></tr>
@@ -181,7 +181,7 @@
 			   <tr><td><a href='../proc/init_annulus_dect.html'>init_annulus_dect</a></td><td><a href='../module/detector_mod.html'>detector_mod</a></td><td>Function</td><td></td></tr>
 			   <tr><td><a href='../proc/init_camera.html'>init_camera</a></td><td><a href='../module/detector_mod.html'>detector_mod</a></td><td>Function</td><td></td></tr>
 			   <tr><td><a href='../proc/init_circle_dect.html'>init_circle_dect</a></td><td><a href='../module/detector_mod.html'>detector_mod</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/init_grid.html'>init_grid</a></td><td><a href='../module/gridmod.html'>gridMod</a></td><td>Function</td><td></td></tr>
+			   <tr><td><a href='../proc/init_grid.html'>init_grid</a></td><td><a href='../module/gridmod.html'>gridMod</a></td><td>Function</td><td><p>setup grid</p></td></tr>
 			   <tr><td><a href='../proc/init_historystack.html'>init_historyStack</a></td><td><a href='../module/historystack.html'>historyStack</a></td><td>Function</td><td></td></tr>
 			   <tr><td><a href='../proc/init_mono.html'>init_mono</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td>Function</td><td></td></tr>
 			   <tr><td><a href='../proc/init_photon.html'>init_photon</a></td><td><a href='../module/photonmod.html'>photonMod</a></td><td>Function</td><td><p>set up all the variables in the photon object</p></td></tr>
@@ -234,13 +234,14 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p></td></tr>
 			   <tr><td><a href='../proc/opticalprop_t_assign.html'>opticalProp_t_assign</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td>Subroutine</td><td></td></tr>
 			   <tr><td><a href='../proc/opticaprop_new.html'>opticaProp_new</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td>Function</td><td></td></tr>
 			   <tr><td><a href='../proc/pack_bits.html'>pack_bits</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/parse_detectors.html'>parse_detectors</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td></td></tr>
-			   <tr><td><a href='../proc/parse_geometry.html'>parse_geometry</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td></td></tr>
-			   <tr><td><a href='../proc/parse_grid.html'>parse_grid</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td></td></tr>
-			   <tr><td><a href='../proc/parse_output.html'>parse_output</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td></td></tr>
-			   <tr><td><a href='../proc/parse_params.html'>parse_params</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td></td></tr>
-			   <tr><td><a href='../proc/parse_simulation.html'>parse_simulation</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td></td></tr>
-			   <tr><td><a href='../proc/parse_source.html'>parse_source</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td></td></tr>
+			   <tr><td><a href='../proc/parse_detectors.html'>parse_detectors</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>parse the detectors</p></td></tr>
+			   <tr><td><a href='../proc/parse_geometry.html'>parse_geometry</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>parse geometry information</p></td></tr>
+			   <tr><td><a href='../proc/parse_grid.html'>parse_grid</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>parse grid input data</p></td></tr>
+			   <tr><td><a href='../proc/parse_output.html'>parse_output</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>parse output file information</p></td></tr>
+			   <tr><td><a href='../proc/parse_params.html'>parse_params</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>entry point for parsing toml file</p></td></tr>
+			   <tr><td><a href='../proc/parse_simulation.html'>parse_simulation</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>parse simulation information</p></td></tr>
+			   <tr><td><a href='../proc/parse_source.html'>parse_source</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>Parse source table
+any updates here MUST be reflected in docs/config.md</p></td></tr>
 			   <tr><td><a href='../proc/parse_spectrum.html'>parse_spectrum</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td></td></tr>
 			   <tr><td><a href='../proc/pathlength_scatter.html'>pathlength_scatter</a></td><td><a href='../module/kernels.html'>kernels</a></td><td>Subroutine</td><td></td></tr>
 			   <tr><td><a href='../proc/pencil.html'>pencil</a></td><td><a href='../module/photonmod.html'>photonMod</a></td><td>Subroutine</td><td><p>pencil beam source</p></td></tr>

@@ -160,6 +160,7 @@
 </h2>
     
 
+    <p>setup grid</p>
 
 
     <h3>Arguments</h3>
@@ -175,7 +176,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-nxg~2"></span>
+              <span class="anchor" id="variable-nxg"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -185,12 +186,12 @@
             <td>::</td>
             <td><strong>nxg</strong></td>
             <td>
-                
+                <p>number of voxels in each cardinal direction for fluence grid</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-nyg~2"></span>
+              <span class="anchor" id="variable-nyg"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -200,12 +201,12 @@
             <td>::</td>
             <td><strong>nyg</strong></td>
             <td>
-                
+                <p>number of voxels in each cardinal direction for fluence grid</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-nzg~2"></span>
+              <span class="anchor" id="variable-nzg"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -215,12 +216,12 @@
             <td>::</td>
             <td><strong>nzg</strong></td>
             <td>
-                
+                <p>number of voxels in each cardinal direction for fluence grid</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-xmax~2"></span>
+              <span class="anchor" id="variable-xmax"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -230,12 +231,12 @@
             <td>::</td>
             <td><strong>xmax</strong></td>
             <td>
-                
+                <p>half size of each dimension in fluence grid. </p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ymax~2"></span>
+              <span class="anchor" id="variable-ymax"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -245,12 +246,12 @@
             <td>::</td>
             <td><strong>ymax</strong></td>
             <td>
-                
+                <p>half size of each dimension in fluence grid. </p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-zmax~2"></span>
+              <span class="anchor" id="variable-zmax"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -260,7 +261,7 @@
             <td>::</td>
             <td><strong>zmax</strong></td>
             <td>
-                
+                <p>half size of each dimension in fluence grid. </p>
             </td>
         </tr>
     </tbody>
@@ -319,11 +320,10 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">cart_grid</span><span class="p">)</span><span class="w"> </span><span class="k">function </span><span class="n">init_grid</span><span class="p">(</span><span class="n">nxg</span><span class="p">,</span><span class="w"> </span><span class="n">nyg</span><span class="p">,</span><span class="w"> </span><span class="n">nzg</span><span class="p">,</span><span class="w"> </span><span class="n">xmax</span><span class="p">,</span><span class="w"> </span><span class="n">ymax</span><span class="p">,</span><span class="w"> </span><span class="n">zmax</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="c">! setup grid</span>
-<span class="w">    </span><span class="c">!</span>
-<span class="w">    </span><span class="c">!</span>
-<span class="w">       </span>
-<span class="w">        </span><span class="kt">integer</span><span class="p">,</span><span class="w">       </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nxg</span><span class="p">,</span><span class="w"> </span><span class="n">nyg</span><span class="p">,</span><span class="w"> </span><span class="n">nzg</span><span class="w"> </span>
+<span class="w">    </span><span class="c">!! setup grid</span>
+<span class="w">        </span><span class="c">!&gt; number of voxels in each cardinal direction for fluence grid</span>
+<span class="w">        </span><span class="kt">integer</span><span class="p">,</span><span class="w">       </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nxg</span><span class="p">,</span><span class="w"> </span><span class="n">nyg</span><span class="p">,</span><span class="w"> </span><span class="n">nzg</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; half size of each dimension in fluence grid. </span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">xmax</span><span class="p">,</span><span class="w"> </span><span class="n">ymax</span><span class="p">,</span><span class="w"> </span><span class="n">zmax</span><span class="w"></span>
 <span class="w">        </span>
 <span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="w"></span>

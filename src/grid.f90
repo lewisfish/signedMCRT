@@ -4,10 +4,16 @@ module gridMod
 
     implicit none
 
+    !! Grid class
     type :: cart_grid
-        integer       :: nxg, nyg, nzg ! number of voxels in each cardinal direction for fluence grid
-        real(kind=wp) :: xmax, ymax, zmax, delta ! size of each dimension in fluence grid. Delta is the round of for near voxel cell walls
-        real(kind=wp), allocatable :: xface(:), yface(:), zface(:) ! position of each cell wall in fluence grid
+        !> number of voxels in each cardinal direction for fluence grid
+        integer       :: nxg, nyg, nzg
+        !> half size of each dimension in fluence grid. 
+        real(kind=wp) :: xmax, ymax, zmax
+        !> Delta is the round off for near voxel cell walls
+        real(kind=wp) :: delta
+        !> position of each cell wall in fluence grid
+        real(kind=wp), allocatable :: xface(:), yface(:), zface(:)
         contains
         procedure :: get_voxel
     end type cart_grid
@@ -22,10 +28,12 @@ module gridMod
     contains
 
     function get_voxel(this, pos) result(res)
-        
+        !! get current voxel the photon packet is in
         use vector_class
-    
+        
+        !> grid class
         class(cart_grid)         :: this
+        !> current vector position of photon packet
         type(vector), intent(IN) :: pos
     
         integer :: res(3)
@@ -37,11 +45,10 @@ module gridMod
     end function get_voxel
 
     type(cart_grid) function init_grid(nxg, nyg, nzg, xmax, ymax, zmax)
-    ! setup grid
-    !
-    !
-       
-        integer,       intent(IN) :: nxg, nyg, nzg 
+    !! setup grid
+        !> number of voxels in each cardinal direction for fluence grid
+        integer,       intent(IN) :: nxg, nyg, nzg
+        !> half size of each dimension in fluence grid. 
         real(kind=wp), intent(IN) :: xmax, ymax, zmax
         
         integer :: i
