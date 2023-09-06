@@ -1,32 +1,50 @@
 module photonMod
-    
+    !! Module contains the photon class and associated scattering and release routines
     use constants, only : wp
     use vector_class
     use random, only : seq
 
     implicit none
     
+    !> photon class
     type :: photon
-    
-        type(vector)  :: pos                          ! position
-        real(kind=wp) :: nxp, nyp, nzp                ! direction vectors
-        real(kind=wp) :: sint, cost, sinp, cosp, phi  ! direction cosines
-        real(kind=wp) :: wavelength, phase            ! Only used if tracking the phase
-        real(kind=wp) :: fact, energy                 ! Only used if tracking the phase also
-        integer       :: xcell, ycell, zcell          ! grid cell position
-        logical       :: tflag                        ! Is photon dead?
-        integer       :: layer                        ! id of sdf the packet is inside
-        integer       :: id                           ! thread running packet
-        integer       :: cnts, bounces                ! number of sdf evals.
+        !> postion of photon packet in cm. (0,0,0) is the center of the grid.
+        type(vector)  :: pos
+        !> direction vectors
+        real(kind=wp) :: nxp, nyp, nzp
+        !> direction cosines
+        real(kind=wp) :: sint, cost, sinp, cosp, phi
+        !> Wavelength of the packet
+        real(kind=wp) :: wavelength
+        !> Current phase of the packet
+        real(kind=wp) :: phase
+        !> \[\frac{2\pi}{\lambda}\]. Used to save computational time
+        real(kind=wp) :: fact
+        !> Energy of the packet. TODO
+        real(kind=wp) :: energy
+        !> grid cell position 
+        integer       :: xcell, ycell, zcell
+        !> photon alive flag
+        logical       :: tflag
+        !> ID of the SDF the packet is in
+        integer       :: layer
+        !> Thread ID of the packet
+        integer       :: id
+        !> Debug data. Number of SDF evals
+        integer       :: cnts, bounces
+        !> used if photon packet weights are used
         real(kind=wp) :: weight, step!, L
-
+        !> emission routine
         procedure(generic_emit), pointer :: emit => null()
         contains
+            !> scattering routine
             procedure :: scatter => scatter
     end type photon
 
     interface photon
+        !> assign the emission function to the photon object
         module procedure init_source
+        !> intialise the photon class
         module procedure init_photon
     end interface photon
 
@@ -45,6 +63,7 @@ module photonMod
         end subroutine generic_emit
     end interface
 
+    !> used to save some computation time
     type(photon) :: photon_origin
 
     private
@@ -66,7 +85,8 @@ module photonMod
         end subroutine set_photon
 
         type(photon) function init_photon(val)
-
+        !! set up all the variables in the photon object
+            !> value to assing to variables
             real(kind=wp), intent(in) :: val
 
             init_photon%pos = vector(val, val, val)
@@ -95,7 +115,8 @@ module photonMod
         end function init_photon
 
         type(photon) function init_source(choice)
-
+        !! Bind emission function to photon object
+            !> Name of light source to use
             character(*), intent(IN) :: choice
 
             if(choice == "uniform")then
@@ -174,7 +195,7 @@ module photonMod
         end subroutine slm
 
         subroutine circular(this, spectrum, dict, seqs)
-        ! circular source
+        !! circular source
 
             use sim_state_mod, only : state
             use random,        only : ran2, seq
@@ -250,7 +271,7 @@ module photonMod
 
 
         subroutine point(this, spectrum, dict, seqs)
-        !isotropic point source
+        !! isotropic point source
 
             use sim_state_mod, only : state
             use random,        only : ran2, seq
@@ -357,7 +378,8 @@ module photonMod
 
 
         subroutine uniform(this, spectrum, dict, seqs)
-        !uniformly illuminate a surface of the simulation media
+        !! uniformly illuminate a surface of the simulation media
+
             use random,        only : ranu, ran2, randint, seq
             use sim_state_mod, only : state
             use tomlf,         only : toml_table, get_value
@@ -423,6 +445,7 @@ module photonMod
 
 
         subroutine pencil(this, spectrum, dict, seqs)
+        !! pencil beam source
 
             use random,        only : ranu, seq
             use sim_state_mod, only : state
@@ -465,8 +488,8 @@ module photonMod
         end subroutine pencil
 
         subroutine dslit(this, spectrum, dict, seqs)
-        !sample from double slit to produce diff pattern
-        !todo add in user defined slit widths
+        !!sample from double slit to produce diff pattern
+        ! todo add in user defined slit widths
         ! add correct normalisation
             use random,        only : ranu, ran2, randint, seq
             use sim_state_mod, only : state
@@ -535,7 +558,7 @@ module photonMod
         end subroutine dslit
 
         subroutine aperture(this, spectrum, dict, seqs)
-            !sample from square aperture to produce diff pattern
+            !! sample from square aperture to produce diff pattern
             !add user defined apwid and F
             ! add correct normalisation
             use random,        only : ranu, ran2, randint, seq
@@ -603,7 +626,7 @@ module photonMod
         end subroutine aperture
         
         subroutine annulus(this, spectrum, dict, seqs)
-
+            !! annular source
             use constants,     only : TWOPI 
             use utils,         only : deg2rad
             use tomlf,         only : toml_table, get_value
@@ -671,14 +694,19 @@ module photonMod
         end subroutine annulus
 
         subroutine scatter(this, hgg, g2, dects)
-        ! taken from mcxyz https://omlc.org/software/mc/mcxyz/index.html
+            !! Scattering routine. Implments both isotropic and henyey-greenstein scattering
+            !! taken from mcxyz https://omlc.org/software/mc/mcxyz/index.html
 
             use constants, only : PI, TWOPI, wp
             use random,    only : ran2
             use detector_mod, only : dect_array
 
             class(photon), intent(inout) :: this
-            real(kind=wp), intent(in)    :: hgg, g2
+            !> g factor
+            real(kind=wp), intent(in)    :: hgg
+            !> g factor squared
+            real(kind=wp), intent(in)    :: g2
+            !> array of detectors. Only used if biased scattering is enabled.
             type(dect_array), optional, intent(in) :: dects(:)
 
             real(kind=wp) :: temp, uxx, uyy, uzz, a, p
