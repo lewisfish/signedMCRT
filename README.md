@@ -19,7 +19,7 @@ Code prerequisites: Fortran 2018 compliant complier e.g gfortran-9+ or intel one
 Only tested on Linux and Mac. Unlikely to run on Windows without some changes.
 
 To run the code you can use:
-  - The [Fortran package manager](https://fpm.fortran-lang.org/en/index.html) by running; "fpm run" for single core uage
+  - The [Fortran package manager](https://fpm.fortran-lang.org/) by running; "fpm run" for single core uage
   or "fpm @runmp" for multicore usage.
 
 See [this](docs/main.md) for more detailed instructions and details on the code and build systems used.
