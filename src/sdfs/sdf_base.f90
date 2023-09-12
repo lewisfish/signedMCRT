@@ -1,9 +1,10 @@
-!   Module provides signed distance functions (SDFs) for various shapes 
-!   and some operations to modify them
-!   All SDF functions are adapted from Inigo Quilex exhaustive list at:
-!   https://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm!
-!   API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in-fortran/4402/2
 module sdf_baseMod
+    !! This module defines the signed distance function (SDF) abstract type, sdf_base type, and model type.
+    !! The SDF abstract type defines the optical properties of an SDF (mus, mua, kappa, albedo, hgg, g2,and n), as well as a transform (4x4 matrix), 
+    !! and the layer ID code of the SDF. The SDF abstract type also provides an abstract interface (evaluate) which each inheriting function must implement.
+    !! This evaluate function is the heart of the SDF implementation. Each individual evaluate is the direct implementation of that SDF, e.g. that function defines the mathematical SDF. 
+    !! For more information on SDFs, check out Inigo Quilez's [website](https://iquilezles.org/articles/) from which most of the below SDFs and transforms have been taken.
+    !! API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in-fortran/4402/2
 
     use constants,         only : wp
     use opticalProperties, only : opticalProp_t

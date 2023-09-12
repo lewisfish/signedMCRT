@@ -1,4 +1,5 @@
 module kernels
+!! Contains the main program and scattering loop. Calls all other routine to setup, run and break down the simulation.
 
     implicit none
     

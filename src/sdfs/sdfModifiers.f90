@@ -1,5 +1,18 @@
 module sdfModifiers
-    
+!! This module defines transforms that can be applied to each SDF:
+!! - Union
+!! - Intersection
+!! - Subtraction
+!! - Displacement
+!! - Bend
+!! - Twist
+!! - Elongate
+!! - Repeat
+!! - Extrude
+!! - Revolution
+!! - Onion
+!! - Translate
+
     use constants,   only : wp
     use sdf_baseMod, only : sdf_base, primitive
     use sdfHelpers,  only : identity

@@ -1,5 +1,24 @@
 module sdfs
     
+    !! This module defines the signed distance function (SDF) abstract type and all types that inherit from it.
+    !! The SDF abstract type defines the optical properties of an SDF (mus, mua, kappa, albedo, hgg, g2,and n), as well as a transform (4x4 matrix), and the layer ID code of the SDF.
+    !! The SDF abstract type also provides an abstract interface (evaluate) which each inheriting function must implement. This evaluate function is the heart of the SDF implementation.
+    !! Each individual evaluate is the direct implementation of that SDF, e.g. that function defines the mathematical SDF.
+    !! For more information on SDFs, check out Inigo Quilez's [website](https://iquilezles.org/articles/) from which most of the below SDFs and transforms have been taken.
+    
+    !! - cylinder
+    !! - sphere
+    !! - box
+    !! - torus
+    !! - cone
+    !! - triprism (triangular prism)
+    !! - capsule
+    !! - plane
+    !! - segment
+    !! - egg
+    
+    !! **This is the module the user should import to other module not sdf_base!**
+
     use constants,         only : wp
     use opticalProperties, only : opticalProp_t
     use sdf_baseMod,       only : sdf, sdf_base, model, calcNormal, render
