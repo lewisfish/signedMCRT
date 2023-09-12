@@ -1,4 +1,7 @@
 module inttau2
+!! inttau2 is the heart of the MCRT simulation. It moves the photons though the simulated media.
+!! tauint2 is the only public function here and is the main function that moves the photon.
+!! Changes should only be made here if bugs are discovered or new methods of tracking photons (i.e phase tracking) or moving photons (i.e new geometry method) is needed.
 
     use constants, only : wp
 

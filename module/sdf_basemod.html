@@ -227,7 +227,12 @@
     </div>
 
     <div class="col-md-9" id='text'>
-      
+      <p>This module defines the signed distance function (SDF) abstract type, sdf_base type, and model type.
+The SDF abstract type defines the optical properties of an SDF (mus, mua, kappa, albedo, hgg, g2,and n), as well as a transform (4x4 matrix), 
+and the layer ID code of the SDF. The SDF abstract type also provides an abstract interface (evaluate) which each inheriting function must implement.
+This evaluate function is the heart of the SDF implementation. Each individual evaluate is the direct implementation of that SDF, e.g. that function defines the mathematical SDF. 
+For more information on SDFs, check out Inigo Quilez's <a href="https://iquilezles.org/articles/">website</a> from which most of the below SDFs and transforms have been taken.
+API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in-fortran/4402/2</p>
 <br>          <div class="panel panel-default">
       <div class="panel-heading">
         <h3 class="panel-title">Uses</h3>
@@ -236,9 +241,9 @@
           <li class="list-group-item">
             <ul class="list-inline">
                 <li><a href='../module/opticalproperties.html'>opticalProperties</a></li>
-                <li><a href='../module/vector_class.html'>vector_class</a></li>
                 <li><a href='../module/constants.html'>constants</a></li>
                 <li><a href='../module/sdfhelpers.html'>sdfHelpers</a></li>
+                <li><a href='../module/vector_class.html'>vector_class</a></li>
             </ul>
           </li>
       </ul>

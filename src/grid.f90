@@ -1,5 +1,11 @@
 module gridMod
-    
+    !! This module defines the cartesian grid type (cart_grid) and associated routines.
+
+    !! The cart_grid type contains information related to the grid used to record the fluence. This includes the number of voxels in each cardinal direction (nxg, nyg, nzg), the **half** size of the grid in each direction (xmax, ymax, zmax), and the locations of the voxels walls in each direction (xface, yface, zface).
+    !! The type-bound function get_voxel takes a position (vector) and returns the voxel the position falls in. 
+    !! 
+    !! Init_grid initialises a cart_grid instance.
+
     use constants, only : wp
 
     implicit none

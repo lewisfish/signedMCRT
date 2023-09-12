@@ -222,7 +222,24 @@
     </div>
 
     <div class="col-md-9" id='text'>
-      
+      <p>This module defines the signed distance function (SDF) abstract type and all types that inherit from it.
+The SDF abstract type defines the optical properties of an SDF (mus, mua, kappa, albedo, hgg, g2,and n), as well as a transform (4x4 matrix), and the layer ID code of the SDF.
+The SDF abstract type also provides an abstract interface (evaluate) which each inheriting function must implement. This evaluate function is the heart of the SDF implementation.
+Each individual evaluate is the direct implementation of that SDF, e.g. that function defines the mathematical SDF.
+For more information on SDFs, check out Inigo Quilez's <a href="https://iquilezles.org/articles/">website</a> from which most of the below SDFs and transforms have been taken.</p>
+<ul>
+<li>cylinder</li>
+<li>sphere</li>
+<li>box</li>
+<li>torus</li>
+<li>cone</li>
+<li>triprism (triangular prism)</li>
+<li>capsule</li>
+<li>plane</li>
+<li>segment</li>
+<li>egg</li>
+</ul>
+<p><strong>This is the module the user should import to other module not sdf_base!</strong></p>
 <br>          <div class="panel panel-default">
       <div class="panel-heading">
         <h3 class="panel-title">Uses</h3>
@@ -230,11 +247,11 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='../module/opticalproperties.html'>opticalProperties</a></li>
-                <li><a href='../module/sdf_basemod.html'>sdf_baseMod</a></li>
                 <li><a href='../module/constants.html'>constants</a></li>
                 <li><a href='../module/sdfhelpers.html'>sdfHelpers</a></li>
                 <li><a href='../module/vector_class.html'>vector_class</a></li>
+                <li><a href='../module/opticalproperties.html'>opticalProperties</a></li>
+                <li><a href='../module/sdf_basemod.html'>sdf_baseMod</a></li>
             </ul>
           </li>
       </ul>

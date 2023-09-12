@@ -1,4 +1,13 @@
 module geometry
+!!    Defines a set of functions for intersecting a line and a surface.
+!!
+!!    - Circle
+!!    - Plane
+!!    - Cone
+!!    - Cylinder
+!!    - Ellipse
+!!    - Sphere
+
 
     use vector_class, only : vector
     use constants,    only : wp

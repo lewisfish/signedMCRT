@@ -194,7 +194,11 @@
     </div>
 
     <div class="col-md-9" id='text'>
-      <p>module provides output routines in raw binary and .nrrd formats</p>
+      <p>This module defines all functions that write simulation data to the disk or pre-process data before writing.
+normalise_fluence. Normalises fluence by number of photons run and size of each voxel. <strong>!Does not normalise by power!</strong>
+write_fluence. Write out fluence in either raw or nrrd format. Default is nrrd.
+write_detected_photons. Write out photons detected by detectors.</p>
+<p>Changes should only be made here if there is a bug or new data types need to be written to disk (phase information) or new file format is needed.</p>
 <br>          <div class="panel panel-default">
       <div class="panel-heading">
         <h3 class="panel-title">Uses</h3>

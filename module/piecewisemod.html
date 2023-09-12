@@ -224,7 +224,21 @@
     </div>
 
     <div class="col-md-9" id='text'>
-      
+      <p>This file contains the piecewise abstract type, for sampling from constants, 1D or 2D arrays. Inspired by <a href="https://www.pbr-book.org/">PBRT</a> piecewise class.
+Currently, the following public types are defined:</p>
+<p>Constant. Used in the case where there is only one value.
+ 1D. Used in the case where there is a spectrum
+ 2D. Used in the case where SLM or other image based source types are needed.</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">The</span> <span class="nv">piecewise</span> <span class="nv">type</span> <span class="nv">ensures</span> <span class="nv">that</span> <span class="nv">there</span> <span class="nv">is</span> <span class="nv">a</span> <span class="nv">method</span> <span class="ss">(</span><span class="nv">sample</span><span class="ss">)</span> <span class="nv">that</span> <span class="nv">can</span> <span class="nv">be</span> <span class="nv">called</span> <span class="nv">on</span> <span class="nv">all</span> <span class="nv">inherited</span> <span class="nv">types</span>, <span class="nv">e</span>.<span class="nv">g</span>
+
+<span class="k">call</span> <span class="nl">2Dimage</span><span class="o">%</span><span class="nv">p</span><span class="o">%</span><span class="nv">sample</span><span class="ss">(</span><span class="nv">x</span>, <span class="nv">y</span><span class="ss">)</span>
+
+<span class="nv">will</span> <span class="k">return</span> <span class="nv">a</span> <span class="nv">position</span> <span class="ss">(</span><span class="nv">x</span>,<span class="nv">y</span><span class="ss">)</span> <span class="nv">from</span> <span class="nv">where</span> <span class="nv">to</span> <span class="nv">release</span> <span class="nv">a</span> <span class="nv">photon</span>.
+
+<span class="nv">This</span> <span class="nv">class</span> <span class="nv">can</span> <span class="nv">be</span> <span class="nv">used</span> <span class="nv">to</span> <span class="nv">have</span> <span class="nv">multi</span><span class="o">-</span><span class="nv">spectral</span> <span class="nv">or</span> <span class="nv">single</span> <span class="nv">valued</span> <span class="nv">wavelength</span>, <span class="nv">or</span> <span class="nv">used</span> <span class="nv">as</span> <span class="nv">a</span> <span class="mi">2</span><span class="nv">D</span> <span class="nv">image</span> <span class="nv">input</span> <span class="nv">source</span> <span class="nv">i</span>.<span class="nv">e</span> <span class="nv">SLMs</span>.
+</code></pre></div>
+
+<p>NOTE: optical properties are not currently adjusted on wavelength change.</p>
 <br>          <div class="panel panel-default">
       <div class="panel-heading">
         <h3 class="panel-title">Uses</h3>
@@ -232,8 +246,8 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='<a href="https://gcc.gnu.org/onlinedocs/gfortran/ISO_005fFORTRAN_005fENV.html">iso_fortran_env</a>'>iso_fortran_env</a></li>
                 <li><a href='../module/constants.html'>constants</a></li>
+                <li><a href='<a href="https://gcc.gnu.org/onlinedocs/gfortran/ISO_005fFORTRAN_005fENV.html">iso_fortran_env</a>'>iso_fortran_env</a></li>
             </ul>
           </li>
       </ul>

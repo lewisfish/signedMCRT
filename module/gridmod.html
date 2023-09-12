@@ -186,7 +186,11 @@
     </div>
 
     <div class="col-md-9" id='text'>
-      <p>Grid class</p>
+      <p>This module defines the cartesian grid type (cart_grid) and associated routines.</p>
+<p>The cart_grid type contains information related to the grid used to record the fluence. This includes the number of voxels in each cardinal direction (nxg, nyg, nzg), the <strong>half</strong> size of the grid in each direction (xmax, ymax, zmax), and the locations of the voxels walls in each direction (xface, yface, zface).
+The type-bound function get_voxel takes a position (vector) and returns the voxel the position falls in. </p>
+<p>Init_grid initialises a cart_grid instance.</p>
+<p>Grid class</p>
 <br>          <div class="panel panel-default">
       <div class="panel-heading">
         <h3 class="panel-title">Uses</h3>
