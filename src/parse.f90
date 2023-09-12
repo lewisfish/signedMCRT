@@ -1,5 +1,6 @@
 module parse_mod
-
+!! Module contains all routines related to parsing the input toml config files.
+!! See [config](../|page|/config.html) for details of toml input file.
     use tomlf
     use constants, only : wp
     use vector_class
@@ -12,15 +13,20 @@ module parse_mod
     contains
 
     subroutine parse_params(filename, packet, dects, spectrum, dict)
-    
+        !! entry point for parsing toml file
         use photonmod
         use detector_mod, only : dect_array
         use piecewiseMod
-    
+        
+        !> filename of input toml file
         character(*),      intent(IN)    :: filename
+        !> dictionary that stores potential metadata to be saved with simulation output
         type(toml_table),  intent(INOUT) :: dict
+        !> some input options set up data in the photon class
         type(photon),      intent(OUT)   :: packet
+        !> detector array which is setup during parsing
         type(dect_array), allocatable, intent(out) :: dects(:)
+        !> spectrum type which is set up during parsing
         type(spectrum_t), intent(out) :: spectrum
 
         type(toml_table), allocatable :: table
@@ -43,6 +49,7 @@ module parse_mod
     end subroutine parse_params
     
     subroutine parse_detectors(table, dects, context)
+        !! parse the detectors
 
         use detector_mod
         use sim_state_mod, only : state
@@ -309,8 +316,8 @@ module parse_mod
     end subroutine parse_spectrum
 
     subroutine parse_source(table, packet, dict, spectrum, context)
-    ! Parse source table
-    ! any updates here MUST be reflected in docs/config.md
+    !! Parse source table
+    !! any updates here MUST be reflected in docs/config.md
         use sim_state_mod, only : state
         use photonmod
         use piecewiseMod
@@ -503,7 +510,7 @@ module parse_mod
     end subroutine parse_source
 
     subroutine parse_grid(table, dict)
-
+    !! parse grid input data
         use sim_state_mod, only : state
         use gridMod,       only : init_grid 
         
@@ -534,7 +541,7 @@ module parse_mod
     end subroutine parse_grid
 
     subroutine parse_geometry(table, dict)
-
+        !! parse geometry information
         use sim_state_mod, only : state
                 
         type(toml_table),  intent(INOUT) :: table, dict
@@ -570,7 +577,7 @@ module parse_mod
     end subroutine parse_geometry
 
     subroutine parse_output(table, dict)
-
+        !! parse output file information
         use sim_state_mod, only : state
         
         type(toml_table),  intent(INOUT) :: table, dict
@@ -609,7 +616,7 @@ module parse_mod
     end subroutine parse_output
 
     subroutine parse_simulation(table)
-
+        !! parse simulation information
         use sim_state_mod, only : state
         
         type(toml_table), intent(INOUT) :: table
@@ -629,11 +636,11 @@ module parse_mod
     end subroutine parse_simulation
 
     type(vector) function get_vector(child, key, default, context)
-
-    type(toml_table),   pointer,  intent(in) :: child
-    character(*),                 intent(in) :: key
-    type(vector),       optional, intent(in) :: default
-    type(toml_context), optional, intent(in) :: context
+        !!vector helper function for parsing toml
+        type(toml_table),   pointer,  intent(in) :: child
+        character(*),                 intent(in) :: key
+        type(vector),       optional, intent(in) :: default
+        type(toml_context), optional, intent(in) :: context
 
         type(toml_array), pointer  :: arr => null()
         real(kind=wp) :: tmp(3)

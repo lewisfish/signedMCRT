@@ -24,8 +24,8 @@ fpp_extensions: fpp
 preprocess: true
 extra_mods: iso_fortran_env:https://gcc.gnu.org/onlinedocs/gfortran/ISO_005fFORTRAN_005fENV.html
 md_extensions: markdown.extensions.toc
-               markdown.extensions.tables
                markdown_checklist.extension
+               ford.md_striped_table
 page_dir: ./old_docs
 ---
 
@@ -36,6 +36,7 @@ Brief description
 -----------------
 
 A Monte Carlo radiation transfer code with signed distance functions representing the geometry, written in modern Fortran.
+
 
 License
 -------
