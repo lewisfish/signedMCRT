@@ -100,11 +100,41 @@
 <div class="toc">
 <ul>
 <li><a href="#brief-description">Brief description</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#references">References</a></li>
 <li><a href="#license">License</a></li>
 </ul>
 </div>
 <h2 id="brief-description">Brief description</h2>
-<p>A Monte Carlo radiation transfer code with signed distance functions representing the geometry, written in modern Fortran.</p>
+<p>A Monte Carlo radiation transfer code with signed distance functions representing the geometry, written in modern Fortran.
+This allows modelling of smooth surfaces with out the need to use triangle or similar meshes.</p>
+<h2 id="installation">Installation</h2>
+<p>To build signedMCRT, the only current method is using <a href="https://fpm.fortran-lang.org/">FPM</a>.
+FPM can be easily installed on any platform, and is simple to use to pull all dependencies, and build and compile signedMCRT.
+We also provide several commands via FPM response file (<a href="https://github.com/lewisfish/signedMCRT/blob/main/fpm.rsp">found here</a>), to enable the use of OpenMP, other compliers, and various debug modes.</p>
+<h2 id="dependencies">Dependencies</h2>
+<p>Below is the current list of dependencies:</p>
+<ul>
+<li><a href="https://github.com/fortran-lang/test-drive">test drive</a></li>
+<li><a href="https://github.com/lewisfish/fortran_tev_bindings">Fortran TEV Bindings</a></li>
+<li><a href="https://github.com/fortran-lang/stdlib">stdlib</a></li>
+<li><a href="https://github.com/lewisfish/fortran_stb_image">stb_image</a></li>
+<li><a href="https://github.com/lewisfish/fortran_utilities">Fortran Utilities</a></li>
+</ul>
+<p>Test drive is used to run all tests.
+Fortran <a href="https://github.com/Tom94/tev/">TEV</a> Bindings is used to interface with TEV, to show live slices of fluences as the simulation is run, which is handy for debugging purposes.
+Stdlib is a collection of routines purposed for inclusion within the Fortran standard. Stdlib is used here for it's loadtxt function to load arbitrary plain text data into arrays. More of stdlib may be used in future.
+Fortran_stb_Image is used to load images into arrays. Fortran_stb_image are the Fortran bindings for <a href="https://github.com/nothings/stb">stb_image</a>.
+Finally, Fortran Utilities is my personal collection of useful Fortran utilities such as mathematical functions, or progress bars.</p>
+<h2 id="references">References</h2>
+<p>SignedMCRT has so far been used in 2 papers:</p>
+<ul>
+<li>MESHLESS MONTE CARLO RADIATION TRANSFER METHOD FOR CURVED GEOMETRIES USING SIGNED DISTANCE FUNCTIONS
+L. McMillan, G. D. Bruce, K. Dholakia, <a href="https://doi.org/10.1117/1.JBO.27.8.083003">J. Biomed. Opt. 27(8), 083003 (2022)</a>/<a href="https://arxiv.org/abs/2112.08035">arXiv:2112.08035 (2021)</a></li>
+<li>TO FOCUS-MATCH OR NOT TO FOCUS-MATCH INVERSE SPATIALLY OFFSET RAMAN SPECTROSCOPY: A QUESTION OF LIGHT PENETRATION
+G.E. Shillito, L. McMillan, G. D. Bruce, K. Dholakia, <a href="https://doi.org/10.1364/OE.451496">Opt. Express 30, 8876 (2022)</a>/<a href="https://arxiv.org/abs/2112.08877">arXiv:2112.08877</a></li>
+</ul>
 <h2 id="license">License</h2>
 <p>The signedMCRT source code and related files and documentation are
 distributed under a permissive free software license (MIT).</p>
