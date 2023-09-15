@@ -1,5 +1,6 @@
 module setupMod
-
+!! This file sets up some simulations variables and assigns the geometry for the simulation.
+   
     use constants, only : wp
     use tomlf
 
@@ -11,16 +12,18 @@ module setupMod
     contains
 
         subroutine setup_simulation(sdfarray, dict)
-        ! Read in parameters
-        ! Setup up various simulation parameters and routines
-        !
+        !! Read in parameters
+        !! Setup up various simulation parameters and routines
+
             use sdfs,          only : sdf
             use setupGeometry
             use sim_state_mod, only : settings => state
             use vector_class
-
-            type(toml_table),  optional,  intent(INOUT) :: dict
-            type(sdf), allocatable, intent(OUT)   :: sdfarray(:)
+            
+            !> dictionary used to store metadata
+            type(toml_table), optional, intent(INOUT) :: dict
+            !> output array of geometry
+            type(sdf), allocatable,     intent(OUT)   :: sdfarray(:)
 
             !allocate and set arrays to 0
             call alloc_array(settings%grid%nxg, settings%grid%nyg, settings%grid%nzg)
@@ -50,10 +53,9 @@ module setupMod
 
         end subroutine setup_simulation
 
-        subroutine directory
-        !  subroutine defines vars to hold paths to various folders   
-        !   
-        !   
+        subroutine directory()
+        !!  subroutine defines vars to hold paths to various folders     
+  
             use constants, only : homedir, fileplace, resdir
 
             character(len=256) :: cwd
@@ -102,7 +104,7 @@ module setupMod
 
 
         subroutine create_directory(name, flag, appendname, newline)
-
+        !! create directories if they don't exist
             use constants, only : fileplace
 
             character(*),      intent(in) :: name, appendname
@@ -127,7 +129,7 @@ module setupMod
         end subroutine create_directory
 
         subroutine zarray
-
+        !! zero data arrays
             use iarray
 
             !sets all arrays to zer
@@ -143,11 +145,10 @@ module setupMod
 
 
         subroutine alloc_array(nxg, nyg, nzg)
-        !  subroutine allocates allocatable arrays
-        !   
-        !   
+        !!  subroutine allocates allocatable arrays  
+  
             use iarray
-
+            !> grid size
             integer, intent(IN) :: nxg, nyg, nzg
 
             allocate(phasor(nxg, nyg, nzg), phasorGLOBAL(nxg, nyg, nzg))
@@ -157,7 +158,7 @@ module setupMod
         end subroutine alloc_array
 
         subroutine dealloc_array()
-
+        !! deallocate data arrays
             use iarray
 
             deallocate(jmean)

@@ -165,16 +165,18 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
+                <li><a href='../module/setupgeometry.html'>setupGeometry</a></li>
                 <li><a href='../module/sdfs.html'>sdfs</a></li>
                 <li><a href='../module/sim_state_mod.html'>sim_state_mod</a></li>
                 <li><a href='../module/vector_class.html'>vector_class</a></li>
-                <li><a href='../module/setupgeometry.html'>setupGeometry</a></li>
             </ul>
           </li>
       </ul>
     </div>
 
 
+    <p>Read in parameters
+Setup up various simulation parameters and routines</p>
 
 
     <h3>Arguments</h3>
@@ -200,12 +202,12 @@
             <td>::</td>
             <td><strong>sdfarray</strong>(:)</td>
             <td>
-                
+                <p>output array of geometry</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dict~26"></span>
+              <span class="anchor" id="variable-dict~2"></span>
               type(toml_table),
             </td>
 <td>intent(inout),</td>
@@ -215,7 +217,7 @@
             <td>::</td>
             <td><strong>dict</strong></td>
             <td>
-                
+                <p>dictionary used to store metadata</p>
             </td>
         </tr>
     </tbody>
@@ -267,16 +269,18 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">        </span><span class="k">subroutine </span><span class="n">setup_simulation</span><span class="p">(</span><span class="n">sdfarray</span><span class="p">,</span><span class="w"> </span><span class="n">dict</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="c">! Read in parameters</span>
-<span class="w">        </span><span class="c">! Setup up various simulation parameters and routines</span>
-<span class="w">        </span><span class="c">!</span>
+<span class="w">        </span><span class="c">!! Read in parameters</span>
+<span class="w">        </span><span class="c">!! Setup up various simulation parameters and routines</span>
+
 <span class="w">            </span><span class="k">use </span><span class="n">sdfs</span><span class="p">,</span><span class="w">          </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">sdf</span><span class="w"></span>
 <span class="w">            </span><span class="k">use </span><span class="n">setupGeometry</span><span class="w"></span>
 <span class="w">            </span><span class="k">use </span><span class="n">sim_state_mod</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">settings</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">state</span><span class="w"></span>
 <span class="w">            </span><span class="k">use </span><span class="n">vector_class</span><span class="w"></span>
-
-<span class="w">            </span><span class="k">type</span><span class="p">(</span><span class="n">toml_table</span><span class="p">),</span><span class="w">  </span><span class="k">optional</span><span class="p">,</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">INOUT</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dict</span><span class="w"></span>
-<span class="w">            </span><span class="k">type</span><span class="p">(</span><span class="n">sdf</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">OUT</span><span class="p">)</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">sdfarray</span><span class="p">(:)</span><span class="w"></span>
+<span class="w">            </span>
+<span class="w">            </span><span class="c">!&gt; dictionary used to store metadata</span>
+<span class="w">            </span><span class="k">type</span><span class="p">(</span><span class="n">toml_table</span><span class="p">),</span><span class="w"> </span><span class="k">optional</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">INOUT</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dict</span><span class="w"></span>
+<span class="w">            </span><span class="c">!&gt; output array of geometry</span>
+<span class="w">            </span><span class="k">type</span><span class="p">(</span><span class="n">sdf</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w">     </span><span class="k">intent</span><span class="p">(</span><span class="n">OUT</span><span class="p">)</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">sdfarray</span><span class="p">(:)</span><span class="w"></span>
 
 <span class="w">            </span><span class="c">!allocate and set arrays to 0</span>
 <span class="w">            </span><span class="k">call </span><span class="n">alloc_array</span><span class="p">(</span><span class="n">settings</span><span class="p">%</span><span class="n">grid</span><span class="p">%</span><span class="n">nxg</span><span class="p">,</span><span class="w"> </span><span class="n">settings</span><span class="p">%</span><span class="n">grid</span><span class="p">%</span><span class="n">nyg</span><span class="p">,</span><span class="w"> </span><span class="n">settings</span><span class="p">%</span><span class="n">grid</span><span class="p">%</span><span class="n">nzg</span><span class="p">)</span><span class="w"></span>

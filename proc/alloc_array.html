@@ -172,6 +172,7 @@
     </div>
 
 
+    <p>subroutine allocates allocatable arrays  </p>
 
 
     <h3>Arguments</h3>
@@ -197,7 +198,7 @@
             <td>::</td>
             <td><strong>nxg</strong></td>
             <td>
-                
+                <p>grid size</p>
             </td>
         </tr>
         <tr>
@@ -212,7 +213,7 @@
             <td>::</td>
             <td><strong>nyg</strong></td>
             <td>
-                
+                <p>grid size</p>
             </td>
         </tr>
         <tr>
@@ -227,7 +228,7 @@
             <td>::</td>
             <td><strong>nzg</strong></td>
             <td>
-                
+                <p>grid size</p>
             </td>
         </tr>
     </tbody>
@@ -279,11 +280,10 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">        </span><span class="k">subroutine </span><span class="n">alloc_array</span><span class="p">(</span><span class="n">nxg</span><span class="p">,</span><span class="w"> </span><span class="n">nyg</span><span class="p">,</span><span class="w"> </span><span class="n">nzg</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="c">!  subroutine allocates allocatable arrays</span>
-<span class="w">        </span><span class="c">!   </span>
-<span class="w">        </span><span class="c">!   </span>
+<span class="w">        </span><span class="c">!!  subroutine allocates allocatable arrays  </span>
+<span class="w">  </span>
 <span class="w">            </span><span class="k">use </span><span class="n">iarray</span><span class="w"></span>
-
+<span class="w">            </span><span class="c">!&gt; grid size</span>
 <span class="w">            </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nxg</span><span class="p">,</span><span class="w"> </span><span class="n">nyg</span><span class="p">,</span><span class="w"> </span><span class="n">nzg</span><span class="w"></span>
 
 <span class="w">            </span><span class="k">allocate</span><span class="p">(</span><span class="n">phasor</span><span class="p">(</span><span class="n">nxg</span><span class="p">,</span><span class="w"> </span><span class="n">nyg</span><span class="p">,</span><span class="w"> </span><span class="n">nzg</span><span class="p">),</span><span class="w"> </span><span class="n">phasorGLOBAL</span><span class="p">(</span><span class="n">nxg</span><span class="p">,</span><span class="w"> </span><span class="n">nyg</span><span class="p">,</span><span class="w"> </span><span class="n">nzg</span><span class="p">))</span><span class="w"></span>

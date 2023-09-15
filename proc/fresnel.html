@@ -96,7 +96,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 0.5% of total for procedures.">24 statements</a>
+               title=" 0.6% of total for procedures.">25 statements</a>
           </li>
 
             <li id="source-file">
@@ -172,6 +172,7 @@
     </div>
 
 
+    <p>calculates the fresnel coefficents</p>
 
 
     <h3>Arguments</h3>
@@ -197,7 +198,7 @@
             <td>::</td>
             <td><strong>I</strong></td>
             <td>
-                
+                <p>incident vector</p>
             </td>
         </tr>
         <tr>
@@ -212,7 +213,7 @@
             <td>::</td>
             <td><strong>N</strong></td>
             <td>
-                
+                <p>Normal vector</p>
             </td>
         </tr>
         <tr>
@@ -227,7 +228,7 @@
             <td>::</td>
             <td><strong>n1</strong></td>
             <td>
-                
+                <p>reffractive indicies</p>
             </td>
         </tr>
         <tr>
@@ -242,7 +243,7 @@
             <td>::</td>
             <td><strong>n2</strong></td>
             <td>
-                
+                <p>reffractive indicies</p>
             </td>
         </tr>
     </tbody>
@@ -301,13 +302,16 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">function </span><span class="n">fresnel</span><span class="p">(</span><span class="n">I</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">n1</span><span class="p">,</span><span class="w"> </span><span class="n">n2</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="w"> </span><span class="p">(</span><span class="n">tir</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="c">!   calculates the fresnel coefficents</span>
-<span class="w">    </span><span class="c">!</span>
-<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">!! calculates the fresnel coefficents</span>
+
 <span class="w">        </span><span class="k">use </span><span class="n">ieee_arithmetic</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ieee_is_nan</span><span class="w"></span>
 
+<span class="w">        </span><span class="c">!&gt; reffractive indicies</span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">n1</span><span class="p">,</span><span class="w"> </span><span class="n">n2</span><span class="w"></span>
-<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">I</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; incident vector</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">I</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Normal vector</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">N</span><span class="w"></span>
 
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">costt</span><span class="p">,</span><span class="w"> </span><span class="n">sintt</span><span class="p">,</span><span class="w"> </span><span class="n">sint2</span><span class="p">,</span><span class="w"> </span><span class="n">cost2</span><span class="p">,</span><span class="w"> </span><span class="n">tir</span><span class="p">,</span><span class="w"> </span><span class="n">f1</span><span class="p">,</span><span class="w"> </span><span class="n">f2</span><span class="w"></span>
 

@@ -96,7 +96,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 0.3% of total for procedures.">15 statements</a>
+               title=" 0.4% of total for procedures.">17 statements</a>
           </li>
 
             <li id="source-file">
@@ -160,6 +160,7 @@
 </h2>
     
 
+    <p>sample a 2D Guassian distribution</p>
 
 
     <h3>Arguments</h3>
@@ -175,7 +176,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~7"></span>
+              <span class="anchor" id="variable-x~2"></span>
               real(kind=wp),
             </td>
 <td>intent(out)</td>
@@ -185,12 +186,12 @@
             <td>::</td>
             <td><strong>x</strong></td>
             <td>
-                
+                <p>first value to return</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-y~7"></span>
+              <span class="anchor" id="variable-y~2"></span>
               real(kind=wp),
             </td>
 <td>intent(out)</td>
@@ -200,7 +201,7 @@
             <td>::</td>
             <td><strong>y</strong></td>
             <td>
-                
+                <p>2nd value to return</p>
             </td>
         </tr>
         <tr>
@@ -215,7 +216,7 @@
             <td>::</td>
             <td><strong>avg</strong></td>
             <td>
-                
+                <p>mean of the gaussian to sample from</p>
             </td>
         </tr>
         <tr>
@@ -230,7 +231,8 @@
             <td>::</td>
             <td><strong>sigma</strong></td>
             <td>
-                
+                <p>
+<script type="math/tex">\sigma</script> of the guassian to sample from.</p>
             </td>
         </tr>
     </tbody>
@@ -282,10 +284,16 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">        </span><span class="k">subroutine </span><span class="n">rang</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">avg</span><span class="p">,</span><span class="w"> </span><span class="n">sigma</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="c">! sample a 2D Guassian distribution</span>
+<span class="w">        </span><span class="c">!! sample a 2D Guassian distribution</span>
 
-<span class="w">            </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">avg</span><span class="p">,</span><span class="w"> </span><span class="n">sigma</span><span class="w"></span>
-<span class="w">            </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">OUT</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="w"></span>
+<span class="w">            </span><span class="c">!&gt; mean of the gaussian to sample from</span>
+<span class="w">            </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">avg</span><span class="w"></span>
+<span class="w">            </span><span class="c">!&gt; \(\sigma\) of the guassian to sample from.</span>
+<span class="w">            </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">sigma</span><span class="w"></span>
+<span class="w">            </span><span class="c">!&gt; first value to return</span>
+<span class="w">            </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">OUT</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">x</span><span class="w"></span>
+<span class="w">            </span><span class="c">!&gt; 2nd value to return</span>
+<span class="w">            </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">OUT</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">y</span><span class="w">            </span>
 <span class="w">            </span>
 <span class="w">            </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">tmp</span><span class="w"></span>
 

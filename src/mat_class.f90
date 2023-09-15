@@ -1,5 +1,5 @@
 module mat_class
-    !! Matrix class module. Defines a matrix type (4x4 matrix) and associated operations on matrices and other types.
+!! Matrix class module. Defines a matrix type (4x4 matrix) and associated operations on matrices and other types.
 
     use constants, only : wp
     use vec4_class

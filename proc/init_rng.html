@@ -160,6 +160,7 @@
 </h2>
     
 
+    <p>initiate RNG state with reproducible state</p>
 
 
     <h3>Arguments</h3>
@@ -185,7 +186,7 @@
             <td>::</td>
             <td><strong>input_seed</strong>(:)</td>
             <td>
-                
+                <p>input seed</p>
             </td>
         </tr>
         <tr>
@@ -200,7 +201,7 @@
             <td>::</td>
             <td><strong>fwd</strong></td>
             <td>
-                
+                <p>boolean that if True runs the generator for 100 steps before returning</p>
             </td>
         </tr>
     </tbody>
@@ -252,9 +253,10 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">        </span><span class="k">subroutine </span><span class="n">init_rng</span><span class="p">(</span><span class="n">input_seed</span><span class="p">,</span><span class="w"> </span><span class="n">fwd</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="c">! initiate RNG state with reproducible state</span>
-<span class="w">            </span>
+<span class="w">        </span><span class="c">!! initiate RNG state with reproducible state</span>
+<span class="w">            </span><span class="c">!&gt; input seed</span>
 <span class="w">            </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">optional</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">input_seed</span><span class="p">(:)</span><span class="w"></span>
+<span class="w">            </span><span class="c">!&gt; boolean that if True runs the generator for 100 steps before returning</span>
 <span class="w">            </span><span class="kt">logical</span><span class="p">,</span><span class="w"> </span><span class="k">optional</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">fwd</span><span class="w"></span>
 
 <span class="w">            </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">seed</span><span class="p">(:)</span><span class="w"></span>

@@ -96,7 +96,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p> 5.8% of total for derived types.</p>Including implementation: 153 statements, 10.7% of total for derived types.">23 statements</a>
+               title="<p> 5.7% of total for derived types.</p>Including implementation: 153 statements, 10.6% of total for derived types.">23 statements</a>
           </li>
 
             <li id="source-file">
@@ -133,9 +133,9 @@
       </div>
       <div id="vars-0" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/vec4.html#variable-p~2">p</a>
-            <a class="list-group-item" href="../type/vec4.html#variable-x~2">x</a>
-            <a class="list-group-item" href="../type/vec4.html#variable-y~2">y</a>
+            <a class="list-group-item" href="../type/vec4.html#variable-p">p</a>
+            <a class="list-group-item" href="../type/vec4.html#variable-x~3">x</a>
+            <a class="list-group-item" href="../type/vec4.html#variable-y~3">y</a>
             <a class="list-group-item" href="../type/vec4.html#variable-z~2">z</a>
         </div>
       </div>
@@ -214,7 +214,7 @@
     
     <div class="col-md-9" id='text'>
       <h2>type, public :: vec4</h2>
-    
+    <p>not fully implmented vec4 class</p>
     <br>
 
     <section class="visible-xs visible-sm hidden-md">
@@ -228,9 +228,9 @@
       </div>
       <div id="vars-1" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/vec4.html#variable-p~2">p</a>
-            <a class="list-group-item" href="../type/vec4.html#variable-x~2">x</a>
-            <a class="list-group-item" href="../type/vec4.html#variable-y~2">y</a>
+            <a class="list-group-item" href="../type/vec4.html#variable-p">p</a>
+            <a class="list-group-item" href="../type/vec4.html#variable-x~3">x</a>
+            <a class="list-group-item" href="../type/vec4.html#variable-y~3">y</a>
             <a class="list-group-item" href="../type/vec4.html#variable-z~2">z</a>
         </div>
       </div>
@@ -320,7 +320,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-p~2"></span>
+              <span class="anchor" id="variable-p"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -332,12 +332,12 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>vec4 components</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~2"></span>
+              <span class="anchor" id="variable-x~3"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -349,12 +349,12 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>vec4 components</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-y~2"></span>
+              <span class="anchor" id="variable-y~3"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -366,7 +366,7 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>vec4 components</p>
             </td>
         </tr>
         <tr>
@@ -383,7 +383,7 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>vec4 components</p>
             </td>
         </tr>
     </tbody>
@@ -2085,6 +2085,7 @@
     <section>
     <h3><span class="anchor" id="src"></span>Source Code</h3>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">type</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec4</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; vec4 components</span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="w"></span>
 <span class="w">        </span><span class="k">contains</span>
 

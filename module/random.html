@@ -96,7 +96,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 1.6% of total for modules and submodules.">84 statements</a>
+               title=" 1.7% of total for modules and submodules.">89 statements</a>
           </li>
 
             <li id="source-file">
@@ -189,14 +189,7 @@
     </div>
 
     <div class="col-md-9" id='text'>
-      <p>This module defines a set of functions that return random numbers in different distributions.</p>
-<ul>
-<li>ran2. Returns a single float uniformly in the range [0, 1)</li>
-<li>ranu. Return a single float uniformly in the range [a, b)</li>
-<li>randint. Returns a single integer uniformly in the range [a, b)</li>
-<li>rang. Returns a single float from a Gaussian distribution with mean <em>avg</em> and std <em>sigma</em>.</li>
-<li>init_rng. Seeds the internal random number generator with a reproducible seed.</li>
-</ul>
+      <p>module provides an interface to call random_numbers and various other random distributions=======    !!This module defines a set of functions that return random numbers in different distributions.    !!- ran2. Returns a single float uniformly in the range [0, 1)    !!- ranu. Return a single float uniformly in the range [a, b)    !!- randint. Returns a single integer uniformly in the range [a, b)    !!- rang. Returns a single float from a Gaussian distribution with mean <em>avg</em> and std <em>sigma</em>.    !!- init_rng. Seeds the internal random number generator with a reproducible seed.</p>
 <br>          <div class="panel panel-default">
       <div class="panel-heading">
         <h3 class="panel-title">Uses</h3>
@@ -297,7 +290,7 @@
       </h3>
     </div>
     <div class="panel-body">
-      
+      <p>Sequence type for quasi-monte carlo</p>
 
         <h4>Components</h4>
           <table class="table table-striped varlist">
@@ -421,7 +414,7 @@
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>wrapper for call random number</p>
 
   <h4>Arguments</h4>
     <em>None</em>
@@ -439,7 +432,7 @@
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>sample a random integer between [a, b]</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -464,7 +457,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>lower bound</p>
             </td>
         </tr>
         <tr>
@@ -479,7 +472,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>higher bound</p>
             </td>
         </tr>
     </tbody>
@@ -499,7 +492,7 @@
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>uniformly sample in range[a, b)</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -524,7 +517,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>lower bound</p>
             </td>
         </tr>
         <tr>
@@ -539,7 +532,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>upper bound</p>
             </td>
         </tr>
     </tbody>
@@ -564,7 +557,7 @@
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>initiate RNG state with reproducible state</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -589,7 +582,7 @@
             <td>::</td>
             <td><strong>input_seed</strong>(:)</td>
             <td>
-
+<p>input seed</p>
             </td>
         </tr>
         <tr>
@@ -604,7 +597,7 @@
             <td>::</td>
             <td><strong>fwd</strong></td>
             <td>
-
+<p>boolean that if True runs the generator for 100 steps before returning</p>
             </td>
         </tr>
     </tbody>
@@ -619,7 +612,7 @@
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>sample a 2D Guassian distribution</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -644,7 +637,7 @@
             <td>::</td>
             <td><strong>x</strong></td>
             <td>
-
+<p>first value to return</p>
             </td>
         </tr>
         <tr>
@@ -659,7 +652,7 @@
             <td>::</td>
             <td><strong>y</strong></td>
             <td>
-
+<p>2nd value to return</p>
             </td>
         </tr>
         <tr>
@@ -674,7 +667,7 @@
             <td>::</td>
             <td><strong>avg</strong></td>
             <td>
-
+<p>mean of the gaussian to sample from</p>
             </td>
         </tr>
         <tr>
@@ -689,7 +682,8 @@
             <td>::</td>
             <td><strong>sigma</strong></td>
             <td>
-
+<p>
+<script type="math/tex">\sigma</script> of the guassian to sample from.</p>
             </td>
         </tr>
     </tbody>

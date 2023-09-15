@@ -160,6 +160,7 @@
 </h2>
     
 
+    <p>get vector of refracted photon</p>
 
 
     <h3>Arguments</h3>
@@ -185,7 +186,7 @@
             <td>::</td>
             <td><strong>I</strong></td>
             <td>
-                
+                <p>incident vector</p>
             </td>
         </tr>
         <tr>
@@ -200,7 +201,7 @@
             <td>::</td>
             <td><strong>N</strong></td>
             <td>
-                
+                <p>normal vector</p>
             </td>
         </tr>
         <tr>
@@ -215,7 +216,9 @@
             <td>::</td>
             <td><strong>eta</strong></td>
             <td>
-                
+                <p>
+<script type="math/tex">\eta = \frac{n_1}{n_2}</script>
+</p>
             </td>
         </tr>
     </tbody>
@@ -267,12 +270,13 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">refract</span><span class="p">(</span><span class="n">I</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">eta</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="c">!   get vector of refracted photon</span>
-<span class="w">    </span><span class="c">!</span>
-<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">!! get vector of refracted photon</span>
 
+<span class="w">        </span><span class="c">!&gt; incident vector</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">INOUT</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">I</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; normal vector</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">N</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; \(\eta = \frac{n_1}{n_2}\)</span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">eta</span><span class="w"></span>
 
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">Ntmp</span><span class="w"></span>
