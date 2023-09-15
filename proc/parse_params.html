@@ -165,9 +165,9 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
+                <li><a href='../module/detectors.html'>detectors</a></li>
                 <li><a href='../module/photonmod.html'>photonMod</a></li>
                 <li><a href='../module/piecewisemod.html'>piecewiseMod</a></li>
-                <li><a href='../module/detector_mod.html'>detector_mod</a></li>
             </ul>
           </li>
       </ul>
@@ -313,8 +313,9 @@
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">parse_params</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="w"> </span><span class="n">packet</span><span class="p">,</span><span class="w"> </span><span class="n">dects</span><span class="p">,</span><span class="w"> </span><span class="n">spectrum</span><span class="p">,</span><span class="w"> </span><span class="n">dict</span><span class="p">)</span><span class="w"></span>
 <span class="w">        </span><span class="c">!! entry point for parsing toml file</span>
+
+<span class="w">        </span><span class="k">use </span><span class="n">detectors</span><span class="p">,</span><span class="w">   </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">dect_array</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">photonmod</span><span class="w"></span>
-<span class="w">        </span><span class="k">use </span><span class="n">detector_mod</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">dect_array</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">piecewiseMod</span><span class="w"></span>
 <span class="w">        </span>
 <span class="w">        </span><span class="c">!&gt; filename of input toml file</span>

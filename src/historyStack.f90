@@ -1,5 +1,6 @@
 module historyStack
-
+    !! Module contains the history stack type which stores the history of positions of a photon and th I/O routines
+    !! not fully implmented 
     use constants,  only : wp
     use vec4_class, only : vec4
 

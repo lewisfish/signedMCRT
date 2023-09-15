@@ -8,7 +8,7 @@
     <meta name="author" content="Lewis McMillan" >
     <link rel="icon" href="../favicon.png">
 
-    <title>opticalProperties &ndash; signedMCRT</title>
+    <title>detectors &ndash; signedMCRT</title>
 
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
@@ -84,7 +84,7 @@
 
     <div class="container">
   <div class="row">
-    <h1>opticalProperties
+    <h1>detectors
       <small>Module</small>
       
     </h1>
@@ -96,17 +96,17 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 2.5% of total for modules and submodules.">127 statements</a>
+               title=" 2.8% of total for modules and submodules.">146 statements</a>
           </li>
 
             <li id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/opticalProperties.f90"> Source File</a>
+              <a href="../src/detectors.f90"> Source File</a>
             </li>
         </ul>
         <ol class="breadcrumb in-well text-right">
-              <li><a href='../sourcefile/opticalproperties.f90.html'>opticalProperties.f90</a></li>
-          <li class="active">opticalProperties</li>
+              <li><a href='../sourcefile/detectors.f90.html'>detectors.f90</a></li>
+          <li class="active">detectors</li>
         </ol>
       </div>
     </div>
@@ -139,26 +139,14 @@
       </div>
       <div id="inters-0" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../module/opticalproperties.html#interface-mono">mono</a>
-            <a class="list-group-item" href="../module/opticalproperties.html#interface-opticalprop_t">opticalProp_t</a>
-            <a class="list-group-item" href="../module/opticalproperties.html#interface-spectral">spectral</a>
+            <a class="list-group-item" href="../module/detectors.html#interface-annulus_dect">annulus_dect</a>
+            <a class="list-group-item" href="../module/detectors.html#interface-camera">camera</a>
+            <a class="list-group-item" href="../module/detectors.html#interface-circle_dect">circle_dect</a>
         </div>
       </div>
     </div>
 
-      <div class="panel panel-primary">
-      <div class="panel-heading text-left">
-        <h3 class="panel-title">
-          <a data-toggle="collapse" href="#absints-0">Abstract Interfaces</a>
-        </h3>
-      </div>
-      <div id="absints-0" class="panel-collapse collapse">
-        <div class="list-group">
-            <a class="list-group-item" href="../module/opticalproperties.html#interface-updateinterface">updateInterface</a>
-        </div>
-      </div>
-    </div>
-
+  
       <div class="panel panel-primary">
       <div class="panel-heading text-left">
         <h3 class="panel-title">
@@ -167,10 +155,10 @@
       </div>
       <div id="types-0" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../module/opticalproperties.html#type-mono">mono</a>
-            <a class="list-group-item" href="../module/opticalproperties.html#type-opticalprop_base">opticalProp_base</a>
-            <a class="list-group-item" href="../module/opticalproperties.html#type-opticalprop_t">opticalProp_t</a>
-            <a class="list-group-item" href="../module/opticalproperties.html#type-spectral">spectral</a>
+            <a class="list-group-item" href="../module/detectors.html#type-annulus_dect">annulus_dect</a>
+            <a class="list-group-item" href="../module/detectors.html#type-camera">camera</a>
+            <a class="list-group-item" href="../module/detectors.html#type-circle_dect">circle_dect</a>
+            <a class="list-group-item" href="../module/detectors.html#type-dect_array">dect_array</a>
         </div>
       </div>
     </div>
@@ -183,29 +171,17 @@
       </div>
       <div id="funcs-0" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../module/opticalproperties.html#proc-init_mono">init_mono</a>
-            <a class="list-group-item" href="../module/opticalproperties.html#proc-init_spectral">init_spectral</a>
-            <a class="list-group-item" href="../module/opticalproperties.html#proc-opticaprop_new">opticaProp_new</a>
+            <a class="list-group-item" href="../module/detectors.html#proc-check_hit_annulus">check_hit_annulus</a>
+            <a class="list-group-item" href="../module/detectors.html#proc-check_hit_camera">check_hit_camera</a>
+            <a class="list-group-item" href="../module/detectors.html#proc-check_hit_circle">check_hit_circle</a>
+            <a class="list-group-item" href="../module/detectors.html#proc-init_annulus_dect">init_annulus_dect</a>
+            <a class="list-group-item" href="../module/detectors.html#proc-init_camera">init_camera</a>
+            <a class="list-group-item" href="../module/detectors.html#proc-init_circle_dect">init_circle_dect</a>
         </div>
       </div>
     </div>
 
-      <div class="panel panel-primary">
-      <div class="panel-heading text-left">
-        <h3 class="panel-title">
-          <a data-toggle="collapse" href="#subs-0">Subroutines</a>
-        </h3>
-      </div>
-      <div id="subs-0" class="panel-collapse collapse">
-        <div class="list-group">
-            <a class="list-group-item" href="../module/opticalproperties.html#proc-opticalprop_t_assign">opticalProp_t_assign</a>
-            <a class="list-group-item" href="../module/opticalproperties.html#proc-updatemono">updateMono</a>
-            <a class="list-group-item" href="../module/opticalproperties.html#proc-updatespectral">updateSpectral</a>
-            <a class="list-group-item" href="../module/opticalproperties.html#proc-update_opticalprop_t">update_opticalProp_t</a>
-        </div>
-      </div>
-    </div>
-
+  
   
   
   
@@ -219,8 +195,7 @@
     </div>
 
     <div class="col-md-9" id='text'>
-      <p>module implments the optical property abstract type and the types that inheirt from it
-abstract optica property type</p>
+      
 <br>          <div class="panel panel-default">
       <div class="panel-heading">
         <h3 class="panel-title">Uses</h3>
@@ -228,8 +203,9 @@ abstract optica property type</p>
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='../module/piecewisemod.html'>piecewiseMod</a></li>
+                <li><a href='../module/detector_mod.html'>detector_mod</a></li>
                 <li><a href='../module/constants.html'>constants</a></li>
+                <li><a href='../module/vector_class.html'>vector_class</a></li>
             </ul>
           </li>
       </ul>
@@ -256,26 +232,14 @@ abstract optica property type</p>
       </div>
       <div id="inters-1" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../module/opticalproperties.html#interface-mono">mono</a>
-            <a class="list-group-item" href="../module/opticalproperties.html#interface-opticalprop_t">opticalProp_t</a>
-            <a class="list-group-item" href="../module/opticalproperties.html#interface-spectral">spectral</a>
+            <a class="list-group-item" href="../module/detectors.html#interface-annulus_dect">annulus_dect</a>
+            <a class="list-group-item" href="../module/detectors.html#interface-camera">camera</a>
+            <a class="list-group-item" href="../module/detectors.html#interface-circle_dect">circle_dect</a>
         </div>
       </div>
     </div>
 
-      <div class="panel panel-primary">
-      <div class="panel-heading text-left">
-        <h3 class="panel-title">
-          <a data-toggle="collapse" href="#absints-1">Abstract Interfaces</a>
-        </h3>
-      </div>
-      <div id="absints-1" class="panel-collapse collapse">
-        <div class="list-group">
-            <a class="list-group-item" href="../module/opticalproperties.html#interface-updateinterface">updateInterface</a>
-        </div>
-      </div>
-    </div>
-
+  
       <div class="panel panel-primary">
       <div class="panel-heading text-left">
         <h3 class="panel-title">
@@ -284,10 +248,10 @@ abstract optica property type</p>
       </div>
       <div id="types-1" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../module/opticalproperties.html#type-mono">mono</a>
-            <a class="list-group-item" href="../module/opticalproperties.html#type-opticalprop_base">opticalProp_base</a>
-            <a class="list-group-item" href="../module/opticalproperties.html#type-opticalprop_t">opticalProp_t</a>
-            <a class="list-group-item" href="../module/opticalproperties.html#type-spectral">spectral</a>
+            <a class="list-group-item" href="../module/detectors.html#type-annulus_dect">annulus_dect</a>
+            <a class="list-group-item" href="../module/detectors.html#type-camera">camera</a>
+            <a class="list-group-item" href="../module/detectors.html#type-circle_dect">circle_dect</a>
+            <a class="list-group-item" href="../module/detectors.html#type-dect_array">dect_array</a>
         </div>
       </div>
     </div>
@@ -300,29 +264,17 @@ abstract optica property type</p>
       </div>
       <div id="funcs-1" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../module/opticalproperties.html#proc-init_mono">init_mono</a>
-            <a class="list-group-item" href="../module/opticalproperties.html#proc-init_spectral">init_spectral</a>
-            <a class="list-group-item" href="../module/opticalproperties.html#proc-opticaprop_new">opticaProp_new</a>
+            <a class="list-group-item" href="../module/detectors.html#proc-check_hit_annulus">check_hit_annulus</a>
+            <a class="list-group-item" href="../module/detectors.html#proc-check_hit_camera">check_hit_camera</a>
+            <a class="list-group-item" href="../module/detectors.html#proc-check_hit_circle">check_hit_circle</a>
+            <a class="list-group-item" href="../module/detectors.html#proc-init_annulus_dect">init_annulus_dect</a>
+            <a class="list-group-item" href="../module/detectors.html#proc-init_camera">init_camera</a>
+            <a class="list-group-item" href="../module/detectors.html#proc-init_circle_dect">init_circle_dect</a>
         </div>
       </div>
     </div>
 
-      <div class="panel panel-primary">
-      <div class="panel-heading text-left">
-        <h3 class="panel-title">
-          <a data-toggle="collapse" href="#subs-1">Subroutines</a>
-        </h3>
-      </div>
-      <div id="subs-1" class="panel-collapse collapse">
-        <div class="list-group">
-            <a class="list-group-item" href="../module/opticalproperties.html#proc-opticalprop_t_assign">opticalProp_t_assign</a>
-            <a class="list-group-item" href="../module/opticalproperties.html#proc-updatemono">updateMono</a>
-            <a class="list-group-item" href="../module/opticalproperties.html#proc-updatespectral">updateSpectral</a>
-            <a class="list-group-item" href="../module/opticalproperties.html#proc-update_opticalprop_t">update_opticalProp_t</a>
-        </div>
-      </div>
-    </div>
-
+  
   
   
   
@@ -341,14 +293,14 @@ abstract optica property type</p>
           <h2>Interfaces</h2>
               <div class="panel panel-default">
     <div class="panel-heading codesum">
-      <span class="anchor" id="interface-mono"></span>
-      <h3>public        interface <a href='../interface/mono.html'>mono</a> 
+      <span class="anchor" id="interface-annulus_dect"></span>
+      <h3>public        interface <a href='../interface/annulus_dect.html'>annulus_dect</a> 
       </h3>
     </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private  function <a href='../proc/init_mono.html'>init_mono</a>(mus, mua, hgg, n) result(res)  
+    private  function <a href='../proc/init_annulus_dect.html'>init_annulus_dect</a>(pos, layer, r1, r2, nbins, maxval, trackHistory) result(out)  
 
     </h3>
     
@@ -368,14 +320,29 @@ abstract optica property type</p>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp),
+              type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>mus</strong></td>
+            <td><strong>pos</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>layer</strong></td>
             <td>
 
             </td>
@@ -390,7 +357,7 @@ abstract optica property type</p>
               
             </td>
             <td>::</td>
-            <td><strong>mua</strong></td>
+            <td><strong>r1</strong></td>
             <td>
 
             </td>
@@ -405,7 +372,22 @@ abstract optica property type</p>
               
             </td>
             <td>::</td>
-            <td><strong>hgg</strong></td>
+            <td><strong>r2</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nbins</strong></td>
             <td>
 
             </td>
@@ -420,7 +402,22 @@ abstract optica property type</p>
               
             </td>
             <td>::</td>
-            <td><strong>n</strong></td>
+            <td><strong>maxval</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              logical,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>trackHistory</strong></td>
             <td>
 
             </td>
@@ -430,7 +427,7 @@ abstract optica property type</p>
 
     <h4>
     Return Value
-    <small>type(<a href='../type/mono.html'>mono</a>)</small>
+    <small>type(<a href='../type/annulus_dect.html'>annulus_dect</a>)</small>
     </h4>
     
 
@@ -440,14 +437,14 @@ abstract optica property type</p>
 
               <div class="panel panel-default">
     <div class="panel-heading codesum">
-      <span class="anchor" id="interface-opticalprop_t"></span>
-      <h3>public        interface <a href='../interface/opticalprop_t.html'>opticalProp_t</a> 
+      <span class="anchor" id="interface-camera"></span>
+      <h3>public        interface <a href='../interface/camera.html'>camera</a> 
       </h3>
     </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private  function <a href='../proc/opticaprop_new.html'>opticaProp_new</a>(rhs) result(lhs)  
+    private  function <a href='../proc/init_camera.html'>init_camera</a>(p1, p2, p3, layer, nbins, maxval, trackHistory) result(out)  
 
     </h3>
     
@@ -467,14 +464,104 @@ abstract optica property type</p>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/opticalprop_base.html'>opticalProp_base</a>),
+              type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>rhs</strong></td>
+            <td><strong>p1</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/vector.html'>vector</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>p2</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/vector.html'>vector</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>p3</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>layer</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nbins</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>maxval</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              logical,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>trackHistory</strong></td>
             <td>
 
             </td>
@@ -484,7 +571,7 @@ abstract optica property type</p>
 
     <h4>
     Return Value
-    <small>type(<a href='../type/opticalprop_t.html'>opticalProp_t</a>)</small>
+    <small>type(<a href='../type/camera.html'>camera</a>)</small>
     </h4>
     
 
@@ -494,14 +581,14 @@ abstract optica property type</p>
 
               <div class="panel panel-default">
     <div class="panel-heading codesum">
-      <span class="anchor" id="interface-spectral"></span>
-      <h3>public        interface <a href='../interface/spectral.html'>spectral</a> 
+      <span class="anchor" id="interface-circle_dect"></span>
+      <h3>public        interface <a href='../interface/circle_dect.html'>circle_dect</a> 
       </h3>
     </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private  function <a href='../proc/init_spectral.html'>init_spectral</a>(mus, mua, hgg, n, flux) result(res)  
+    private  function <a href='../proc/init_circle_dect.html'>init_circle_dect</a>(pos, dir, layer, radius, nbins, maxval, trackHistory) result(out)  
 
     </h3>
     
@@ -521,14 +608,44 @@ abstract optica property type</p>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp),
+              type(<a href='../type/vector.html'>vector</a>),
             </td>
-<td>intent(in),</td>
+<td>intent(in)</td>
               <td></td>            <td>
-              allocatable
+              
             </td>
             <td>::</td>
-            <td><strong>mus</strong>(:,:)</td>
+            <td><strong>pos</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/vector.html'>vector</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dir</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>layer</strong></td>
             <td>
 
             </td>
@@ -538,12 +655,27 @@ abstract optica property type</p>
               <span class="anchor" ></span>
               real(kind=wp),
             </td>
-<td>intent(in),</td>
+<td>intent(in)</td>
               <td></td>            <td>
-              allocatable
+              
             </td>
             <td>::</td>
-            <td><strong>mua</strong>(:,:)</td>
+            <td><strong>radius</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nbins</strong></td>
             <td>
 
             </td>
@@ -553,12 +685,12 @@ abstract optica property type</p>
               <span class="anchor" ></span>
               real(kind=wp),
             </td>
-<td>intent(in),</td>
+<td>intent(in)</td>
               <td></td>            <td>
-              allocatable
+              
             </td>
             <td>::</td>
-            <td><strong>hgg</strong>(:,:)</td>
+            <td><strong>maxval</strong></td>
             <td>
 
             </td>
@@ -566,29 +698,14 @@ abstract optica property type</p>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp),
+              logical,
             </td>
-<td>intent(in),</td>
+<td>intent(in)</td>
               <td></td>            <td>
-              allocatable
+              
             </td>
             <td>::</td>
-            <td><strong>n</strong>(:,:)</td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              real(kind=wp),
-            </td>
-<td>intent(in),</td>
-              <td></td>            <td>
-              allocatable
-            </td>
-            <td>::</td>
-            <td><strong>flux</strong>(:,:)</td>
+            <td><strong>trackHistory</strong></td>
             <td>
 
             </td>
@@ -598,7 +715,7 @@ abstract optica property type</p>
 
     <h4>
     Return Value
-    <small>type(<a href='../type/spectral.html'>spectral</a>)</small>
+    <small>type(<a href='../type/circle_dect.html'>circle_dect</a>)</small>
     </h4>
     
 
@@ -609,80 +726,15 @@ abstract optica property type</p>
         </section>
         <br>
 
-        <section>
-          <h2>Abstract Interfaces</h2>
-              <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="interface-updateinterface"></span><h3>abstract interface
-        
-    </h3></div>
-    <ul class="list-group">
-      <li class="list-group-item">
-            <h3>
-    public  subroutine updateInterface(this, wavelength)  
-
-    </h3>
-  
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/opticalprop_base.html'>opticalProp_base</a>),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>this</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              real(kind=wp),
-            </td>
-<td>intent(out)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>wavelength</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-      </li>
-    </ul>
-  </div>
-
-        </section>
-        <br>
 
         <section>
           <h2>Derived Types</h2>
               <div class="panel panel-default">
     <div class="panel-heading codesum">
-      <span class="anchor" id="type-mono"></span>
+      <span class="anchor" id="type-annulus_dect"></span>
       <h3>
-        type, public, extends(<a href='../type/opticalprop_base.html'>opticalProp_base</a>)&nbsp;::&nbsp;
-        <a href='../type/mono.html'>mono</a>
+        type, public, extends(<a href='../type/detector1d.html'>detector1D</a>)&nbsp;::&nbsp;
+        <a href='../type/annulus_dect.html'>annulus_dect</a>
         
       </h3>
     </div>
@@ -702,7 +754,7 @@ abstract optica property type</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-albedo"></span>
+              <span class="anchor" id="variable-bin_wid"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -710,491 +762,143 @@ abstract optica property type</p>
               
             </td>
             <td>::</td>
-            <td><strong>albedo</strong></td>
+            <td><strong>bin_wid</strong></td>
                 <td></td>
                 <td></td>
             <td>
-<p>
-<script type="math/tex; mode=display">a = \frac{\mu_s}{\mu_s + \mu_a}</script>
-</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-g2~2"></span>
-              real(kind=wp),
-            </td>
-              <td>public</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>g2</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>g factor squared</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-hgg~2"></span>
-              real(kind=wp),
-            </td>
-              <td>public</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>hgg</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>g factor</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-kappa"></span>
-              real(kind=wp),
-            </td>
-              <td>public</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>kappa</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>
-<script type="math/tex; mode=display">\kappa = \mu_s + \mu_a</script>
-</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-mua"></span>
-              real(kind=wp),
-            </td>
-              <td>public</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>mua</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>absoprtion coeff. <script type="math/tex; mode=display">cm^{-1}</script>
-</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-mus"></span>
-              real(kind=wp),
-            </td>
-              <td>public</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>mus</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>scattering coeff. <script type="math/tex; mode=display">cm^{-1}</script>
-</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-n"></span>
-              real(kind=wp),
-            </td>
-              <td>public</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>n</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>refractive index</p>
-            </td>
-        </tr>
-    </tbody>
-  </table>
 
-
-        <h4>Constructor</h4>
-          
-        <table class="table table-striped varlist">
-          <tbody>
-                <tr>
-                  <td>
-                        private
-
-                    
-                    function
-                    <strong><a href='../proc/init_mono.html'>init_mono</a></strong>
-                    (mus, mua, hgg, n)
-                  </td>
-                  <td></td>
-                </tr>
-          </tbody>
-        </table>
-
-
-        <h4>Type-Bound Procedures</h4>
-        <table class="table table-striped varlist">
-          <tbody>
-              <tr>
-                <td>
-                    procedure
-                    ,                  public
-,                   :: <strong><a href='../type/mono.html#boundprocedure-update'>update</a></strong>
- =>
-                    <a href='../proc/updatemono.html'>updateMono</a>
-<small>Subroutine</small>                </td>
-                <td></td>
-              </tr>
-          </tbody>
-        </table>
-    </div>
-  </div>
-
-              <div class="panel panel-default">
-    <div class="panel-heading codesum">
-      <span class="anchor" id="type-opticalprop_base"></span>
-      <h3>
-        type, public&nbsp;::&nbsp;
-        <a href='../type/opticalprop_base.html'>opticalProp_base</a>
-        
-      </h3>
-    </div>
-    <div class="panel-body">
-      
-
-        <h4>Components</h4>
-          <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Visibility</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-<th></th><th>Initial</th>        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-albedo"></span>
-              real(kind=wp),
-            </td>
-              <td>public</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>albedo</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>
-<script type="math/tex; mode=display">a = \frac{\mu_s}{\mu_s + \mu_a}</script>
-</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-g2~2"></span>
+              <span class="anchor" id="variable-data~2"></span>
               real(kind=wp),
-            </td>
-              <td>public</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>g2</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>g factor squared</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-hgg~2"></span>
-              real(kind=wp),
-            </td>
-              <td>public</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>hgg</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>g factor</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-kappa"></span>
-              real(kind=wp),
-            </td>
-              <td>public</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>kappa</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>
-<script type="math/tex; mode=display">\kappa = \mu_s + \mu_a</script>
-</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-mua"></span>
-              real(kind=wp),
-            </td>
-              <td>public</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>mua</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>absoprtion coeff. <script type="math/tex; mode=display">cm^{-1}</script>
-</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-mus"></span>
-              real(kind=wp),
-            </td>
-              <td>public</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>mus</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>scattering coeff. <script type="math/tex; mode=display">cm^{-1}</script>
-</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-n"></span>
-              real(kind=wp),
-            </td>
-              <td>public</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>n</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>refractive index</p>
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-
-
-        <h4>Type-Bound Procedures</h4>
-        <table class="table table-striped varlist">
-          <tbody>
-              <tr>
-                <td>
-                    procedure
-(updateInterface)                    ,                  public
-                  :: <strong><a href='../type/opticalprop_base.html#boundprocedure-update~2'>update</a></strong>
-<small></small>                </td>
-                <td></td>
-              </tr>
-          </tbody>
-        </table>
-    </div>
-  </div>
-
-              <div class="panel panel-default">
-    <div class="panel-heading codesum">
-      <span class="anchor" id="type-opticalprop_t"></span>
-      <h3>
-        type, public, extends(<a href='../type/opticalprop_base.html'>opticalProp_base</a>)&nbsp;::&nbsp;
-        <a href='../type/opticalprop_t.html'>opticalProp_t</a>
-        
-      </h3>
-    </div>
-    <div class="panel-body">
-      
-
-        <h4>Components</h4>
-          <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Visibility</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-<th></th><th>Initial</th>        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-albedo"></span>
-              real(kind=wp),
-            </td>
-              <td>public</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>albedo</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>
-<script type="math/tex; mode=display">a = \frac{\mu_s}{\mu_s + \mu_a}</script>
-</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-g2~2"></span>
-              real(kind=wp),
-            </td>
-              <td>public</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>g2</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>g factor squared</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-hgg~2"></span>
-              real(kind=wp),
-            </td>
-              <td>public</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>hgg</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>g factor</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-kappa"></span>
-              real(kind=wp),
-            </td>
-              <td>public</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>kappa</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>
-<script type="math/tex; mode=display">\kappa = \mu_s + \mu_a</script>
-</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-mua"></span>
-              real(kind=wp),
-            </td>
-              <td>public</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>mua</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>absoprtion coeff. <script type="math/tex; mode=display">cm^{-1}</script>
-</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-mus"></span>
-              real(kind=wp),
-            </td>
-              <td>public</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>mus</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>scattering coeff. <script type="math/tex; mode=display">cm^{-1}</script>
-</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-n"></span>
-              real(kind=wp),
-            </td>
-              <td>public</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>n</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>refractive index</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-value"></span>
-              class(<a href='../type/opticalprop_base.html'>opticalProp_base</a>),
             </td>
               <td>public,</td>
             <td>
               allocatable
             </td>
             <td>::</td>
-            <td><strong>value</strong></td>
+            <td><strong>data</strong>(:)</td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dir"></span>
+              type(<a href='../type/vector.html'>vector</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dir</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-layer~2"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>layer</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-nbins"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nbins</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-pos~3"></span>
+              type(<a href='../type/vector.html'>vector</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>pos</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-r1"></span>
+              real(kind=wp),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>r1</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-r2"></span>
+              real(kind=wp),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>r2</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-trackhistory~2"></span>
+              logical,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>trackHistory</strong></td>
                 <td></td>
                 <td></td>
             <td>
@@ -1215,8 +919,8 @@ abstract optica property type</p>
 
                     
                     function
-                    <strong><a href='../proc/opticaprop_new.html'>opticaProp_new</a></strong>
-                    (rhs)
+                    <strong><a href='../proc/init_annulus_dect.html'>init_annulus_dect</a></strong>
+                    (pos, layer, r1, r2, nbins, maxval, trackHistory)
                   </td>
                   <td></td>
                 </tr>
@@ -1229,29 +933,21 @@ abstract optica property type</p>
           <tbody>
               <tr>
                 <td>
-generic,
-                  public
-,                   :: <strong><a href='../type/opticalprop_t.html#boundprocedure-assignment%28%3D%29'>assignment(=)</a></strong>
- =>
-                    <a href='../type/opticalprop_t.html#boundprocedure-opticalprop_t_assign'>opticalProp_t_assign</a>
-<small></small>                </td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>
                     procedure
-                    ,                  private
-                  :: <strong><a href='../type/opticalprop_t.html#boundprocedure-opticalprop_t_assign'>opticalProp_t_assign</a></strong>
-<small>Subroutine</small>                </td>
+                    ,                  public
+,                   :: <strong><a href='../type/annulus_dect.html#boundprocedure-check_hit'>check_hit</a></strong>
+ =>
+                    <a href='../proc/check_hit_annulus.html'>check_hit_annulus</a>
+<small>Function</small>                </td>
                 <td></td>
               </tr>
               <tr>
                 <td>
                     procedure
                     ,                  public
-,                   :: <strong><a href='../type/opticalprop_t.html#boundprocedure-update~3'>update</a></strong>
+,                   :: <strong><a href='../type/detector1d.html#boundprocedure-record_hit'>record_hit</a></strong>
  =>
-                    <a href='../proc/update_opticalprop_t.html'>update_opticalProp_t</a>
+                    <a href='../proc/record_hit_1d_sub.html'>record_hit_1D_sub</a>
 <small>Subroutine</small>                </td>
                 <td></td>
               </tr>
@@ -1262,10 +958,10 @@ generic,
 
               <div class="panel panel-default">
     <div class="panel-heading codesum">
-      <span class="anchor" id="type-spectral"></span>
+      <span class="anchor" id="type-camera"></span>
       <h3>
-        type, public, extends(<a href='../type/opticalprop_base.html'>opticalProp_base</a>)&nbsp;::&nbsp;
-        <a href='../type/spectral.html'>spectral</a>
+        type, public, extends(<a href='../type/detector2d.html'>detector2D</a>)&nbsp;::&nbsp;
+        <a href='../type/camera.html'>camera</a>
         
       </h3>
     </div>
@@ -1285,7 +981,7 @@ generic,
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-albedo"></span>
+              <span class="anchor" id="variable-bin_wid_x"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -1293,26 +989,7 @@ generic,
               
             </td>
             <td>::</td>
-            <td><strong>albedo</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>
-<script type="math/tex; mode=display">a = \frac{\mu_s}{\mu_s + \mu_a}</script>
-</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-flux"></span>
-              type(<a href='../type/piecewise1d.html'>piecewise1D</a>),
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>flux</strong></td>
+            <td><strong>bin_wid_x</strong></td>
                 <td></td>
                 <td></td>
             <td>
@@ -1321,7 +998,7 @@ generic,
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-g2~2"></span>
+              <span class="anchor" id="variable-bin_wid_y"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -1329,41 +1006,7 @@ generic,
               
             </td>
             <td>::</td>
-            <td><strong>g2</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>g factor squared</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-hgg~2"></span>
-              real(kind=wp),
-            </td>
-              <td>public</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>hgg</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>g factor</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-hgg_a"></span>
-              type(<a href='../type/piecewise1d.html'>piecewise1D</a>),
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>hgg_a</strong></td>
+            <td><strong>bin_wid_y</strong></td>
                 <td></td>
                 <td></td>
             <td>
@@ -1372,52 +1015,15 @@ generic,
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-kappa"></span>
+              <span class="anchor" id="variable-data~3"></span>
               real(kind=wp),
             </td>
-              <td>public</td>
+              <td>public,</td>
             <td>
-              
+              allocatable
             </td>
             <td>::</td>
-            <td><strong>kappa</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>
-<script type="math/tex; mode=display">\kappa = \mu_s + \mu_a</script>
-</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-mua"></span>
-              real(kind=wp),
-            </td>
-              <td>public</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>mua</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>absoprtion coeff. <script type="math/tex; mode=display">cm^{-1}</script>
-</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-mua_a"></span>
-              type(<a href='../type/piecewise1d.html'>piecewise1D</a>),
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>mua_a</strong></td>
+            <td><strong>data</strong>(:,:)</td>
                 <td></td>
                 <td></td>
             <td>
@@ -1426,33 +1032,15 @@ generic,
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-mus"></span>
-              real(kind=wp),
+              <span class="anchor" id="variable-dir"></span>
+              type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
             <td>
               
             </td>
             <td>::</td>
-            <td><strong>mus</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-<p>scattering coeff. <script type="math/tex; mode=display">cm^{-1}</script>
-</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-mus_a"></span>
-              type(<a href='../type/piecewise1d.html'>piecewise1D</a>),
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>mus_a</strong></td>
+            <td><strong>dir</strong></td>
                 <td></td>
                 <td></td>
             <td>
@@ -1461,8 +1049,76 @@ generic,
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-n"></span>
+              <span class="anchor" id="variable-e1"></span>
+              type(<a href='../type/vector.html'>vector</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>e1</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-e2"></span>
+              type(<a href='../type/vector.html'>vector</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>e2</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-height"></span>
               real(kind=wp),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>height</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-layer~2"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>layer</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-n~4"></span>
+              type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
             <td>
@@ -1473,20 +1129,122 @@ generic,
                 <td></td>
                 <td></td>
             <td>
-<p>refractive index</p>
+
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-n_a"></span>
-              type(<a href='../type/piecewise1d.html'>piecewise1D</a>),
+              <span class="anchor" id="variable-nbinsx"></span>
+              integer,
             </td>
-              <td>private</td>
+              <td>public</td>
             <td>
               
             </td>
             <td>::</td>
-            <td><strong>n_a</strong></td>
+            <td><strong>nbinsX</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-nbinsy"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nbinsY</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-p2"></span>
+              type(<a href='../type/vector.html'>vector</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>p2</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-p3"></span>
+              type(<a href='../type/vector.html'>vector</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>p3</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-pos~3"></span>
+              type(<a href='../type/vector.html'>vector</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>pos</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-trackhistory~2"></span>
+              logical,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>trackHistory</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-width"></span>
+              real(kind=wp),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>width</strong></td>
                 <td></td>
                 <td></td>
             <td>
@@ -1507,8 +1265,8 @@ generic,
 
                     
                     function
-                    <strong><a href='../proc/init_spectral.html'>init_spectral</a></strong>
-                    (mus, mua, hgg, n, flux)
+                    <strong><a href='../proc/init_camera.html'>init_camera</a></strong>
+                    (p1, p2, p3, layer, nbins, maxval, trackHistory)
                   </td>
                   <td></td>
                 </tr>
@@ -1523,14 +1281,283 @@ generic,
                 <td>
                     procedure
                     ,                  public
-,                   :: <strong><a href='../type/spectral.html#boundprocedure-update~4'>update</a></strong>
+,                   :: <strong><a href='../type/camera.html#boundprocedure-check_hit~2'>check_hit</a></strong>
  =>
-                    <a href='../proc/updatespectral.html'>updateSpectral</a>
+                    <a href='../proc/check_hit_camera.html'>check_hit_camera</a>
+<small>Function</small>                </td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>
+                    procedure
+                    ,                  public
+,                   :: <strong><a href='../type/detector2d.html#boundprocedure-record_hit~2'>record_hit</a></strong>
+ =>
+                    <a href='../proc/record_hit_2d_sub.html'>record_hit_2D_sub</a>
 <small>Subroutine</small>                </td>
                 <td></td>
               </tr>
           </tbody>
         </table>
+    </div>
+  </div>
+
+              <div class="panel panel-default">
+    <div class="panel-heading codesum">
+      <span class="anchor" id="type-circle_dect"></span>
+      <h3>
+        type, public, extends(<a href='../type/detector1d.html'>detector1D</a>)&nbsp;::&nbsp;
+        <a href='../type/circle_dect.html'>circle_dect</a>
+        
+      </h3>
+    </div>
+    <div class="panel-body">
+      
+
+        <h4>Components</h4>
+          <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Visibility</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+<th></th><th>Initial</th>        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-bin_wid"></span>
+              real(kind=wp),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>bin_wid</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-data~2"></span>
+              real(kind=wp),
+            </td>
+              <td>public,</td>
+            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>data</strong>(:)</td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dir"></span>
+              type(<a href='../type/vector.html'>vector</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dir</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-layer~2"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>layer</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-nbins"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nbins</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-pos~3"></span>
+              type(<a href='../type/vector.html'>vector</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>pos</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-radius"></span>
+              real(kind=wp),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>radius</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-trackhistory~2"></span>
+              logical,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>trackHistory</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        <h4>Constructor</h4>
+          
+        <table class="table table-striped varlist">
+          <tbody>
+                <tr>
+                  <td>
+                        private
+
+                    
+                    function
+                    <strong><a href='../proc/init_circle_dect.html'>init_circle_dect</a></strong>
+                    (pos, dir, layer, radius, nbins, maxval, trackHistory)
+                  </td>
+                  <td></td>
+                </tr>
+          </tbody>
+        </table>
+
+
+        <h4>Type-Bound Procedures</h4>
+        <table class="table table-striped varlist">
+          <tbody>
+              <tr>
+                <td>
+                    procedure
+                    ,                  public
+,                   :: <strong><a href='../type/circle_dect.html#boundprocedure-check_hit~3'>check_hit</a></strong>
+ =>
+                    <a href='../proc/check_hit_circle.html'>check_hit_circle</a>
+<small>Function</small>                </td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>
+                    procedure
+                    ,                  public
+,                   :: <strong><a href='../type/detector1d.html#boundprocedure-record_hit'>record_hit</a></strong>
+ =>
+                    <a href='../proc/record_hit_1d_sub.html'>record_hit_1D_sub</a>
+<small>Subroutine</small>                </td>
+                <td></td>
+              </tr>
+          </tbody>
+        </table>
+    </div>
+  </div>
+
+              <div class="panel panel-default">
+    <div class="panel-heading codesum">
+      <span class="anchor" id="type-dect_array"></span>
+      <h3>
+        type, public&nbsp;::&nbsp;
+        <a href='../type/dect_array.html'>dect_array</a>
+        
+      </h3>
+    </div>
+    <div class="panel-body">
+      
+
+        <h4>Components</h4>
+          <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Visibility</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+<th></th><th>Initial</th>        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-p~3"></span>
+              class(<a href='../type/detector.html'>detector</a>),
+            </td>
+              <td>public,</td>
+            <td>
+              pointer
+            </td>
+            <td>::</td>
+            <td><strong>p</strong></td>
+<td>=&gt; </td>
+                <td>null()</td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+
     </div>
   </div>
 
@@ -1540,7 +1567,7 @@ generic,
         <section>
           <h2>Functions</h2>
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-init_mono"></span><h3>private  function <a href='../proc/init_mono.html'>init_mono</a>(mus, mua, hgg, n) result(res)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-check_hit_annulus"></span><h3>private  function <a href='../proc/check_hit_annulus.html'>check_hit_annulus</a>(this, hitpoint)  
 </h3></div>
     <div class="panel-body">
           
@@ -1560,14 +1587,14 @@ generic,
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp),
+              class(<a href='../type/annulus_dect.html'>annulus_dect</a>),
             </td>
-<td>intent(in)</td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>mus</strong></td>
+            <td><strong>this</strong></td>
             <td>
 
             </td>
@@ -1575,44 +1602,14 @@ generic,
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp),
+              type(<a href='../type/hit_t.html'>hit_t</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>mua</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              real(kind=wp),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>hgg</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              real(kind=wp),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>n</strong></td>
+            <td><strong>hitpoint</strong></td>
             <td>
 
             </td>
@@ -1622,7 +1619,7 @@ generic,
 
     <h4>
     Return Value
-    <small>type(<a href='../type/mono.html'>mono</a>)</small>
+    <small>logical</small>
     </h4>
     
 
@@ -1630,7 +1627,7 @@ generic,
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-init_spectral"></span><h3>private  function <a href='../proc/init_spectral.html'>init_spectral</a>(mus, mua, hgg, n, flux) result(res)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-check_hit_camera"></span><h3>private  function <a href='../proc/check_hit_camera.html'>check_hit_camera</a>(this, hitpoint)  
 </h3></div>
     <div class="panel-body">
           
@@ -1650,14 +1647,14 @@ generic,
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp),
+              class(<a href='../type/camera.html'>camera</a>),
             </td>
-<td>intent(in),</td>
+<td>intent(inout)</td>
               <td></td>            <td>
-              allocatable
+              
             </td>
             <td>::</td>
-            <td><strong>mus</strong>(:,:)</td>
+            <td><strong>this</strong></td>
             <td>
 
             </td>
@@ -1665,59 +1662,14 @@ generic,
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp),
+              type(<a href='../type/hit_t.html'>hit_t</a>),
             </td>
-<td>intent(in),</td>
+<td>intent(in)</td>
               <td></td>            <td>
-              allocatable
+              
             </td>
             <td>::</td>
-            <td><strong>mua</strong>(:,:)</td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              real(kind=wp),
-            </td>
-<td>intent(in),</td>
-              <td></td>            <td>
-              allocatable
-            </td>
-            <td>::</td>
-            <td><strong>hgg</strong>(:,:)</td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              real(kind=wp),
-            </td>
-<td>intent(in),</td>
-              <td></td>            <td>
-              allocatable
-            </td>
-            <td>::</td>
-            <td><strong>n</strong>(:,:)</td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              real(kind=wp),
-            </td>
-<td>intent(in),</td>
-              <td></td>            <td>
-              allocatable
-            </td>
-            <td>::</td>
-            <td><strong>flux</strong>(:,:)</td>
+            <td><strong>hitpoint</strong></td>
             <td>
 
             </td>
@@ -1727,7 +1679,7 @@ generic,
 
     <h4>
     Return Value
-    <small>type(<a href='../type/spectral.html'>spectral</a>)</small>
+    <small>logical</small>
     </h4>
     
 
@@ -1735,7 +1687,7 @@ generic,
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-opticaprop_new"></span><h3>private  function <a href='../proc/opticaprop_new.html'>opticaProp_new</a>(rhs) result(lhs)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-check_hit_circle"></span><h3>private  function <a href='../proc/check_hit_circle.html'>check_hit_circle</a>(this, hitpoint)  
 </h3></div>
     <div class="panel-body">
           
@@ -1755,14 +1707,29 @@ generic,
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/opticalprop_base.html'>opticalProp_base</a>),
+              class(<a href='../type/circle_dect.html'>circle_dect</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>this</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/hit_t.html'>hit_t</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>rhs</strong></td>
+            <td><strong>hitpoint</strong></td>
             <td>
 
             </td>
@@ -1772,7 +1739,412 @@ generic,
 
     <h4>
     Return Value
-    <small>type(<a href='../type/opticalprop_t.html'>opticalProp_t</a>)</small>
+    <small>logical</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-init_annulus_dect"></span><h3>private  function <a href='../proc/init_annulus_dect.html'>init_annulus_dect</a>(pos, layer, r1, r2, nbins, maxval, trackHistory) result(out)  
+</h3></div>
+    <div class="panel-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/vector.html'>vector</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>pos</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>layer</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>r1</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>r2</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nbins</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>maxval</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              logical,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>trackHistory</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/annulus_dect.html'>annulus_dect</a>)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-init_camera"></span><h3>private  function <a href='../proc/init_camera.html'>init_camera</a>(p1, p2, p3, layer, nbins, maxval, trackHistory) result(out)  
+</h3></div>
+    <div class="panel-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/vector.html'>vector</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>p1</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/vector.html'>vector</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>p2</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/vector.html'>vector</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>p3</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>layer</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nbins</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>maxval</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              logical,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>trackHistory</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/camera.html'>camera</a>)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="proc-init_circle_dect"></span><h3>private  function <a href='../proc/init_circle_dect.html'>init_circle_dect</a>(pos, dir, layer, radius, nbins, maxval, trackHistory) result(out)  
+</h3></div>
+    <div class="panel-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/vector.html'>vector</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>pos</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/vector.html'>vector</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dir</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>layer</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>radius</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nbins</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=wp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>maxval</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              logical,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>trackHistory</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/circle_dect.html'>circle_dect</a>)</small>
     </h4>
     
 
@@ -1782,230 +2154,6 @@ generic,
         </section>
         <br>
 
-        <section>
-          <h2>Subroutines</h2>
-              <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-opticalprop_t_assign"></span><h3>private  subroutine <a href='../proc/opticalprop_t_assign.html'>opticalProp_t_assign</a>(lhs, rhs)  
-</h3></div>
-    <div class="panel-body">
-          
-  
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/opticalprop_t.html'>opticalProp_t</a>),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>lhs</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/opticalprop_base.html'>opticalProp_base</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>rhs</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-              <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-updatemono"></span><h3>private  subroutine <a href='../proc/updatemono.html'>updateMono</a>(this, wavelength)  
-</h3></div>
-    <div class="panel-body">
-          
-  
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/mono.html'>mono</a>),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>this</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              real(kind=wp),
-            </td>
-<td>intent(out)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>wavelength</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-              <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-updatespectral"></span><h3>private  subroutine <a href='../proc/updatespectral.html'>updateSpectral</a>(this, wavelength)  
-</h3></div>
-    <div class="panel-body">
-          
-  
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/spectral.html'>spectral</a>),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>this</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              real(kind=wp),
-            </td>
-<td>intent(out)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>wavelength</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-              <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-update_opticalprop_t"></span><h3>private  subroutine <a href='../proc/update_opticalprop_t.html'>update_opticalProp_t</a>(this, wavelength)  
-</h3></div>
-    <div class="panel-body">
-          
-  
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/opticalprop_t.html'>opticalProp_t</a>),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>this</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              real(kind=wp),
-            </td>
-<td>intent(out)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>wavelength</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-        </section>
-        <br>
 
 
 

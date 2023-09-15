@@ -16,7 +16,8 @@ contains
         use constants, only : wp, CHANCE, THRESHOLD
 
         !subroutines
-        use detector_mod,  only : dect_array, hit_t
+        use detectors,     only : dect_array
+        use detector_mod,  only : hit_t
         use historyStack,  only : history_stack_t
         use inttau2,       only : tauint2, update_voxels
         use photonMod,     only : photon
@@ -168,7 +169,8 @@ contains
         use constants, only : wp
 
         !subroutines
-        use detector_mod,  only : dect_array, hit_t
+        use detector_mod,  only : hit_t
+        use detectors,     only : dect_array
         use historyStack,  only : history_stack_t
         use inttau2,       only : tauint2
         use photonMod,     only : photon
@@ -301,7 +303,7 @@ contains
         use constants, only : wp
 
         !subroutines
-        use detector_mod,  only : dect_array
+        use detectors,     only : dect_array
         use historyStack,  only : history_stack_t
         use inttau2,       only : tauint2
         use photonMod,     only : photon
@@ -420,7 +422,7 @@ contains
         use constants, only : wp
         
         !subroutines
-        use detector_mod,  only : dect_array
+        use detectors,     only : dect_array
         use parse_mod,     only : parse_params
         use photonMod,     only : photon
         use random,        only : init_rng
@@ -496,7 +498,7 @@ end subroutine setup
 subroutine finalise(dict, dects, nscatt, start, history)
 
     use constants,     only : wp, fileplace
-    use detector_mod,  only : dect_array
+    use detectors,     only : dect_array
     use historyStack,  only : history_stack_t
     use iarray,        only : phasor, phasorGLOBAL, jmean, jmeanGLOBAL, absorb, absorbGLOBAL
     use sim_state_mod, only : state

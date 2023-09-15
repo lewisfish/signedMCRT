@@ -52,7 +52,7 @@ array  = array * ((2._sp*xmax*2._sp*ymax)/(nphotons * (2._sp * xmax / nxg) * (2.
 
         subroutine write_detected_photons(detectors)
 
-            use detector_mod
+            use detectors
             use constants, only: fileplace
             use utils, only : str
 

@@ -101,11 +101,11 @@
 
             <li id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/detectorMod.f90"> Source File</a>
+              <a href="../src/detector_base.f90"> Source File</a>
             </li>
         </ul>
         <ol class="breadcrumb in-well text-right">
-              <li><a href='../sourcefile/detectormod.f90.html'>detectorMod.f90</a></li>
+              <li><a href='../sourcefile/detector_base.f90.html'>detector_base.f90</a></li>
               <li><a href='../module/detector_mod.html'>detector_mod</a></li>
           <li class="active">hit_t</li>
         </ol>
@@ -136,7 +136,7 @@
             <a class="list-group-item" href="../type/hit_t.html#variable-dir~3">dir</a>
             <a class="list-group-item" href="../type/hit_t.html#variable-layer~6">layer</a>
             <a class="list-group-item" href="../type/hit_t.html#variable-pos~6">pos</a>
-            <a class="list-group-item" href="../type/hit_t.html#variable-value">value</a>
+            <a class="list-group-item" href="../type/hit_t.html#variable-value~7">value</a>
         </div>
       </div>
     </div>
@@ -201,7 +201,7 @@
             <a class="list-group-item" href="../type/hit_t.html#variable-dir~3">dir</a>
             <a class="list-group-item" href="../type/hit_t.html#variable-layer~6">layer</a>
             <a class="list-group-item" href="../type/hit_t.html#variable-pos~6">pos</a>
-            <a class="list-group-item" href="../type/hit_t.html#variable-value">value</a>
+            <a class="list-group-item" href="../type/hit_t.html#variable-value~7">value</a>
         </div>
       </div>
     </div>
@@ -311,7 +311,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-value"></span>
+              <span class="anchor" id="variable-value~7"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -395,7 +395,7 @@
 
     <section>
     <h3><span class="anchor" id="src"></span>Source Code</h3>
-    <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">type</span><span class="p">,</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hit_t</span><span class="w"></span>
+    <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">type</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hit_t</span><span class="w"></span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">pos</span><span class="p">,</span><span class="w"> </span><span class="n">dir</span><span class="w"></span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">value</span>
 <span class="k">        </span><span class="kt">integer</span><span class="w">       </span><span class="kd">::</span><span class="w"> </span><span class="n">layer</span><span class="w"></span>
