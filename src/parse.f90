@@ -14,8 +14,9 @@ module parse_mod
 
     subroutine parse_params(filename, packet, dects, spectrum, dict)
         !! entry point for parsing toml file
+
+        use detectors,   only : dect_array
         use photonmod
-        use detector_mod, only : dect_array
         use piecewiseMod
         
         !> filename of input toml file
@@ -51,7 +52,7 @@ module parse_mod
     subroutine parse_detectors(table, dects, context)
         !! parse the detectors
 
-        use detector_mod
+        use detectors,     only : dect_array, circle_dect, annulus_dect, camera
         use sim_state_mod, only : state
 
         type(toml_table) :: table
@@ -131,7 +132,7 @@ module parse_mod
 
     subroutine handle_camera(child, dects, counts, context)
 
-        use detector_mod
+        use detectors,     only : camera
         use sim_state_mod, only : state
 
         type(toml_table), pointer, intent(in)    :: child
@@ -163,13 +164,13 @@ module parse_mod
 
     subroutine handle_circle_dect(child, dects, counts, context)
 
-        use detector_mod
+        use detectors,     only : circle_dect
         use sim_state_mod, only : state
 
         type(toml_table), pointer, intent(in)    :: child
         type(circle_dect),         intent(inout) :: dects(:)
         integer,                   intent(inout) :: counts
-        type(toml_context),        intent(in) :: context
+        type(toml_context),        intent(in)    :: context
 
         integer       :: layer, nbins
         real(kind=wp) :: maxval, radius
@@ -195,7 +196,7 @@ module parse_mod
 
     subroutine handle_annulus_dect(child, dects, counts, context)
 
-        use detector_mod
+        use detectors,     only : annulus_dect
         use sim_state_mod, only : state
 
         type(toml_table), pointer, intent(in)    :: child

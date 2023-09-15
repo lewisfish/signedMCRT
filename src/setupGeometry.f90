@@ -4,7 +4,7 @@ module setupGeometry
     use tomlf, only : toml_table, get_value
 
     implicit none
-    
+
 contains
 
     function setup_egg() result(array)

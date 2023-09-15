@@ -712,7 +712,7 @@ module photonMod
 
             use constants, only : PI, TWOPI, wp
             use random,    only : ran2
-            use detector_mod, only : dect_array
+            use detectors, only : dect_array
 
             class(photon), intent(inout) :: this
             !> g factor

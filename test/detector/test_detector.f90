@@ -1,8 +1,9 @@
 module testsDetectorMod
 
-    use detector_mod
-    use testdrive, only : new_unittest, unittest_type, error_type, check
-    use constants, only : wp
+    use detectors
+    use detector_mod, only : hit_t
+    use testdrive,    only : new_unittest, unittest_type, error_type, check
+    use constants,    only : wp
 
     implicit none
 
