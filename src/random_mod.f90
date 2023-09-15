@@ -1,14 +1,16 @@
 module random
-! module provides an interface to call random_numbers and various other random distributions
-!
-!
+!! module provides an interface to call random_numbers and various other random distributions
+
     use vector_class
     use constants, only : wp
 
     implicit none
-    
+    !> Sequence type for quasi-monte carlo
     type :: seq
-        integer :: index, base
+        !> 
+        integer :: index
+        !> 
+        integer :: base
         contains
             procedure :: next
     end type seq
@@ -40,9 +42,10 @@ module random
         end function next
 
         subroutine init_rng(input_seed, fwd)
-        ! initiate RNG state with reproducible state
-            
+        !! initiate RNG state with reproducible state
+            !> input seed
             integer, optional, intent(IN) :: input_seed(:)
+            !> boolean that if True runs the generator for 100 steps before returning
             logical, optional, intent(IN) :: fwd
 
             integer, allocatable :: seed(:)
@@ -79,7 +82,7 @@ module random
         end subroutine init_rng
 
         function ran2() result(res)
-        !wrapper for call random number
+        !! wrapper for call random number
 
             real(kind=wp) :: res
 
@@ -88,20 +91,29 @@ module random
         end function ran2
 
         function ranu(a, b) result(res)
-        !uniformly sample in range[a, b)
+        !! uniformly sample in range[a, b)
 
             real(kind=wp) :: res
-            real(kind=wp), intent(IN) :: a, b
+            !> lower bound
+            real(kind=wp), intent(IN) :: a
+            !> upper bound
+            real(kind=wp), intent(IN) :: b
 
             res = a + ran2() * (b - a)
 
         end function ranu
 
         subroutine rang(x, y, avg, sigma)
-        ! sample a 2D Guassian distribution
+        !! sample a 2D Guassian distribution
 
-            real(kind=wp), intent(IN)  :: avg, sigma
-            real(kind=wp), intent(OUT) :: x,y
+            !> mean of the gaussian to sample from
+            real(kind=wp), intent(IN)  :: avg
+            !> \(\sigma\) of the guassian to sample from.
+            real(kind=wp), intent(IN)  :: sigma
+            !> first value to return
+            real(kind=wp), intent(OUT) :: x
+            !> 2nd value to return
+            real(kind=wp), intent(OUT) :: y            
             
             real(kind=wp) :: s, tmp
 
@@ -122,8 +134,11 @@ module random
         end subroutine rang
 
         integer function randint(a, b)
-
-            integer, intent(IN) :: a, b
+        !! sample a random integer between [a, b]
+            !> lower bound
+            integer, intent(IN) :: a
+            !> higher bound
+            integer, intent(IN) :: b
 
             randint = a + floor((b + 1 - a)*ran2()) 
 

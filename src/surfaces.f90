@@ -1,5 +1,6 @@
 module surfaces
-
+!! Contains the routines that handle reflection, and refraction via the Fresnel equations.
+   
     use vector_class, only : vector
     use constants,    only : wp
 
@@ -11,16 +12,19 @@ module surfaces
     contains
 
     subroutine reflect_refract(I, N, n1, n2, rflag, ri)
-    ! wrapper routine for fresnel calculation
-    !
-    !
+    !! wrapper routine for fresnel calculation
+
         use random, only : ran2
 
-        type(vector),  intent(INOUT) :: I ! incident vector
-        type(vector),  intent(INOUT) :: N ! normal vector
-        real(kind=wp), intent(IN)    :: n1, n2 !refractive indcies
+        !> incident vector
+        type(vector),  intent(INOUT) :: I
+        !> normal vector
+        type(vector),  intent(INOUT) :: N
+        !> refractive indices
+        real(kind=wp), intent(IN)    :: n1, n2
         real(kind=wp), intent(OUT)   :: Ri
-        logical,       intent(OUT)   :: rflag !reflection flag
+        !> reflection flag
+        logical,       intent(OUT)   :: rflag
 
         rflag = .FALSE.
 
@@ -36,12 +40,12 @@ module surfaces
     end subroutine reflect_refract
 
     subroutine reflect(I, N)
-    !   get vector of reflected photon
-    !
-    !
+    !! get vector of reflected photon
 
-        type(vector), intent(INOUT) :: I ! incident vector
-        type(vector), intent(IN)    :: N ! normal vector
+        !> incident vector
+        type(vector), intent(INOUT) :: I
+        !> normal vector
+        type(vector), intent(IN)    :: N
 
         type(vector) :: R
 
@@ -51,12 +55,13 @@ module surfaces
     end subroutine reflect
 
     subroutine refract(I, N, eta)
-    !   get vector of refracted photon
-    !
-    !
+    !! get vector of refracted photon
 
+        !> incident vector
         type(vector),  intent(INOUT) :: I
+        !> normal vector
         type(vector),  intent(IN)    :: N
+        !> \(\eta = \frac{n_1}{n_2}\)
         real(kind=wp), intent(IN)    :: eta
 
         type(vector)  :: T, Ntmp
@@ -79,13 +84,16 @@ module surfaces
     end subroutine refract
 
     function fresnel(I, N, n1, n2) result (tir)
-    !   calculates the fresnel coefficents
-    !
-    !
+    !! calculates the fresnel coefficents
+
         use ieee_arithmetic, only : ieee_is_nan
 
+        !> reffractive indicies
         real(kind=wp), intent(IN) :: n1, n2
-        type(vector),  intent(IN) :: I, N
+        !> incident vector
+        type(vector),  intent(IN) :: I
+        !> Normal vector
+        type(vector),  intent(IN) :: N
 
         real(kind=wp) :: costt, sintt, sint2, cost2, tir, f1, f2
 

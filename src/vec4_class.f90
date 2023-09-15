@@ -1,11 +1,12 @@
 Module vec4_class
-
+!! Vector4 class module. Defines a vector4 type (x, y, z, p) and associated operations on vectors and other types.
     use constants, only : wp
 
     implicit none
 
-    !not fully implmented vec4 class
+    !> not fully implmented vec4 class
     type :: vec4
+        !> vec4 components
         real(kind=wp) :: x, y, z, p
         contains
 

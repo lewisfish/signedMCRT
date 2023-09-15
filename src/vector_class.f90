@@ -1,12 +1,13 @@
 module vector_class
-! module contains full vector class implmentation
-!
-!
+!! Vector class module. Defines a vector type (x, y, z) and associated operations on vectors and other types.
+  
     use constants, only : wp
 
     implicit none
 
+    !> Vector class
     type :: vector
+        !> vector components
         real(kind=wp)  :: x, y, z
         contains
 
