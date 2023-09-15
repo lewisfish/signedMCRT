@@ -1,6 +1,15 @@
 module constants
-    !! Module contains the various constants used in the simulation.
-    !! Also defines the working precision and variables for folder operations.
+
+!! This module contains mathematical constants and strings that contain the various directories used by the program.
+!!    Math constants:
+!!    - PI
+!!    - 2 PI
+!!    - wp (working precision of the whole program). Default is double precision (64bit floats)
+!!    Directories:
+!!    - homedir. Root directory of this code
+!!    - fileplace. data folder directory
+ !!   - resdir. holds the path to the directory that holds the parameter and other associated input files
+
     use iso_fortran_env, only : real64, real32
 
     implicit none

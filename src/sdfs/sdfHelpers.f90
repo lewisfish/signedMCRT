@@ -1,5 +1,15 @@
 module sdfHelpers
+    !! Collection of helper functions for SDFs:
 
+    !! This module defines transforms that can be applied to each SDF:
+
+    !! - Rotate_{x,y,z}
+    !! - Translate
+    !! - RotationAlign (not tested)
+    !! - RotMat (not tested)
+    !! - Identity
+    !! - SkewSymm
+    
     use vector_class
     use constants, only : wp
 

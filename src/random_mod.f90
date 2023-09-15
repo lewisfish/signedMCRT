@@ -1,5 +1,5 @@
 module random
-!! module provides an interface to call random_numbers and various other random distributions
+!! module provides an interface to call random_numbers and various other random distributions=======    !!This module defines a set of functions that return random numbers in different distributions.    !!- ran2. Returns a single float uniformly in the range [0, 1)    !!- ranu. Return a single float uniformly in the range [a, b)    !!- randint. Returns a single integer uniformly in the range [a, b)    !!- rang. Returns a single float from a Gaussian distribution with mean *avg* and std *sigma*.    !!- init_rng. Seeds the internal random number generator with a reproducible seed.
 
     use vector_class
     use constants, only : wp
