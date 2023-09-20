@@ -160,6 +160,7 @@
 </h2>
     
 
+    <p>Evaluation function for Torus SDF.</p>
 
     <h3>Type Bound</h3>
     <p><a href='../type/torus.html'>torus</a></p>
@@ -192,7 +193,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-pos~26"></span>
+              <span class="anchor" id="variable-pos~7"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -202,7 +203,7 @@
             <td>::</td>
             <td><strong>pos</strong></td>
             <td>
-                
+                <p>vector position to evaluate SDF at</p>
             </td>
         </tr>
     </tbody>
@@ -261,9 +262,13 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">pure elemental function </span><span class="n">evaluate_torus</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">pos</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"></span>
-<span class="w">       </span><span class="k">class</span><span class="p">(</span><span class="n">torus</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">this</span><span class="w"></span>
-<span class="w">       </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pos</span><span class="w"></span>
-<span class="w">       </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span><span class="w"></span>
+<span class="w">        </span><span class="c">!! Evaluation function for Torus SDF.</span>
+
+<span class="w">        </span><span class="k">class</span><span class="p">(</span><span class="n">torus</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">this</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; vector position to evaluate SDF at</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pos</span><span class="w"></span>
+
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span><span class="w"></span>
 
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">q</span><span class="w"></span>
 

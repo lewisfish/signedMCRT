@@ -165,17 +165,18 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='../module/iarray.html'>iarray</a></li>
-                <li><a href='../module/photonmod.html'>photonMod</a></li>
                 <li><a href='../module/constants.html'>constants</a></li>
-                <li><a href='../module/gridmod.html'>gridMod</a></li>
                 <li><a href='../module/vector_class.html'>vector_class</a></li>
+                <li><a href='../module/photonmod.html'>photonMod</a></li>
+                <li><a href='../module/iarray.html'>iarray</a></li>
+                <li><a href='../module/gridmod.html'>gridMod</a></li>
             </ul>
           </li>
       </ul>
     </div>
 
 
+    <p>record fluence using path length estimators. Uses voxel grid</p>
 
 
     <h3>Arguments</h3>
@@ -191,7 +192,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-grid~5"></span>
+              <span class="anchor" id="variable-grid~3"></span>
               type(<a href='../type/cart_grid.html'>cart_grid</a>),
             </td>
 <td>intent(in)</td>
@@ -201,12 +202,12 @@
             <td>::</td>
             <td><strong>grid</strong></td>
             <td>
-                
+                <p>grid stores voxel grid information (voxel walls and etc)</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-pos~31"></span>
+              <span class="anchor" id="variable-pos~3"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(inout)</td>
@@ -216,12 +217,12 @@
             <td>::</td>
             <td><strong>pos</strong></td>
             <td>
-                
+                <p>pos is current position with origin in centre of medium (0,0,0)</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dir~10"></span>
+              <span class="anchor" id="variable-dir"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -231,7 +232,7 @@
             <td>::</td>
             <td><strong>dir</strong></td>
             <td>
-                
+                <p>dir is the current direction (0,0,1) is up</p>
             </td>
         </tr>
         <tr>
@@ -246,12 +247,12 @@
             <td>::</td>
             <td><strong>d_sdf</strong></td>
             <td>
-                
+                <p>d_sdf is the distance to travel in voxel grid</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-packet~6"></span>
+              <span class="anchor" id="variable-packet~3"></span>
               type(<a href='../type/photon.html'>photon</a>),
             </td>
 <td>intent(inout)</td>
@@ -261,12 +262,12 @@
             <td>::</td>
             <td><strong>packet</strong></td>
             <td>
-                
+                <p>packet stores the photon related variables</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-mua~4"></span>
+              <span class="anchor" id="variable-mua"></span>
               real(kind=wp),
             </td>
 <td>intent(in),</td>
@@ -276,7 +277,7 @@
             <td>::</td>
             <td><strong>mua</strong></td>
             <td>
-                
+                <p>absoprtion coefficent</p>
             </td>
         </tr>
     </tbody>
@@ -328,27 +329,28 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">update_grids</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span><span class="w"> </span><span class="n">pos</span><span class="p">,</span><span class="w"> </span><span class="n">dir</span><span class="p">,</span><span class="w"> </span><span class="n">d_sdf</span><span class="p">,</span><span class="w"> </span><span class="n">packet</span><span class="p">,</span><span class="w"> </span><span class="n">mua</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="c">! record fluence using path length estimators. Uses voxel grid</span>
-<span class="w">    </span><span class="c">! grid stores voxel grid information (voxel walls and etc)</span>
-<span class="w">    </span><span class="c">! pos is current position with origin in centre of medium (0,0,0)</span>
-<span class="w">    </span><span class="c">! dir is the current direction (0,0,1) is up</span>
-<span class="w">    </span><span class="c">! d_sdf is the distance to travel in voxel grid</span>
-<span class="w">    </span><span class="c">! packet stores the photon related variables</span>
+<span class="w">    </span><span class="c">!! record fluence using path length estimators. Uses voxel grid</span>
 
 <span class="w">        </span><span class="k">use </span><span class="n">vector_class</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">photonMod</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">gridMod</span><span class="w"></span>
-<span class="w">        </span><span class="k">use </span><span class="n">iarray</span><span class="p">,</span><span class="w">        </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">phasor</span><span class="p">,</span><span class="w"> </span><span class="n">jmean</span><span class="p">,</span><span class="w"> </span><span class="n">absorb</span><span class="w"></span>
+<span class="w">        </span><span class="k">use </span><span class="n">iarray</span><span class="p">,</span><span class="w">     </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">phasor</span><span class="p">,</span><span class="w"> </span><span class="n">jmean</span><span class="p">,</span><span class="w"> </span><span class="n">absorb</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">constants</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">sp</span><span class="w"></span>
 <span class="w">        </span>
+<span class="w">        </span><span class="c">!&gt; grid stores voxel grid information (voxel walls and etc)</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">cart_grid</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">grid</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; dir is the current direction (0,0,1) is up</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">    </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">dir</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; d_sdf is the distance to travel in voxel grid</span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w">   </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">d_sdf</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; absoprtion coefficent</span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">optional</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">mua</span><span class="w"></span>
-<span class="w">        </span><span class="kt">complex</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">sp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">phasec</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; pos is current position with origin in centre of medium (0,0,0)</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">    </span><span class="k">intent</span><span class="p">(</span><span class="n">INOUT</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pos</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; packet stores the photon related variables</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">photon</span><span class="p">),</span><span class="w">    </span><span class="k">intent</span><span class="p">(</span><span class="n">INOUT</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">packet</span><span class="w"></span>
-
+<span class="w">        </span>
+<span class="w">        </span><span class="kt">complex</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">sp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">phasec</span><span class="w"></span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">old_pos</span><span class="w"></span>
 <span class="w">        </span><span class="kt">logical</span><span class="w">       </span><span class="kd">::</span><span class="w"> </span><span class="n">ldir</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"></span>
 <span class="w">        </span><span class="kt">integer</span><span class="w">       </span><span class="kd">::</span><span class="w"> </span><span class="n">celli</span><span class="p">,</span><span class="w"> </span><span class="n">cellj</span><span class="p">,</span><span class="w"> </span><span class="n">cellk</span><span class="w"></span>

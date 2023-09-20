@@ -133,12 +133,12 @@
       </div>
       <div id="vars-0" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/capsule.html#variable-a~40">a</a>
-            <a class="list-group-item" href="../type/capsule.html#variable-b~40">b</a>
-            <a class="list-group-item" href="../type/capsule.html#variable-layer~7">layer</a>
+            <a class="list-group-item" href="../type/capsule.html#variable-a~46">a</a>
+            <a class="list-group-item" href="../type/capsule.html#variable-b~44">b</a>
+            <a class="list-group-item" href="../type/capsule.html#variable-layer~17">layer</a>
             <a class="list-group-item" href="../type/capsule.html#variable-optprops">optProps</a>
-            <a class="list-group-item" href="../type/capsule.html#variable-r">r</a>
-            <a class="list-group-item" href="../type/capsule.html#variable-transform">transform</a>
+            <a class="list-group-item" href="../type/capsule.html#variable-r~2">r</a>
+            <a class="list-group-item" href="../type/capsule.html#variable-transform~11">transform</a>
         </div>
       </div>
     </div>
@@ -198,7 +198,7 @@
     
     <div class="col-md-9" id='text'>
       <h2>type, public, extends(<a href='../type/sdf_base.html'>sdf_base</a>) :: capsule</h2>
-    
+    <p>Capsule SDF</p>
     <br>
 
     <section class="visible-xs visible-sm hidden-md">
@@ -212,12 +212,12 @@
       </div>
       <div id="vars-1" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/capsule.html#variable-a~40">a</a>
-            <a class="list-group-item" href="../type/capsule.html#variable-b~40">b</a>
-            <a class="list-group-item" href="../type/capsule.html#variable-layer~7">layer</a>
+            <a class="list-group-item" href="../type/capsule.html#variable-a~46">a</a>
+            <a class="list-group-item" href="../type/capsule.html#variable-b~44">b</a>
+            <a class="list-group-item" href="../type/capsule.html#variable-layer~17">layer</a>
             <a class="list-group-item" href="../type/capsule.html#variable-optprops">optProps</a>
-            <a class="list-group-item" href="../type/capsule.html#variable-r">r</a>
-            <a class="list-group-item" href="../type/capsule.html#variable-transform">transform</a>
+            <a class="list-group-item" href="../type/capsule.html#variable-r~2">r</a>
+            <a class="list-group-item" href="../type/capsule.html#variable-transform~11">transform</a>
         </div>
       </div>
     </div>
@@ -288,7 +288,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~40"></span>
+              <span class="anchor" id="variable-a~46"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
@@ -305,7 +305,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~40"></span>
+              <span class="anchor" id="variable-b~44"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
@@ -322,7 +322,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-layer~7"></span>
+              <span class="anchor" id="variable-layer~17"></span>
               integer,
             </td>
               <td>public</td>
@@ -356,7 +356,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-r"></span>
+              <span class="anchor" id="variable-r~2"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -373,7 +373,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-transform"></span>
+              <span class="anchor" id="variable-transform~11"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -402,6 +402,9 @@
       <h3>public        interface <a href='../interface/capsule.html'>capsule</a> 
       </h3>
     </div>
+      <div class="panel-body">
+        <p>Interface to capsule SDF initialising function</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
@@ -409,7 +412,7 @@
 
     </h3>
     
-  
+  <p>Initalising function for capsule SDF.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -434,7 +437,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Capsule startpoint</p>
             </td>
         </tr>
         <tr>
@@ -449,7 +452,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Capsule endpoint</p>
             </td>
         </tr>
         <tr>
@@ -464,7 +467,7 @@
             <td>::</td>
             <td><strong>r</strong></td>
             <td>
-
+<p>Capsule radius</p>
             </td>
         </tr>
         <tr>
@@ -479,7 +482,7 @@
             <td>::</td>
             <td><strong>optProp</strong></td>
             <td>
-
+<p>Optical properties of the SDF</p>
             </td>
         </tr>
         <tr>
@@ -494,7 +497,7 @@
             <td>::</td>
             <td><strong>layer</strong></td>
             <td>
-
+<p>ID number of sdf</p>
             </td>
         </tr>
         <tr>
@@ -509,7 +512,7 @@
             <td>::</td>
             <td><strong>transform</strong>(4,4)</td>
             <td>
-
+<p>Optional transform to apply to SDF</p>
             </td>
         </tr>
     </tbody>
@@ -540,7 +543,7 @@
     private pure elemental function <a href='../proc/evaluate_capsule.html'>evaluate_capsule</a>(this, pos) result(res)  
 </h3>
     
-  
+  <p>Evaluation function for Capsule SDF.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -580,7 +583,7 @@
             <td>::</td>
             <td><strong>pos</strong></td>
             <td>
-
+<p>vector position to evaluate SDF at</p>
             </td>
         </tr>
     </tbody>

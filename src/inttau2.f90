@@ -13,9 +13,9 @@ module inttau2
     contains
 
     subroutine tauint2(grid, packet, sdfs_array)
-    ! optical depth integration subroutine
-    ! Moves photons to interaction location
-    ! Calculated is any reflection or refraction happens whilst moving
+    !! optical depth integration subroutine
+    !! Moves photons to interaction location
+    !! Calculated is any reflection or refraction happens whilst moving
     !
         use gridMod,      only : cart_grid
         use photonMod,    only : photon
@@ -211,27 +211,28 @@ module inttau2
 
 
     subroutine update_grids(grid, pos, dir, d_sdf, packet, mua)
-    ! record fluence using path length estimators. Uses voxel grid
-    ! grid stores voxel grid information (voxel walls and etc)
-    ! pos is current position with origin in centre of medium (0,0,0)
-    ! dir is the current direction (0,0,1) is up
-    ! d_sdf is the distance to travel in voxel grid
-    ! packet stores the photon related variables
+    !! record fluence using path length estimators. Uses voxel grid
 
         use vector_class
         use photonMod
         use gridMod
-        use iarray,        only: phasor, jmean, absorb
+        use iarray,     only: phasor, jmean, absorb
         use constants , only : sp
         
+        !> grid stores voxel grid information (voxel walls and etc)
         type(cart_grid), intent(IN)    :: grid
+        !> dir is the current direction (0,0,1) is up
         type(vector),    intent(IN)    :: dir
+        !> d_sdf is the distance to travel in voxel grid
         real(kind=wp),   intent(IN)    :: d_sdf
+        !> absoprtion coefficent
         real(kind=wp), optional, intent(IN) :: mua
-        complex(kind=sp) :: phasec
+        !> pos is current position with origin in centre of medium (0,0,0)
         type(vector),    intent(INOUT) :: pos
+        !> packet stores the photon related variables
         type(photon),    intent(INOUT) :: packet
-
+        
+        complex(kind=sp) :: phasec
         type(vector)  :: old_pos
         logical       :: ldir(3)
         integer       :: celli, cellj, cellk
@@ -291,9 +292,8 @@ module inttau2
     end subroutine update_grids
 
     function wall_dist(grid, celli, cellj, cellk, pos, dir, ldir) result(res)
-    !funtion that returns distant to nearest wall and which wall that is (x, y, or z)
-    !
-    !
+    !! funtion that returns distant to nearest wall and which wall that is (x, y, or z)
+    
         use vector_class
         use gridMod
 
@@ -349,9 +349,8 @@ module inttau2
 
 
     subroutine update_pos(grid, pos, celli, cellj, cellk, dcell, wall_flag, dir, ldir, delta)
-    !routine that updates positions of photon and calls Fresnel routines if photon leaves current voxel
-    !
-    !
+    !! routine that updates positions of photon and calls Fresnel routines if photon leaves current voxel
+    
         use vector_class
         use gridMod
         use utils, only : str
@@ -413,14 +412,16 @@ module inttau2
 
 
     subroutine update_voxels(grid, pos, celli, cellj, cellk)
-    ! updates the current voxel based upon position
-    !
-    !
+    !! updates the current voxel based upon position
+
         use vector_class
         use gridmod
         
+        !> grid
         type(cart_grid), intent(IN)    :: grid
+        !> current photon packet position
         type(vector),    intent(IN)    :: pos
+        !> position of photon packet in grid
         integer,         intent(INOUT) :: celli, cellj, cellk
 
         !accurate but slow
@@ -440,10 +441,13 @@ module inttau2
     end subroutine update_voxels
 
     integer function find(val, a)
-    ! searches for bracketing indices for a value value in an array a
-    !
-    !
-        real(kind=wp), intent(IN) :: val, a(:)
+    !! searches for bracketing indices for a value value in an array a
+
+        !> value to find in array
+        real(kind=wp), intent(in) :: val
+        !> array to find val in
+        real(kind=wp), intent(in) :: a(:)
+        
         integer :: n, lo, mid, hi
 
         n = size(a)

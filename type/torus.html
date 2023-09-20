@@ -133,11 +133,11 @@
       </div>
       <div id="vars-0" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/torus.html#variable-iradius">iradius</a>
-            <a class="list-group-item" href="../type/torus.html#variable-layer~7">layer</a>
+            <a class="list-group-item" href="../type/torus.html#variable-iradius~2">iradius</a>
+            <a class="list-group-item" href="../type/torus.html#variable-layer~17">layer</a>
             <a class="list-group-item" href="../type/torus.html#variable-optprops">optProps</a>
-            <a class="list-group-item" href="../type/torus.html#variable-oradius">oradius</a>
-            <a class="list-group-item" href="../type/torus.html#variable-transform">transform</a>
+            <a class="list-group-item" href="../type/torus.html#variable-oradius~2">oradius</a>
+            <a class="list-group-item" href="../type/torus.html#variable-transform~11">transform</a>
         </div>
       </div>
     </div>
@@ -197,7 +197,7 @@
     
     <div class="col-md-9" id='text'>
       <h2>type, public, extends(<a href='../type/sdf_base.html'>sdf_base</a>) :: torus</h2>
-    
+    <p>Torus SDF</p>
     <br>
 
     <section class="visible-xs visible-sm hidden-md">
@@ -211,11 +211,11 @@
       </div>
       <div id="vars-1" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/torus.html#variable-iradius">iradius</a>
-            <a class="list-group-item" href="../type/torus.html#variable-layer~7">layer</a>
+            <a class="list-group-item" href="../type/torus.html#variable-iradius~2">iradius</a>
+            <a class="list-group-item" href="../type/torus.html#variable-layer~17">layer</a>
             <a class="list-group-item" href="../type/torus.html#variable-optprops">optProps</a>
-            <a class="list-group-item" href="../type/torus.html#variable-oradius">oradius</a>
-            <a class="list-group-item" href="../type/torus.html#variable-transform">transform</a>
+            <a class="list-group-item" href="../type/torus.html#variable-oradius~2">oradius</a>
+            <a class="list-group-item" href="../type/torus.html#variable-transform~11">transform</a>
         </div>
       </div>
     </div>
@@ -286,7 +286,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-iradius"></span>
+              <span class="anchor" id="variable-iradius~2"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -303,7 +303,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-layer~7"></span>
+              <span class="anchor" id="variable-layer~17"></span>
               integer,
             </td>
               <td>public</td>
@@ -337,7 +337,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-oradius"></span>
+              <span class="anchor" id="variable-oradius~2"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -354,7 +354,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-transform"></span>
+              <span class="anchor" id="variable-transform~11"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -383,6 +383,9 @@
       <h3>public        interface <a href='../interface/torus.html'>torus</a> 
       </h3>
     </div>
+      <div class="panel-body">
+        <p>Interface to torus SDF initialising function</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
@@ -390,7 +393,7 @@
 
     </h3>
     
-  
+  <p>Initalising function for Torus SDF.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -415,7 +418,7 @@
             <td>::</td>
             <td><strong>oradius</strong></td>
             <td>
-
+<p>Outer radius of Torus</p>
             </td>
         </tr>
         <tr>
@@ -430,7 +433,7 @@
             <td>::</td>
             <td><strong>iradius</strong></td>
             <td>
-
+<p>Inner radius of Torus</p>
             </td>
         </tr>
         <tr>
@@ -445,7 +448,7 @@
             <td>::</td>
             <td><strong>optProp</strong></td>
             <td>
-
+<p>Optical properties of the SDF</p>
             </td>
         </tr>
         <tr>
@@ -460,7 +463,7 @@
             <td>::</td>
             <td><strong>layer</strong></td>
             <td>
-
+<p>ID number of sdf</p>
             </td>
         </tr>
         <tr>
@@ -475,7 +478,7 @@
             <td>::</td>
             <td><strong>transform</strong>(4,4)</td>
             <td>
-
+<p>Optional transform to apply to SDF</p>
             </td>
         </tr>
     </tbody>
@@ -506,7 +509,7 @@
     private pure elemental function <a href='../proc/evaluate_torus.html'>evaluate_torus</a>(this, pos) result(res)  
 </h3>
     
-  
+  <p>Evaluation function for Torus SDF.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -546,7 +549,7 @@
             <td>::</td>
             <td><strong>pos</strong></td>
             <td>
-
+<p>vector position to evaluate SDF at</p>
             </td>
         </tr>
     </tbody>

@@ -165,14 +165,15 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='../module/gridmod.html'>gridMod</a></li>
                 <li><a href='../module/vector_class.html'>vector_class</a></li>
+                <li><a href='../module/gridmod.html'>gridMod</a></li>
             </ul>
           </li>
       </ul>
     </div>
 
 
+    <p>funtion that returns distant to nearest wall and which wall that is (x, y, or z)</p>
 
 
     <h3>Arguments</h3>
@@ -188,7 +189,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-grid~3"></span>
+              <span class="anchor" id="variable-grid~5"></span>
               type(<a href='../type/cart_grid.html'>cart_grid</a>),
             </td>
 <td>intent(in)</td>
@@ -203,7 +204,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-celli"></span>
+              <span class="anchor" id="variable-celli~2"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -218,7 +219,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-cellj"></span>
+              <span class="anchor" id="variable-cellj~2"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -233,7 +234,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-cellk"></span>
+              <span class="anchor" id="variable-cellk~2"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -248,7 +249,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-pos~30"></span>
+              <span class="anchor" id="variable-pos~32"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -263,7 +264,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dir~9"></span>
+              <span class="anchor" id="variable-dir~10"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -347,9 +348,8 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">function </span><span class="n">wall_dist</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span><span class="w"> </span><span class="n">celli</span><span class="p">,</span><span class="w"> </span><span class="n">cellj</span><span class="p">,</span><span class="w"> </span><span class="n">cellk</span><span class="p">,</span><span class="w"> </span><span class="n">pos</span><span class="p">,</span><span class="w"> </span><span class="n">dir</span><span class="p">,</span><span class="w"> </span><span class="n">ldir</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="c">!funtion that returns distant to nearest wall and which wall that is (x, y, or z)</span>
-<span class="w">    </span><span class="c">!</span>
-<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">!! funtion that returns distant to nearest wall and which wall that is (x, y, or z)</span>
+<span class="w">    </span>
 <span class="w">        </span><span class="k">use </span><span class="n">vector_class</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">gridMod</span><span class="w"></span>
 

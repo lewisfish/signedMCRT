@@ -133,13 +133,13 @@
       </div>
       <div id="vars-0" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/cone.html#variable-a~42">a</a>
-            <a class="list-group-item" href="../type/cone.html#variable-b~42">b</a>
-            <a class="list-group-item" href="../type/cone.html#variable-layer~7">layer</a>
+            <a class="list-group-item" href="../type/cone.html#variable-a~47">a</a>
+            <a class="list-group-item" href="../type/cone.html#variable-b~45">b</a>
+            <a class="list-group-item" href="../type/cone.html#variable-layer~17">layer</a>
             <a class="list-group-item" href="../type/cone.html#variable-optprops">optProps</a>
-            <a class="list-group-item" href="../type/cone.html#variable-ra">ra</a>
-            <a class="list-group-item" href="../type/cone.html#variable-rb">rb</a>
-            <a class="list-group-item" href="../type/cone.html#variable-transform">transform</a>
+            <a class="list-group-item" href="../type/cone.html#variable-ra~2">ra</a>
+            <a class="list-group-item" href="../type/cone.html#variable-rb~2">rb</a>
+            <a class="list-group-item" href="../type/cone.html#variable-transform~11">transform</a>
         </div>
       </div>
     </div>
@@ -199,7 +199,7 @@
     
     <div class="col-md-9" id='text'>
       <h2>type, public, extends(<a href='../type/sdf_base.html'>sdf_base</a>) :: cone</h2>
-    
+    <p>Cone SDF</p>
     <br>
 
     <section class="visible-xs visible-sm hidden-md">
@@ -213,13 +213,13 @@
       </div>
       <div id="vars-1" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/cone.html#variable-a~42">a</a>
-            <a class="list-group-item" href="../type/cone.html#variable-b~42">b</a>
-            <a class="list-group-item" href="../type/cone.html#variable-layer~7">layer</a>
+            <a class="list-group-item" href="../type/cone.html#variable-a~47">a</a>
+            <a class="list-group-item" href="../type/cone.html#variable-b~45">b</a>
+            <a class="list-group-item" href="../type/cone.html#variable-layer~17">layer</a>
             <a class="list-group-item" href="../type/cone.html#variable-optprops">optProps</a>
-            <a class="list-group-item" href="../type/cone.html#variable-ra">ra</a>
-            <a class="list-group-item" href="../type/cone.html#variable-rb">rb</a>
-            <a class="list-group-item" href="../type/cone.html#variable-transform">transform</a>
+            <a class="list-group-item" href="../type/cone.html#variable-ra~2">ra</a>
+            <a class="list-group-item" href="../type/cone.html#variable-rb~2">rb</a>
+            <a class="list-group-item" href="../type/cone.html#variable-transform~11">transform</a>
         </div>
       </div>
     </div>
@@ -290,7 +290,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~42"></span>
+              <span class="anchor" id="variable-a~47"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
@@ -307,7 +307,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~42"></span>
+              <span class="anchor" id="variable-b~45"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
@@ -324,7 +324,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-layer~7"></span>
+              <span class="anchor" id="variable-layer~17"></span>
               integer,
             </td>
               <td>public</td>
@@ -358,7 +358,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ra"></span>
+              <span class="anchor" id="variable-ra~2"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -375,7 +375,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-rb"></span>
+              <span class="anchor" id="variable-rb~2"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -392,7 +392,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-transform"></span>
+              <span class="anchor" id="variable-transform~11"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -421,6 +421,9 @@
       <h3>public        interface <a href='../interface/cone.html'>cone</a> 
       </h3>
     </div>
+      <div class="panel-body">
+        <p>Interface to cone SDF initialising function</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
@@ -428,7 +431,7 @@
 
     </h3>
     
-  
+  <p>Initalising function for Capped Cone SDF.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -453,7 +456,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Centre of base of Cone</p>
             </td>
         </tr>
         <tr>
@@ -468,7 +471,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Tip of cone</p>
             </td>
         </tr>
         <tr>
@@ -483,7 +486,7 @@
             <td>::</td>
             <td><strong>ra</strong></td>
             <td>
-
+<p>Radius of Cones base</p>
             </td>
         </tr>
         <tr>
@@ -498,7 +501,7 @@
             <td>::</td>
             <td><strong>rb</strong></td>
             <td>
-
+<p>Radius of Cones tip. For rb = 0.0 get normal uncapped cone.</p>
             </td>
         </tr>
         <tr>
@@ -513,7 +516,7 @@
             <td>::</td>
             <td><strong>optProp</strong></td>
             <td>
-
+<p>Optical properties of the SDF</p>
             </td>
         </tr>
         <tr>
@@ -528,7 +531,7 @@
             <td>::</td>
             <td><strong>layer</strong></td>
             <td>
-
+<p>ID number of sdf</p>
             </td>
         </tr>
         <tr>
@@ -543,7 +546,7 @@
             <td>::</td>
             <td><strong>transform</strong>(4,4)</td>
             <td>
-
+<p>Optional transform to apply to SDF</p>
             </td>
         </tr>
     </tbody>
@@ -574,7 +577,7 @@
     private pure elemental function <a href='../proc/evaluate_cone.html'>evaluate_cone</a>(this, pos) result(res)  
 </h3>
     
-  
+  <p>Evaluation function for Cone SDF.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">

@@ -59,6 +59,7 @@ module vector_class
     end interface nint
 
     interface abs
+        !! interface wrapper for abs_vec
         module procedure abs_vec
     end interface abs
 
@@ -129,6 +130,7 @@ module vector_class
         end function nint_vec
 
         type(vector) pure elemental function abs_vec(this)
+        !! Calculate the absoulte of a vector elementwise
 
             type(vector), intent(IN) :: this
 

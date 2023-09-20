@@ -165,14 +165,15 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='../module/gridmod.html'>gridMod</a></li>
                 <li><a href='../module/vector_class.html'>vector_class</a></li>
+                <li><a href='../module/gridmod.html'>gridMod</a></li>
             </ul>
           </li>
       </ul>
     </div>
 
 
+    <p>updates the current voxel based upon position</p>
 
 
     <h3>Arguments</h3>
@@ -188,7 +189,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-grid~7"></span>
+              <span class="anchor" id="variable-grid~4"></span>
               type(<a href='../type/cart_grid.html'>cart_grid</a>),
             </td>
 <td>intent(in)</td>
@@ -198,12 +199,12 @@
             <td>::</td>
             <td><strong>grid</strong></td>
             <td>
-                
+                <p>grid</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-pos~33"></span>
+              <span class="anchor" id="variable-pos~4"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -213,12 +214,12 @@
             <td>::</td>
             <td><strong>pos</strong></td>
             <td>
-                
+                <p>current photon packet position</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-celli~3"></span>
+              <span class="anchor" id="variable-celli"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -228,12 +229,12 @@
             <td>::</td>
             <td><strong>celli</strong></td>
             <td>
-                
+                <p>position of photon packet in grid</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-cellj~3"></span>
+              <span class="anchor" id="variable-cellj"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -243,12 +244,12 @@
             <td>::</td>
             <td><strong>cellj</strong></td>
             <td>
-                
+                <p>position of photon packet in grid</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-cellk~3"></span>
+              <span class="anchor" id="variable-cellk"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -258,7 +259,7 @@
             <td>::</td>
             <td><strong>cellk</strong></td>
             <td>
-                
+                <p>position of photon packet in grid</p>
             </td>
         </tr>
     </tbody>
@@ -310,14 +311,16 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">update_voxels</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span><span class="w"> </span><span class="n">pos</span><span class="p">,</span><span class="w"> </span><span class="n">celli</span><span class="p">,</span><span class="w"> </span><span class="n">cellj</span><span class="p">,</span><span class="w"> </span><span class="n">cellk</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="c">! updates the current voxel based upon position</span>
-<span class="w">    </span><span class="c">!</span>
-<span class="w">    </span><span class="c">!</span>
+<span class="w">    </span><span class="c">!! updates the current voxel based upon position</span>
+
 <span class="w">        </span><span class="k">use </span><span class="n">vector_class</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">gridmod</span><span class="w"></span>
 <span class="w">        </span>
+<span class="w">        </span><span class="c">!&gt; grid</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">cart_grid</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">grid</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; current photon packet position</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">    </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">pos</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; position of photon packet in grid</span>
 <span class="w">        </span><span class="kt">integer</span><span class="p">,</span><span class="w">         </span><span class="k">intent</span><span class="p">(</span><span class="n">INOUT</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">celli</span><span class="p">,</span><span class="w"> </span><span class="n">cellj</span><span class="p">,</span><span class="w"> </span><span class="n">cellk</span><span class="w"></span>
 
 <span class="w">        </span><span class="c">!accurate but slow</span>

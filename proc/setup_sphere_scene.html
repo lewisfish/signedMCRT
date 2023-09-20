@@ -165,18 +165,19 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='../module/mat_class.html'>mat_class</a></li>
-                <li><a href='../module/random.html'>random</a></li>
-                <li><a href='../module/sdfs.html'>sdfs</a></li>
-                <li><a href='../module/sdfhelpers.html'>sdfHelpers</a></li>
-                <li><a href='../module/opticalproperties.html'>opticalProperties</a></li>
                 <li><a href='../module/vector_class.html'>vector_class</a></li>
+                <li><a href='../module/random.html'>random</a></li>
+                <li><a href='../module/mat_class.html'>mat_class</a></li>
+                <li><a href='../module/sdfhelpers.html'>sdfHelpers</a></li>
+                <li><a href='../module/sdfs.html'>sdfs</a></li>
+                <li><a href='../module/opticalproperties.html'>opticalProperties</a></li>
             </ul>
           </li>
       </ul>
     </div>
 
 
+    <p>setup a test scene with user defined spheres</p>
 
 
     <h3>Arguments</h3>
@@ -261,6 +262,7 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">function </span><span class="n">setup_sphere_scene</span><span class="p">(</span><span class="n">dict</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="k">array</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="c">!! setup a test scene with user defined spheres</span>
 
 <span class="w">        </span><span class="k">use </span><span class="n">mat_class</span><span class="p">,</span><span class="w">         </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">invert</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">opticalProperties</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">opticalProp_t</span><span class="p">,</span><span class="w"> </span><span class="n">mono</span><span class="w"></span>

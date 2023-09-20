@@ -165,18 +165,21 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='../module/surfaces.html'>surfaces</a></li>
-                <li><a href='../module/photonmod.html'>photonMod</a></li>
-                <li><a href='../module/random.html'>random</a></li>
-                <li><a href='../module/sdfs.html'>sdfs</a></li>
-                <li><a href='../module/gridmod.html'>gridMod</a></li>
                 <li><a href='../module/vector_class.html'>vector_class</a></li>
+                <li><a href='../module/surfaces.html'>surfaces</a></li>
+                <li><a href='../module/random.html'>random</a></li>
+                <li><a href='../module/photonmod.html'>photonMod</a></li>
+                <li><a href='../module/gridmod.html'>gridMod</a></li>
+                <li><a href='../module/sdfs.html'>sdfs</a></li>
             </ul>
           </li>
       </ul>
     </div>
 
 
+    <p>optical depth integration subroutine
+Moves photons to interaction location
+Calculated is any reflection or refraction happens whilst moving</p>
 
 
     <h3>Arguments</h3>
@@ -192,7 +195,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-grid~4"></span>
+              <span class="anchor" id="variable-grid~6"></span>
               type(<a href='../type/cart_grid.html'>cart_grid</a>),
             </td>
 <td>intent(in)</td>
@@ -207,7 +210,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-packet~5"></span>
+              <span class="anchor" id="variable-packet~6"></span>
               type(<a href='../type/photon.html'>photon</a>),
             </td>
 <td>intent(inout)</td>
@@ -284,9 +287,9 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">tauint2</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span><span class="w"> </span><span class="n">packet</span><span class="p">,</span><span class="w"> </span><span class="n">sdfs_array</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="c">! optical depth integration subroutine</span>
-<span class="w">    </span><span class="c">! Moves photons to interaction location</span>
-<span class="w">    </span><span class="c">! Calculated is any reflection or refraction happens whilst moving</span>
+<span class="w">    </span><span class="c">!! optical depth integration subroutine</span>
+<span class="w">    </span><span class="c">!! Moves photons to interaction location</span>
+<span class="w">    </span><span class="c">!! Calculated is any reflection or refraction happens whilst moving</span>
 <span class="w">    </span><span class="c">!</span>
 <span class="w">        </span><span class="k">use </span><span class="n">gridMod</span><span class="p">,</span><span class="w">      </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">cart_grid</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">photonMod</span><span class="p">,</span><span class="w">    </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">photon</span><span class="w"></span>
