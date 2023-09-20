@@ -27,18 +27,22 @@ module sdfs
 
     implicit none
     
+    !> Box SDF
     type, extends(sdf_base) :: box
+        !> Length of each dimension of the box
         type(vector) :: lengths
         contains
         procedure :: evaluate => evaluate_box
     end type box
 
+    !> Sphere SDF
     type, extends(sdf_base) :: sphere
         real(kind=wp) :: radius
         contains
         procedure :: evaluate => evaluate_sphere
     end type sphere
 
+    !> Cylinder SDF
     type, extends(sdf_base) :: cylinder
         real(kind=wp) :: radius
         type(vector) :: a, b
@@ -46,18 +50,21 @@ module sdfs
         procedure :: evaluate => evaluate_cylinder
     end type cylinder
 
+    !> Torus SDF
     type, extends(sdf_base) :: torus
         real(kind=wp) :: oradius, iradius
         contains
         procedure :: evaluate => evaluate_torus
     end type torus
 
+    !> Triprisim SDF
     type, extends(sdf_base) :: triprism
         real(kind=wp) :: h1, h2
         contains
         procedure :: evaluate => evaluate_triprism
     end type triprism
 
+    !> Cone SDF
     type, extends(sdf_base) :: cone
         type(vector)  :: a, b
         real(kind=wp) :: ra, rb
@@ -65,6 +72,7 @@ module sdfs
         procedure :: evaluate => evaluate_cone
     end type cone
 
+    !> Capsule SDF
     type, extends(sdf_base) :: capsule
         type(vector)  :: a, b
         real(kind=wp) :: r
@@ -72,18 +80,21 @@ module sdfs
         procedure :: evaluate => evaluate_capsule
     end type capsule
 
+    !> Plane SDF
     type, extends(sdf_base) :: plane
         type(vector) :: a
         contains
         procedure :: evaluate => evaluate_plane
     end type plane
 
+    !> Segment SDF (2D)
     type, extends(sdf_base) :: segment
         type(vector) :: a, b
         contains
         procedure :: evaluate => evaluate_segment
     end type segment
 
+    !> Egg SDF
     type, extends(sdf_base) :: egg
         real(kind=wp) :: r1, r2, h
         contains
@@ -95,38 +106,47 @@ module sdfs
     end interface sphere
 
     interface box
+        !! Interface to box SDF initialising function
         module procedure box_init
     end interface box
 
     interface torus
+        !! Interface to torus SDF initialising function
         module procedure torus_init
     end interface torus
 
     interface cylinder
+        !! Interface to cylinder SDF initialising function
         module procedure cylinder_init
     end interface cylinder
 
     interface triprism
+        !! Interface to triprisim SDF initialising function
         module procedure triprism_init
     end interface triprism
 
     interface egg
+        !! Interface to egg SDF initialising function
         module procedure egg_init
     end interface egg
 
     interface segment
+        !! Interface to segment SDF initialising function
         module procedure segment_init
     end interface segment
 
     interface cone
+        !! Interface to cone SDF initialising function
         module procedure cone_init
     end interface cone
 
     interface capsule
+        !! Interface to capsule SDF initialising function
         module procedure capsule_init
     end interface capsule
 
     interface plane
+        !! Interface to plane SDF initialising function
         module procedure plane_init
     end interface plane
 
@@ -136,11 +156,20 @@ module sdfs
     contains
     
     function segment_init(a, b, optProp, layer, transform) result(out)
+        !! Initalising function for segment SDF.
+        !! Note this is a 2D function
 
         type(segment) :: out
+
+        !> Optical properties of the SDF
         type(opticalProp_t),     intent(in) :: optProp
-        type(vector),            intent(IN) :: a, b
+        !> segment start point
+        type(vector),            intent(IN) :: a
+        !> segment end point
+        type(vector),            intent(IN) :: b
+        !> ID number of sdf
         integer,                 intent(IN) :: layer
+        !> Optional transform to apply to SDF
         real(kind=wp), optional, intent(IN) :: transform(4, 4)
 
         real(kind=wp) :: t(4, 4)
@@ -162,16 +191,23 @@ module sdfs
     end function segment_init
 
     function egg_init(r1, r2, h, optProp, layer, transform) result(out)
-        ! makes a Moss egg. https://www.shadertoy.com/view/WsjfRt
-        ! R1 controls "fatness" of the egg. Actually controls the base circle radius.
-        ! R2 contorls the pointiness of the egg. Actually controls radius of top circle.
-        ! h controls the height of the egg. Actually controls y position of top circle.
+        !! Initalising function for egg SDF.
+        !! makes a Moss egg. https://www.shadertoy.com/view/WsjfRt
+
         type(egg) :: out
         
-        type(opticalProp_t),      intent(in) :: optProp
-        real(kind=wp),            intent(IN) :: r1, r2, h
+        !> R1 controls "fatness" of the egg. Actually controls the base circle radius.
+        real(kind=wp),            intent(IN) :: r1
+        !> R2 contorls the pointiness of the egg. Actually controls radius of top circle.
+        real(kind=wp),            intent(in) :: r2
+        !> h controls the height of the egg. Actually controls y position of top circle.
+        real(kind=wp),            intent(in) :: h
+        !> ID number of sdf
         integer,                  intent(IN) :: layer
+        !> Optional transform to apply to SDF
         real(kind=wp),  optional, intent(IN) :: transform(4, 4)
+        !> Optical properties of the SDF
+        type(opticalProp_t),      intent(in) :: optProp
 
         real(kind=wp) :: t(4, 4)
 
@@ -191,13 +227,18 @@ module sdfs
     end function egg_init
 
     function plane_init(a, optProp, layer, transform) result(out)
-        
+        !! Initalising function for plane SDF.
+
         type(plane) :: out
         
-        type(opticalProp_t),      intent(in) :: optProp
+        !> Plane normal. must be normalised
         type(vector),             intent(IN) :: a
+        !> ID number of sdf
         integer,                  intent(IN) :: layer
+        !> Optional transform to apply to SDF
         real(kind=wp),  optional, intent(IN) :: transform(4, 4)
+        !> Optical properties of the SDF
+        type(opticalProp_t),      intent(in) :: optProp
 
         real(kind=wp) :: t(4, 4)
 
@@ -216,14 +257,22 @@ module sdfs
     end function plane_init
 
     function capsule_init(a, b, r, optProp, layer, transform) result(out)
-        
+        !! Initalising function for capsule SDF.
+
         type(capsule) :: out
         
-        type(vector),            intent(IN) :: a, b
-        type(opticalProp_t),     intent(in) :: optProp
+        !> Capsule startpoint
+        type(vector),            intent(IN) :: a
+        !> Capsule endpoint
+        type(vector),            intent(IN) :: b
+        !> Capsule radius
         real(kind=wp),           intent(IN) :: r
-        integer,                 intent(IN) :: layer
-        real(kind=wp), optional, intent(IN) :: transform(4, 4)
+        !> ID number of sdf
+        integer,                  intent(IN) :: layer
+        !> Optional transform to apply to SDF
+        real(kind=wp),  optional, intent(IN) :: transform(4, 4)
+        !> Optical properties of the SDF
+        type(opticalProp_t),      intent(in) :: optProp
 
         real(kind=wp) :: t(4, 4)
 
@@ -244,15 +293,20 @@ module sdfs
     end function capsule_init
 
     function triprism_init(h1, h2, optProp, layer, transform) result(out)
-        !h1 is height
-        !h2 is length
-        !        
+        !! Initalising function for triprisim SDF.
+        
         type(triprism) :: out
         
-        type(opticalProp_t),     intent(in) :: optProp
-        real(kind=wp),           intent(IN) :: h1, h2
-        integer,                 intent(IN) :: layer
-        real(kind=wp), optional, intent(IN) :: transform(4, 4)
+        !> Height of triprisim
+        real(kind=wp),            intent(IN) :: h1
+        !> length of triprisim
+        real(kind=wp),            intent(IN) :: h2
+        !> ID number of sdf
+        integer,                  intent(IN) :: layer
+        !> Optional transform to apply to SDF
+        real(kind=wp),  optional, intent(IN) :: transform(4, 4)
+        !> Optical properties of the SDF
+        type(opticalProp_t),      intent(in) :: optProp
 
         real(kind=wp) :: t(4, 4)
 
@@ -271,14 +325,24 @@ module sdfs
     end function triprism_init
 
     function cone_init(a, b, ra, rb, optProp, layer, transform) result(out)
-        
+        !! Initalising function for Capped Cone SDF.
+
         type(cone) :: out
         
-        type(opticalProp_t),     intent(in) :: optProp
-        type(vector),            intent(IN) :: a, b
-        real(kind=wp),           intent(IN) :: ra, rb
-        integer,                 intent(IN) :: layer
-        real(kind=wp), optional, intent(IN) :: transform(4, 4)
+        !> Centre of base of Cone
+        type(vector),             intent(IN) :: a
+        !> Tip of cone
+        type(vector),             intent(IN) :: b
+        !> Radius of Cones base
+        real(kind=wp),            intent(IN) :: ra
+        !> Radius of Cones tip. For rb = 0.0 get normal uncapped cone.
+        real(kind=wp),            intent(in) :: rb
+        !> ID number of sdf
+        integer,                  intent(IN) :: layer
+        !> Optional transform to apply to SDF
+        real(kind=wp),  optional, intent(IN) :: transform(4, 4)
+        !> Optical properties of the SDF
+        type(opticalProp_t),      intent(in) :: optProp
 
         real(kind=wp) :: t(4, 4)
 
@@ -299,14 +363,22 @@ module sdfs
     end function cone_init
 
     function cylinder_init(a, b, radius, optProp, layer, transform) result(out)
-                
+        !! Initalising function for Cylinder SDF.
+
         type(cylinder) :: out
         
-        type(opticalProp_t),     intent(in) :: optProp
+        !> Radius of cylinder
         real(kind=wp),           intent(in) :: radius
-        integer,                 intent(IN) :: layer
-        type(vector),            intent(IN) :: a, b
-        real(kind=wp), optional, intent(IN) :: transform(4, 4)
+        !> Vector position at centre of the bottom circle
+        type(vector),            intent(IN) :: a
+        !> Vector position at centre of the top circle
+        type(vector),            intent(IN) :: b
+        !> ID number of sdf
+        integer,                  intent(IN) :: layer
+        !> Optional transform to apply to SDF
+        real(kind=wp),  optional, intent(IN) :: transform(4, 4)
+        !> Optical properties of the SDF
+        type(opticalProp_t),      intent(in) :: optProp
 
         real(kind=wp) :: t(4, 4)
 
@@ -327,13 +399,19 @@ module sdfs
     end function cylinder_init
 
     function torus_init(oradius, iradius, optProp, layer, transform) result(out)
-        
+        !! Initalising function for Torus SDF.
+
         type(torus) :: out
-        
-        type(opticalProp_t),     intent(in) :: optProp
-        real(kind=wp),           intent(IN) :: oradius, iradius
-        integer,                 intent(IN) :: layer
-        real(kind=wp), optional, intent(IN) :: transform(4, 4)
+        !> Outer radius of Torus
+        real(kind=wp),           intent(IN) :: oradius
+        !> Inner radius of Torus
+        real(kind=wp),           intent(IN) :: iradius
+        !> ID number of sdf
+        integer,                  intent(IN) :: layer
+        !> Optional transform to apply to SDF
+        real(kind=wp),  optional, intent(IN) :: transform(4, 4)
+        !> Optical properties of the SDF
+        type(opticalProp_t),      intent(in) :: optProp
 
         real(kind=wp) :: t(4, 4)
 
@@ -353,13 +431,18 @@ module sdfs
     end function torus_init
 
     function box_init(lengths, optProp, layer, transform) result(out)
-                
+        !! Initalising function for Box SDF.
+
         type(box) :: out
         
-        type(vector),            intent(IN) :: lengths
-        type(opticalProp_t),     intent(in) :: optProp
-        integer,                 intent(IN) :: layer
-        real(kind=wp), optional, intent(in) :: transform(4, 4)
+        !> Lengths of each dimension of the box
+        type(vector),             intent(IN) :: lengths
+        !> ID number of sdf
+        integer,                  intent(IN) :: layer
+        !> Optional transform to apply to SDF
+        real(kind=wp),  optional, intent(IN) :: transform(4, 4)
+        !> Optical properties of the SDF
+        type(opticalProp_t),      intent(in) :: optProp
 
         real(kind=wp) :: t(4, 4)
 
@@ -378,13 +461,18 @@ module sdfs
     end function box_init
     
     function sphere_init(radius, optProp, layer, transform) result(out)
-                
+        !! Initalising function for Sphere SDF.
+
         type(sphere) :: out
         
-        type(opticalProp_t),     intent(in) :: optProp
-        real(kind=wp),           intent(IN) :: radius
-        integer,                 intent(IN) :: layer
-        real(kind=wp), optional, intent(IN) :: transform(4, 4)
+        !> radius of the Sphere
+        real(kind=wp),            intent(IN) :: radius
+        !> ID number of sdf
+        integer,                  intent(IN) :: layer
+        !> Optional transform to apply to SDF
+        real(kind=wp),  optional, intent(IN) :: transform(4, 4)
+        !> Optical properties of the SDF
+        type(opticalProp_t),      intent(in) :: optProp
 
         real(kind=wp) :: t(4, 4)
 
@@ -404,9 +492,13 @@ module sdfs
     end function sphere_init
 
     pure elemental function evaluate_sphere(this, pos) result(res)
-       class(sphere), intent(in) :: this
-       type(vector), intent(in) :: pos
-       real(kind=wp) :: res
+        !! Evaluation function for Sphere SDF.
+
+        class(sphere), intent(in) :: this
+        !> vector position to evaluate SDF at
+        type(vector),  intent(in) :: pos
+
+        real(kind=wp) :: res
 
         type(vector) :: p
 
@@ -416,9 +508,13 @@ module sdfs
     end function evaluate_sphere
  
     pure elemental function evaluate_box(this, pos) result(res)
-       class(box), intent(in) :: this
-       type(vector), intent(in) :: pos
-       real(kind=wp) :: res
+        !! Evaluation function for Box SDF.
+
+        class(box),   intent(in) :: this
+        !> vector position to evaluate SDF at
+        type(vector), intent(in) :: pos
+
+        real(kind=wp) :: res
 
         type(vector) :: p, q
 
@@ -429,9 +525,13 @@ module sdfs
     end function evaluate_box
 
     pure elemental function evaluate_torus(this, pos) result(res)
-       class(torus), intent(in) :: this
-       type(vector), intent(in) :: pos
-       real(kind=wp) :: res
+        !! Evaluation function for Torus SDF.
+
+        class(torus), intent(in) :: this
+        !> vector position to evaluate SDF at
+        type(vector), intent(in) :: pos
+
+        real(kind=wp) :: res
 
         type(vector) :: p, q
 
@@ -442,9 +542,12 @@ module sdfs
     end function evaluate_torus
 
     pure elemental function evaluate_cylinder(this, pos) result(res)
-       class(cylinder), intent(in) :: this
-       type(vector), intent(in) :: pos
-       real(kind=wp) :: res
+        !! Evaluation function for Cylinder SDF.
+
+        class(cylinder), intent(in) :: this
+        !> vector position to evaluate SDF at
+        type(vector),    intent(in) :: pos
+        real(kind=wp) :: res
 
         type(vector)  :: p, ba, pa
         real(kind=wp) :: x, y, x2, y2, d, baba, paba
@@ -478,9 +581,11 @@ module sdfs
     end function evaluate_cylinder
 
     pure elemental function evaluate_triprism(this, pos) result(res)
+        !! Evaluation function for Triprisim SDF.
 
         class(triprism), intent(in) :: this
-        type(vector),  intent(IN) :: pos
+        !> vector position to evaluate SDF at
+        type(vector),    intent(IN) :: pos
         real(kind=wp) :: res
 
         type(vector) :: q, p
@@ -492,6 +597,8 @@ module sdfs
     end function evaluate_triprism
 
     pure elemental function evaluate_segment(this, pos) result(res)
+        !! Evaluation function for Segment SDF.
+
         !p = pos
         !a = pt1
         !b = pt2
@@ -500,7 +607,9 @@ module sdfs
         use utils, only : clamp
 
         class(segment), intent(in) :: this
-        type(vector), intent(IN) :: pos
+        !> vector position to evaluate SDF at
+        type(vector),   intent(IN) :: pos
+
         real(kind=wp) :: res
 
         type(vector)  :: pa, ba, p
@@ -517,11 +626,13 @@ module sdfs
     end function evaluate_segment
 
     pure elemental function evaluate_capsule(this, pos) result(res)
+        !! Evaluation function for Capsule SDF.
 
         use utils, only : clamp
 
         class(capsule), intent(in) :: this
-        type(vector), intent(in) :: pos
+        !> vector position to evaluate SDF at
+        type(vector),   intent(in) :: pos
         real(kind=wp) :: res
 
         type(vector) :: pa, ba, p
@@ -537,11 +648,12 @@ module sdfs
     end function evaluate_capsule
 
     pure elemental function evaluate_cone(this, pos) result(res)
+        !! Evaluation function for Cone SDF.
 
         use utils, only : clamp
 
-        class(cone), intent(in) :: this
-        type(vector),  intent(IN) :: pos
+        class(cone),  intent(in) :: this
+        type(vector), intent(IN) :: pos
         real(kind=wp) :: res
 
         real(kind=wp) :: rba, baba, papa, paba, x, cax, cay, k, f, cbx, cby, s
@@ -574,9 +686,11 @@ module sdfs
     end function evaluate_cone
 
     pure elemental function evaluate_egg(this, pos) result(res)
-        !https://www.shadertoy.com/view/WsjfRt
+        !! Evaluation function for Egg SDF.
+        !! https://www.shadertoy.com/view/WsjfRt
 
         class(egg),   intent(in) :: this
+        !> vector position to evaluate SDF at
         type(vector), intent(IN) :: pos
         real(kind=wp) :: res
 
@@ -604,8 +718,10 @@ module sdfs
     end function evaluate_egg
 
     pure elemental function evaluate_plane(this, pos) result(res)
+        !! Evaluation function for Plane SDF.
 
         class(plane), intent(in) :: this
+        !> vector position to evaluate SDF at
         type(vector), intent(IN) :: pos
         real(kind=wp) :: res
 

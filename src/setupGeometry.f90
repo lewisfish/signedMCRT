@@ -1,5 +1,5 @@
 module setupGeometry
-
+    !! contains all the routines that setup premade experimental geometry
     use constants, only : wp
     use tomlf, only : toml_table, get_value
 
@@ -8,7 +8,7 @@ module setupGeometry
 contains
 
     function setup_egg() result(array)
-
+    !! setup an egg, with yolk, albumen and shell
         use sdfs, only : sdf, sphere, box, egg
         use sdfModifiers, only : onion, revolution
         use vector_class
@@ -60,6 +60,7 @@ contains
     end function setup_egg
 
     function setup_sphere_scene(dict) result(array)
+    !! setup a test scene with user defined spheres
 
         use mat_class,         only : invert
         use opticalProperties, only : opticalProp_t, mono
@@ -106,9 +107,8 @@ contains
 
 
     function setup_logo() result(array)
-    ! setup uni crest geometry
-    !
-    !
+    !! setup uni crest geometry
+    
         use sdfs,         only : sdf, box, segment
         use sdfModifiers, only : extrude
         use opticalProperties
@@ -145,9 +145,8 @@ contains
 
 
     function setup_sphere() result(array)
-    ! setup the sphere test case from tran and jacques paper.
-    !
-    !
+    !! setup the sphere test case from tran and jacques paper.
+
         use mat_class,         only : invert
         use opticalProperties, only : mono, opticalProp_t
         use sdfs,              only : sdf, box, sphere
@@ -177,9 +176,8 @@ contains
 
 
     function setup_exp(dict) result(array)
-    ! Setup experimental geometry from Georgies paper. i.e a glass bottle with contents
-    !
-    !
+    !! Setup experimental geometry from Georgies paper. i.e a glass bottle with contents
+    
         use sdfs,         only : sdf, box, cylinder!, subtraction
         use sdfHelpers,   only : rotate_y, translate
         use utils,        only : deg2rad
@@ -221,6 +219,7 @@ contains
     end function setup_exp
 
     function setup_scat_test(dict) result(array)
+    !! set up scattering test scene with user defined tau
 
         use opticalProperties
         use sdfs, only : sdf, sphere, box
@@ -248,6 +247,7 @@ contains
     end function setup_scat_test
 
     function setup_scat_test2(dict) result(array)
+    !! set up scattering test scene 2 with user defined tau and hgg
 
         use opticalProperties
         use sdfs,             only : sdf, box
@@ -274,7 +274,8 @@ contains
     end function setup_scat_test2
 
     function setup_omg_sdf() result(array)
-        
+    !! setup OMG scene
+
         use mat_class,        only : invert
         use opticalProperties
         use sdfHelpers,       only : translate, rotate_y
@@ -359,6 +360,7 @@ contains
 
 
     function get_vessels() result(array)
+    !! setup blood vessel scene
 
         use opticalProperties
         use sdfs,             only : sdf, capsule, box
