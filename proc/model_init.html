@@ -160,6 +160,7 @@
 </h2>
     
 
+    <p>Initalise the model type.</p>
 
 
     <h3>Arguments</h3>
@@ -175,7 +176,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-array~12"></span>
+              <span class="anchor" id="variable-array~8"></span>
               type(<a href='../type/sdf.html'>sdf</a>),
             </td>
 <td>intent(in)</td>
@@ -185,12 +186,12 @@
             <td>::</td>
             <td><strong>array</strong>(:)</td>
             <td>
-                
+                <p>Array of SDFs</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-func~3"></span>
+              <span class="anchor" id="variable-func"></span>
               procedure(<a href='../interface/op.html'>op</a>)
             </td>
 <td></td>
@@ -200,7 +201,7 @@
             <td>::</td>
             <td><strong>func</strong></td>
             <td>
-                
+                <p>Operator to apply to SDF.</p>
             </td>
         </tr>
         <tr>
@@ -215,7 +216,7 @@
             <td>::</td>
             <td><strong>kopt</strong></td>
             <td>
-                
+                <p>Parameter used in modifier</p>
             </td>
         </tr>
     </tbody>
@@ -274,12 +275,16 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">function </span><span class="n">model_init</span><span class="p">(</span><span class="k">array</span><span class="p">,</span><span class="w"> </span><span class="n">func</span><span class="p">,</span><span class="w"> </span><span class="n">kopt</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"></span>
-
+<span class="w">        </span><span class="c">!! Initalise the model type.</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">out</span><span class="w"></span>
 
+<span class="w">        </span><span class="c">!&gt; Operator to apply to SDF.</span>
 <span class="w">        </span><span class="k">procedure</span><span class="p">(</span><span class="n">op</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">func</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Array of SDFs</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">sdf</span><span class="p">),</span><span class="w">               </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">array</span><span class="p">(:)</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Parameter used in modifier</span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">optional</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">kopt</span><span class="w"></span>
+
 <span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="w"></span>
 
 <span class="w">        </span><span class="n">out</span><span class="p">%</span><span class="k">array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">array</span>

@@ -185,7 +185,7 @@ module geometry
     end function intersectCone
 
     logical function intersectPlane(n, p0, l0, l, t)
-    !https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection
+    !![ref](https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection)
         type(vector),  intent(in) :: n, p0, l, l0
         real(kind=wp), intent(inout) :: t
 
@@ -204,7 +204,7 @@ module geometry
 
 
     logical function intersectCircle(n, p0, radius, l0, l, t)
-    !https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection
+    !![ref](https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection)
         type(vector),  intent(in) :: n, p0, l, l0
         real(kind=wp), intent(in) :: radius
 

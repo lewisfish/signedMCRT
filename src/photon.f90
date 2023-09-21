@@ -708,7 +708,7 @@ module photonMod
 
         subroutine scatter(this, hgg, g2, dects)
             !! Scattering routine. Implments both isotropic and henyey-greenstein scattering
-            !! taken from mcxyz https://omlc.org/software/mc/mcxyz/index.html
+            !! taken from [mcxyz](https://omlc.org/software/mc/mcxyz/index.html)
 
             use constants, only : PI, TWOPI, wp
             use random,    only : ran2

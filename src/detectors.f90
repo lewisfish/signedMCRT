@@ -170,7 +170,7 @@ module detectors
     end function init_camera
 
     logical function check_hit_camera(this, hitpoint)
-    ! https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection
+    !! [ref](https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection)
         class(camera), intent(inout) :: this
         type(hit_t),   intent(in)    :: hitpoint
 

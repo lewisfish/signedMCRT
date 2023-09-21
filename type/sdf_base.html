@@ -133,9 +133,9 @@
       </div>
       <div id="vars-0" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/sdf_base.html#variable-layer~17">layer</a>
+            <a class="list-group-item" href="../type/sdf_base.html#variable-layer~2">layer</a>
             <a class="list-group-item" href="../type/sdf_base.html#variable-optprops">optProps</a>
-            <a class="list-group-item" href="../type/sdf_base.html#variable-transform~11">transform</a>
+            <a class="list-group-item" href="../type/sdf_base.html#variable-transform">transform</a>
         </div>
       </div>
     </div>
@@ -183,7 +183,7 @@
     
     <div class="col-md-9" id='text'>
       <h2>type, public, abstract :: sdf_base</h2>
-    
+    <p>Abstract base type from which all SDF inherit from.</p>
     <br>
 
     <section class="visible-xs visible-sm hidden-md">
@@ -197,9 +197,9 @@
       </div>
       <div id="vars-1" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/sdf_base.html#variable-layer~17">layer</a>
+            <a class="list-group-item" href="../type/sdf_base.html#variable-layer~2">layer</a>
             <a class="list-group-item" href="../type/sdf_base.html#variable-optprops">optProps</a>
-            <a class="list-group-item" href="../type/sdf_base.html#variable-transform~11">transform</a>
+            <a class="list-group-item" href="../type/sdf_base.html#variable-transform">transform</a>
         </div>
       </div>
     </div>
@@ -258,7 +258,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-layer~17"></span>
+              <span class="anchor" id="variable-layer~2"></span>
               integer,
             </td>
               <td>public</td>
@@ -270,7 +270,7 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Layer ID of SDF</p>
             </td>
         </tr>
         <tr>
@@ -287,12 +287,12 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Optical property of the SDF</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-transform~11"></span>
+              <span class="anchor" id="variable-transform"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -304,7 +304,7 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Transform to apply to SDF.</p>
             </td>
         </tr>
     </tbody>
@@ -325,7 +325,7 @@
                   <h3>
     pure elemental function evalInterface(this, pos) result(res)  
 <small>Prototype</small></h3>
-  
+  <p>Evaluation function for SDF. ALL SDF must implment this.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -386,8 +386,11 @@
     <section>
     <h3><span class="anchor" id="src"></span>Source Code</h3>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">type</span><span class="p">,</span><span class="w"> </span><span class="k">abstract</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">sdf_base</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Optical property of the SDF</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">opticalProp_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">optProps</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Transform to apply to SDF.</span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">transform</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Layer ID of SDF</span>
 <span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">layer</span><span class="w"></span>
 <span class="w">        </span><span class="k">contains</span>
 <span class="k">            procedure</span><span class="p">(</span><span class="n">evalInterface</span><span class="p">),</span><span class="w"> </span><span class="k">deferred</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">evaluate</span><span class="w"></span>

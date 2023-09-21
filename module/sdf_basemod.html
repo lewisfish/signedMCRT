@@ -228,11 +228,11 @@
 
     <div class="col-md-9" id='text'>
       <p>This module defines the signed distance function (SDF) abstract type, sdf_base type, and model type.
-The SDF abstract type defines the optical properties of an SDF (mus, mua, kappa, albedo, hgg, g2,and n), as well as a transform (4x4 matrix), 
+The SDF abstract type contains the optical properties of an SDF (mus, mua, kappa, albedo, hgg, g2,and n), as well as a transform (4x4 matrix), 
 and the layer ID code of the SDF. The SDF abstract type also provides an abstract interface (evaluate) which each inheriting function must implement.
 This evaluate function is the heart of the SDF implementation. Each individual evaluate is the direct implementation of that SDF, e.g. that function defines the mathematical SDF. 
 For more information on SDFs, check out Inigo Quilez's <a href="https://iquilezles.org/articles/">website</a> from which most of the below SDFs and transforms have been taken.
-API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in-fortran/4402/2</p>
+API based upon <a href="https://fortran-lang.discourse.group/t/attempting-type-erasure-in-fortran/4402/2">here</a></p>
 <br>          <div class="panel panel-default">
       <div class="panel-heading">
         <h3 class="panel-title">Uses</h3>
@@ -241,9 +241,9 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
           <li class="list-group-item">
             <ul class="list-inline">
                 <li><a href='../module/vector_class.html'>vector_class</a></li>
-                <li><a href='../module/opticalproperties.html'>opticalProperties</a></li>
-                <li><a href='../module/constants.html'>constants</a></li>
                 <li><a href='../module/sdfhelpers.html'>sdfHelpers</a></li>
+                <li><a href='../module/constants.html'>constants</a></li>
+                <li><a href='../module/opticalproperties.html'>opticalProperties</a></li>
             </ul>
           </li>
       </ul>
@@ -374,7 +374,7 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
 
     </h3>
     
-  
+  <p>Initalise the model type.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -399,7 +399,7 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
             <td>::</td>
             <td><strong>array</strong>(:)</td>
             <td>
-
+<p>Array of SDFs</p>
             </td>
         </tr>
         <tr>
@@ -414,7 +414,7 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
             <td>::</td>
             <td><strong>func</strong></td>
             <td>
-
+<p>Operator to apply to SDF.</p>
             </td>
         </tr>
         <tr>
@@ -429,7 +429,7 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
             <td>::</td>
             <td><strong>kopt</strong></td>
             <td>
-
+<p>Parameter used in modifier</p>
             </td>
         </tr>
     </tbody>
@@ -458,7 +458,7 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
 
     </h3>
     
-  
+  <p>Render the SDFs onto a voxel grid</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -542,7 +542,8 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
 
     </h3>
     
-  
+  <p>Render the SDF
+Wrapper around the render function to allow ease of use</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -606,7 +607,7 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
 
     </h3>
     
-  
+  <p>sdf initializer</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -662,7 +663,7 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
     public pure elemental function evalInterface(this, pos) result(res)  
 
     </h3>
-  
+  <p>Evaluation function for SDF. ALL SDF must implment this.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -728,7 +729,7 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
     public pure function op(d1, d2, k) result(res)  
 
     </h3>
-  
+  <p>Abstract function used as the base for SDF operators (union, subtraction etc)</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -809,7 +810,7 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
     public pure function primitive(pos) result(res)  
 
     </h3>
-  
+  <p>Abstract function used as base for displacement function</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -834,7 +835,7 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
             <td>::</td>
             <td><strong>pos</strong></td>
             <td>
-                
+                <p>vector position of photon packet.</p>
             </td>
         </tr>
     </tbody>
@@ -865,7 +866,7 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
       </h3>
     </div>
     <div class="panel-body">
-      
+      <p>Model type. Allows the collection of multiple SDF into one model. Used to apply modifiers.</p>
 
         <h4>Components</h4>
           <table class="table table-striped varlist">
@@ -880,7 +881,7 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-array~11"></span>
+              <span class="anchor" id="variable-array~9"></span>
               type(<a href='../type/sdf.html'>sdf</a>),
             </td>
               <td>public,</td>
@@ -892,7 +893,7 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
                 <td></td>
                 <td></td>
             <td>
-
+<p>Array of SDFs in the model</p>
             </td>
         </tr>
         <tr>
@@ -909,12 +910,12 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
                 <td></td>
                 <td></td>
             <td>
-
+<p>SDF modifier function</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-k~7"></span>
+              <span class="anchor" id="variable-k"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -926,12 +927,12 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
                 <td></td>
                 <td></td>
             <td>
-
+<p>Parameter that may be used in modifer function.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-layer~17"></span>
+              <span class="anchor" id="variable-layer~2"></span>
               integer,
             </td>
               <td>public</td>
@@ -943,7 +944,7 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
                 <td></td>
                 <td></td>
             <td>
-
+<p>Layer ID of SDF</p>
             </td>
         </tr>
         <tr>
@@ -960,12 +961,12 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
                 <td></td>
                 <td></td>
             <td>
-
+<p>Optical property of the SDF</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-transform~11"></span>
+              <span class="anchor" id="variable-transform"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -977,7 +978,7 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
                 <td></td>
                 <td></td>
             <td>
-
+<p>Transform to apply to SDF.</p>
             </td>
         </tr>
     </tbody>
@@ -997,7 +998,7 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
                     <strong><a href='../proc/model_init.html'>model_init</a></strong>
                     (array, func, kopt)
                   </td>
-                  <td></td>
+                  <td><p>Initalise the model type.</p></td>
                 </tr>
           </tbody>
         </table>
@@ -1031,7 +1032,7 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
       </h3>
     </div>
     <div class="panel-body">
-      
+      <p>Container type that allows the use of arrays of different SDF shapes</p>
 
         <h4>Components</h4>
           <table class="table table-striped varlist">
@@ -1046,7 +1047,7 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-layer~17"></span>
+              <span class="anchor" id="variable-layer~2"></span>
               integer,
             </td>
               <td>public</td>
@@ -1058,7 +1059,7 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
                 <td></td>
                 <td></td>
             <td>
-
+<p>Layer ID of SDF</p>
             </td>
         </tr>
         <tr>
@@ -1075,12 +1076,12 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
                 <td></td>
                 <td></td>
             <td>
-
+<p>Optical property of the SDF</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-transform~11"></span>
+              <span class="anchor" id="variable-transform"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -1092,12 +1093,12 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
                 <td></td>
                 <td></td>
             <td>
-
+<p>Transform to apply to SDF.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-value~8"></span>
+              <span class="anchor" id="variable-value"></span>
               class(<a href='../type/sdf_base.html'>sdf_base</a>),
             </td>
               <td>public,</td>
@@ -1109,7 +1110,7 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
                 <td></td>
                 <td></td>
             <td>
-
+<p>Container for any SDF that inherits from SDF_base</p>
             </td>
         </tr>
     </tbody>
@@ -1129,7 +1130,7 @@ API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in
                     <strong><a href='../proc/sdf_new.html'>sdf_new</a></strong>
                     (rhs)
                   </td>
-                  <td></td>
+                  <td><p>sdf initializer</p></td>
                 </tr>
           </tbody>
         </table>
@@ -1231,7 +1232,7 @@ generic,
       </h3>
     </div>
     <div class="panel-body">
-      
+      <p>Abstract base type from which all SDF inherit from.</p>
 
         <h4>Components</h4>
           <table class="table table-striped varlist">
@@ -1246,7 +1247,7 @@ generic,
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-layer~17"></span>
+              <span class="anchor" id="variable-layer~2"></span>
               integer,
             </td>
               <td>public</td>
@@ -1258,7 +1259,7 @@ generic,
                 <td></td>
                 <td></td>
             <td>
-
+<p>Layer ID of SDF</p>
             </td>
         </tr>
         <tr>
@@ -1275,12 +1276,12 @@ generic,
                 <td></td>
                 <td></td>
             <td>
-
+<p>Optical property of the SDF</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-transform~11"></span>
+              <span class="anchor" id="variable-transform"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -1292,7 +1293,7 @@ generic,
                 <td></td>
                 <td></td>
             <td>
-
+<p>Transform to apply to SDF.</p>
             </td>
         </tr>
     </tbody>
@@ -1327,7 +1328,7 @@ generic,
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Calculate the surface normal of a SDF at the point p numerically.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1352,7 +1353,7 @@ generic,
             <td>::</td>
             <td><strong>p</strong></td>
             <td>
-
+<p>Position to evaluate at</p>
             </td>
         </tr>
         <tr>
@@ -1367,7 +1368,7 @@ generic,
             <td>::</td>
             <td><strong>obj</strong></td>
             <td>
-
+<p>SDF to calcuate surface normal of.</p>
             </td>
         </tr>
     </tbody>
@@ -1387,7 +1388,7 @@ generic,
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Evaluate the model</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1427,7 +1428,7 @@ generic,
             <td>::</td>
             <td><strong>pos</strong></td>
             <td>
-
+<p>Vector position to evaluate at</p>
             </td>
         </tr>
     </tbody>
@@ -1447,7 +1448,7 @@ generic,
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Return albedo for the current SDF.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1492,7 +1493,7 @@ generic,
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Return <script type="math/tex">\kappa</script> for the current SDF</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1537,7 +1538,7 @@ generic,
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Return <script type="math/tex">\mu_a</script> for the current SDF.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1582,7 +1583,7 @@ generic,
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Return refractive index for the current SDF.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1627,7 +1628,7 @@ generic,
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Return <script type="math/tex">g^2</script> factor for the current SDF.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1672,7 +1673,7 @@ generic,
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Return g-factor for the current SDF.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1717,7 +1718,7 @@ generic,
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Initalise the model type.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1742,7 +1743,7 @@ generic,
             <td>::</td>
             <td><strong>array</strong>(:)</td>
             <td>
-
+<p>Array of SDFs</p>
             </td>
         </tr>
         <tr>
@@ -1757,7 +1758,7 @@ generic,
             <td>::</td>
             <td><strong>func</strong></td>
             <td>
-
+<p>Operator to apply to SDF.</p>
             </td>
         </tr>
         <tr>
@@ -1772,7 +1773,7 @@ generic,
             <td>::</td>
             <td><strong>kopt</strong></td>
             <td>
-
+<p>Parameter used in modifier</p>
             </td>
         </tr>
     </tbody>
@@ -1792,7 +1793,7 @@ generic,
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Evaluate the SDF at a given position.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1852,7 +1853,7 @@ generic,
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>sdf initializer</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1902,7 +1903,7 @@ generic,
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Render the SDFs onto a voxel grid</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1987,7 +1988,8 @@ generic,
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Render the SDF
+Wrapper around the render function to allow ease of use</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2042,7 +2044,7 @@ generic,
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>sdf initializer</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">

@@ -165,16 +165,17 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='../module/constants.html'>constants</a></li>
                 <li><a href='../module/sim_state_mod.html'>sim_state_mod</a></li>
-                <li><a href='../module/writer_mod.html'>writer_mod</a></li>
                 <li>utils</li>
+                <li><a href='../module/constants.html'>constants</a></li>
+                <li><a href='../module/writer_mod.html'>writer_mod</a></li>
             </ul>
           </li>
       </ul>
     </div>
 
 
+    <p>Render the SDFs onto a voxel grid</p>
 
 
     <h3>Arguments</h3>
@@ -297,7 +298,7 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">render_sub</span><span class="p">(</span><span class="n">cnt</span><span class="p">,</span><span class="w"> </span><span class="n">extent</span><span class="p">,</span><span class="w"> </span><span class="n">samples</span><span class="p">,</span><span class="w"> </span><span class="n">state</span><span class="p">)</span><span class="w"></span>
-
+<span class="w">        </span><span class="c">!! Render the SDFs onto a voxel grid</span>
 <span class="w">        </span><span class="k">use </span><span class="n">sim_state_mod</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">settings_t</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">utils</span><span class="p">,</span><span class="w">         </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">pbar</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">constants</span><span class="p">,</span><span class="w">     </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">fileplace</span><span class="p">,</span><span class="w"> </span><span class="n">sp</span><span class="w"></span>

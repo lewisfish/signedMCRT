@@ -165,8 +165,8 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='../module/detectors.html'>detectors</a></li>
                 <li><a href='../module/random.html'>random</a></li>
+                <li><a href='../module/detectors.html'>detectors</a></li>
                 <li><a href='../module/constants.html'>constants</a></li>
             </ul>
           </li>
@@ -175,7 +175,7 @@
 
 
     <p>Scattering routine. Implments both isotropic and henyey-greenstein scattering
-taken from mcxyz https://omlc.org/software/mc/mcxyz/index.html</p>
+taken from <a href="https://omlc.org/software/mc/mcxyz/index.html">mcxyz</a></p>
 
     <h3>Type Bound</h3>
     <p><a href='../type/photon.html'>photon</a></p>
@@ -301,7 +301,7 @@ taken from mcxyz https://omlc.org/software/mc/mcxyz/index.html</p>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">        </span><span class="k">subroutine </span><span class="n">scatter</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">hgg</span><span class="p">,</span><span class="w"> </span><span class="n">g2</span><span class="p">,</span><span class="w"> </span><span class="n">dects</span><span class="p">)</span><span class="w"></span>
 <span class="w">            </span><span class="c">!! Scattering routine. Implments both isotropic and henyey-greenstein scattering</span>
-<span class="w">            </span><span class="c">!! taken from mcxyz https://omlc.org/software/mc/mcxyz/index.html</span>
+<span class="w">            </span><span class="c">!! taken from [mcxyz](https://omlc.org/software/mc/mcxyz/index.html)</span>
 
 <span class="w">            </span><span class="k">use </span><span class="n">constants</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">PI</span><span class="p">,</span><span class="w"> </span><span class="n">TWOPI</span><span class="p">,</span><span class="w"> </span><span class="n">wp</span><span class="w"></span>
 <span class="w">            </span><span class="k">use </span><span class="n">random</span><span class="p">,</span><span class="w">    </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ran2</span><span class="w"></span>

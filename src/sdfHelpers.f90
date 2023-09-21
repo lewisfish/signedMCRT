@@ -21,7 +21,7 @@ module sdfHelpers
 contains
 
     function rotate_x(angle) result(r)
-       !! rotation in the x-axis function from https://inspirnathan.com/posts/54-shadertoy-tutorial-part-8/
+       !! rotation in the x-axis function from [here](https://inspirnathan.com/posts/54-shadertoy-tutorial-part-8/)
         use utils, only : deg2rad
         
         !> Angle to rotate by
@@ -41,7 +41,7 @@ contains
     end function rotate_x
 
     function rotate_y(angle) result(r)
-        !! rotation in the y-axis function from https://inspirnathan.com/posts/54-shadertoy-tutorial-part-8/
+        !! rotation in the y-axis function from [here](https://inspirnathan.com/posts/54-shadertoy-tutorial-part-8/)
 
         use utils, only : deg2rad
         
@@ -62,7 +62,7 @@ contains
     end function rotate_y
 
     function rotate_z(angle) result(r)
-        !! rotation in the z-axis function from https://inspirnathan.com/posts/54-shadertoy-tutorial-part-8/
+        !! rotation in the z-axis function from [here](https://inspirnathan.com/posts/54-shadertoy-tutorial-part-8/)
 
         use utils, only : deg2rad
         
@@ -83,7 +83,7 @@ contains
     end function rotate_z
 
     function rotmat(axis, angle)
-    !! Rotate around around an axis by a given angle http://www.neilmendoza.com/glsl-rotation-about-an-arbitrary-axis/
+    !! Rotate around around an axis by a given angle taken from [here](http://www.neilmendoza.com/glsl-rotation-about-an-arbitrary-axis/)
 
         !> Axis to rotate around
         type(vector),  intent(in) :: axis
@@ -111,8 +111,8 @@ contains
 
     function rotationAlign(a, b) result(res)
         !! Calculate the rotation matrix to rotate vector a onto b
-        !! https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula
-        !! https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d
+        !! [ref1](https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula)
+        !! [ref2](https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d)
         
         !> Vector to rotate. Unit vector
         type(vector), intent(in) :: a

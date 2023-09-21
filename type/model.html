@@ -133,12 +133,12 @@
       </div>
       <div id="vars-0" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/model.html#variable-array~11">array</a>
+            <a class="list-group-item" href="../type/model.html#variable-array~9">array</a>
             <a class="list-group-item" href="../type/model.html#variable-func~2">func</a>
-            <a class="list-group-item" href="../type/model.html#variable-k~7">k</a>
-            <a class="list-group-item" href="../type/model.html#variable-layer~17">layer</a>
+            <a class="list-group-item" href="../type/model.html#variable-k">k</a>
+            <a class="list-group-item" href="../type/model.html#variable-layer~2">layer</a>
             <a class="list-group-item" href="../type/model.html#variable-optprops">optProps</a>
-            <a class="list-group-item" href="../type/model.html#variable-transform~11">transform</a>
+            <a class="list-group-item" href="../type/model.html#variable-transform">transform</a>
         </div>
       </div>
     </div>
@@ -198,7 +198,7 @@
     
     <div class="col-md-9" id='text'>
       <h2>type, public, extends(<a href='../type/sdf_base.html'>sdf_base</a>) :: model</h2>
-    
+    <p>Model type. Allows the collection of multiple SDF into one model. Used to apply modifiers.</p>
     <br>
 
     <section class="visible-xs visible-sm hidden-md">
@@ -212,12 +212,12 @@
       </div>
       <div id="vars-1" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/model.html#variable-array~11">array</a>
+            <a class="list-group-item" href="../type/model.html#variable-array~9">array</a>
             <a class="list-group-item" href="../type/model.html#variable-func~2">func</a>
-            <a class="list-group-item" href="../type/model.html#variable-k~7">k</a>
-            <a class="list-group-item" href="../type/model.html#variable-layer~17">layer</a>
+            <a class="list-group-item" href="../type/model.html#variable-k">k</a>
+            <a class="list-group-item" href="../type/model.html#variable-layer~2">layer</a>
             <a class="list-group-item" href="../type/model.html#variable-optprops">optProps</a>
-            <a class="list-group-item" href="../type/model.html#variable-transform~11">transform</a>
+            <a class="list-group-item" href="../type/model.html#variable-transform">transform</a>
         </div>
       </div>
     </div>
@@ -288,7 +288,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-array~11"></span>
+              <span class="anchor" id="variable-array~9"></span>
               type(<a href='../type/sdf.html'>sdf</a>),
             </td>
               <td>public,</td>
@@ -300,7 +300,7 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Array of SDFs in the model</p>
             </td>
         </tr>
         <tr>
@@ -317,12 +317,12 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>SDF modifier function</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-k~7"></span>
+              <span class="anchor" id="variable-k"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -334,12 +334,12 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Parameter that may be used in modifer function.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-layer~17"></span>
+              <span class="anchor" id="variable-layer~2"></span>
               integer,
             </td>
               <td>public</td>
@@ -351,7 +351,7 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Layer ID of SDF</p>
             </td>
         </tr>
         <tr>
@@ -368,12 +368,12 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Optical property of the SDF</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-transform~11"></span>
+              <span class="anchor" id="variable-transform"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -385,7 +385,7 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Transform to apply to SDF.</p>
             </td>
         </tr>
     </tbody>
@@ -409,7 +409,7 @@
 
     </h3>
     
-  
+  <p>Initalise the model type.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -434,7 +434,7 @@
             <td>::</td>
             <td><strong>array</strong>(:)</td>
             <td>
-
+<p>Array of SDFs</p>
             </td>
         </tr>
         <tr>
@@ -449,7 +449,7 @@
             <td>::</td>
             <td><strong>func</strong></td>
             <td>
-
+<p>Operator to apply to SDF.</p>
             </td>
         </tr>
         <tr>
@@ -464,7 +464,7 @@
             <td>::</td>
             <td><strong>kopt</strong></td>
             <td>
-
+<p>Parameter used in modifier</p>
             </td>
         </tr>
     </tbody>
@@ -495,7 +495,7 @@
     private pure elemental function <a href='../proc/eval_model.html'>eval_model</a>(this, pos) result(res)  
 </h3>
     
-  
+  <p>Evaluate the model</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -535,7 +535,7 @@
             <td>::</td>
             <td><strong>pos</strong></td>
             <td>
-
+<p>Vector position to evaluate at</p>
             </td>
         </tr>
     </tbody>
@@ -556,8 +556,11 @@
     <section>
     <h3><span class="anchor" id="src"></span>Source Code</h3>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">type</span><span class="p">,</span><span class="w"> </span><span class="k">extends</span><span class="p">(</span><span class="n">sdf_base</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">model</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Array of SDFs in the model</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">sdf</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w">         </span><span class="kd">::</span><span class="w"> </span><span class="k">array</span><span class="p">(:)</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; SDF modifier function</span>
 <span class="w">        </span><span class="k">procedure</span><span class="p">(</span><span class="n">op</span><span class="p">),</span><span class="w"> </span><span class="k">nopass</span><span class="p">,</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">func</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Parameter that may be used in modifer function.</span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">k</span><span class="w"></span>
 <span class="w">        </span><span class="k">contains</span>
 <span class="k">            procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">evaluate</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">eval_model</span><span class="w"></span>

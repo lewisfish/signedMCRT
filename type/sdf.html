@@ -133,10 +133,10 @@
       </div>
       <div id="vars-0" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/sdf.html#variable-layer~17">layer</a>
+            <a class="list-group-item" href="../type/sdf.html#variable-layer~2">layer</a>
             <a class="list-group-item" href="../type/sdf.html#variable-optprops">optProps</a>
-            <a class="list-group-item" href="../type/sdf.html#variable-transform~11">transform</a>
-            <a class="list-group-item" href="../type/sdf.html#variable-value~8">value</a>
+            <a class="list-group-item" href="../type/sdf.html#variable-transform">transform</a>
+            <a class="list-group-item" href="../type/sdf.html#variable-value">value</a>
         </div>
       </div>
     </div>
@@ -204,7 +204,7 @@
     
     <div class="col-md-9" id='text'>
       <h2>type, public, extends(<a href='../type/sdf_base.html'>sdf_base</a>) :: sdf</h2>
-    
+    <p>Container type that allows the use of arrays of different SDF shapes</p>
     <br>
 
     <section class="visible-xs visible-sm hidden-md">
@@ -218,10 +218,10 @@
       </div>
       <div id="vars-1" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/sdf.html#variable-layer~17">layer</a>
+            <a class="list-group-item" href="../type/sdf.html#variable-layer~2">layer</a>
             <a class="list-group-item" href="../type/sdf.html#variable-optprops">optProps</a>
-            <a class="list-group-item" href="../type/sdf.html#variable-transform~11">transform</a>
-            <a class="list-group-item" href="../type/sdf.html#variable-value~8">value</a>
+            <a class="list-group-item" href="../type/sdf.html#variable-transform">transform</a>
+            <a class="list-group-item" href="../type/sdf.html#variable-value">value</a>
         </div>
       </div>
     </div>
@@ -300,7 +300,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-layer~17"></span>
+              <span class="anchor" id="variable-layer~2"></span>
               integer,
             </td>
               <td>public</td>
@@ -312,7 +312,7 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Layer ID of SDF</p>
             </td>
         </tr>
         <tr>
@@ -329,12 +329,12 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Optical property of the SDF</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-transform~11"></span>
+              <span class="anchor" id="variable-transform"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -346,12 +346,12 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Transform to apply to SDF.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-value~8"></span>
+              <span class="anchor" id="variable-value"></span>
               class(<a href='../type/sdf_base.html'>sdf_base</a>),
             </td>
               <td>public,</td>
@@ -363,7 +363,7 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Container for any SDF that inherits from SDF_base</p>
             </td>
         </tr>
     </tbody>
@@ -387,7 +387,7 @@
 
     </h3>
     
-  
+  <p>sdf initializer</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -443,7 +443,7 @@
     private  subroutine <a href='../proc/sdf_assign.html'>sdf_assign</a>(lhs, rhs)  
 </h3>
     
-  
+  <p>sdf initializer</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -503,7 +503,7 @@
     private pure elemental function <a href='../proc/sdf_evaluate.html'>sdf_evaluate</a>(this, pos) result(res)  
 </h3>
     
-  
+  <p>Evaluate the SDF at a given position.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -568,7 +568,7 @@
     private  function <a href='../proc/getalbedo.html'>getAlbedo</a>(this) result(res)  
 </h3>
     
-  
+  <p>Return albedo for the current SDF.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -618,7 +618,7 @@
     private  function <a href='../proc/getg2.html'>getg2</a>(this) result(res)  
 </h3>
     
-  
+  <p>Return <script type="math/tex">g^2</script> factor for the current SDF.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -668,7 +668,7 @@
     private  function <a href='../proc/getkappa.html'>getKappa</a>(this) result(res)  
 </h3>
     
-  
+  <p>Return <script type="math/tex">\kappa</script> for the current SDF</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -718,7 +718,7 @@
     private  function <a href='../proc/getmua.html'>getMua</a>(this) result(res)  
 </h3>
     
-  
+  <p>Return <script type="math/tex">\mu_a</script> for the current SDF.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -768,7 +768,7 @@
     private  function <a href='../proc/getn.html'>getN</a>(this) result(res)  
 </h3>
     
-  
+  <p>Return refractive index for the current SDF.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -818,7 +818,7 @@
     private  function <a href='../proc/gethgg.html'>gethgg</a>(this) result(res)  
 </h3>
     
-  
+  <p>Return g-factor for the current SDF.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -868,7 +868,7 @@
     private  subroutine <a href='../proc/sdf_assign.html'>sdf_assign</a>(lhs, rhs)  
 </h3>
     
-  
+  <p>sdf initializer</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -924,6 +924,7 @@
     <section>
     <h3><span class="anchor" id="src"></span>Source Code</h3>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">type</span><span class="p">,</span><span class="w"> </span><span class="k">extends</span><span class="p">(</span><span class="n">sdf_base</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">sdf</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Container for any SDF that inherits from SDF_base</span>
 <span class="w">        </span><span class="k">class</span><span class="p">(</span><span class="n">sdf_base</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">value</span>
 <span class="k">        contains</span>
 <span class="k">            procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">getKappa</span><span class="w"></span>
