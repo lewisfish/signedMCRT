@@ -160,6 +160,7 @@
 </h2>
     
 
+    <p>Initialise the extrude modifier for a SDF.</p>
 
 
     <h3>Arguments</h3>
@@ -175,7 +176,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-prim~8"></span>
+              <span class="anchor" id="variable-prim~2"></span>
               class(<a href='../type/sdf_base.html'>sdf_base</a>),
             </td>
 <td></td>
@@ -185,12 +186,12 @@
             <td>::</td>
             <td><strong>prim</strong></td>
             <td>
-                
+                <p>SDF to modify</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-h~3"></span>
+              <span class="anchor" id="variable-h"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -200,7 +201,7 @@
             <td>::</td>
             <td><strong>h</strong></td>
             <td>
-                
+                <p>Distance to extrude by.</p>
             </td>
         </tr>
     </tbody>
@@ -259,9 +260,12 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">extrude</span><span class="p">)</span><span class="w"> </span><span class="k">function </span><span class="n">extrude_init</span><span class="p">(</span><span class="n">prim</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"></span>
-
+<span class="w">        </span><span class="c">!! Initialise the extrude modifier for a SDF.</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="c">!&gt; SDF to modify</span>
 <span class="w">        </span><span class="k">class</span><span class="p">(</span><span class="n">sdf_base</span><span class="p">),</span><span class="w"> </span><span class="k">target</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">prim</span><span class="w"></span>
-<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">h</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Distance to extrude by.</span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">h</span><span class="w"></span>
 
 <span class="w">        </span><span class="n">out</span><span class="p">%</span><span class="n">h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">h</span><span class="w"></span>
 <span class="w">        </span><span class="n">out</span><span class="p">%</span><span class="n">prim</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">prim</span><span class="w"></span>

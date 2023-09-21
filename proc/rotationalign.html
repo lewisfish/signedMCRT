@@ -96,7 +96,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 0.3% of total for procedures.">14 statements</a>
+               title=" 0.3% of total for procedures.">15 statements</a>
           </li>
 
             <li id="source-file">
@@ -160,6 +160,9 @@
 </h2>
     
 
+    <p>Calculate the rotation matrix to rotate vector a onto b
+https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula
+https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d</p>
 
 
     <h3>Arguments</h3>
@@ -175,7 +178,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~53"></span>
+              <span class="anchor" id="variable-a~4"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -185,12 +188,12 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-                
+                <p>Vector to rotate. Unit vector</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~49"></span>
+              <span class="anchor" id="variable-b~3"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -200,7 +203,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-                
+                <p>Vector to be rotated onto. Unit vector</p>
             </td>
         </tr>
     </tbody>
@@ -259,8 +262,14 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">function </span><span class="n">rotationAlign</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="c">!! Calculate the rotation matrix to rotate vector a onto b</span>
+<span class="w">        </span><span class="c">!! https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula</span>
+<span class="w">        </span><span class="c">!! https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d</span>
 <span class="w">        </span>
-<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Vector to rotate. Unit vector</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">a</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Vector to be rotated onto. Unit vector</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">b</span><span class="w"></span>
 <span class="w">        </span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">v</span><span class="w"></span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">),</span><span class="w"> </span><span class="n">v_x</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">),</span><span class="w"> </span><span class="n">v_x2</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"></span>

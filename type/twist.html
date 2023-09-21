@@ -133,10 +133,10 @@
       </div>
       <div id="vars-0" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/twist.html#variable-k~4">k</a>
+            <a class="list-group-item" href="../type/twist.html#variable-k~9">k</a>
             <a class="list-group-item" href="../type/twist.html#variable-layer~17">layer</a>
             <a class="list-group-item" href="../type/twist.html#variable-optprops">optProps</a>
-            <a class="list-group-item" href="../type/twist.html#variable-prim~15">prim</a>
+            <a class="list-group-item" href="../type/twist.html#variable-prim~16">prim</a>
             <a class="list-group-item" href="../type/twist.html#variable-transform~11">transform</a>
         </div>
       </div>
@@ -197,7 +197,7 @@
     
     <div class="col-md-9" id='text'>
       <h2>type, public, extends(<a href='../type/sdf_base.html'>sdf_base</a>) :: twist</h2>
-    
+    <p>Twist a SDF</p>
     <br>
 
     <section class="visible-xs visible-sm hidden-md">
@@ -211,10 +211,10 @@
       </div>
       <div id="vars-1" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/twist.html#variable-k~4">k</a>
+            <a class="list-group-item" href="../type/twist.html#variable-k~9">k</a>
             <a class="list-group-item" href="../type/twist.html#variable-layer~17">layer</a>
             <a class="list-group-item" href="../type/twist.html#variable-optprops">optProps</a>
-            <a class="list-group-item" href="../type/twist.html#variable-prim~15">prim</a>
+            <a class="list-group-item" href="../type/twist.html#variable-prim~16">prim</a>
             <a class="list-group-item" href="../type/twist.html#variable-transform~11">transform</a>
         </div>
       </div>
@@ -286,7 +286,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-k~4"></span>
+              <span class="anchor" id="variable-k~9"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -337,7 +337,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-prim~15"></span>
+              <span class="anchor" id="variable-prim~16"></span>
               class(<a href='../type/sdf_base.html'>sdf_base</a>),
             </td>
               <td>public,</td>
@@ -390,7 +390,7 @@
 
     </h3>
     
-  
+  <p>Initialise the twist modifier for a SDF.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -415,22 +415,22 @@
             <td>::</td>
             <td><strong>prim</strong></td>
             <td>
-
+<p>SDF to modify</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real
+              real,
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>k</strong></td>
             <td>
-
+<p>Twist parameter.</p>
             </td>
         </tr>
     </tbody>
@@ -461,7 +461,7 @@
     private pure elemental function <a href='../proc/eval_twist.html'>eval_twist</a>(this, pos) result(res)  
 </h3>
     
-  
+  <p>Evaluation function for Twist modifier.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -501,7 +501,7 @@
             <td>::</td>
             <td><strong>pos</strong></td>
             <td>
-
+<p>Position to evaluate the modifier at</p>
             </td>
         </tr>
     </tbody>

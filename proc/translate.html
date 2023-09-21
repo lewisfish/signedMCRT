@@ -160,6 +160,7 @@
 </h2>
     
 
+    <p>Returns the Translation matrix for a given vector translation.</p>
 
 
     <h3>Arguments</h3>
@@ -175,7 +176,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-o~3"></span>
+              <span class="anchor" id="variable-o~2"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -185,7 +186,7 @@
             <td>::</td>
             <td><strong>o</strong></td>
             <td>
-                
+                <p>Vector to translate by.</p>
             </td>
         </tr>
     </tbody>
@@ -244,7 +245,9 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">function </span><span class="n">translate</span><span class="p">(</span><span class="n">o</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="c">!! Returns the Translation matrix for a given vector translation.</span>
 
+<span class="w">        </span><span class="c">!&gt; Vector to translate by.</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">o</span><span class="w"></span>
 
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">out</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"></span>

@@ -96,7 +96,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 0.2% of total for procedures.">7 statements</a>
+               title=" 0.2% of total for procedures.">8 statements</a>
           </li>
 
             <li id="source-file">
@@ -160,6 +160,7 @@
 </h2>
     
 
+    <p>Smooth union. Joins two SDFs together smoothly</p>
 
 
     <h3>Arguments</h3>
@@ -185,7 +186,7 @@
             <td>::</td>
             <td><strong>d1</strong></td>
             <td>
-                
+                <p>SDF_1 distance</p>
             </td>
         </tr>
         <tr>
@@ -200,12 +201,12 @@
             <td>::</td>
             <td><strong>d2</strong></td>
             <td>
-                
+                <p>SDF_2 distance</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-k~7"></span>
+              <span class="anchor" id="variable-k~4"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -215,7 +216,7 @@
             <td>::</td>
             <td><strong>k</strong></td>
             <td>
-                
+                <p>smoothing factor.</p>
             </td>
         </tr>
     </tbody>
@@ -274,11 +275,16 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">pure function </span><span class="n">SmoothUnion</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span><span class="w"> </span><span class="n">d2</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="c">!! Smooth union. Joins two SDFs together smoothly</span>
 
-<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">d1</span><span class="p">,</span><span class="w"> </span><span class="n">d2</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="w"></span>
-<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; SDF_1 distance</span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">d1</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; SDF_2 distance</span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">d2</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; smoothing factor.</span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">k</span><span class="w"></span>
 
-<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">h</span><span class="w"></span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="w"></span>
 
 <span class="w">        </span><span class="n">h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">max</span><span class="p">(</span><span class="n">k</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">abs</span><span class="p">(</span><span class="n">d1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">d2</span><span class="p">),</span><span class="w"> </span><span class="mf">0._wp</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">k</span><span class="w"></span>
 <span class="w">        </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">min</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span><span class="w"> </span><span class="n">d2</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">h</span><span class="o">*</span><span class="n">h</span><span class="o">*</span><span class="n">h</span><span class="o">*</span><span class="n">k</span><span class="o">*</span><span class="p">(</span><span class="mf">1._wp</span><span class="o">/</span><span class="mf">6._wp</span><span class="p">)</span><span class="w"></span>

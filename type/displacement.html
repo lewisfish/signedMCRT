@@ -133,10 +133,10 @@
       </div>
       <div id="vars-0" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/displacement.html#variable-func~3">func</a>
+            <a class="list-group-item" href="../type/displacement.html#variable-func~4">func</a>
             <a class="list-group-item" href="../type/displacement.html#variable-layer~17">layer</a>
             <a class="list-group-item" href="../type/displacement.html#variable-optprops">optProps</a>
-            <a class="list-group-item" href="../type/displacement.html#variable-prim~3">prim</a>
+            <a class="list-group-item" href="../type/displacement.html#variable-prim~10">prim</a>
             <a class="list-group-item" href="../type/displacement.html#variable-transform~11">transform</a>
         </div>
       </div>
@@ -197,7 +197,7 @@
     
     <div class="col-md-9" id='text'>
       <h2>type, public, extends(<a href='../type/sdf_base.html'>sdf_base</a>) :: displacement</h2>
-    
+    <p>Displace the surface of a SDF by a function.</p>
     <br>
 
     <section class="visible-xs visible-sm hidden-md">
@@ -211,10 +211,10 @@
       </div>
       <div id="vars-1" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/displacement.html#variable-func~3">func</a>
+            <a class="list-group-item" href="../type/displacement.html#variable-func~4">func</a>
             <a class="list-group-item" href="../type/displacement.html#variable-layer~17">layer</a>
             <a class="list-group-item" href="../type/displacement.html#variable-optprops">optProps</a>
-            <a class="list-group-item" href="../type/displacement.html#variable-prim~3">prim</a>
+            <a class="list-group-item" href="../type/displacement.html#variable-prim~10">prim</a>
             <a class="list-group-item" href="../type/displacement.html#variable-transform~11">transform</a>
         </div>
       </div>
@@ -286,7 +286,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-func~3"></span>
+              <span class="anchor" id="variable-func~4"></span>
               procedure(<a href='../interface/primitive.html'>primitive</a>),
             </td>
               <td>public,</td>
@@ -337,7 +337,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-prim~3"></span>
+              <span class="anchor" id="variable-prim~10"></span>
               class(<a href='../type/sdf_base.html'>sdf_base</a>),
             </td>
               <td>public,</td>
@@ -390,7 +390,7 @@
 
     </h3>
     
-  
+  <p>Initialise the displacement modifier for a SDF.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -415,7 +415,7 @@
             <td>::</td>
             <td><strong>prim</strong></td>
             <td>
-
+<p>SDF to modify</p>
             </td>
         </tr>
         <tr>
@@ -430,7 +430,7 @@
             <td>::</td>
             <td><strong>func</strong></td>
             <td>
-
+<p>Function to displace the SDF with.</p>
             </td>
         </tr>
     </tbody>
@@ -461,7 +461,7 @@
     private pure elemental function <a href='../proc/eval_disp.html'>eval_disp</a>(this, pos) result(res)  
 </h3>
     
-  
+  <p>Evaluation function for displacement modifier.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -501,7 +501,7 @@
             <td>::</td>
             <td><strong>pos</strong></td>
             <td>
-
+<p>Position to evaluate the modifier at</p>
             </td>
         </tr>
     </tbody>

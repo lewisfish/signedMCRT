@@ -160,6 +160,7 @@
 </h2>
     
 
+    <p>Calculate the Skew Symmetric matrix for a given vector</p>
 
 
     <h3>Arguments</h3>
@@ -175,7 +176,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~54"></span>
+              <span class="anchor" id="variable-a~5"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -185,7 +186,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-                
+                <p>Vector to calculate the skew symmetric matrix for.</p>
             </td>
         </tr>
     </tbody>
@@ -244,7 +245,9 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">function </span><span class="n">skewSymm</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="c">!! Calculate the Skew Symmetric matrix for a given vector</span>
 
+<span class="w">        </span><span class="c">!&gt; Vector to calculate the skew symmetric matrix for.</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">a</span><span class="w"></span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">out</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span><span class="w"></span>
 

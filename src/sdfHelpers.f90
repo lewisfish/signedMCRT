@@ -21,9 +21,10 @@ module sdfHelpers
 contains
 
     function rotate_x(angle) result(r)
-    ! rotation funcs from https://inspirnathan.com/posts/54-shadertoy-tutorial-part-8/
+       !! rotation in the x-axis function from https://inspirnathan.com/posts/54-shadertoy-tutorial-part-8/
         use utils, only : deg2rad
         
+        !> Angle to rotate by
         real(kind=wp), intent(IN) :: angle
         
         real(kind=wp) :: r(4, 4), c, s, a
@@ -40,9 +41,11 @@ contains
     end function rotate_x
 
     function rotate_y(angle) result(r)
-        
+        !! rotation in the y-axis function from https://inspirnathan.com/posts/54-shadertoy-tutorial-part-8/
+
         use utils, only : deg2rad
         
+        !> Angle to rotate by
         real(kind=wp), intent(IN) :: angle
 
         real(kind=wp) :: r(4, 4), c, s, a
@@ -59,9 +62,11 @@ contains
     end function rotate_y
 
     function rotate_z(angle) result(r)
-        
+        !! rotation in the z-axis function from https://inspirnathan.com/posts/54-shadertoy-tutorial-part-8/
+
         use utils, only : deg2rad
         
+        !> Angle to rotate by
         real(kind=wp), intent(IN) :: angle
 
         real(kind=wp) :: r(4, 4), c, s, a
@@ -78,9 +83,11 @@ contains
     end function rotate_z
 
     function rotmat(axis, angle)
-    ! http://www.neilmendoza.com/glsl-rotation-about-an-arbitrary-axis/
+    !! Rotate around around an axis by a given angle http://www.neilmendoza.com/glsl-rotation-about-an-arbitrary-axis/
 
+        !> Axis to rotate around
         type(vector),  intent(in) :: axis
+        !> Angle to rotate by
         real(kind=wp), intent(in) :: angle
 
         type(vector) :: axist
@@ -102,11 +109,15 @@ contains
 
     end function rotmat
 
-    ! https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula
-    ! https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d
     function rotationAlign(a, b) result(res)
+        !! Calculate the rotation matrix to rotate vector a onto b
+        !! https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula
+        !! https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d
         
-        type(vector), intent(in) :: a, b
+        !> Vector to rotate. Unit vector
+        type(vector), intent(in) :: a
+        !> Vector to be rotated onto. Unit vector
+        type(vector), intent(in) :: b
         
         type(vector)  :: v
         real(kind=wp) :: c, k, res(4, 4), v_x(4, 4), v_x2(4, 4)
@@ -127,7 +138,8 @@ contains
     end function rotationAlign
 
     function identity() result(r)
-                    
+        !! Returns the identity transformation matrix
+
         real(kind=wp) :: r(4, 4)
 
         r(:, 1) = [1._wp, 0._wp, 0._wp, 0._wp]
@@ -139,7 +151,9 @@ contains
 
 
     function skewSymm(a) result(out)
+        !! Calculate the Skew Symmetric matrix for a given vector
 
+        !> Vector to calculate the skew symmetric matrix for.
         type(vector), intent(in) :: a
         real(kind=wp) :: out(4,4)
 
@@ -151,7 +165,9 @@ contains
     end function skewSymm
 
     function translate(o) result(out)
+        !! Returns the Translation matrix for a given vector translation.
 
+        !> Vector to translate by.
         type(vector), intent(IN) :: o
 
         real(kind=wp) :: out(4, 4)
