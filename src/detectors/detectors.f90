@@ -1,5 +1,8 @@
 module detectors
 
+    !! Module contains each detector type which inherits from the base detector class.
+    !! detectors detect photon packets colliding with the detectors.
+
     use constants,    only : wp
     use detector_mod, only : detector, detector1D, detector2D, hit_t
     use vector_class, only : vector, length
