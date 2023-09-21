@@ -1,10 +1,10 @@
 module sdf_baseMod
     !! This module defines the signed distance function (SDF) abstract type, sdf_base type, and model type.
-    !! The SDF abstract type defines the optical properties of an SDF (mus, mua, kappa, albedo, hgg, g2,and n), as well as a transform (4x4 matrix), 
+    !! The SDF abstract type contains the optical properties of an SDF (mus, mua, kappa, albedo, hgg, g2,and n), as well as a transform (4x4 matrix), 
     !! and the layer ID code of the SDF. The SDF abstract type also provides an abstract interface (evaluate) which each inheriting function must implement.
     !! This evaluate function is the heart of the SDF implementation. Each individual evaluate is the direct implementation of that SDF, e.g. that function defines the mathematical SDF. 
     !! For more information on SDFs, check out Inigo Quilez's [website](https://iquilezles.org/articles/) from which most of the below SDFs and transforms have been taken.
-    !! API based upon https://fortran-lang.discourse.group/t/attempting-type-erasure-in-fortran/4402/2
+    !! API based upon [here](https://fortran-lang.discourse.group/t/attempting-type-erasure-in-fortran/4402/2)
 
     use constants,         only : wp
     use opticalProperties, only : opticalProp_t
@@ -13,15 +13,21 @@ module sdf_baseMod
 
     implicit none
 
+    !> Abstract base type from which all SDF inherit from.
     type, abstract :: sdf_base
+        !> Optical property of the SDF
         type(opticalProp_t) :: optProps
+        !> Transform to apply to SDF.
         real(kind=wp) :: transform(4, 4)
+        !> Layer ID of SDF
         integer :: layer
         contains
             procedure(evalInterface), deferred :: evaluate
     end type sdf_base
-        
+    
+    !> Container type that allows the use of arrays of different SDF shapes
     type, extends(sdf_base) :: sdf
+        !> Container for any SDF that inherits from SDF_base
         class(sdf_base), allocatable :: value
         contains
             procedure :: getKappa
@@ -32,9 +38,13 @@ module sdf_baseMod
             generic :: assignment(=) => sdf_assign
     end type sdf
 
+    !> Model type. Allows the collection of multiple SDF into one model. Used to apply modifiers.
     type, extends(sdf_base) :: model
+        !> Array of SDFs in the model
         type(sdf), allocatable         :: array(:)
+        !> SDF modifier function
         procedure(op), nopass, pointer :: func
+        !> Parameter that may be used in modifer function.
         real(kind=wp) :: k
         contains
             procedure :: evaluate => eval_model
@@ -42,6 +52,7 @@ module sdf_baseMod
 !####################################################################
     abstract interface
         pure elemental function evalInterface(this, pos) result(res)
+            !! Evaluation function for SDF. ALL SDF must implment this.
             use vector_class
             use constants, only : wp
             import sdf_base
@@ -51,14 +62,17 @@ module sdf_baseMod
         end function
 
         pure function primitive(pos) result(res)
+            !! Abstract function used as base for displacement function
             use vector_class, only : vector
             use constants,    only : wp
             implicit none
+            !> vector position of photon packet.
             type(vector), intent(IN) :: pos
             real(kind=wp) :: res
         end function primitive
 
         pure function op(d1, d2, k) result(res)
+            !! Abstract function used as the base for SDF operators (union, subtraction etc)
             use constants, only : wp
             implicit none
             real(kind=wp), intent(IN) :: d1, d2, k
@@ -84,12 +98,16 @@ module sdf_baseMod
     contains
 
     function model_init(array, func, kopt) result(out)
-
+        !! Initalise the model type.
         type(model) :: out
 
+        !> Operator to apply to SDF.
         procedure(op) :: func
+        !> Array of SDFs
         type(sdf),               intent(IN) :: array(:)
+        !> Parameter used in modifier
         real(kind=wp), optional, intent(IN) :: kopt
+
         integer :: i
 
         out%array = array
@@ -125,8 +143,10 @@ module sdf_baseMod
     end function model_init
 
     pure elemental function eval_model(this, pos) result(res)
+        !! Evaluate the model
 
         class(model), intent(in) :: this
+        !> Vector position to evaluate at
         type(vector), intent(in) :: pos
         real(kind=wp) :: res
 
@@ -143,8 +163,11 @@ module sdf_baseMod
 !           Helpers
 !#############################################################
     type(vector) function calcNormal(p, obj)
-
+        !! Calculate the surface normal of a SDF at the point p numerically.
+        
+        !> Position to evaluate at
         type(vector), intent(IN) :: p
+        !> SDF to calcuate surface normal of.
         class(sdf_base) :: obj
 
         real(kind=wp) :: h
@@ -166,7 +189,7 @@ module sdf_baseMod
     end function calcNormal
 
     function getKappa(this) result(res)
-
+        !! Return \(\kappa\) for the current SDF
         class(sdf) :: this
         real(kind=wp) :: res
 
@@ -175,7 +198,7 @@ module sdf_baseMod
     end function getKappa
 
     function getMua(this) result(res)
-
+        !! Return \(\mu_a\) for the current SDF.
         class(sdf) :: this
         real(kind=wp) :: res
 
@@ -184,6 +207,7 @@ module sdf_baseMod
     end function getMua
 
     function gethgg(this) result(res)
+        !! Return g-factor for the current SDF.
 
         class(sdf) :: this
         real(kind=wp) :: res
@@ -193,6 +217,7 @@ module sdf_baseMod
     end function gethgg
 
     function getg2(this) result(res)
+        !! Return \(g^2\) factor for the current SDF.
 
         class(sdf) :: this
         real(kind=wp) :: res
@@ -202,6 +227,7 @@ module sdf_baseMod
     end function getg2
 
     function getN(this) result(res)
+        !! Return refractive index for the current SDF.
 
         class(sdf) :: this
         real(kind=wp) :: res
@@ -211,6 +237,7 @@ module sdf_baseMod
     end function getN
 
     function getAlbedo(this) result(res)
+        !! Return albedo for the current SDF.
 
         class(sdf) :: this
         real(kind=wp) :: res
@@ -222,7 +249,7 @@ module sdf_baseMod
 !       SDF bound procedures
 !#########################################################################
     pure elemental function sdf_evaluate(this, pos) result(res)
-
+        !! Evaluate the SDF at a given position.
         class(sdf), intent(in) :: this
         type(vector), intent(in) :: pos
         real(kind=wp) :: res
@@ -231,8 +258,8 @@ module sdf_baseMod
 
     end function sdf_evaluate
  
-    ! sdf initializer
     subroutine sdf_assign(lhs, rhs)
+        !! sdf initializer
 
         class(sdf),      intent(inout) :: lhs
         class(sdf_base), intent(in)    :: rhs
@@ -247,8 +274,8 @@ module sdf_baseMod
         end select
     end subroutine sdf_assign
  
-    ! sdf initializer
     type(sdf) function sdf_new(rhs) result(lhs)
+        !! sdf initializer
 
         class(sdf_base), intent(in) :: rhs
         allocate(lhs%value,source=rhs)
@@ -257,7 +284,8 @@ module sdf_baseMod
 
 
     subroutine render_vec(cnt, state)
-
+        !! Render the SDF
+        !! Wrapper around the render function to allow ease of use
         use sim_state_mod, only : settings_t
 
         type(settings_t), intent(IN) :: state
@@ -272,7 +300,7 @@ module sdf_baseMod
     end subroutine render_vec
 
     subroutine render_sub(cnt, extent, samples, state)
-
+        !! Render the SDFs onto a voxel grid
         use sim_state_mod, only : settings_t
         use utils,         only : pbar
         use constants,     only : fileplace, sp

@@ -192,7 +192,7 @@ module sdfs
 
     function egg_init(r1, r2, h, optProp, layer, transform) result(out)
         !! Initalising function for egg SDF.
-        !! makes a Moss egg. https://www.shadertoy.com/view/WsjfRt
+        !! makes a Moss egg. [ref](https://www.shadertoy.com/view/WsjfRt).
 
         type(egg) :: out
         
@@ -687,7 +687,7 @@ module sdfs
 
     pure elemental function evaluate_egg(this, pos) result(res)
         !! Evaluation function for Egg SDF.
-        !! https://www.shadertoy.com/view/WsjfRt
+        !! [ref](https://www.shadertoy.com/view/WsjfRt)
 
         class(egg),   intent(in) :: this
         !> vector position to evaluate SDF at

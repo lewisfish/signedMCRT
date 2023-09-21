@@ -1,19 +1,16 @@
 module piecewiseMod
-!!This file contains the piecewise abstract type, for sampling from constants, 1D or 2D arrays. Inspired by [PBRT](https://www.pbr-book.org/) piecewise class.
-!!Currently, the following public types are defined:
+!! This file contains the piecewise abstract type, for sampling from constants, 1D or 2D arrays. Inspired by [PBRT](https://www.pbr-book.org/) piecewise class.
+!! Currently, the following public types are defined:
     
-!! Constant. Used in the case where there is only one value.
-!! 1D. Used in the case where there is a spectrum
-!! 2D. Used in the case where SLM or other image based source types are needed.
+!! - Constant. Used in the case where there is only one value.
+!! - 1D. Used in the case where there is a spectrum
+!! - 2D. Used in the case where SLM or other image based source types are needed.
     
-!!    The piecewise type ensures that there is a method (sample) that can be called on all inherited types, e.g
-    
-!!    call 2Dimage%p%sample(x, y)
-    
-!!    will return a position (x,y) from where to release a photon.
-    
-!!    This class can be used to have multi-spectral or single valued wavelength, or used as a 2D image input source i.e SLMs.
- !!   NOTE: optical properties are not currently adjusted on wavelength change.
+!! The piecewise type ensures that there is a method (sample) that can be called on all inherited types, e.g
+!! call 2Dimage%p%sample(x, y)
+!! will return a position (x,y) from where to release a photon.
+!! This class can be used to have multi-spectral or single valued wavelength, or used as a 2D image input source i.e SLMs.
+!! NOTE: optical properties are not currently adjusted on wavelength change.
     
     use iso_fortran_env, only : int32, int64
     use constants,       only : wp
@@ -206,7 +203,7 @@ module piecewiseMod
     end function init_piecewise2D
     
     integer function nextpwr2(v) result(res)
-    ! https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
+    !! [ref](https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2)
         integer, intent(in) :: v
 
         res = v - 1
@@ -272,7 +269,7 @@ module piecewiseMod
 
 
     integer(kind=int64) function split(a) result(x)
-    ! taken from archer2 cpp course
+    !! taken from archer2 cpp course
         integer(kind=int32) :: a
 
         x = a
@@ -285,7 +282,7 @@ module piecewiseMod
     end function split
 
     integer(kind=int64) function pack_bits(z) result(x)
-    ! taken from archer2 cpp course
+    !! taken from archer2 cpp course
 
         integer(kind=int64), intent(in) :: z
 
@@ -305,7 +302,7 @@ module piecewiseMod
     end function pack_bits
 
     integer(kind=int64) function encode(x, y)
-    ! taken from archer2 cpp course
+    !! taken from archer2 cpp course
 
         integer(kind=int32), intent(in) :: x, y
         
@@ -314,7 +311,7 @@ module piecewiseMod
     end function encode
 
     subroutine decode(z, x, y)
-    ! taken from archer2 cpp course
+    !! taken from archer2 cpp course
 
         integer(kind=int64), intent(in) :: z
         integer(kind=int32), intent(out) :: x, y
