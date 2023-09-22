@@ -14,6 +14,7 @@
     <link href="../css/pygments.css" rel="stylesheet">
     <link href="../css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/local.css" rel="stylesheet">
+      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -78,6 +79,14 @@
                 <a href="../program/mcpolar.html">Program</a>
               </li>
           </ul>
+            <form action="../search.html" class="navbar-form navbar-right" role="search">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+              </div>
+              <!--
+                  <button type="submit" class="btn btn-default">Submit</button>
+                  -->
+            </form>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
@@ -96,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 4.0% of total for modules and submodules.">211 statements</a>
+               title=" 4.2% of total for modules and submodules.">218 statements</a>
           </li>
 
             <li id="source-file">
@@ -243,8 +252,8 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='<a href="https://gcc.gnu.org/onlinedocs/gfortran/ISO_005fFORTRAN_005fENV.html">iso_fortran_env</a>'>iso_fortran_env</a></li>
                 <li><a href='../module/constants.html'>constants</a></li>
+                <li><a href='<a href="https://gcc.gnu.org/onlinedocs/gfortran/ISO_005fFORTRAN_005fENV.html">iso_fortran_env</a>'>iso_fortran_env</a></li>
             </ul>
           </li>
       </ul>
@@ -368,11 +377,11 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private  function <a href='../proc/init_piecewise1d.html'>init_piecewise1D</a>(array) result(res)  
+    public  function <a href='../proc/init_piecewise1d.html'>init_piecewise1D</a>(array) result(res)  
 
     </h3>
     
-  
+  <p>initalise the piecewise1D type with an array size (n, 2). Calculates the CDF of this array.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -397,7 +406,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>array</strong>(:,:)</td>
             <td>
-
+<p>Input array</p>
             </td>
         </tr>
     </tbody>
@@ -422,11 +431,11 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private  function <a href='../proc/init_piecewise2d.html'>init_piecewise2D</a>(cell_width, cell_height, image)  
+    public  function <a href='../proc/init_piecewise2d.html'>init_piecewise2D</a>(cell_width, cell_height, image)  
 
     </h3>
     
-  
+  <p>Initalise the piecewise2D type with a given cell_width, cell_height and input image</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -451,7 +460,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>cell_width</strong></td>
             <td>
-
+<p>Input cell width</p>
             </td>
         </tr>
         <tr>
@@ -466,7 +475,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>cell_height</strong></td>
             <td>
-
+<p>Input cell height</p>
             </td>
         </tr>
         <tr>
@@ -481,7 +490,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>image</strong>(:,:)</td>
             <td>
-
+<p>Input image</p>
             </td>
         </tr>
     </tbody>
@@ -608,7 +617,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
       </h3>
     </div>
     <div class="panel-body">
-      
+      <p>Constant piecewise type. i.e a piecewise function that does not change value</p>
 
         <h4>Components</h4>
           <table class="table table-striped varlist">
@@ -623,7 +632,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-value~3"></span>
+              <span class="anchor" id="variable-value~5"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -635,7 +644,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
                 <td></td>
                 <td></td>
             <td>
-
+<p>The constant value</p>
             </td>
         </tr>
     </tbody>
@@ -651,11 +660,11 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
                 <td>
                     procedure
                     ,                  public
-,                   :: <strong><a href='../type/constant.html#boundprocedure-sample'>sample</a></strong>
+,                   :: <strong><a href='../type/constant.html#boundprocedure-sample~2'>sample</a></strong>
  =>
                     <a href='../proc/getvalue.html'>getValue</a>
 <small>Subroutine</small>                </td>
-                <td></td>
+                <td><p>Sampling routine</p></td>
               </tr>
           </tbody>
         </table>
@@ -672,7 +681,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
       </h3>
     </div>
     <div class="panel-body">
-      
+      <p>Abstract spectrum base type. </p>
 
 
 
@@ -684,9 +693,9 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
                 <td>
                     procedure
 (sampleInterface)                    ,                  public
-                  :: <strong><a href='../type/piecewise.html#boundprocedure-sample~2'>sample</a></strong>
+                  :: <strong><a href='../type/piecewise.html#boundprocedure-sample'>sample</a></strong>
 <small></small>                </td>
-                <td></td>
+                <td><p>Deferred procdure. Used to generate a sample from spectrum or get constant value etc.</p></td>
               </tr>
           </tbody>
         </table>
@@ -703,7 +712,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
       </h3>
     </div>
     <div class="panel-body">
-      
+      <p>1D piecewise type. Used for the spectral type</p>
 
         <h4>Components</h4>
           <table class="table table-striped varlist">
@@ -718,7 +727,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-array~11"></span>
+              <span class="anchor" id="variable-array~12"></span>
               real(kind=wp),
             </td>
               <td>public,</td>
@@ -730,7 +739,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
                 <td></td>
                 <td></td>
             <td>
-
+<p>Input array to sample from. Should be size(n, 2). 1st column is x-axis, 2nd column is y-axis</p>
             </td>
         </tr>
         <tr>
@@ -747,7 +756,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
                 <td></td>
                 <td></td>
             <td>
-
+<p>cumulative distribution function (CDF) of array.</p>
             </td>
         </tr>
     </tbody>
@@ -760,14 +769,14 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
           <tbody>
                 <tr>
                   <td>
-                        private
+                        public
 
                     
                     function
                     <strong><a href='../proc/init_piecewise1d.html'>init_piecewise1D</a></strong>
                     (array)
                   </td>
-                  <td></td>
+                  <td><p>initalise the piecewise1D type with an array size (n, 2). Calculates the CDF of this array.</p></td>
                 </tr>
           </tbody>
         </table>
@@ -784,7 +793,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
  =>
                     <a href='../proc/sample1d.html'>sample1D</a>
 <small>Subroutine</small>                </td>
-                <td></td>
+                <td><p>Overloaded sampling function</p></td>
               </tr>
           </tbody>
         </table>
@@ -801,7 +810,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
       </h3>
     </div>
     <div class="panel-body">
-      
+      <p>2D piecewise type. Used for images</p>
 
         <h4>Components</h4>
           <table class="table table-striped varlist">
@@ -828,12 +837,12 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
                 <td></td>
                 <td></td>
             <td>
-
+<p>cumulative distribution function (CDF) of array.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-cell_height"></span>
+              <span class="anchor" id="variable-cell_height~2"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -845,12 +854,12 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
                 <td></td>
                 <td></td>
             <td>
-
+<p>Height of each cell</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-cell_width"></span>
+              <span class="anchor" id="variable-cell_width~2"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -862,7 +871,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
                 <td></td>
                 <td></td>
             <td>
-
+<p>Width of each cell</p>
             </td>
         </tr>
         <tr>
@@ -879,7 +888,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
                 <td></td>
                 <td></td>
             <td>
-
+<p>Offsets</p>
             </td>
         </tr>
         <tr>
@@ -896,7 +905,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
                 <td></td>
                 <td></td>
             <td>
-
+<p>Offsets</p>
             </td>
         </tr>
     </tbody>
@@ -909,14 +918,14 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
           <tbody>
                 <tr>
                   <td>
-                        private
+                        public
 
                     
                     function
                     <strong><a href='../proc/init_piecewise2d.html'>init_piecewise2D</a></strong>
                     (cell_width, cell_height, image)
                   </td>
-                  <td></td>
+                  <td><p>Initalise the piecewise2D type with a given cell_width, cell_height and input image</p></td>
                 </tr>
           </tbody>
         </table>
@@ -933,7 +942,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
  =>
                     <a href='../proc/sample2d.html'>sample2D</a>
 <small>Subroutine</small>                </td>
-                <td></td>
+                <td><p>Overloaded sampling function</p></td>
               </tr>
           </tbody>
         </table>
@@ -950,7 +959,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
       </h3>
     </div>
     <div class="panel-body">
-      
+      <p>Spectrum_t type. Used as a container type</p>
 
         <h4>Components</h4>
           <table class="table table-striped varlist">
@@ -995,11 +1004,12 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
         <section>
           <h2>Functions</h2>
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-encode"></span><h3>private  function <a href='../proc/encode.html'>encode</a>(x, y)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-encode"></span><h3>public  function <a href='../proc/encode.html'>encode</a>(x, y)  
 </h3></div>
     <div class="panel-body">
           
-  <p>Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order">course</a></p>
+  <p>Compute the Morton index from a pair of indices
+Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order">course</a></p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1024,7 +1034,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>x</strong></td>
             <td>
-
+<p>Input index pair</p>
             </td>
         </tr>
         <tr>
@@ -1039,7 +1049,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>y</strong></td>
             <td>
-
+<p>Input index pair</p>
             </td>
         </tr>
     </tbody>
@@ -1055,11 +1065,11 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-init_piecewise1d"></span><h3>private  function <a href='../proc/init_piecewise1d.html'>init_piecewise1D</a>(array) result(res)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-init_piecewise1d"></span><h3>public  function <a href='../proc/init_piecewise1d.html'>init_piecewise1D</a>(array) result(res)  
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>initalise the piecewise1D type with an array size (n, 2). Calculates the CDF of this array.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1084,7 +1094,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>array</strong>(:,:)</td>
             <td>
-
+<p>Input array</p>
             </td>
         </tr>
     </tbody>
@@ -1100,11 +1110,11 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-init_piecewise2d"></span><h3>private  function <a href='../proc/init_piecewise2d.html'>init_piecewise2D</a>(cell_width, cell_height, image)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-init_piecewise2d"></span><h3>public  function <a href='../proc/init_piecewise2d.html'>init_piecewise2D</a>(cell_width, cell_height, image)  
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Initalise the piecewise2D type with a given cell_width, cell_height and input image</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1129,7 +1139,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>cell_width</strong></td>
             <td>
-
+<p>Input cell width</p>
             </td>
         </tr>
         <tr>
@@ -1144,7 +1154,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>cell_height</strong></td>
             <td>
-
+<p>Input cell height</p>
             </td>
         </tr>
         <tr>
@@ -1159,7 +1169,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>image</strong>(:,:)</td>
             <td>
-
+<p>Input image</p>
             </td>
         </tr>
     </tbody>
@@ -1175,11 +1185,13 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-nextpwr2"></span><h3>private  function <a href='../proc/nextpwr2.html'>nextpwr2</a>(v) result(res)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-nextpwr2"></span><h3>public  function <a href='../proc/nextpwr2.html'>nextpwr2</a>(v) result(res)  
 </h3></div>
     <div class="panel-body">
           
-  <p><a href="https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2">ref</a></p>
+  <p>Get the next power of 2. i.e given 5 will return 8 (4^2)
+only works on 32bit ints
+<a href="https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2">ref</a></p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1220,11 +1232,12 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-pack_bits"></span><h3>private  function <a href='../proc/pack_bits.html'>pack_bits</a>(z) result(x)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-pack_bits"></span><h3>public  function <a href='../proc/pack_bits.html'>pack_bits</a>(z) result(x)  
 </h3></div>
     <div class="panel-body">
           
-  <p>Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order">course</a></p>
+  <p>Reverse the split function. I.e go from 0a0b0c0d to abcd
+Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order">course</a></p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1249,7 +1262,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>z</strong></td>
             <td>
-
+<p>Input interleaved integer</p>
             </td>
         </tr>
     </tbody>
@@ -1265,11 +1278,13 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-split"></span><h3>private  function <a href='../proc/split.html'>split</a>(a) result(x)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-split"></span><h3>public  function <a href='../proc/split.html'>split</a>(a) result(x)  
 </h3></div>
     <div class="panel-body">
           
-  <p>Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order">course</a></p>
+  <p>Go from an integer abcd to 0a0b0c0d
+input is 32-bit int. Ouput is 64-bit int
+Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order">course</a></p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1294,7 +1309,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input integer to interleave</p>
             </td>
         </tr>
     </tbody>
@@ -1315,11 +1330,12 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
         <section>
           <h2>Subroutines</h2>
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-decode"></span><h3>private  subroutine <a href='../proc/decode.html'>decode</a>(z, x, y)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-decode"></span><h3>public  subroutine <a href='../proc/decode.html'>decode</a>(z, x, y)  
 </h3></div>
     <div class="panel-body">
           
-  <p>Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order">course</a></p>
+  <p>Compute the 2 indices from a Morton index
+Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order">course</a></p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1344,7 +1360,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>z</strong></td>
             <td>
-
+<p>Morton Index</p>
             </td>
         </tr>
         <tr>
@@ -1359,7 +1375,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>x</strong></td>
             <td>
-
+<p>The computed indices</p>
             </td>
         </tr>
         <tr>
@@ -1374,7 +1390,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>y</strong></td>
             <td>
-
+<p>The computed indices</p>
             </td>
         </tr>
     </tbody>
@@ -1385,11 +1401,11 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-getvalue"></span><h3>private  subroutine <a href='../proc/getvalue.html'>getValue</a>(this, x, y, value)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-getvalue"></span><h3>public  subroutine <a href='../proc/getvalue.html'>getValue</a>(this, x, y, value)  
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>The constant version of sample</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1429,7 +1445,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>x</strong></td>
             <td>
-
+<p>Output value</p>
             </td>
         </tr>
         <tr>
@@ -1444,7 +1460,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>y</strong></td>
             <td>
-
+<p>Not used. Kept to keep interface the same for constant, piecewise1D and piecewise2D</p>
             </td>
         </tr>
         <tr>
@@ -1459,7 +1475,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>value</strong></td>
             <td>
-
+<p>Not used. Kept to keep interface the same for constant, piecewise1D and piecewise2D</p>
             </td>
         </tr>
     </tbody>
@@ -1470,11 +1486,11 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-sample1d"></span><h3>private  subroutine <a href='../proc/sample1d.html'>sample1D</a>(this, x, y, value)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-sample1d"></span><h3>public  subroutine <a href='../proc/sample1d.html'>sample1D</a>(this, x, y, value)  
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Randomly sample from 1D array</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1514,7 +1530,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>x</strong></td>
             <td>
-
+<p>Return value</p>
             </td>
         </tr>
         <tr>
@@ -1529,7 +1545,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>y</strong></td>
             <td>
-
+<p>Not used, but here so we can have same interface as 2D sample routine.</p>
             </td>
         </tr>
         <tr>
@@ -1544,7 +1560,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>value</strong></td>
             <td>
-
+<p>Optional x value. If not present we generate a random one in the range [0., 1.] </p>
             </td>
         </tr>
     </tbody>
@@ -1555,7 +1571,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-sample2d"></span><h3>private  subroutine <a href='../proc/sample2d.html'>sample2D</a>(this, x, y, value)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-sample2d"></span><h3>public  subroutine <a href='../proc/sample2d.html'>sample2D</a>(this, x, y, value)  
 </h3></div>
     <div class="panel-body">
           
@@ -1640,11 +1656,11 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-search_1d"></span><h3>private  subroutine <a href='../proc/search_1d.html'>search_1D</a>(array, nlow, value)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-search_1d"></span><h3>public  subroutine <a href='../proc/search_1d.html'>search_1D</a>(array, nlow, value)  
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>search by bisection for 1D array</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1669,7 +1685,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>array</strong>(:)</td>
             <td>
-
+<p>Array to search</p>
             </td>
         </tr>
         <tr>
@@ -1684,7 +1700,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>nlow</strong></td>
             <td>
-
+<p>index of found value</p>
             </td>
         </tr>
         <tr>
@@ -1699,7 +1715,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>value</strong></td>
             <td>
-
+<p>value to find in 1D array</p>
             </td>
         </tr>
     </tbody>
@@ -1710,11 +1726,11 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-search_2d"></span><h3>private  subroutine <a href='../proc/search_2d.html'>search_2D</a>(array, nlow, value)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-search_2d"></span><h3>public  subroutine <a href='../proc/search_2d.html'>search_2D</a>(array, nlow, value)  
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>search by bisection for 1D array</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1739,7 +1755,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>array</strong>(:,:)</td>
             <td>
-
+<p>2D array to search. Only searches 1st column</p>
             </td>
         </tr>
         <tr>
@@ -1754,7 +1770,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>nlow</strong></td>
             <td>
-
+<p>Index of found index</p>
             </td>
         </tr>
         <tr>
@@ -1769,7 +1785,7 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
             <td>::</td>
             <td><strong>value</strong></td>
             <td>
-
+<p>Value to find in the array.</p>
             </td>
         </tr>
     </tbody>
@@ -1828,6 +1844,9 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
+          <script src="../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../tipuesearch/tipuesearch.js"></script>
 
   </body>
 </html>

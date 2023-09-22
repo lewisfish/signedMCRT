@@ -14,6 +14,7 @@
     <link href="../css/pygments.css" rel="stylesheet">
     <link href="../css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/local.css" rel="stylesheet">
+      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -78,6 +79,14 @@
                 <a href="../program/mcpolar.html">Program</a>
               </li>
           </ul>
+            <form action="../search.html" class="navbar-form navbar-right" role="search">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+              </div>
+              <!--
+                  <button type="submit" class="btn btn-default">Submit</button>
+                  -->
+            </form>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
@@ -156,10 +165,11 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>private  subroutine search_1D(array, nlow, value)  
+    <h2>public  subroutine search_1D(array, nlow, value)  
 </h2>
     
 
+    <p>search by bisection for 1D array</p>
 
 
     <h3>Arguments</h3>
@@ -175,7 +185,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-array~22"></span>
+              <span class="anchor" id="variable-array~10"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -185,7 +195,7 @@
             <td>::</td>
             <td><strong>array</strong>(:)</td>
             <td>
-                
+                <p>Array to search</p>
             </td>
         </tr>
         <tr>
@@ -200,12 +210,12 @@
             <td>::</td>
             <td><strong>nlow</strong></td>
             <td>
-                
+                <p>index of found value</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-value~9"></span>
+              <span class="anchor" id="variable-value~3"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -215,7 +225,7 @@
             <td>::</td>
             <td><strong>value</strong></td>
             <td>
-                
+                <p>value to find in 1D array</p>
             </td>
         </tr>
     </tbody>
@@ -267,12 +277,13 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">search_1D</span><span class="p">(</span><span class="k">array</span><span class="p">,</span><span class="w"> </span><span class="n">nlow</span><span class="p">,</span><span class="w"> </span><span class="k">value</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="c">!</span>
-<span class="w">        </span><span class="c">!  search by bisection for 1D array</span>
-<span class="w">        </span><span class="c">!</span>
+<span class="w">        </span><span class="c">!! search by bisection for 1D array</span>
 <span class="w">        </span>
-<span class="w">        </span><span class="kt">integer</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">int64</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nlow</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Array to search</span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w">       </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="k">array</span><span class="p">(:)</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; index of found value</span>
+<span class="w">        </span><span class="kt">integer</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">int64</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nlow</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; value to find in 1D array</span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w">       </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="k">value</span>
 <span class="k">        </span>
 <span class="k">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nup</span><span class="p">,</span><span class="w"> </span><span class="n">middle</span><span class="w"></span>
@@ -339,6 +350,9 @@
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
+          <script src="../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../tipuesearch/tipuesearch.js"></script>
 
   </body>
 </html>

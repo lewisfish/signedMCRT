@@ -14,6 +14,7 @@
     <link href="../css/pygments.css" rel="stylesheet">
     <link href="../css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/local.css" rel="stylesheet">
+      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -78,6 +79,14 @@
                 <a href="../program/mcpolar.html">Program</a>
               </li>
           </ul>
+            <form action="../search.html" class="navbar-form navbar-right" role="search">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+              </div>
+              <!--
+                  <button type="submit" class="btn btn-default">Submit</button>
+                  -->
+            </form>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
@@ -156,7 +165,7 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>private  subroutine sample2D(this, x, y, value)  
+    <h2>public  subroutine sample2D(this, x, y, value)  
 </h2>
         <div class="panel panel-default">
       <div class="panel-heading">
@@ -204,7 +213,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~7"></span>
+              <span class="anchor" id="variable-x~9"></span>
               real(kind=wp),
             </td>
 <td>intent(out)</td>
@@ -219,7 +228,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-y~7"></span>
+              <span class="anchor" id="variable-y~9"></span>
               real(kind=wp),
             </td>
 <td>intent(out)</td>
@@ -234,7 +243,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-value~7"></span>
+              <span class="anchor" id="variable-value~9"></span>
               real(kind=wp),
             </td>
 <td>intent(in),</td>
@@ -364,6 +373,9 @@
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
+          <script src="../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../tipuesearch/tipuesearch.js"></script>
 
   </body>
 </html>

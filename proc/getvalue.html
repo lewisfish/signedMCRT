@@ -14,6 +14,7 @@
     <link href="../css/pygments.css" rel="stylesheet">
     <link href="../css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/local.css" rel="stylesheet">
+      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -78,6 +79,14 @@
                 <a href="../program/mcpolar.html">Program</a>
               </li>
           </ul>
+            <form action="../search.html" class="navbar-form navbar-right" role="search">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+              </div>
+              <!--
+                  <button type="submit" class="btn btn-default">Submit</button>
+                  -->
+            </form>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
@@ -96,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 0.2% of total for procedures.">7 statements</a>
+               title=" 0.2% of total for procedures.">8 statements</a>
           </li>
 
             <li id="source-file">
@@ -156,10 +165,11 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>private  subroutine getValue(this, x, y, value)  
+    <h2>public  subroutine getValue(this, x, y, value)  
 </h2>
     
 
+    <p>The constant version of sample</p>
 
     <h3>Type Bound</h3>
     <p><a href='../type/constant.html'>constant</a></p>
@@ -192,7 +202,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-x~4"></span>
+              <span class="anchor" id="variable-x~5"></span>
               real(kind=wp),
             </td>
 <td>intent(out)</td>
@@ -202,12 +212,12 @@
             <td>::</td>
             <td><strong>x</strong></td>
             <td>
-                
+                <p>Output value</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-y~4"></span>
+              <span class="anchor" id="variable-y~5"></span>
               real(kind=wp),
             </td>
 <td>intent(out)</td>
@@ -217,12 +227,12 @@
             <td>::</td>
             <td><strong>y</strong></td>
             <td>
-                
+                <p>Not used. Kept to keep interface the same for constant, piecewise1D and piecewise2D</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-value~4"></span>
+              <span class="anchor" id="variable-value"></span>
               real(kind=wp),
             </td>
 <td>intent(in),</td>
@@ -232,7 +242,7 @@
             <td>::</td>
             <td><strong>value</strong></td>
             <td>
-                
+                <p>Not used. Kept to keep interface the same for constant, piecewise1D and piecewise2D</p>
             </td>
         </tr>
     </tbody>
@@ -284,9 +294,14 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">getValue</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="k">value</span><span class="p">)</span><span class="w"></span>
-
+<span class="w">        </span><span class="c">!! The constant version of sample</span>
+<span class="w">        </span>
 <span class="w">        </span><span class="k">class</span><span class="p">(</span><span class="n">constant</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">this</span><span class="w"></span>
-<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w">   </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Output value</span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w">   </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">x</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Not used. Kept to keep interface the same for constant, piecewise1D and piecewise2D</span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w">   </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">y</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Not used. Kept to keep interface the same for constant, piecewise1D and piecewise2D</span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">),</span><span class="w"> </span><span class="k">optional</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">value</span>
 
 <span class="k">        </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">this</span><span class="p">%</span><span class="k">value</span>
@@ -342,6 +357,9 @@
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
+          <script src="../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../tipuesearch/tipuesearch.js"></script>
 
   </body>
 </html>

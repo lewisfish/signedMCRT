@@ -14,6 +14,7 @@
     <link href="../css/pygments.css" rel="stylesheet">
     <link href="../css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/local.css" rel="stylesheet">
+      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -78,6 +79,14 @@
                 <a href="../program/mcpolar.html">Program</a>
               </li>
           </ul>
+            <form action="../search.html" class="navbar-form navbar-right" role="search">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+              </div>
+              <!--
+                  <button type="submit" class="btn btn-default">Submit</button>
+                  -->
+            </form>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
@@ -136,7 +145,7 @@
             <a class="list-group-item" href="../type/sdf.html#variable-layer~2">layer</a>
             <a class="list-group-item" href="../type/sdf.html#variable-optprops">optProps</a>
             <a class="list-group-item" href="../type/sdf.html#variable-transform">transform</a>
-            <a class="list-group-item" href="../type/sdf.html#variable-value">value</a>
+            <a class="list-group-item" href="../type/sdf.html#variable-value~6">value</a>
         </div>
       </div>
     </div>
@@ -221,7 +230,7 @@
             <a class="list-group-item" href="../type/sdf.html#variable-layer~2">layer</a>
             <a class="list-group-item" href="../type/sdf.html#variable-optprops">optProps</a>
             <a class="list-group-item" href="../type/sdf.html#variable-transform">transform</a>
-            <a class="list-group-item" href="../type/sdf.html#variable-value">value</a>
+            <a class="list-group-item" href="../type/sdf.html#variable-value~6">value</a>
         </div>
       </div>
     </div>
@@ -351,7 +360,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-value"></span>
+              <span class="anchor" id="variable-value~6"></span>
               class(<a href='../type/sdf_base.html'>sdf_base</a>),
             </td>
               <td>public,</td>
@@ -982,6 +991,9 @@
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
+          <script src="../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../tipuesearch/tipuesearch.js"></script>
 
   </body>
 </html>

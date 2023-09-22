@@ -15,6 +15,7 @@
     <link href="../css/pygments.css" rel="stylesheet">
     <link href="../css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/local.css" rel="stylesheet">
+      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -79,6 +80,14 @@
                 <a href="../program/mcpolar.html">Program</a>
               </li>
           </ul>
+            <form action="../search.html" class="navbar-form navbar-right" role="search">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+              </div>
+              <!--
+                  <button type="submit" class="btn btn-default">Submit</button>
+                  -->
+            </form>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
@@ -117,7 +126,8 @@
 			   <tr><td><a href='../interface/cylinder.html'>cylinder</a></td><td><a href='../module/sdfs.html'>sdfs</a></td><td>Interface</td><td><p>Interface to cylinder SDF initialising function</p></td></tr>
 			   <tr><td><a href='../proc/cylinder_init.html'>cylinder_init</a></td><td><a href='../module/sdfs.html'>sdfs</a></td><td>Function</td><td><p>Initalising function for Cylinder SDF.</p></td></tr>
 			   <tr><td><a href='../proc/dealloc_array.html'>dealloc_array</a></td><td><a href='../module/setupmod.html'>setupMod</a></td><td>Subroutine</td><td><p>deallocate data arrays</p></td></tr>
-			   <tr><td><a href='../proc/decode.html'>decode</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Subroutine</td><td><p>Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order">course</a></p></td></tr>
+			   <tr><td><a href='../proc/decode.html'>decode</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Subroutine</td><td><p>Compute the 2 indices from a Morton index
+Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order">course</a></p></td></tr>
 			   <tr><td><a href='../proc/directory.html'>directory</a></td><td><a href='../module/setupmod.html'>setupMod</a></td><td>Subroutine</td><td><p>subroutine defines vars to hold paths to various folders     </p></td></tr>
 			   <tr><td><a href='../interface/displacement.html'>displacement</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td>Interface</td><td></td></tr>
 			   <tr><td><a href='../proc/displacement_init.html'>displacement_init</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td>Function</td><td><p>Initialise the displacement modifier for a SDF.</p></td></tr>
@@ -128,7 +138,8 @@
 makes a Moss egg. <a href="https://www.shadertoy.com/view/WsjfRt">ref</a>.</p></td></tr>
 			   <tr><td><a href='../interface/elongate.html'>elongate</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td>Interface</td><td></td></tr>
 			   <tr><td><a href='../proc/elongate_init.html'>elongate_init</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td>Function</td><td><p>Initialise the elongate modifier for a SDF.</p></td></tr>
-			   <tr><td><a href='../proc/encode.html'>encode</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Function</td><td><p>Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order">course</a></p></td></tr>
+			   <tr><td><a href='../proc/encode.html'>encode</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Function</td><td><p>Compute the Morton index from a pair of indices
+Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order">course</a></p></td></tr>
 			   <tr><td><a href='../proc/eval_bend.html'>eval_bend</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td>Function</td><td><p>Evaluation function for Bend modifier.</p></td></tr>
 			   <tr><td><a href='../proc/eval_disp.html'>eval_disp</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td>Function</td><td><p>Evaluation function for displacement modifier.</p></td></tr>
 			   <tr><td><a href='../proc/eval_elongate.html'>eval_elongate</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td>Function</td><td><p>Evaluation function for Elongate modifier.</p></td></tr>
@@ -165,7 +176,7 @@ makes a Moss egg. <a href="https://www.shadertoy.com/view/WsjfRt">ref</a>.</p></
 			   <tr><td><a href='../proc/getkappa.html'>getKappa</a></td><td><a href='../module/sdf_basemod.html'>sdf_baseMod</a></td><td>Function</td><td><p>Return <script type="math/tex">\kappa</script> for the current SDF</p></td></tr>
 			   <tr><td><a href='../proc/getmua.html'>getMua</a></td><td><a href='../module/sdf_basemod.html'>sdf_baseMod</a></td><td>Function</td><td><p>Return <script type="math/tex">\mu_a</script> for the current SDF.</p></td></tr>
 			   <tr><td><a href='../proc/getn.html'>getN</a></td><td><a href='../module/sdf_basemod.html'>sdf_baseMod</a></td><td>Function</td><td><p>Return refractive index for the current SDF.</p></td></tr>
-			   <tr><td><a href='../proc/getvalue.html'>getValue</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Subroutine</td><td></td></tr>
+			   <tr><td><a href='../proc/getvalue.html'>getValue</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Subroutine</td><td><p>The constant version of sample</p></td></tr>
 			   <tr><td><a href='../proc/handle_annulus_dect.html'>handle_annulus_dect</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>Read in Annulus_detector settings and initalise variable</p></td></tr>
 			   <tr><td><a href='../proc/handle_camera.html'>handle_camera</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>Read in Camera settings and initalise variable</p></td></tr>
 			   <tr><td><a href='../proc/handle_circle_dect.html'>handle_circle_dect</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>Read in Circle_detector settings and initalise variable</p></td></tr>
@@ -187,8 +198,8 @@ makes a Moss egg. <a href="https://www.shadertoy.com/view/WsjfRt">ref</a>.</p></
 			   <tr><td><a href='../proc/init_historystack.html'>init_historyStack</a></td><td><a href='../module/historystack.html'>historyStack</a></td><td>Function</td><td></td></tr>
 			   <tr><td><a href='../proc/init_mono.html'>init_mono</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td>Function</td><td></td></tr>
 			   <tr><td><a href='../proc/init_photon.html'>init_photon</a></td><td><a href='../module/photonmod.html'>photonMod</a></td><td>Function</td><td><p>set up all the variables in the photon object</p></td></tr>
-			   <tr><td><a href='../proc/init_piecewise1d.html'>init_piecewise1D</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/init_piecewise2d.html'>init_piecewise2D</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Function</td><td></td></tr>
+			   <tr><td><a href='../proc/init_piecewise1d.html'>init_piecewise1D</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Function</td><td><p>initalise the piecewise1D type with an array size (n, 2). Calculates the CDF of this array.</p></td></tr>
+			   <tr><td><a href='../proc/init_piecewise2d.html'>init_piecewise2D</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Function</td><td><p>Initalise the piecewise2D type with a given cell_width, cell_height and input image</p></td></tr>
 			   <tr><td><a href='../proc/init_rng.html'>init_rng</a></td><td><a href='../module/random.html'>random</a></td><td>Subroutine</td><td><p>initiate RNG state with reproducible state</p></td></tr>
 			   <tr><td><a href='../proc/init_source.html'>init_source</a></td><td><a href='../module/photonmod.html'>photonMod</a></td><td>Function</td><td><p>Bind emission function to photon object</p></td></tr>
 			   <tr><td><a href='../proc/init_spectral.html'>init_spectral</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td>Function</td><td></td></tr>
@@ -225,7 +236,9 @@ from http://fortranwiki.org/fortran/show/Matrix+inversion</p></td></tr>
 			   <tr><td><a href='../proc/model_init.html'>model_init</a></td><td><a href='../module/sdf_basemod.html'>sdf_baseMod</a></td><td>Function</td><td><p>Initalise the model type.</p></td></tr>
 			   <tr><td><a href='../interface/mono.html'>mono</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td>Interface</td><td></td></tr>
 			   <tr><td><a href='../proc/next.html'>next</a></td><td><a href='../module/random.html'>random</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/nextpwr2.html'>nextpwr2</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Function</td><td><p><a href="https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2">ref</a></p></td></tr>
+			   <tr><td><a href='../proc/nextpwr2.html'>nextpwr2</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Function</td><td><p>Get the next power of 2. i.e given 5 will return 8 (4^2)
+only works on 32bit ints
+<a href="https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2">ref</a></p></td></tr>
 			   <tr><td><a href='../interface/nint.html'>nint</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Interface</td><td><p>Overload of the nint intrinsic for a vec3</p></td></tr>
 			   <tr><td><a href='../proc/nint_vec.html'>nint_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>Overload the nint intrinsic for a vec3 elementwise</p></td></tr>
 			   <tr><td><a href='../proc/normalise_fluence.html'>normalise_fluence</a></td><td><a href='../module/writer_mod.html'>writer_mod</a></td><td>Subroutine</td><td><p>normalise fluence in the Lucy 1999 way</p></td></tr>
@@ -236,7 +249,8 @@ from http://fortranwiki.org/fortran/show/Matrix+inversion</p></td></tr>
 			   <tr><td><a href='../interface/opticalprop_t.html'>opticalProp_t</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td>Interface</td><td></td></tr>
 			   <tr><td><a href='../proc/opticalprop_t_assign.html'>opticalProp_t_assign</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td>Subroutine</td><td></td></tr>
 			   <tr><td><a href='../proc/opticaprop_new.html'>opticaProp_new</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/pack_bits.html'>pack_bits</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Function</td><td><p>Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order">course</a></p></td></tr>
+			   <tr><td><a href='../proc/pack_bits.html'>pack_bits</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Function</td><td><p>Reverse the split function. I.e go from 0a0b0c0d to abcd
+Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order">course</a></p></td></tr>
 			   <tr><td><a href='../proc/parse_detectors.html'>parse_detectors</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>parse the detectors</p></td></tr>
 			   <tr><td><a href='../proc/parse_geometry.html'>parse_geometry</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>parse geometry information</p></td></tr>
 			   <tr><td><a href='../proc/parse_grid.html'>parse_grid</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>parse grid input data</p></td></tr>
@@ -281,7 +295,7 @@ Wrapper around the render function to allow ease of use</p></td></tr>
 <a href="https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula">ref1</a>
 <a href="https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d">ref2</a></p></td></tr>
 			   <tr><td><a href='../proc/rotmat.html'>rotmat</a></td><td><a href='../module/sdfhelpers.html'>sdfHelpers</a></td><td>Function</td><td><p>Rotate around around an axis by a given angle taken from <a href="http://www.neilmendoza.com/glsl-rotation-about-an-arbitrary-axis/">here</a></p></td></tr>
-			   <tr><td><a href='../proc/sample1d.html'>sample1D</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Subroutine</td><td></td></tr>
+			   <tr><td><a href='../proc/sample1d.html'>sample1D</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Subroutine</td><td><p>Randomly sample from 1D array</p></td></tr>
 			   <tr><td><a href='../proc/sample2d.html'>sample2D</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Subroutine</td><td></td></tr>
 			   <tr><td><a href='../proc/scal_add_mat.html'>scal_add_mat</a></td><td><a href='../module/mat_class.html'>mat_class</a></td><td>Function</td><td><p>Scaler + Matrix</p></td></tr>
 			   <tr><td><a href='../proc/scal_add_vec.html'>scal_add_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>vec3 + scalar</p></td></tr>
@@ -297,8 +311,8 @@ taken from <a href="https://omlc.org/software/mc/mcxyz/index.html">mcxyz</a></p>
 			   <tr><td><a href='../proc/sdf_assign.html'>sdf_assign</a></td><td><a href='../module/sdf_basemod.html'>sdf_baseMod</a></td><td>Subroutine</td><td><p>sdf initializer</p></td></tr>
 			   <tr><td><a href='../proc/sdf_evaluate.html'>sdf_evaluate</a></td><td><a href='../module/sdf_basemod.html'>sdf_baseMod</a></td><td>Function</td><td><p>Evaluate the SDF at a given position.</p></td></tr>
 			   <tr><td><a href='../proc/sdf_new.html'>sdf_new</a></td><td><a href='../module/sdf_basemod.html'>sdf_baseMod</a></td><td>Function</td><td><p>sdf initializer</p></td></tr>
-			   <tr><td><a href='../proc/search_1d.html'>search_1D</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Subroutine</td><td></td></tr>
-			   <tr><td><a href='../proc/search_2d.html'>search_2D</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Subroutine</td><td></td></tr>
+			   <tr><td><a href='../proc/search_1d.html'>search_1D</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Subroutine</td><td><p>search by bisection for 1D array</p></td></tr>
+			   <tr><td><a href='../proc/search_2d.html'>search_2D</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Subroutine</td><td><p>search by bisection for 1D array</p></td></tr>
 			   <tr><td><a href='../interface/segment.html'>segment</a></td><td><a href='../module/sdfs.html'>sdfs</a></td><td>Interface</td><td><p>Interface to segment SDF initialising function</p></td></tr>
 			   <tr><td><a href='../proc/segment_init.html'>segment_init</a></td><td><a href='../module/sdfs.html'>sdfs</a></td><td>Function</td><td><p>Initalising function for segment SDF.
 Note this is a 2D function</p></td></tr>
@@ -323,7 +337,9 @@ Setup up various simulation parameters and routines</p></td></tr>
 			   <tr><td><a href='../interface/spectral.html'>spectral</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td>Interface</td><td></td></tr>
 			   <tr><td><a href='../interface/sphere.html'>sphere</a></td><td><a href='../module/sdfs.html'>sdfs</a></td><td>Interface</td><td></td></tr>
 			   <tr><td><a href='../proc/sphere_init.html'>sphere_init</a></td><td><a href='../module/sdfs.html'>sdfs</a></td><td>Function</td><td><p>Initalising function for Sphere SDF.</p></td></tr>
-			   <tr><td><a href='../proc/split.html'>split</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Function</td><td><p>Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order">course</a></p></td></tr>
+			   <tr><td><a href='../proc/split.html'>split</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Function</td><td><p>Go from an integer abcd to 0a0b0c0d
+input is 32-bit int. Ouput is 64-bit int
+Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order">course</a></p></td></tr>
 			   <tr><td><a href='../proc/subtraction.html'>subtraction</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td>Function</td><td><p>Subtraction operator. Takes one SDF from another.</p></td></tr>
 			   <tr><td><a href='../proc/tauint2.html'>tauint2</a></td><td><a href='../module/inttau2.html'>inttau2</a></td><td>Subroutine</td><td><p>optical depth integration subroutine
 Moves photons to interaction location
@@ -426,6 +442,9 @@ Calculated is any reflection or refraction happens whilst moving</p></td></tr>
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
+          <script src="../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../tipuesearch/tipuesearch.js"></script>
 
   </body>
 </html>

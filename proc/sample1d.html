@@ -14,6 +14,7 @@
     <link href="../css/pygments.css" rel="stylesheet">
     <link href="../css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/local.css" rel="stylesheet">
+      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -78,6 +79,14 @@
                 <a href="../program/mcpolar.html">Program</a>
               </li>
           </ul>
+            <form action="../search.html" class="navbar-form navbar-right" role="search">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+              </div>
+              <!--
+                  <button type="submit" class="btn btn-default">Submit</button>
+                  -->
+            </form>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
@@ -96,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 0.4% of total for procedures.">16 statements</a>
+               title=" 0.4% of total for procedures.">18 statements</a>
           </li>
 
             <li id="source-file">
@@ -156,7 +165,7 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>private  subroutine sample1D(this, x, y, value)  
+    <h2>public  subroutine sample1D(this, x, y, value)  
 </h2>
         <div class="panel panel-default">
       <div class="panel-heading">
@@ -172,6 +181,7 @@
     </div>
 
 
+    <p>Randomly sample from 1D array</p>
 
     <h3>Type Bound</h3>
     <p><a href='../type/piecewise1d.html'>piecewise1D</a></p>
@@ -214,7 +224,7 @@
             <td>::</td>
             <td><strong>x</strong></td>
             <td>
-                
+                <p>Return value</p>
             </td>
         </tr>
         <tr>
@@ -229,12 +239,12 @@
             <td>::</td>
             <td><strong>y</strong></td>
             <td>
-                
+                <p>Not used, but here so we can have same interface as 2D sample routine.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-value~6"></span>
+              <span class="anchor" id="variable-value~2"></span>
               real(kind=wp),
             </td>
 <td>intent(in),</td>
@@ -244,7 +254,7 @@
             <td>::</td>
             <td><strong>value</strong></td>
             <td>
-                
+                <p>Optional x value. If not present we generate a random one in the range [0., 1.] </p>
             </td>
         </tr>
     </tbody>
@@ -296,11 +306,15 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">sample1D</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="k">value</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span>
+<span class="w">        </span><span class="c">!! Randomly sample from 1D array</span>
 <span class="w">        </span><span class="k">use </span><span class="n">random</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ran2</span><span class="p">,</span><span class="w"> </span><span class="n">ranu</span><span class="w"></span>
 
 <span class="w">        </span><span class="k">class</span><span class="p">(</span><span class="n">piecewise1D</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">this</span><span class="w"></span>
-<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w">      </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Return value</span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w">      </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">x</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Not used, but here so we can have same interface as 2D sample routine.</span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w">      </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">y</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Optional x value. If not present we generate a random one in the range [0., 1.] </span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">),</span><span class="w"> </span><span class="k">optional</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">value</span>
 
 <span class="k">        </span><span class="kt">integer</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">int64</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">idx</span><span class="w"></span>
@@ -314,6 +328,7 @@
 <span class="w">            </span><span class="c">! offset by +1 if not get wrong values. e.g miss out on end values and get more near start.</span>
 <span class="w">            </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">this</span><span class="p">%</span><span class="k">array</span><span class="p">(</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">this</span><span class="p">%</span><span class="k">array</span><span class="p">(</span><span class="n">idx</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">this</span><span class="p">%</span><span class="k">array</span><span class="p">(</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
 <span class="w">                   </span><span class="p">((</span><span class="n">val</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">this</span><span class="p">%</span><span class="n">cdf</span><span class="p">(</span><span class="n">idx</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="n">this</span><span class="p">%</span><span class="n">cdf</span><span class="p">(</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">this</span><span class="p">%</span><span class="n">cdf</span><span class="p">(</span><span class="n">idx</span><span class="p">)))</span><span class="w"></span>
+<span class="w">            </span><span class="k">print</span><span class="o">*</span><span class="p">,</span><span class="n">x</span><span class="w"></span>
 <span class="w">        </span><span class="k">else</span><span class="w"></span>
 <span class="w">            </span><span class="c">!already have x so get y</span>
 <span class="w">            </span><span class="k">call </span><span class="n">search_2D</span><span class="p">(</span><span class="n">this</span><span class="p">%</span><span class="k">array</span><span class="p">,</span><span class="w"> </span><span class="n">idx</span><span class="p">,</span><span class="w"> </span><span class="k">value</span><span class="p">)</span><span class="w"></span>
@@ -371,6 +386,9 @@
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
+          <script src="../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../tipuesearch/tipuesearch.js"></script>
 
   </body>
 </html>

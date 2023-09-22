@@ -14,6 +14,7 @@
     <link href="../css/pygments.css" rel="stylesheet">
     <link href="../css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/local.css" rel="stylesheet">
+      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -78,6 +79,14 @@
                 <a href="../program/mcpolar.html">Program</a>
               </li>
           </ul>
+            <form action="../search.html" class="navbar-form navbar-right" role="search">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+              </div>
+              <!--
+                  <button type="submit" class="btn btn-default">Submit</button>
+                  -->
+            </form>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
@@ -166,19 +175,19 @@
           <li class="list-group-item">
             <ul class="list-inline">
                 <li><a href='../module/iarray.html'>iarray</a></li>
-                <li><a href='../module/detectors.html'>detectors</a></li>
-                <li><a href='../module/photonmod.html'>photonMod</a></li>
-                <li><a href='../module/piecewisemod.html'>piecewiseMod</a></li>
-                <li><a href='../module/parse_mod.html'>parse_mod</a></li>
                 <li><a href='../module/random.html'>random</a></li>
-                <li>utils</li>
-                <li><a href='../module/constants.html'>constants</a></li>
-                <li><a href='../module/sdfs.html'>sdfs</a></li>
-                <li><a href='../module/vector_class.html'>vector_class</a></li>
-                <li>tev_mod</li>
-                <li>tomlf</li>
-                <li><a href='../module/sim_state_mod.html'>sim_state_mod</a></li>
                 <li><a href='../module/setupmod.html'>setupMod</a></li>
+                <li>utils</li>
+                <li><a href='../module/piecewisemod.html'>piecewiseMod</a></li>
+                <li><a href='../module/vector_class.html'>vector_class</a></li>
+                <li>tomlf</li>
+                <li><a href='../module/sdfs.html'>sdfs</a></li>
+                <li><a href='../module/parse_mod.html'>parse_mod</a></li>
+                <li><a href='../module/constants.html'>constants</a></li>
+                <li><a href='../module/detectors.html'>detectors</a></li>
+                <li>tev_mod</li>
+                <li><a href='../module/photonmod.html'>photonMod</a></li>
+                <li><a href='../module/sim_state_mod.html'>sim_state_mod</a></li>
             </ul>
           </li>
       </ul>
@@ -541,6 +550,9 @@
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
+          <script src="../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../tipuesearch/tipuesearch.js"></script>
 
   </body>
 </html>

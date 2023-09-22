@@ -14,6 +14,7 @@
     <link href="../css/pygments.css" rel="stylesheet">
     <link href="../css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/local.css" rel="stylesheet">
+      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -78,6 +79,14 @@
                 <a href="../program/mcpolar.html">Program</a>
               </li>
           </ul>
+            <form action="../search.html" class="navbar-form navbar-right" role="search">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+              </div>
+              <!--
+                  <button type="submit" class="btn btn-default">Submit</button>
+                  -->
+            </form>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
@@ -96,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p> 1.7% of total for derived types.</p>Including implementation: 21 statements,  1.4% of total for derived types.">5 statements</a>
+               title="<p> 1.9% of total for derived types.</p>Including implementation: 24 statements,  1.6% of total for derived types.">6 statements</a>
           </li>
 
             <li id="source-file">
@@ -133,7 +142,7 @@
       </div>
       <div id="vars-0" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/piecewise1d.html#variable-array~11">array</a>
+            <a class="list-group-item" href="../type/piecewise1d.html#variable-array~12">array</a>
             <a class="list-group-item" href="../type/piecewise1d.html#variable-cdf">cdf</a>
         </div>
       </div>
@@ -194,7 +203,7 @@
     
     <div class="col-md-9" id='text'>
       <h2>type, public, extends(<a href='../type/piecewise.html'>piecewise</a>) :: piecewise1D</h2>
-    
+    <p>1D piecewise type. Used for the spectral type</p>
     <br>
 
     <section class="visible-xs visible-sm hidden-md">
@@ -208,7 +217,7 @@
       </div>
       <div id="vars-1" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/piecewise1d.html#variable-array~11">array</a>
+            <a class="list-group-item" href="../type/piecewise1d.html#variable-array~12">array</a>
             <a class="list-group-item" href="../type/piecewise1d.html#variable-cdf">cdf</a>
         </div>
       </div>
@@ -280,7 +289,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-array~11"></span>
+              <span class="anchor" id="variable-array~12"></span>
               real(kind=wp),
             </td>
               <td>public,</td>
@@ -292,7 +301,7 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Input array to sample from. Should be size(n, 2). 1st column is x-axis, 2nd column is y-axis</p>
             </td>
         </tr>
         <tr>
@@ -309,7 +318,7 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>cumulative distribution function (CDF) of array.</p>
             </td>
         </tr>
     </tbody>
@@ -329,11 +338,11 @@
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private  function <a href='../proc/init_piecewise1d.html'>init_piecewise1D</a>(array) result(res)  
+    public  function <a href='../proc/init_piecewise1d.html'>init_piecewise1D</a>(array) result(res)  
 
     </h3>
     
-  
+  <p>initalise the piecewise1D type with an array size (n, 2). Calculates the CDF of this array.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -358,7 +367,7 @@
             <td>::</td>
             <td><strong>array</strong>(:,:)</td>
             <td>
-
+<p>Input array</p>
             </td>
         </tr>
     </tbody>
@@ -383,13 +392,17 @@
             <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-sample~3"></span><h3>procedure, public,  :: <strong>sample</strong>  => <a href='../proc/sample1d.html'>sample1D</a>         
     </h3></div>
+      <div class="panel-body">
+        
+        <p>Overloaded sampling function</p>
+      </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
-    private  subroutine <a href='../proc/sample1d.html'>sample1D</a>(this, x, y, value)  
+    public  subroutine <a href='../proc/sample1d.html'>sample1D</a>(this, x, y, value)  
 </h3>
     
-  
+  <p>Randomly sample from 1D array</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -429,7 +442,7 @@
             <td>::</td>
             <td><strong>x</strong></td>
             <td>
-
+<p>Return value</p>
             </td>
         </tr>
         <tr>
@@ -444,7 +457,7 @@
             <td>::</td>
             <td><strong>y</strong></td>
             <td>
-
+<p>Not used, but here so we can have same interface as 2D sample routine.</p>
             </td>
         </tr>
         <tr>
@@ -459,7 +472,7 @@
             <td>::</td>
             <td><strong>value</strong></td>
             <td>
-
+<p>Optional x value. If not present we generate a random one in the range [0., 1.] </p>
             </td>
         </tr>
     </tbody>
@@ -475,9 +488,13 @@
     <section>
     <h3><span class="anchor" id="src"></span>Source Code</h3>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">type</span><span class="p">,</span><span class="w"> </span><span class="k">extends</span><span class="p">(</span><span class="n">piecewise</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">piecewise1D</span><span class="w"></span>
-<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">array</span><span class="p">(:,</span><span class="w"> </span><span class="p">:),</span><span class="w"> </span><span class="n">cdf</span><span class="p">(:)</span><span class="w"></span>
-<span class="w">        </span><span class="k">contains</span>
-<span class="k">            procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">sample</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">sample1D</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Input array to sample from. Should be size(n, 2). 1st column is x-axis, 2nd column is y-axis</span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">array</span><span class="p">(:,</span><span class="w"> </span><span class="p">:)</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; cumulative distribution function (CDF) of array.</span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">cdf</span><span class="p">(:)</span><span class="w"></span>
+<span class="w">        </span><span class="k">contains</span><span class="w"></span>
+<span class="w">            </span><span class="c">!&gt; Overloaded sampling function</span>
+<span class="w">            </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">sample</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">sample1D</span><span class="w"></span>
 <span class="w">    </span><span class="k">end type </span><span class="n">piecewise1D</span><span class="w"></span>
 </pre></div>
 
@@ -527,6 +544,9 @@
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
+          <script src="../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../tipuesearch/tipuesearch.js"></script>
 
   </body>
 </html>

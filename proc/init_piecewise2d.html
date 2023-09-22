@@ -14,6 +14,7 @@
     <link href="../css/pygments.css" rel="stylesheet">
     <link href="../css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/local.css" rel="stylesheet">
+      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -78,6 +79,14 @@
                 <a href="../program/mcpolar.html">Program</a>
               </li>
           </ul>
+            <form action="../search.html" class="navbar-form navbar-right" role="search">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+              </div>
+              <!--
+                  <button type="submit" class="btn btn-default">Submit</button>
+                  -->
+            </form>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
@@ -96,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 0.7% of total for procedures.">31 statements</a>
+               title=" 0.7% of total for procedures.">32 statements</a>
           </li>
 
             <li id="source-file">
@@ -156,10 +165,11 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>private  function init_piecewise2D(cell_width, cell_height, image)  
+    <h2>public  function init_piecewise2D(cell_width, cell_height, image)  
 </h2>
     
 
+    <p>Initalise the piecewise2D type with a given cell_width, cell_height and input image</p>
 
 
     <h3>Arguments</h3>
@@ -175,7 +185,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-cell_width~2"></span>
+              <span class="anchor" id="variable-cell_width"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -185,12 +195,12 @@
             <td>::</td>
             <td><strong>cell_width</strong></td>
             <td>
-                
+                <p>Input cell width</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-cell_height~2"></span>
+              <span class="anchor" id="variable-cell_height"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -200,7 +210,7 @@
             <td>::</td>
             <td><strong>cell_height</strong></td>
             <td>
-                
+                <p>Input cell height</p>
             </td>
         </tr>
         <tr>
@@ -215,7 +225,7 @@
             <td>::</td>
             <td><strong>image</strong>(:,:)</td>
             <td>
-                
+                <p>Input image</p>
             </td>
         </tr>
     </tbody>
@@ -274,8 +284,13 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">piecewise2D</span><span class="p">)</span><span class="w"> </span><span class="k">function </span><span class="n">init_piecewise2D</span><span class="p">(</span><span class="n">cell_width</span><span class="p">,</span><span class="w"> </span><span class="n">cell_height</span><span class="p">,</span><span class="w"> </span><span class="n">image</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span>
-<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">cell_width</span><span class="p">,</span><span class="w"> </span><span class="n">cell_height</span><span class="w"></span>
+<span class="w">        </span><span class="c">!! Initalise the piecewise2D type with a given cell_width, cell_height and input image</span>
+
+<span class="w">        </span><span class="c">!&gt; Input cell width</span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">cell_width</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Input cell height</span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">cell_height</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Input image</span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">image</span><span class="p">(:,:)</span><span class="w"></span>
 <span class="w">        </span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">HC1D</span><span class="p">(:),</span><span class="w"> </span><span class="n">imagenew</span><span class="p">(:,:)</span><span class="w"></span>
@@ -369,6 +384,9 @@
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
+          <script src="../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../tipuesearch/tipuesearch.js"></script>
 
   </body>
 </html>

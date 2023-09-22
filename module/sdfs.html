@@ -14,6 +14,7 @@
     <link href="../css/pygments.css" rel="stylesheet">
     <link href="../css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/local.css" rel="stylesheet">
+      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -78,6 +79,14 @@
                 <a href="../program/mcpolar.html">Program</a>
               </li>
           </ul>
+            <form action="../search.html" class="navbar-form navbar-right" role="search">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+              </div>
+              <!--
+                  <button type="submit" class="btn btn-default">Submit</button>
+                  -->
+            </form>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
@@ -247,11 +256,11 @@ For more information on SDFs, check out Inigo Quilez's <a href="https://iquilezl
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='../module/sdf_basemod.html'>sdf_baseMod</a></li>
-                <li><a href='../module/constants.html'>constants</a></li>
-                <li><a href='../module/opticalproperties.html'>opticalProperties</a></li>
-                <li><a href='../module/vector_class.html'>vector_class</a></li>
                 <li><a href='../module/sdfhelpers.html'>sdfHelpers</a></li>
+                <li><a href='../module/opticalproperties.html'>opticalProperties</a></li>
+                <li><a href='../module/constants.html'>constants</a></li>
+                <li><a href='../module/vector_class.html'>vector_class</a></li>
+                <li><a href='../module/sdf_basemod.html'>sdf_baseMod</a></li>
             </ul>
           </li>
       </ul>
@@ -1726,7 +1735,7 @@ Note this is a 2D function</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~50"></span>
+              <span class="anchor" id="variable-a~51"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
@@ -1892,7 +1901,7 @@ Note this is a 2D function</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~51"></span>
+              <span class="anchor" id="variable-a~52"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
@@ -2075,7 +2084,7 @@ Note this is a 2D function</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~52"></span>
+              <span class="anchor" id="variable-a~53"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
@@ -2408,7 +2417,7 @@ makes a Moss egg. <a href="https://www.shadertoy.com/view/WsjfRt">ref</a>.</p></
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~53"></span>
+              <span class="anchor" id="variable-a~54"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
@@ -2540,7 +2549,7 @@ makes a Moss egg. <a href="https://www.shadertoy.com/view/WsjfRt">ref</a>.</p></
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~54"></span>
+              <span class="anchor" id="variable-a~55"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
@@ -4833,6 +4842,9 @@ Note this is a 2D function</p>
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
+          <script src="../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../tipuesearch/tipuesearch.js"></script>
 
   </body>
 </html>

@@ -15,6 +15,7 @@
     <link href="../css/pygments.css" rel="stylesheet">
     <link href="../css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/local.css" rel="stylesheet">
+      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -79,6 +80,14 @@
                 <a href="../program/mcpolar.html">Program</a>
               </li>
           </ul>
+            <form action="../search.html" class="navbar-form navbar-right" role="search">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+              </div>
+              <!--
+                  <button type="submit" class="btn btn-default">Submit</button>
+                  -->
+            </form>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
@@ -99,7 +108,7 @@
 			   <tr><td><a href='../type/cart_grid.html'>cart_grid</a></td><td><a href='../module/gridmod.html'>gridMod</a></td><td>None</td><td></td></tr>
 			   <tr><td><a href='../type/circle_dect.html'>circle_dect</a></td><td><a href='../module/detectors.html'>detectors</a></td><td><a href='../type/detector1d.html'>detector1D</a></td><td></td></tr>
 			   <tr><td><a href='../type/cone.html'>cone</a></td><td><a href='../module/sdfs.html'>sdfs</a></td><td><a href='../type/sdf_base.html'>sdf_base</a></td><td><p>Cone SDF</p></td></tr>
-			   <tr><td><a href='../type/constant.html'>constant</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td><a href='../type/piecewise.html'>piecewise</a></td><td></td></tr>
+			   <tr><td><a href='../type/constant.html'>constant</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td><a href='../type/piecewise.html'>piecewise</a></td><td><p>Constant piecewise type. i.e a piecewise function that does not change value</p></td></tr>
 			   <tr><td><a href='../type/cylinder.html'>cylinder</a></td><td><a href='../module/sdfs.html'>sdfs</a></td><td><a href='../type/sdf_base.html'>sdf_base</a></td><td><p>Cylinder SDF</p></td></tr>
 			   <tr><td><a href='../type/dect_array.html'>dect_array</a></td><td><a href='../module/detectors.html'>detectors</a></td><td>None</td><td></td></tr>
 			   <tr><td><a href='../type/detector.html'>detector</a></td><td><a href='../module/detector_mod.html'>detector_mod</a></td><td>None</td><td></td></tr>
@@ -118,9 +127,9 @@
 			   <tr><td><a href='../type/opticalprop_base.html'>opticalProp_base</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td>None</td><td></td></tr>
 			   <tr><td><a href='../type/opticalprop_t.html'>opticalProp_t</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td><a href='../type/opticalprop_base.html'>opticalProp_base</a></td><td></td></tr>
 			   <tr><td><a href='../type/photon.html'>photon</a></td><td><a href='../module/photonmod.html'>photonMod</a></td><td>None</td><td><p>photon class</p></td></tr>
-			   <tr><td><a href='../type/piecewise.html'>piecewise</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>None</td><td></td></tr>
-			   <tr><td><a href='../type/piecewise1d.html'>piecewise1D</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td><a href='../type/piecewise.html'>piecewise</a></td><td></td></tr>
-			   <tr><td><a href='../type/piecewise2d.html'>piecewise2D</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td><a href='../type/piecewise.html'>piecewise</a></td><td></td></tr>
+			   <tr><td><a href='../type/piecewise.html'>piecewise</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>None</td><td><p>Abstract spectrum base type. </p></td></tr>
+			   <tr><td><a href='../type/piecewise1d.html'>piecewise1D</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td><a href='../type/piecewise.html'>piecewise</a></td><td><p>1D piecewise type. Used for the spectral type</p></td></tr>
+			   <tr><td><a href='../type/piecewise2d.html'>piecewise2D</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td><a href='../type/piecewise.html'>piecewise</a></td><td><p>2D piecewise type. Used for images</p></td></tr>
 			   <tr><td><a href='../type/plane.html'>plane</a></td><td><a href='../module/sdfs.html'>sdfs</a></td><td><a href='../type/sdf_base.html'>sdf_base</a></td><td><p>Plane SDF</p></td></tr>
 			   <tr><td><a href='../type/repeat.html'>repeat</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td><a href='../type/sdf_base.html'>sdf_base</a></td><td><p>Repeat a SDF</p></td></tr>
 			   <tr><td><a href='../type/revolution.html'>revolution</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td><a href='../type/sdf_base.html'>sdf_base</a></td><td><p>Revoloution modifier. Revolves an SDF around the z axis (need to check this!!)</p></td></tr>
@@ -130,7 +139,7 @@
 			   <tr><td><a href='../type/seq.html'>seq</a></td><td><a href='../module/random.html'>random</a></td><td>None</td><td><p>Sequence type for quasi-monte carlo</p></td></tr>
 			   <tr><td><a href='../type/settings_t.html'>settings_t</a></td><td><a href='../module/sim_state_mod.html'>sim_state_mod</a></td><td>None</td><td></td></tr>
 			   <tr><td><a href='../type/spectral.html'>spectral</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td><a href='../type/opticalprop_base.html'>opticalProp_base</a></td><td></td></tr>
-			   <tr><td><a href='../type/spectrum_t.html'>spectrum_t</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>None</td><td></td></tr>
+			   <tr><td><a href='../type/spectrum_t.html'>spectrum_t</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>None</td><td><p>Spectrum_t type. Used as a container type</p></td></tr>
 			   <tr><td><a href='../type/sphere.html'>sphere</a></td><td><a href='../module/sdfs.html'>sdfs</a></td><td><a href='../type/sdf_base.html'>sdf_base</a></td><td><p>Sphere SDF</p></td></tr>
 			   <tr><td><a href='../type/torus.html'>torus</a></td><td><a href='../module/sdfs.html'>sdfs</a></td><td><a href='../type/sdf_base.html'>sdf_base</a></td><td><p>Torus SDF</p></td></tr>
 			   <tr><td><a href='../type/triprism.html'>triprism</a></td><td><a href='../module/sdfs.html'>sdfs</a></td><td><a href='../type/sdf_base.html'>sdf_base</a></td><td><p>Triprisim SDF</p></td></tr>
@@ -182,6 +191,9 @@
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
+          <script src="../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../tipuesearch/tipuesearch.js"></script>
 
   </body>
 </html>

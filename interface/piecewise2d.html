@@ -14,6 +14,7 @@
     <link href="../css/pygments.css" rel="stylesheet">
     <link href="../css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/local.css" rel="stylesheet">
+      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -78,6 +79,14 @@
                 <a href="../program/mcpolar.html">Program</a>
               </li>
           </ul>
+            <form action="../search.html" class="navbar-form navbar-right" role="search">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+              </div>
+              <!--
+                  <button type="submit" class="btn btn-default">Submit</button>
+                  -->
+            </form>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
@@ -96,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p> 0.1% of total for procedures.</p>Including implementation: 34 statements,  0.7% of total for procedures.">3 statements</a>
+               title="<p> 0.1% of total for procedures.</p>Including implementation: 35 statements,  0.8% of total for procedures.">3 statements</a>
           </li>
 
             <li id="source-file">
@@ -207,11 +216,11 @@
 
         <h2>Module Procedures</h2>
             <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-init_piecewise2d"></span><h3>private  function <a href='../proc/init_piecewise2d.html'>init_piecewise2D</a>(cell_width, cell_height, image)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-init_piecewise2d"></span><h3>public  function <a href='../proc/init_piecewise2d.html'>init_piecewise2D</a>(cell_width, cell_height, image)  
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Initalise the piecewise2D type with a given cell_width, cell_height and input image</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -236,7 +245,7 @@
             <td>::</td>
             <td><strong>cell_width</strong></td>
             <td>
-
+<p>Input cell width</p>
             </td>
         </tr>
         <tr>
@@ -251,7 +260,7 @@
             <td>::</td>
             <td><strong>cell_height</strong></td>
             <td>
-
+<p>Input cell height</p>
             </td>
         </tr>
         <tr>
@@ -266,7 +275,7 @@
             <td>::</td>
             <td><strong>image</strong>(:,:)</td>
             <td>
-
+<p>Input image</p>
             </td>
         </tr>
     </tbody>
@@ -324,6 +333,9 @@
         </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
+          <script src="../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../tipuesearch/tipuesearch.js"></script>
 
   </body>
 </html>
