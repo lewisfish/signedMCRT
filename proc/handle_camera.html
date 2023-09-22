@@ -173,6 +173,7 @@
     </div>
 
 
+    <p>Read in Camera settings and initalise variable</p>
 
 
     <h3>Arguments</h3>
@@ -203,7 +204,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dects~6"></span>
+              <span class="anchor" id="variable-dects~7"></span>
               type(<a href='../type/camera.html'>camera</a>),
             </td>
 <td>intent(inout)</td>
@@ -243,7 +244,7 @@
             <td>::</td>
             <td><strong>context</strong></td>
             <td>
-                
+                <p>Context handle for error reporting.</p>
             </td>
         </tr>
     </tbody>
@@ -295,14 +296,15 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">handle_camera</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="n">dects</span><span class="p">,</span><span class="w"> </span><span class="n">counts</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w"></span>
-
+<span class="w">        </span><span class="c">!! Read in Camera settings and initalise variable</span>
 <span class="w">        </span><span class="k">use </span><span class="n">detectors</span><span class="p">,</span><span class="w">     </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">camera</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">sim_state_mod</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">state</span><span class="w"></span>
 
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_table</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">child</span><span class="w"></span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">camera</span><span class="p">),</span><span class="w">              </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dects</span><span class="p">(:)</span><span class="w"></span>
 <span class="w">        </span><span class="kt">integer</span><span class="p">,</span><span class="w">                   </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">counts</span><span class="w"></span>
-<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_context</span><span class="p">),</span><span class="w">        </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">context</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Context handle for error reporting.</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_context</span><span class="p">),</span><span class="w">        </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">context</span><span class="w"></span>
 
 <span class="w">        </span><span class="kt">integer</span><span class="w">       </span><span class="kd">::</span><span class="w"> </span><span class="n">layer</span><span class="p">,</span><span class="w"> </span><span class="n">nbins</span><span class="w"></span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="nb">maxval</span>

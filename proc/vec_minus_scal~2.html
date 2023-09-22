@@ -160,6 +160,7 @@
 </h2>
     
 
+    <p>Elementwise vec4 - scalar</p>
 
     <h3>Type Bound</h3>
     <p><a href='../type/vec4.html'>vec4</a></p>
@@ -177,7 +178,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~43"></span>
+              <span class="anchor" id="variable-a~33"></span>
               class(<a href='../type/vec4.html'>vec4</a>),
             </td>
 <td>intent(in)</td>
@@ -187,12 +188,12 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-                
+                <p>Input vec4</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~40"></span>
+              <span class="anchor" id="variable-b~32"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -202,7 +203,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-                
+                <p>Scalar to subtract</p>
             </td>
         </tr>
     </tbody>
@@ -261,8 +262,10 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vec4</span><span class="p">)</span><span class="w"> </span><span class="k">pure elemental function </span><span class="n">vec_minus_scal</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"></span>
-
+<span class="w">            </span><span class="c">!! Elementwise vec4 - scalar</span>
+<span class="w">            </span><span class="c">!&gt; Input vec4</span>
 <span class="w">            </span><span class="k">class</span><span class="p">(</span><span class="n">vec4</span><span class="p">),</span><span class="w">   </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">a</span><span class="w"></span>
+<span class="w">            </span><span class="c">!&gt; Scalar to subtract</span>
 <span class="w">            </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">b</span><span class="w"></span>
 
 <span class="w">            </span><span class="n">vec_minus_scal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec4</span><span class="p">(</span><span class="n">a</span><span class="p">%</span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">%</span><span class="n">y</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">%</span><span class="n">z</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">%</span><span class="n">p</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"></span>

@@ -90,7 +90,7 @@
 			 <table class="table table-striped">
 			 <thead><tr><th>Procedure</th><th>Location</th><th>Procedure Type</th><th>Description</th></tr></thead>
 			 <tbody>
-			   <tr><td><a href='../interface/abs.html'>abs</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Interface</td><td><p>interface wrapper for abs_vec</p></td></tr>
+			   <tr><td><a href='../interface/abs.html'>abs</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Interface</td><td><p>Overload of the abs intrinsic for a vec3</p></td></tr>
 			   <tr><td><a href='../proc/abs_vec.html'>abs_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>Calculate the absoulte of a vector elementwise</p></td></tr>
 			   <tr><td><a href='../proc/alloc_array.html'>alloc_array</a></td><td><a href='../module/setupmod.html'>setupMod</a></td><td>Subroutine</td><td><p>subroutine allocates allocatable arrays  </p></td></tr>
 			   <tr><td><a href='../proc/annulus.html'>annulus</a></td><td><a href='../module/photonmod.html'>photonMod</a></td><td>Subroutine</td><td><p>annular source</p></td></tr>
@@ -117,18 +117,18 @@
 			   <tr><td><a href='../interface/cylinder.html'>cylinder</a></td><td><a href='../module/sdfs.html'>sdfs</a></td><td>Interface</td><td><p>Interface to cylinder SDF initialising function</p></td></tr>
 			   <tr><td><a href='../proc/cylinder_init.html'>cylinder_init</a></td><td><a href='../module/sdfs.html'>sdfs</a></td><td>Function</td><td><p>Initalising function for Cylinder SDF.</p></td></tr>
 			   <tr><td><a href='../proc/dealloc_array.html'>dealloc_array</a></td><td><a href='../module/setupmod.html'>setupMod</a></td><td>Subroutine</td><td><p>deallocate data arrays</p></td></tr>
-			   <tr><td><a href='../proc/decode.html'>decode</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Subroutine</td><td><p>taken from archer2 cpp course</p></td></tr>
+			   <tr><td><a href='../proc/decode.html'>decode</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Subroutine</td><td><p>Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order">course</a></p></td></tr>
 			   <tr><td><a href='../proc/directory.html'>directory</a></td><td><a href='../module/setupmod.html'>setupMod</a></td><td>Subroutine</td><td><p>subroutine defines vars to hold paths to various folders     </p></td></tr>
 			   <tr><td><a href='../interface/displacement.html'>displacement</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td>Interface</td><td></td></tr>
 			   <tr><td><a href='../proc/displacement_init.html'>displacement_init</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td>Function</td><td><p>Initialise the displacement modifier for a SDF.</p></td></tr>
-			   <tr><td><a href='../proc/display_settings.html'>display_settings</a></td><td><a href='../module/kernels.html'>kernels</a></td><td>Subroutine</td><td></td></tr>
+			   <tr><td><a href='../proc/display_settings.html'>display_settings</a></td><td><a href='../module/kernels.html'>kernels</a></td><td>Subroutine</td><td><p>Displays the settings used in the current simulation run</p></td></tr>
 			   <tr><td><a href='../proc/dslit.html'>dslit</a></td><td><a href='../module/photonmod.html'>photonMod</a></td><td>Subroutine</td><td><p>sample from double slit to produce diff pattern</p></td></tr>
 			   <tr><td><a href='../interface/egg.html'>egg</a></td><td><a href='../module/sdfs.html'>sdfs</a></td><td>Interface</td><td><p>Interface to egg SDF initialising function</p></td></tr>
 			   <tr><td><a href='../proc/egg_init.html'>egg_init</a></td><td><a href='../module/sdfs.html'>sdfs</a></td><td>Function</td><td><p>Initalising function for egg SDF.
 makes a Moss egg. <a href="https://www.shadertoy.com/view/WsjfRt">ref</a>.</p></td></tr>
 			   <tr><td><a href='../interface/elongate.html'>elongate</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td>Interface</td><td></td></tr>
 			   <tr><td><a href='../proc/elongate_init.html'>elongate_init</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td>Function</td><td><p>Initialise the elongate modifier for a SDF.</p></td></tr>
-			   <tr><td><a href='../proc/encode.html'>encode</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Function</td><td><p>taken from archer2 cpp course</p></td></tr>
+			   <tr><td><a href='../proc/encode.html'>encode</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Function</td><td><p>Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order">course</a></p></td></tr>
 			   <tr><td><a href='../proc/eval_bend.html'>eval_bend</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td>Function</td><td><p>Evaluation function for Bend modifier.</p></td></tr>
 			   <tr><td><a href='../proc/eval_disp.html'>eval_disp</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td>Function</td><td><p>Evaluation function for displacement modifier.</p></td></tr>
 			   <tr><td><a href='../proc/eval_elongate.html'>eval_elongate</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td>Function</td><td><p>Evaluation function for Elongate modifier.</p></td></tr>
@@ -151,12 +151,12 @@ makes a Moss egg. <a href="https://www.shadertoy.com/view/WsjfRt">ref</a>.</p></
 			   <tr><td><a href='../proc/evaluate_triprism.html'>evaluate_triprism</a></td><td><a href='../module/sdfs.html'>sdfs</a></td><td>Function</td><td><p>Evaluation function for Triprisim SDF.</p></td></tr>
 			   <tr><td><a href='../interface/extrude.html'>extrude</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td>Interface</td><td></td></tr>
 			   <tr><td><a href='../proc/extrude_init.html'>extrude_init</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td>Function</td><td><p>Initialise the extrude modifier for a SDF.</p></td></tr>
-			   <tr><td><a href='../proc/finalise.html'>finalise</a></td><td><a href='../module/kernels.html'>kernels</a></td><td>Subroutine</td><td></td></tr>
+			   <tr><td><a href='../proc/finalise.html'>finalise</a></td><td><a href='../module/kernels.html'>kernels</a></td><td>Subroutine</td><td><p>Routine writes out simulation data, deallocates arrays and prints total runtime</p></td></tr>
 			   <tr><td><a href='../proc/find.html'>find</a></td><td><a href='../module/inttau2.html'>inttau2</a></td><td>Function</td><td><p>searches for bracketing indices for a value value in an array a</p></td></tr>
 			   <tr><td><a href='../proc/focus.html'>focus</a></td><td><a href='../module/photonmod.html'>photonMod</a></td><td>Subroutine</td><td></td></tr>
 			   <tr><td><a href='../proc/fresnel.html'>fresnel</a></td><td><a href='../module/surfaces.html'>surfaces</a></td><td>Function</td><td><p>calculates the fresnel coefficents</p></td></tr>
 			   <tr><td><a href='../proc/get_new_file_name.html'>get_new_file_name</a></td><td><a href='../module/writer_mod.html'>writer_mod</a></td><td>Function</td><td><p>If file exits, get numeral to append to filename </p></td></tr>
-			   <tr><td><a href='../proc/get_vector.html'>get_vector</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Function</td><td><p>vector helper function for parsing toml</p></td></tr>
+			   <tr><td><a href='../proc/get_vector.html'>get_vector</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Function</td><td><p>Vector helper function for parsing toml</p></td></tr>
 			   <tr><td><a href='../proc/get_vessels.html'>get_vessels</a></td><td><a href='../module/setupgeometry.html'>setupGeometry</a></td><td>Function</td><td><p>setup blood vessel scene</p></td></tr>
 			   <tr><td><a href='../proc/get_voxel.html'>get_voxel</a></td><td><a href='../module/gridmod.html'>gridMod</a></td><td>Function</td><td><p>get current voxel the photon packet is in</p></td></tr>
 			   <tr><td><a href='../proc/getalbedo.html'>getAlbedo</a></td><td><a href='../module/sdf_basemod.html'>sdf_baseMod</a></td><td>Function</td><td><p>Return albedo for the current SDF.</p></td></tr>
@@ -166,9 +166,9 @@ makes a Moss egg. <a href="https://www.shadertoy.com/view/WsjfRt">ref</a>.</p></
 			   <tr><td><a href='../proc/getmua.html'>getMua</a></td><td><a href='../module/sdf_basemod.html'>sdf_baseMod</a></td><td>Function</td><td><p>Return <script type="math/tex">\mu_a</script> for the current SDF.</p></td></tr>
 			   <tr><td><a href='../proc/getn.html'>getN</a></td><td><a href='../module/sdf_basemod.html'>sdf_baseMod</a></td><td>Function</td><td><p>Return refractive index for the current SDF.</p></td></tr>
 			   <tr><td><a href='../proc/getvalue.html'>getValue</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Subroutine</td><td></td></tr>
-			   <tr><td><a href='../proc/handle_annulus_dect.html'>handle_annulus_dect</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td></td></tr>
-			   <tr><td><a href='../proc/handle_camera.html'>handle_camera</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td></td></tr>
-			   <tr><td><a href='../proc/handle_circle_dect.html'>handle_circle_dect</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td></td></tr>
+			   <tr><td><a href='../proc/handle_annulus_dect.html'>handle_annulus_dect</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>Read in Annulus_detector settings and initalise variable</p></td></tr>
+			   <tr><td><a href='../proc/handle_camera.html'>handle_camera</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>Read in Camera settings and initalise variable</p></td></tr>
+			   <tr><td><a href='../proc/handle_circle_dect.html'>handle_circle_dect</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>Read in Circle_detector settings and initalise variable</p></td></tr>
 			   <tr><td><a href='../proc/histempty_fn.html'>histempty_fn</a></td><td><a href='../module/historystack.html'>historyStack</a></td><td>Function</td><td></td></tr>
 			   <tr><td><a href='../proc/histfinish_sub.html'>histfinish_sub</a></td><td><a href='../module/historystack.html'>historyStack</a></td><td>Subroutine</td><td></td></tr>
 			   <tr><td><a href='../interface/history_stack_t.html'>history_stack_t</a></td><td><a href='../module/historystack.html'>historyStack</a></td><td>Interface</td><td></td></tr>
@@ -192,7 +192,8 @@ makes a Moss egg. <a href="https://www.shadertoy.com/view/WsjfRt">ref</a>.</p></
 			   <tr><td><a href='../proc/init_rng.html'>init_rng</a></td><td><a href='../module/random.html'>random</a></td><td>Subroutine</td><td><p>initiate RNG state with reproducible state</p></td></tr>
 			   <tr><td><a href='../proc/init_source.html'>init_source</a></td><td><a href='../module/photonmod.html'>photonMod</a></td><td>Function</td><td><p>Bind emission function to photon object</p></td></tr>
 			   <tr><td><a href='../proc/init_spectral.html'>init_spectral</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/init_vec4_vector_real.html'>init_vec4_vector_real</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td></td></tr>
+			   <tr><td><a href='../proc/init_vec4_vector_real.html'>init_vec4_vector_real</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td><p>Initalise vec4 from a vec3 and Scalar
+e.g vec4 = [vec3%x, vec3%y, vec3%z, scalar]</p></td></tr>
 			   <tr><td><a href='../proc/intersectcircle.html'>intersectCircle</a></td><td><a href='../module/geometry.html'>geometry</a></td><td>Function</td><td><p><a href="https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection">ref</a></p></td></tr>
 			   <tr><td><a href='../proc/intersectcone.html'>intersectCone</a></td><td><a href='../module/geometry.html'>geometry</a></td><td>Function</td><td></td></tr>
 			   <tr><td><a href='../proc/intersectcylinder.html'>intersectCylinder</a></td><td><a href='../module/geometry.html'>geometry</a></td><td>Function</td><td></td></tr>
@@ -200,33 +201,33 @@ makes a Moss egg. <a href="https://www.shadertoy.com/view/WsjfRt">ref</a>.</p></
 			   <tr><td><a href='../proc/intersection.html'>intersection</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td>Function</td><td><p>Intersection operator. Returns the intersection of two SDFs.</p></td></tr>
 			   <tr><td><a href='../proc/intersectplane.html'>intersectPlane</a></td><td><a href='../module/geometry.html'>geometry</a></td><td>Function</td><td><p><a href="https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection">ref</a></p></td></tr>
 			   <tr><td><a href='../proc/intersectsphere.html'>intersectSphere</a></td><td><a href='../module/geometry.html'>geometry</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/invert.html'>invert</a></td><td><a href='../module/mat_class.html'>mat_class</a></td><td>Function</td><td><p>from http://fortranwiki.org/fortran/show/Matrix+inversion
-Performs a direct calculation of the inverse of a 4×4 matrix.</p></td></tr>
+			   <tr><td><a href='../proc/invert.html'>invert</a></td><td><a href='../module/mat_class.html'>mat_class</a></td><td>Function</td><td><p>Performs a direct calculation of the inverse of a 4×4 matrix.
+from http://fortranwiki.org/fortran/show/Matrix+inversion</p></td></tr>
 			   <tr><td><a href='../proc/json_writer.html'>json_writer</a></td><td><a href='../module/historystack.html'>historyStack</a></td><td>Subroutine</td><td></td></tr>
-			   <tr><td><a href='../proc/length.html'>length</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/length~2.html'>length</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/magnitude.html'>magnitude</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/magnitude_fn.html'>magnitude_fn</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../interface/mat.html'>mat</a></td><td><a href='../module/mat_class.html'>mat_class</a></td><td>Interface</td><td></td></tr>
-			   <tr><td><a href='../proc/mat_add_scal.html'>mat_add_scal</a></td><td><a href='../module/mat_class.html'>mat_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/mat_div_scal.html'>mat_div_scal</a></td><td><a href='../module/mat_class.html'>mat_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/mat_init.html'>mat_init</a></td><td><a href='../module/mat_class.html'>mat_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/mat_minus_scal.html'>mat_minus_scal</a></td><td><a href='../module/mat_class.html'>mat_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/mat_mult_mat.html'>mat_mult_mat</a></td><td><a href='../module/mat_class.html'>mat_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/mat_mult_scal.html'>mat_mult_scal</a></td><td><a href='../module/mat_class.html'>mat_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../interface/max.html'>max</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Interface</td><td></td></tr>
-			   <tr><td><a href='../proc/max_vec.html'>max_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/maxval_vec.html'>maxval_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../interface/min.html'>min</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Interface</td><td></td></tr>
-			   <tr><td><a href='../proc/min_vec.html'>min_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/minval_vec.html'>minval_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
+			   <tr><td><a href='../proc/length.html'>length</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>Returns the length of a vec3</p></td></tr>
+			   <tr><td><a href='../proc/length~2.html'>length</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td><p>Returns the length of a vec4</p></td></tr>
+			   <tr><td><a href='../proc/magnitude.html'>magnitude</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>Returns the magnitude of a vec3</p></td></tr>
+			   <tr><td><a href='../proc/magnitude_fn.html'>magnitude_fn</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td><p>Returns the magnitude of a vec4</p></td></tr>
+			   <tr><td><a href='../interface/mat.html'>mat</a></td><td><a href='../module/mat_class.html'>mat_class</a></td><td>Interface</td><td><p>Intalise Matrix with 1D Array</p></td></tr>
+			   <tr><td><a href='../proc/mat_add_scal.html'>mat_add_scal</a></td><td><a href='../module/mat_class.html'>mat_class</a></td><td>Function</td><td><p>Matrix + Scalar = Matrix</p></td></tr>
+			   <tr><td><a href='../proc/mat_div_scal.html'>mat_div_scal</a></td><td><a href='../module/mat_class.html'>mat_class</a></td><td>Function</td><td><p>Matrix / scalar</p></td></tr>
+			   <tr><td><a href='../proc/mat_init.html'>mat_init</a></td><td><a href='../module/mat_class.html'>mat_class</a></td><td>Function</td><td><p>Initalise matrix type from 1D array</p></td></tr>
+			   <tr><td><a href='../proc/mat_minus_scal.html'>mat_minus_scal</a></td><td><a href='../module/mat_class.html'>mat_class</a></td><td>Function</td><td><p>Matrix - Scalar</p></td></tr>
+			   <tr><td><a href='../proc/mat_mult_mat.html'>mat_mult_mat</a></td><td><a href='../module/mat_class.html'>mat_class</a></td><td>Function</td><td><p>Matrix * vec4</p></td></tr>
+			   <tr><td><a href='../proc/mat_mult_scal.html'>mat_mult_scal</a></td><td><a href='../module/mat_class.html'>mat_class</a></td><td>Function</td><td><p>Matrix * Scalar</p></td></tr>
+			   <tr><td><a href='../interface/max.html'>max</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Interface</td><td><p>Overload of the max intrinsic for a vec3</p></td></tr>
+			   <tr><td><a href='../proc/max_vec.html'>max_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>Get the max value elementwise between a vec3 and a scalar</p></td></tr>
+			   <tr><td><a href='../proc/maxval_vec.html'>maxval_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>Get the max value in a vec3</p></td></tr>
+			   <tr><td><a href='../interface/min.html'>min</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Interface</td><td><p>Overload of the min intrinsic for a vec3</p></td></tr>
+			   <tr><td><a href='../proc/min_vec.html'>min_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>Get the min value elementwise between a vec3 and a scalar</p></td></tr>
+			   <tr><td><a href='../proc/minval_vec.html'>minval_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>Get the min value in a vec3</p></td></tr>
 			   <tr><td><a href='../interface/model.html'>model</a></td><td><a href='../module/sdf_basemod.html'>sdf_baseMod</a></td><td>Interface</td><td></td></tr>
 			   <tr><td><a href='../proc/model_init.html'>model_init</a></td><td><a href='../module/sdf_basemod.html'>sdf_baseMod</a></td><td>Function</td><td><p>Initalise the model type.</p></td></tr>
 			   <tr><td><a href='../interface/mono.html'>mono</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td>Interface</td><td></td></tr>
 			   <tr><td><a href='../proc/next.html'>next</a></td><td><a href='../module/random.html'>random</a></td><td>Function</td><td></td></tr>
 			   <tr><td><a href='../proc/nextpwr2.html'>nextpwr2</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Function</td><td><p><a href="https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2">ref</a></p></td></tr>
-			   <tr><td><a href='../interface/nint.html'>nint</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Interface</td><td></td></tr>
-			   <tr><td><a href='../proc/nint_vec.html'>nint_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
+			   <tr><td><a href='../interface/nint.html'>nint</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Interface</td><td><p>Overload of the nint intrinsic for a vec3</p></td></tr>
+			   <tr><td><a href='../proc/nint_vec.html'>nint_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>Overload the nint intrinsic for a vec3 elementwise</p></td></tr>
 			   <tr><td><a href='../proc/normalise_fluence.html'>normalise_fluence</a></td><td><a href='../module/writer_mod.html'>writer_mod</a></td><td>Subroutine</td><td><p>normalise fluence in the Lucy 1999 way</p></td></tr>
 			   <tr><td><a href='../interface/nrrd_write.html'>nrrd_write</a></td><td><a href='../module/writer_mod.html'>writer_mod</a></td><td>Interface</td><td></td></tr>
 			   <tr><td><a href='../proc/obj_writer.html'>obj_writer</a></td><td><a href='../module/historystack.html'>historyStack</a></td><td>Subroutine</td><td></td></tr>
@@ -235,16 +236,16 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p></td></tr>
 			   <tr><td><a href='../interface/opticalprop_t.html'>opticalProp_t</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td>Interface</td><td></td></tr>
 			   <tr><td><a href='../proc/opticalprop_t_assign.html'>opticalProp_t_assign</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td>Subroutine</td><td></td></tr>
 			   <tr><td><a href='../proc/opticaprop_new.html'>opticaProp_new</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/pack_bits.html'>pack_bits</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Function</td><td><p>taken from archer2 cpp course</p></td></tr>
+			   <tr><td><a href='../proc/pack_bits.html'>pack_bits</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Function</td><td><p>Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order">course</a></p></td></tr>
 			   <tr><td><a href='../proc/parse_detectors.html'>parse_detectors</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>parse the detectors</p></td></tr>
 			   <tr><td><a href='../proc/parse_geometry.html'>parse_geometry</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>parse geometry information</p></td></tr>
 			   <tr><td><a href='../proc/parse_grid.html'>parse_grid</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>parse grid input data</p></td></tr>
 			   <tr><td><a href='../proc/parse_output.html'>parse_output</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>parse output file information</p></td></tr>
 			   <tr><td><a href='../proc/parse_params.html'>parse_params</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>entry point for parsing toml file</p></td></tr>
 			   <tr><td><a href='../proc/parse_simulation.html'>parse_simulation</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>parse simulation information</p></td></tr>
-			   <tr><td><a href='../proc/parse_source.html'>parse_source</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>Parse source table
+			   <tr><td><a href='../proc/parse_source.html'>parse_source</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>Parse sources
 any updates here MUST be reflected in docs/config.md</p></td></tr>
-			   <tr><td><a href='../proc/parse_spectrum.html'>parse_spectrum</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td></td></tr>
+			   <tr><td><a href='../proc/parse_spectrum.html'>parse_spectrum</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>Parse spectrums to be used</p></td></tr>
 			   <tr><td><a href='../proc/pathlength_scatter.html'>pathlength_scatter</a></td><td><a href='../module/kernels.html'>kernels</a></td><td>Subroutine</td><td></td></tr>
 			   <tr><td><a href='../proc/pencil.html'>pencil</a></td><td><a href='../module/photonmod.html'>photonMod</a></td><td>Subroutine</td><td><p>pencil beam source</p></td></tr>
 			   <tr><td><a href='../interface/photon.html'>photon</a></td><td><a href='../module/photonmod.html'>photonMod</a></td><td>Interface</td><td></td></tr>
@@ -282,14 +283,14 @@ Wrapper around the render function to allow ease of use</p></td></tr>
 			   <tr><td><a href='../proc/rotmat.html'>rotmat</a></td><td><a href='../module/sdfhelpers.html'>sdfHelpers</a></td><td>Function</td><td><p>Rotate around around an axis by a given angle taken from <a href="http://www.neilmendoza.com/glsl-rotation-about-an-arbitrary-axis/">here</a></p></td></tr>
 			   <tr><td><a href='../proc/sample1d.html'>sample1D</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Subroutine</td><td></td></tr>
 			   <tr><td><a href='../proc/sample2d.html'>sample2D</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Subroutine</td><td></td></tr>
-			   <tr><td><a href='../proc/scal_add_mat.html'>scal_add_mat</a></td><td><a href='../module/mat_class.html'>mat_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/scal_add_vec.html'>scal_add_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/scal_add_vec~2.html'>scal_add_vec</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/scal_minus_vec.html'>scal_minus_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/scal_minus_vec~2.html'>scal_minus_vec</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/scal_mult_mat.html'>scal_mult_mat</a></td><td><a href='../module/mat_class.html'>mat_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/scal_mult_vec.html'>scal_mult_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/scal_mult_vec~2.html'>scal_mult_vec</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td></td></tr>
+			   <tr><td><a href='../proc/scal_add_mat.html'>scal_add_mat</a></td><td><a href='../module/mat_class.html'>mat_class</a></td><td>Function</td><td><p>Scaler + Matrix</p></td></tr>
+			   <tr><td><a href='../proc/scal_add_vec.html'>scal_add_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>vec3 + scalar</p></td></tr>
+			   <tr><td><a href='../proc/scal_add_vec~2.html'>scal_add_vec</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td><p>Elementwise scalar + vec4</p></td></tr>
+			   <tr><td><a href='../proc/scal_minus_vec.html'>scal_minus_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>scalar - vec3</p></td></tr>
+			   <tr><td><a href='../proc/scal_minus_vec~2.html'>scal_minus_vec</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td><p>Elementwise Scalar - vec4</p></td></tr>
+			   <tr><td><a href='../proc/scal_mult_mat.html'>scal_mult_mat</a></td><td><a href='../module/mat_class.html'>mat_class</a></td><td>Function</td><td><p>Matrix * Scalar</p></td></tr>
+			   <tr><td><a href='../proc/scal_mult_vec.html'>scal_mult_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>Scalar * vec3 elementwise</p></td></tr>
+			   <tr><td><a href='../proc/scal_mult_vec~2.html'>scal_mult_vec</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td><p>Elementwise Scalar * vec4</p></td></tr>
 			   <tr><td><a href='../proc/scatter.html'>scatter</a></td><td><a href='../module/photonmod.html'>photonMod</a></td><td>Subroutine</td><td><p>Scattering routine. Implments both isotropic and henyey-greenstein scattering
 taken from <a href="https://omlc.org/software/mc/mcxyz/index.html">mcxyz</a></p></td></tr>
 			   <tr><td><a href='../interface/sdf.html'>sdf</a></td><td><a href='../module/sdf_basemod.html'>sdf_baseMod</a></td><td>Interface</td><td></td></tr>
@@ -313,8 +314,8 @@ Note this is a 2D function</p></td></tr>
 Setup up various simulation parameters and routines</p></td></tr>
 			   <tr><td><a href='../proc/setup_sphere.html'>setup_sphere</a></td><td><a href='../module/setupgeometry.html'>setupGeometry</a></td><td>Function</td><td><p>setup the sphere test case from tran and jacques paper.</p></td></tr>
 			   <tr><td><a href='../proc/setup_sphere_scene.html'>setup_sphere_scene</a></td><td><a href='../module/setupgeometry.html'>setupGeometry</a></td><td>Function</td><td><p>setup a test scene with user defined spheres</p></td></tr>
-			   <tr><td><a href='../interface/sin.html'>sin</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Interface</td><td></td></tr>
-			   <tr><td><a href='../proc/sin_vec.html'>sin_vec</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td></td></tr>
+			   <tr><td><a href='../interface/sin.html'>sin</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Interface</td><td><p>Vec4 overload of the sin intrinsic </p></td></tr>
+			   <tr><td><a href='../proc/sin_vec.html'>sin_vec</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td><p>Sine of a vec4, elementwise</p></td></tr>
 			   <tr><td><a href='../proc/skewsymm.html'>skewSymm</a></td><td><a href='../module/sdfhelpers.html'>sdfHelpers</a></td><td>Function</td><td><p>Calculate the Skew Symmetric matrix for a given vector</p></td></tr>
 			   <tr><td><a href='../proc/slm.html'>slm</a></td><td><a href='../module/photonmod.html'>photonMod</a></td><td>Subroutine</td><td></td></tr>
 			   <tr><td><a href='../proc/smoothunion.html'>SmoothUnion</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td>Function</td><td><p>Smooth union. Joins two SDFs together smoothly</p></td></tr>
@@ -322,7 +323,7 @@ Setup up various simulation parameters and routines</p></td></tr>
 			   <tr><td><a href='../interface/spectral.html'>spectral</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td>Interface</td><td></td></tr>
 			   <tr><td><a href='../interface/sphere.html'>sphere</a></td><td><a href='../module/sdfs.html'>sdfs</a></td><td>Interface</td><td></td></tr>
 			   <tr><td><a href='../proc/sphere_init.html'>sphere_init</a></td><td><a href='../module/sdfs.html'>sdfs</a></td><td>Function</td><td><p>Initalising function for Sphere SDF.</p></td></tr>
-			   <tr><td><a href='../proc/split.html'>split</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Function</td><td><p>taken from archer2 cpp course</p></td></tr>
+			   <tr><td><a href='../proc/split.html'>split</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Function</td><td><p>Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order">course</a></p></td></tr>
 			   <tr><td><a href='../proc/subtraction.html'>subtraction</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td>Function</td><td><p>Subtraction operator. Takes one SDF from another.</p></td></tr>
 			   <tr><td><a href='../proc/tauint2.html'>tauint2</a></td><td><a href='../module/inttau2.html'>inttau2</a></td><td>Subroutine</td><td><p>optical depth integration subroutine
 Moves photons to interaction location
@@ -343,31 +344,33 @@ Calculated is any reflection or refraction happens whilst moving</p></td></tr>
 			   <tr><td><a href='../proc/update_voxels.html'>update_voxels</a></td><td><a href='../module/inttau2.html'>inttau2</a></td><td>Subroutine</td><td><p>updates the current voxel based upon position</p></td></tr>
 			   <tr><td><a href='../proc/updatemono.html'>updateMono</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td>Subroutine</td><td></td></tr>
 			   <tr><td><a href='../proc/updatespectral.html'>updateSpectral</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td>Subroutine</td><td></td></tr>
-			   <tr><td><a href='../interface/vec4.html'>vec4</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Interface</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_add_scal.html'>vec_add_scal</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_add_scal~2.html'>vec_add_scal</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_add_vec.html'>vec_add_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_add_vec~2.html'>vec_add_vec</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_cross_vec.html'>vec_cross_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_div_scal_int.html'>vec_div_scal_int</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_div_scal_int~2.html'>vec_div_scal_int</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_div_scal_r4.html'>vec_div_scal_r4</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_div_scal_r4~2.html'>vec_div_scal_r4</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_dot_mat.html'>vec_dot_mat</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_dot_vec.html'>vec_dot_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_dot_vec~2.html'>vec_dot_vec</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_equal_vec.html'>vec_equal_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_minus_scal.html'>vec_minus_scal</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_minus_scal~2.html'>vec_minus_scal</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_minus_vec.html'>vec_minus_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_minus_vec~2.html'>vec_minus_vec</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_mult_exp_scal_int.html'>vec_mult_exp_scal_int</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_mult_exp_scal_r4.html'>vec_mult_exp_scal_r4</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_mult_exp_scal_r8.html'>vec_mult_exp_scal_r8</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_mult_scal.html'>vec_mult_scal</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_mult_scal~2.html'>vec_mult_scal</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_mult_vec.html'>vec_mult_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/vec_mult_vec~2.html'>vec_mult_vec</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td></td></tr>
+			   <tr><td><a href='../interface/vec4.html'>vec4</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Interface</td><td><p>Initalise a vec4 from a vec3 and a scalar</p></td></tr>
+			   <tr><td><a href='../proc/vec_add_scal.html'>vec_add_scal</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>vec3 + scalar</p></td></tr>
+			   <tr><td><a href='../proc/vec_add_scal~2.html'>vec_add_scal</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td><p>Elementwise vec4 + scalar</p></td></tr>
+			   <tr><td><a href='../proc/vec_add_vec.html'>vec_add_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>vec3 + vec3</p></td></tr>
+			   <tr><td><a href='../proc/vec_add_vec~2.html'>vec_add_vec</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td><p>Elementwise vec4 + vec4</p></td></tr>
+			   <tr><td><a href='../proc/vec_cross_vec.html'>vec_cross_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>vec3 x vec3</p></td></tr>
+			   <tr><td><a href='../proc/vec_div_scal_int.html'>vec_div_scal_int</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>vec3 / scalar elementwise. Scalar is an integer</p></td></tr>
+			   <tr><td><a href='../proc/vec_div_scal_int~2.html'>vec_div_scal_int</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td><p>Elementwise vec4 / Scalar. Scalar is an integer</p></td></tr>
+			   <tr><td><a href='../proc/vec_div_scal_r4.html'>vec_div_scal_r4</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>vec3 / scalar elementwise. Scalar is a 32-bit float</p></td></tr>
+			   <tr><td><a href='../proc/vec_div_scal_r4~2.html'>vec_div_scal_r4</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td><p>Elementwise vec4 / Scalar. Scalar is 32-bit float</p></td></tr>
+			   <tr><td><a href='../proc/vec_div_scal_r8.html'>vec_div_scal_r8</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>vec3 / scalar elementwise. Scalar is a 64-bit float</p></td></tr>
+			   <tr><td><a href='../proc/vec_div_scal_r8~2.html'>vec_div_scal_r8</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td><p>Elementwise vec4 / Scalar. Scalar is 32-bit float</p></td></tr>
+			   <tr><td><a href='../proc/vec_dot_mat.html'>vec_dot_mat</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>vec3 . matrix</p></td></tr>
+			   <tr><td><a href='../proc/vec_dot_vec.html'>vec_dot_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>vec3 . vec3</p></td></tr>
+			   <tr><td><a href='../proc/vec_dot_vec~2.html'>vec_dot_vec</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td><p>dot product between two vec4s</p></td></tr>
+			   <tr><td><a href='../proc/vec_equal_vec.html'>vec_equal_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>vec3 == vec3</p></td></tr>
+			   <tr><td><a href='../proc/vec_minus_scal.html'>vec_minus_scal</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>vec3 - scalar</p></td></tr>
+			   <tr><td><a href='../proc/vec_minus_scal~2.html'>vec_minus_scal</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td><p>Elementwise vec4 - scalar</p></td></tr>
+			   <tr><td><a href='../proc/vec_minus_vec.html'>vec_minus_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>vec3 - vec3</p></td></tr>
+			   <tr><td><a href='../proc/vec_minus_vec~2.html'>vec_minus_vec</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td><p>Elementwise vec4 - vec4</p></td></tr>
+			   <tr><td><a href='../proc/vec_mult_exp_scal_int.html'>vec_mult_exp_scal_int</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>vec3**scalar for integer scalar</p></td></tr>
+			   <tr><td><a href='../proc/vec_mult_exp_scal_r4.html'>vec_mult_exp_scal_r4</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>vec3**scalar for 32-bit float scalar</p></td></tr>
+			   <tr><td><a href='../proc/vec_mult_exp_scal_r8.html'>vec_mult_exp_scal_r8</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>vec3**scalar for 64-bit float scalar</p></td></tr>
+			   <tr><td><a href='../proc/vec_mult_scal.html'>vec_mult_scal</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>vec3 * scalar elementwise</p></td></tr>
+			   <tr><td><a href='../proc/vec_mult_scal~2.html'>vec_mult_scal</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td><p>Elementwise vec4 * Scalar</p></td></tr>
+			   <tr><td><a href='../proc/vec_mult_vec.html'>vec_mult_vec</a></td><td><a href='../module/vector_class.html'>vector_class</a></td><td>Function</td><td><p>vec3 * vec3 elementwise</p></td></tr>
+			   <tr><td><a href='../proc/vec_mult_vec~2.html'>vec_mult_vec</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td><p>Elementwise vec4 * vec4</p></td></tr>
 			   <tr><td><a href='../proc/wall_dist.html'>wall_dist</a></td><td><a href='../module/inttau2.html'>inttau2</a></td><td>Function</td><td><p>funtion that returns distant to nearest wall and which wall that is (x, y, or z)</p></td></tr>
 			   <tr><td><a href='../proc/weight_scatter.html'>weight_scatter</a></td><td><a href='../module/kernels.html'>kernels</a></td><td>Subroutine</td><td></td></tr>
 			   <tr><td><a href='../proc/write_3d_r4_nrrd.html'>write_3d_r4_nrrd</a></td><td><a href='../module/writer_mod.html'>writer_mod</a></td><td>Subroutine</td><td><p>write 3D array of float32's to .nrrd fileformat</p></td></tr>

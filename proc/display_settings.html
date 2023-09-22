@@ -96,7 +96,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 0.7% of total for procedures.">33 statements</a>
+               title=" 0.7% of total for procedures.">34 statements</a>
           </li>
 
             <li id="source-file">
@@ -165,15 +165,16 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li>utils</li>
                 <li><a href='../module/photonmod.html'>photonMod</a></li>
                 <li><a href='../module/sim_state_mod.html'>sim_state_mod</a></li>
+                <li>utils</li>
             </ul>
           </li>
       </ul>
     </div>
 
 
+    <p>Displays the settings used in the current simulation run</p>
 
 
     <h3>Arguments</h3>
@@ -189,7 +190,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-state~3"></span>
+              <span class="anchor" id="variable-state"></span>
               type(<a href='../type/settings_t.html'>settings_t</a>),
             </td>
 <td>intent(in)</td>
@@ -199,7 +200,7 @@
             <td>::</td>
             <td><strong>state</strong></td>
             <td>
-                
+                <p>Simulation state</p>
             </td>
         </tr>
         <tr>
@@ -214,12 +215,12 @@
             <td>::</td>
             <td><strong>input_file</strong></td>
             <td>
-                
+                <p>Input filenname</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-packet~4"></span>
+              <span class="anchor" id="variable-packet~2"></span>
               type(<a href='../type/photon.html'>photon</a>),
             </td>
 <td>intent(in)</td>
@@ -229,7 +230,7 @@
             <td>::</td>
             <td><strong>packet</strong></td>
             <td>
-                
+                <p>Photon packet</p>
             </td>
         </tr>
         <tr>
@@ -244,7 +245,7 @@
             <td>::</td>
             <td><strong>kernel_type</strong></td>
             <td>
-                
+                <p>Kernel type to run</p>
             </td>
         </tr>
     </tbody>
@@ -296,13 +297,19 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="k">subroutine </span><span class="n">display_settings</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="w"> </span><span class="n">input_file</span><span class="p">,</span><span class="w"> </span><span class="n">packet</span><span class="p">,</span><span class="w"> </span><span class="n">kernel_type</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="c">!! Displays the settings used in the current simulation run</span>
 
 <span class="w">    </span><span class="k">use </span><span class="n">sim_state_mod</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">settings_t</span><span class="w"></span>
 <span class="w">    </span><span class="k">use </span><span class="n">photonMod</span><span class="p">,</span><span class="w">     </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">photon</span><span class="w"></span>
 <span class="w">    </span><span class="k">use </span><span class="n">utils</span><span class="p">,</span><span class="w">         </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">str</span><span class="w"></span>
 
+<span class="w">    </span><span class="c">!&gt; Simulation state</span>
 <span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">settings_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">state</span><span class="w"></span>
-<span class="w">    </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w">     </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">input_file</span><span class="p">,</span><span class="w"> </span><span class="n">kernel_type</span><span class="w"></span>
+<span class="w">    </span><span class="c">!&gt; Input filenname</span>
+<span class="w">    </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w">     </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">input_file</span><span class="w"></span>
+<span class="w">    </span><span class="c">!&gt; Kernel type to run</span>
+<span class="w">    </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w">     </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">kernel_type</span><span class="w"></span>
+<span class="w">    </span><span class="c">!&gt; Photon packet</span>
 <span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">photon</span><span class="p">),</span><span class="w">     </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">packet</span><span class="w"></span>
 
 <span class="w">    </span><span class="k">print</span><span class="o">*</span><span class="p">,</span><span class="nb">repeat</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">)</span><span class="o">//</span><span class="s2">&quot; Settings &quot;</span><span class="o">//</span><span class="nb">repeat</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">)</span><span class="w"></span>

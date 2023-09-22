@@ -173,6 +173,7 @@
     </div>
 
 
+    <p>Read in Circle_detector settings and initalise variable</p>
 
 
     <h3>Arguments</h3>
@@ -203,7 +204,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dects~7"></span>
+              <span class="anchor" id="variable-dects~8"></span>
               type(<a href='../type/circle_dect.html'>circle_dect</a>),
             </td>
 <td>intent(inout)</td>
@@ -233,7 +234,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-context~4"></span>
+              <span class="anchor" id="variable-context~6"></span>
               type(toml_context),
             </td>
 <td>intent(in)</td>
@@ -295,7 +296,7 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">handle_circle_dect</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="n">dects</span><span class="p">,</span><span class="w"> </span><span class="n">counts</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w"></span>
-
+<span class="w">        </span><span class="c">!! Read in Circle_detector settings and initalise variable</span>
 <span class="w">        </span><span class="k">use </span><span class="n">detectors</span><span class="p">,</span><span class="w">     </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">circle_dect</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">sim_state_mod</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">state</span><span class="w"></span>
 

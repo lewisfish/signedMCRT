@@ -96,7 +96,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p> 7.2% of total for derived types.</p>Including implementation: 255 statements, 17.6% of total for derived types.">33 statements</a>
+               title="<p> 7.4% of total for derived types.</p>Including implementation: 272 statements, 18.4% of total for derived types.">34 statements</a>
           </li>
 
             <li id="source-file">
@@ -182,6 +182,7 @@
             <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_cross_vec">vec_cross_vec</a>
             <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_div_scal_int">vec_div_scal_int</a>
             <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_div_scal_r4">vec_div_scal_r4</a>
+            <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_div_scal_r8">vec_div_scal_r8</a>
             <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_dot_mat">vec_dot_mat</a>
             <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_dot_vec">vec_dot_vec</a>
             <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_equal_vec">vec_equal_vec</a>
@@ -274,6 +275,7 @@
             <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_cross_vec">vec_cross_vec</a>
             <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_div_scal_int">vec_div_scal_int</a>
             <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_div_scal_r4">vec_div_scal_r4</a>
+            <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_div_scal_r8">vec_div_scal_r8</a>
             <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_dot_mat">vec_dot_mat</a>
             <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_dot_vec">vec_dot_vec</a>
             <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_equal_vec">vec_equal_vec</a>
@@ -382,7 +384,7 @@
     public pure elemental function <a href='../proc/length.html'>length</a>(this)  
 </h3>
     
-  
+  <p>Returns the length of a vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -432,7 +434,7 @@
     public pure elemental function <a href='../proc/magnitude.html'>magnitude</a>(this)  
 </h3>
     
-  
+  <p>Returns the magnitude of a vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -476,13 +478,17 @@
             <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-operator%28ASTERISK%29"></span><h3>generic, public,  :: <strong>operator(*)</strong>  => <a href='../type/vector.html#boundprocedure-vec_mult_vec'>vec_mult_vec</a>, <a href='../type/vector.html#boundprocedure-vec_mult_scal'>vec_mult_scal</a>, <a href='../type/vector.html#boundprocedure-scal_mult_vec'>scal_mult_vec</a>         
     </h3></div>
+      <div class="panel-body">
+        
+        <p>Overloads the Multiplication operator for vec3</p>
+      </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/vec_mult_vec.html'>vec_mult_vec</a>(a, b)  
 </h3>
     
-  
+  <p>vec3 * vec3 elementwise</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -507,7 +513,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>input vec3</p>
             </td>
         </tr>
         <tr>
@@ -522,7 +528,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>vec3 to multiply by</p>
             </td>
         </tr>
     </tbody>
@@ -540,7 +546,7 @@
     private pure elemental function <a href='../proc/vec_mult_scal.html'>vec_mult_scal</a>(a, b)  
 </h3>
     
-  
+  <p>vec3 * scalar elementwise</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -565,7 +571,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>input vec3</p>
             </td>
         </tr>
         <tr>
@@ -580,7 +586,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Scalar to multiply by</p>
             </td>
         </tr>
     </tbody>
@@ -598,7 +604,7 @@
     private pure elemental function <a href='../proc/scal_mult_vec.html'>scal_mult_vec</a>(a, b)  
 </h3>
     
-  
+  <p>Scalar * vec3 elementwise</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -623,7 +629,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Scalar to multiply by</p>
             </td>
         </tr>
         <tr>
@@ -638,7 +644,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>input vec3</p>
             </td>
         </tr>
     </tbody>
@@ -657,13 +663,17 @@
             <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-operator%28ASTERISKASTERISK%29"></span><h3>generic, public,  :: <strong>operator(**)</strong>  => <a href='../type/vector.html#boundprocedure-vec_mult_exp_scal_int'>vec_mult_exp_scal_int</a>, <a href='../type/vector.html#boundprocedure-vec_mult_exp_scal_r4'>vec_mult_exp_scal_r4</a>, <a href='../type/vector.html#boundprocedure-vec_mult_exp_scal_r8'>vec_mult_exp_scal_r8</a>         
     </h3></div>
+      <div class="panel-body">
+        
+        <p>Overloads the exponential operator for vec3</p>
+      </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/vec_mult_exp_scal_int.html'>vec_mult_exp_scal_int</a>(a, b)  
 </h3>
     
-  
+  <p>vec3**scalar for integer scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -688,7 +698,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input Vector</p>
             </td>
         </tr>
         <tr>
@@ -703,7 +713,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Input scalar</p>
             </td>
         </tr>
     </tbody>
@@ -721,7 +731,7 @@
     private pure elemental function <a href='../proc/vec_mult_exp_scal_r4.html'>vec_mult_exp_scal_r4</a>(a, b)  
 </h3>
     
-  
+  <p>vec3**scalar for 32-bit float scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -746,7 +756,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input Vector</p>
             </td>
         </tr>
         <tr>
@@ -761,7 +771,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Input scalar</p>
             </td>
         </tr>
     </tbody>
@@ -779,7 +789,7 @@
     private pure elemental function <a href='../proc/vec_mult_exp_scal_r8.html'>vec_mult_exp_scal_r8</a>(a, b)  
 </h3>
     
-  
+  <p>vec3**scalar for 64-bit float scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -804,13 +814,13 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input Vector</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp),
+              real(kind=dp),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -819,7 +829,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Input scalar</p>
             </td>
         </tr>
     </tbody>
@@ -838,13 +848,17 @@
             <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-operator%28%2B%29"></span><h3>generic, public,  :: <strong>operator(+)</strong>  => <a href='../type/vector.html#boundprocedure-vec_add_vec'>vec_add_vec</a>, <a href='../type/vector.html#boundprocedure-vec_add_scal'>vec_add_scal</a>, <a href='../type/vector.html#boundprocedure-scal_add_vec'>scal_add_vec</a>         
     </h3></div>
+      <div class="panel-body">
+        
+        <p>Overloads the Addition operator for vec3</p>
+      </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/vec_add_vec.html'>vec_add_vec</a>(a, b)  
 </h3>
     
-  
+  <p>vec3 + vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -869,7 +883,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input vector</p>
             </td>
         </tr>
         <tr>
@@ -884,7 +898,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Vec3 to add</p>
             </td>
         </tr>
     </tbody>
@@ -902,7 +916,7 @@
     private pure elemental function <a href='../proc/vec_add_scal.html'>vec_add_scal</a>(a, b)  
 </h3>
     
-  
+  <p>vec3 + scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -927,7 +941,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input vector</p>
             </td>
         </tr>
         <tr>
@@ -942,7 +956,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Scalar to add</p>
             </td>
         </tr>
     </tbody>
@@ -960,7 +974,7 @@
     private pure elemental function <a href='../proc/scal_add_vec.html'>scal_add_vec</a>(a, b)  
 </h3>
     
-  
+  <p>vec3 + scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -985,7 +999,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Scalar to add</p>
             </td>
         </tr>
         <tr>
@@ -1000,7 +1014,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Input vector</p>
             </td>
         </tr>
     </tbody>
@@ -1019,13 +1033,17 @@
             <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-operator%28-%29"></span><h3>generic, public,  :: <strong>operator(-)</strong>  => <a href='../type/vector.html#boundprocedure-vec_minus_vec'>vec_minus_vec</a>, <a href='../type/vector.html#boundprocedure-vec_minus_scal'>vec_minus_scal</a>, <a href='../type/vector.html#boundprocedure-scal_minus_vec'>scal_minus_vec</a>         
     </h3></div>
+      <div class="panel-body">
+        
+        <p>Overloads the Subtraction operator for vec3</p>
+      </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/vec_minus_vec.html'>vec_minus_vec</a>(a, b)  
 </h3>
     
-  
+  <p>vec3 - vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1050,7 +1068,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input vector</p>
             </td>
         </tr>
         <tr>
@@ -1065,7 +1083,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>vec3 to subtract</p>
             </td>
         </tr>
     </tbody>
@@ -1083,7 +1101,7 @@
     private pure elemental function <a href='../proc/vec_minus_scal.html'>vec_minus_scal</a>(a, b)  
 </h3>
     
-  
+  <p>vec3 - scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1108,7 +1126,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input vector</p>
             </td>
         </tr>
         <tr>
@@ -1123,7 +1141,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Scalar to subtract</p>
             </td>
         </tr>
     </tbody>
@@ -1141,7 +1159,7 @@
     private pure elemental function <a href='../proc/scal_minus_vec.html'>scal_minus_vec</a>(a, b)  
 </h3>
     
-  
+  <p>scalar - vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1166,7 +1184,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Scalar to subtract from</p>
             </td>
         </tr>
         <tr>
@@ -1181,7 +1199,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Input vector</p>
             </td>
         </tr>
     </tbody>
@@ -1200,13 +1218,17 @@
             <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-operator%28.cross.%29"></span><h3>generic, public,  :: <strong>operator(.cross.)</strong>  => <a href='../type/vector.html#boundprocedure-vec_cross_vec'>vec_cross_vec</a>         
     </h3></div>
+      <div class="panel-body">
+        
+        <p>.cross. operator. Cross product</p>
+      </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/vec_cross_vec.html'>vec_cross_vec</a>(a, b) result(cross)  
 </h3>
     
-  
+  <p>vec3 x vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1231,7 +1253,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input vector</p>
             </td>
         </tr>
         <tr>
@@ -1246,7 +1268,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>vec3 to cross with</p>
             </td>
         </tr>
     </tbody>
@@ -1265,13 +1287,17 @@
             <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-operator%28.dot.%29"></span><h3>generic, public,  :: <strong>operator(.dot.)</strong>  => <a href='../type/vector.html#boundprocedure-vec_dot_vec'>vec_dot_vec</a>, <a href='../type/vector.html#boundprocedure-vec_dot_mat'>vec_dot_mat</a>         
     </h3></div>
+      <div class="panel-body">
+        
+        <p>.dot. operator. Dot product</p>
+      </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/vec_dot_vec.html'>vec_dot_vec</a>(a, b) result(dot)  
 </h3>
     
-  
+  <p>vec3 . vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1296,7 +1322,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input vec3</p>
             </td>
         </tr>
         <tr>
@@ -1311,7 +1337,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>vec3 to dot</p>
             </td>
         </tr>
     </tbody>
@@ -1329,7 +1355,7 @@
     private pure function <a href='../proc/vec_dot_mat.html'>vec_dot_mat</a>(a, b) result(dot)  
 </h3>
     
-  
+  <p>vec3 . matrix</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1354,7 +1380,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input vec3</p>
             </td>
         </tr>
         <tr>
@@ -1369,7 +1395,7 @@
             <td>::</td>
             <td><strong>b</strong>(4,4)</td>
             <td>
-
+<p>Matrix to dot with</p>
             </td>
         </tr>
     </tbody>
@@ -1386,15 +1412,19 @@
   </div>
 
             <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-operator%28SLASH%29"></span><h3>generic, public,  :: <strong>operator(/)</strong>  => <a href='../type/vector.html#boundprocedure-vec_div_scal_r4'>vec_div_scal_r4</a>, <a href='../type/vector.html#boundprocedure-vec_div_scal_int'>vec_div_scal_int</a>         
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-operator%28SLASH%29"></span><h3>generic, public,  :: <strong>operator(/)</strong>  => <a href='../type/vector.html#boundprocedure-vec_div_scal_r4'>vec_div_scal_r4</a>, <a href='../type/vector.html#boundprocedure-vec_div_scal_r8'>vec_div_scal_r8</a>, <a href='../type/vector.html#boundprocedure-vec_div_scal_int'>vec_div_scal_int</a>         
     </h3></div>
+      <div class="panel-body">
+        
+        <p>Overloads the Division operator for vec3</p>
+      </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/vec_div_scal_r4.html'>vec_div_scal_r4</a>(a, b)  
 </h3>
     
-  
+  <p>vec3 / scalar elementwise. Scalar is a 32-bit float</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1419,13 +1449,13 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>input vec3</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp),
+              real(kind=sp),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1434,7 +1464,65 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
+<p>Scalar to divide by</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
 
+    <h4>
+    Return Value
+    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    </h4>
+    
+
+        </li>
+        <li class="list-group-item">
+                  <h3>
+    private pure elemental function <a href='../proc/vec_div_scal_r8.html'>vec_div_scal_r8</a>(a, b)  
+</h3>
+    
+  <p>vec3 / scalar elementwise. Scalar is a 64-bit float</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/vector.html'>vector</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+<p>input vec3</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=dp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+<p>Scalar to divide by</p>
             </td>
         </tr>
     </tbody>
@@ -1452,7 +1540,7 @@
     private pure elemental function <a href='../proc/vec_div_scal_int.html'>vec_div_scal_int</a>(a, b)  
 </h3>
     
-  
+  <p>vec3 / scalar elementwise. Scalar is an integer</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1477,7 +1565,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>input vec3</p>
             </td>
         </tr>
         <tr>
@@ -1492,7 +1580,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Scalar to divide by</p>
             </td>
         </tr>
     </tbody>
@@ -1511,13 +1599,17 @@
             <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-operator%28%3D%3D%29"></span><h3>generic, public,  :: <strong>operator(==)</strong>  => <a href='../type/vector.html#boundprocedure-vec_equal_vec'>vec_equal_vec</a>         
     </h3></div>
+      <div class="panel-body">
+        
+        <p>Overloads the equal operator for vec3</p>
+      </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/vec_equal_vec.html'>vec_equal_vec</a>(a, b)  
 </h3>
     
-  
+  <p>vec3 == vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1542,7 +1634,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input vec3s</p>
             </td>
         </tr>
         <tr>
@@ -1557,7 +1649,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Input vec3s</p>
             </td>
         </tr>
     </tbody>
@@ -1627,7 +1719,7 @@
     private pure elemental function <a href='../proc/scal_add_vec.html'>scal_add_vec</a>(a, b)  
 </h3>
     
-  
+  <p>vec3 + scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1652,7 +1744,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Scalar to add</p>
             </td>
         </tr>
         <tr>
@@ -1667,7 +1759,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Input vector</p>
             </td>
         </tr>
     </tbody>
@@ -1692,7 +1784,7 @@
     private pure elemental function <a href='../proc/scal_minus_vec.html'>scal_minus_vec</a>(a, b)  
 </h3>
     
-  
+  <p>scalar - vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1717,7 +1809,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Scalar to subtract from</p>
             </td>
         </tr>
         <tr>
@@ -1732,7 +1824,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Input vector</p>
             </td>
         </tr>
     </tbody>
@@ -1757,7 +1849,7 @@
     private pure elemental function <a href='../proc/scal_mult_vec.html'>scal_mult_vec</a>(a, b)  
 </h3>
     
-  
+  <p>Scalar * vec3 elementwise</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1782,7 +1874,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Scalar to multiply by</p>
             </td>
         </tr>
         <tr>
@@ -1797,7 +1889,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>input vec3</p>
             </td>
         </tr>
     </tbody>
@@ -1822,7 +1914,7 @@
     private pure elemental function <a href='../proc/vec_add_scal.html'>vec_add_scal</a>(a, b)  
 </h3>
     
-  
+  <p>vec3 + scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1847,7 +1939,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input vector</p>
             </td>
         </tr>
         <tr>
@@ -1862,7 +1954,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Scalar to add</p>
             </td>
         </tr>
     </tbody>
@@ -1887,7 +1979,7 @@
     private pure elemental function <a href='../proc/vec_add_vec.html'>vec_add_vec</a>(a, b)  
 </h3>
     
-  
+  <p>vec3 + vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1912,7 +2004,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input vector</p>
             </td>
         </tr>
         <tr>
@@ -1927,7 +2019,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Vec3 to add</p>
             </td>
         </tr>
     </tbody>
@@ -1952,7 +2044,7 @@
     private pure elemental function <a href='../proc/vec_cross_vec.html'>vec_cross_vec</a>(a, b) result(cross)  
 </h3>
     
-  
+  <p>vec3 x vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1977,7 +2069,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input vector</p>
             </td>
         </tr>
         <tr>
@@ -1992,7 +2084,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>vec3 to cross with</p>
             </td>
         </tr>
     </tbody>
@@ -2017,7 +2109,7 @@
     private pure elemental function <a href='../proc/vec_div_scal_int.html'>vec_div_scal_int</a>(a, b)  
 </h3>
     
-  
+  <p>vec3 / scalar elementwise. Scalar is an integer</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2042,7 +2134,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>input vec3</p>
             </td>
         </tr>
         <tr>
@@ -2057,7 +2149,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Scalar to divide by</p>
             </td>
         </tr>
     </tbody>
@@ -2082,7 +2174,7 @@
     private pure elemental function <a href='../proc/vec_div_scal_r4.html'>vec_div_scal_r4</a>(a, b)  
 </h3>
     
-  
+  <p>vec3 / scalar elementwise. Scalar is a 32-bit float</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2107,13 +2199,13 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>input vec3</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp),
+              real(kind=sp),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -2122,7 +2214,72 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
+<p>Scalar to divide by</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
 
+    <h4>
+    Return Value
+    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    </h4>
+    
+
+        </li>
+    </ul>
+  </div>
+
+            <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-vec_div_scal_r8"></span><h3>procedure, private, pass(a) :: <strong>vec_div_scal_r8</strong>          
+    </h3></div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private pure elemental function <a href='../proc/vec_div_scal_r8.html'>vec_div_scal_r8</a>(a, b)  
+</h3>
+    
+  <p>vec3 / scalar elementwise. Scalar is a 64-bit float</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/vector.html'>vector</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+<p>input vec3</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              real(kind=dp),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+<p>Scalar to divide by</p>
             </td>
         </tr>
     </tbody>
@@ -2147,7 +2304,7 @@
     private pure function <a href='../proc/vec_dot_mat.html'>vec_dot_mat</a>(a, b) result(dot)  
 </h3>
     
-  
+  <p>vec3 . matrix</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2172,7 +2329,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input vec3</p>
             </td>
         </tr>
         <tr>
@@ -2187,7 +2344,7 @@
             <td>::</td>
             <td><strong>b</strong>(4,4)</td>
             <td>
-
+<p>Matrix to dot with</p>
             </td>
         </tr>
     </tbody>
@@ -2212,7 +2369,7 @@
     private pure elemental function <a href='../proc/vec_dot_vec.html'>vec_dot_vec</a>(a, b) result(dot)  
 </h3>
     
-  
+  <p>vec3 . vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2237,7 +2394,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input vec3</p>
             </td>
         </tr>
         <tr>
@@ -2252,7 +2409,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>vec3 to dot</p>
             </td>
         </tr>
     </tbody>
@@ -2277,7 +2434,7 @@
     private pure elemental function <a href='../proc/vec_equal_vec.html'>vec_equal_vec</a>(a, b)  
 </h3>
     
-  
+  <p>vec3 == vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2302,7 +2459,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input vec3s</p>
             </td>
         </tr>
         <tr>
@@ -2317,7 +2474,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Input vec3s</p>
             </td>
         </tr>
     </tbody>
@@ -2342,7 +2499,7 @@
     private pure elemental function <a href='../proc/vec_minus_scal.html'>vec_minus_scal</a>(a, b)  
 </h3>
     
-  
+  <p>vec3 - scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2367,7 +2524,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input vector</p>
             </td>
         </tr>
         <tr>
@@ -2382,7 +2539,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Scalar to subtract</p>
             </td>
         </tr>
     </tbody>
@@ -2407,7 +2564,7 @@
     private pure elemental function <a href='../proc/vec_minus_vec.html'>vec_minus_vec</a>(a, b)  
 </h3>
     
-  
+  <p>vec3 - vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2432,7 +2589,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input vector</p>
             </td>
         </tr>
         <tr>
@@ -2447,7 +2604,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>vec3 to subtract</p>
             </td>
         </tr>
     </tbody>
@@ -2472,7 +2629,7 @@
     private pure elemental function <a href='../proc/vec_mult_exp_scal_int.html'>vec_mult_exp_scal_int</a>(a, b)  
 </h3>
     
-  
+  <p>vec3**scalar for integer scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2497,7 +2654,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input Vector</p>
             </td>
         </tr>
         <tr>
@@ -2512,7 +2669,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Input scalar</p>
             </td>
         </tr>
     </tbody>
@@ -2537,7 +2694,7 @@
     private pure elemental function <a href='../proc/vec_mult_exp_scal_r4.html'>vec_mult_exp_scal_r4</a>(a, b)  
 </h3>
     
-  
+  <p>vec3**scalar for 32-bit float scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2562,7 +2719,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input Vector</p>
             </td>
         </tr>
         <tr>
@@ -2577,7 +2734,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Input scalar</p>
             </td>
         </tr>
     </tbody>
@@ -2602,7 +2759,7 @@
     private pure elemental function <a href='../proc/vec_mult_exp_scal_r8.html'>vec_mult_exp_scal_r8</a>(a, b)  
 </h3>
     
-  
+  <p>vec3**scalar for 64-bit float scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2627,13 +2784,13 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input Vector</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              real(kind=wp),
+              real(kind=dp),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -2642,7 +2799,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Input scalar</p>
             </td>
         </tr>
     </tbody>
@@ -2667,7 +2824,7 @@
     private pure elemental function <a href='../proc/vec_mult_scal.html'>vec_mult_scal</a>(a, b)  
 </h3>
     
-  
+  <p>vec3 * scalar elementwise</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2692,7 +2849,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>input vec3</p>
             </td>
         </tr>
         <tr>
@@ -2707,7 +2864,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Scalar to multiply by</p>
             </td>
         </tr>
     </tbody>
@@ -2732,7 +2889,7 @@
     private pure elemental function <a href='../proc/vec_mult_vec.html'>vec_mult_vec</a>(a, b)  
 </h3>
     
-  
+  <p>vec3 * vec3 elementwise</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -2757,7 +2914,7 @@
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>input vec3</p>
             </td>
         </tr>
         <tr>
@@ -2772,7 +2929,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>vec3 to multiply by</p>
             </td>
         </tr>
     </tbody>
@@ -2800,13 +2957,21 @@
 <span class="k">        procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">magnitude</span><span class="w">         </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">magnitude</span><span class="w"></span>
 <span class="w">        </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">print</span><span class="w">             </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">print</span>
 <span class="k">        procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">length</span><span class="w">            </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">length</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; .dot. operator. Dot product</span>
 <span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(.</span><span class="n">dot</span><span class="p">.)</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_dot_vec</span><span class="p">,</span><span class="w"> </span><span class="n">vec_dot_mat</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; .cross. operator. Cross product</span>
 <span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(.</span><span class="n">cross</span><span class="p">.)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_cross_vec</span><span class="w"></span>
-<span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">/</span><span class="p">)</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_div_scal_r4</span><span class="p">,</span><span class="w"> </span><span class="n">vec_div_scal_int</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Overloads the Division operator for vec3</span>
+<span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">/</span><span class="p">)</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_div_scal_r4</span><span class="p">,</span><span class="w"> </span><span class="n">vec_div_scal_r8</span><span class="p">,</span><span class="w"> </span><span class="n">vec_div_scal_int</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Overloads the Multiplication operator for vec3</span>
 <span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_mult_vec</span><span class="p">,</span><span class="w"> </span><span class="n">vec_mult_scal</span><span class="p">,</span><span class="w"> </span><span class="n">scal_mult_vec</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Overloads the exponential operator for vec3</span>
 <span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">**</span><span class="p">)</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_mult_exp_scal_int</span><span class="p">,</span><span class="w"> </span><span class="n">vec_mult_exp_scal_r4</span><span class="p">,</span><span class="w"> </span><span class="n">vec_mult_exp_scal_r8</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Overloads the Addition operator for vec3</span>
 <span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_add_vec</span><span class="p">,</span><span class="w"> </span><span class="n">vec_add_scal</span><span class="p">,</span><span class="w"> </span><span class="n">scal_add_vec</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Overloads the Subtraction operator for vec3</span>
 <span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">-</span><span class="p">)</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_minus_vec</span><span class="p">,</span><span class="w"> </span><span class="n">vec_minus_scal</span><span class="p">,</span><span class="w"> </span><span class="n">scal_minus_vec</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Overloads the equal operator for vec3</span>
 <span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">==</span><span class="p">)</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_equal_vec</span><span class="w"></span>
 
 <span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_dot_vec</span><span class="w"></span>
@@ -2815,6 +2980,7 @@
 <span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_cross_vec</span><span class="w"></span>
 
 <span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_div_scal_r4</span><span class="w"></span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_div_scal_r8</span><span class="w"></span>
 <span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_div_scal_int</span><span class="w"></span>
 
 <span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_mult_vec</span><span class="w"></span>

@@ -96,7 +96,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 3.5% of total for procedures.">160 statements</a>
+               title=" 3.5% of total for procedures.">161 statements</a>
           </li>
 
             <li id="source-file">
@@ -165,16 +165,16 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
+                <li><a href='../module/piecewisemod.html'>piecewiseMod</a></li>
                 <li><a href='../module/photonmod.html'>photonMod</a></li>
                 <li><a href='../module/sim_state_mod.html'>sim_state_mod</a></li>
-                <li><a href='../module/piecewisemod.html'>piecewiseMod</a></li>
             </ul>
           </li>
       </ul>
     </div>
 
 
-    <p>Parse source table
+    <p>Parse sources
 any updates here MUST be reflected in docs/config.md</p>
 
 
@@ -191,7 +191,7 @@ any updates here MUST be reflected in docs/config.md</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-table~6"></span>
+              <span class="anchor" id="variable-table~2"></span>
               type(toml_table),
             </td>
 <td>intent(inout)</td>
@@ -201,12 +201,12 @@ any updates here MUST be reflected in docs/config.md</p>
             <td>::</td>
             <td><strong>table</strong></td>
             <td>
-                
+                <p>Input Toml table</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-packet~5"></span>
+              <span class="anchor" id="variable-packet~4"></span>
               type(<a href='../type/photon.html'>photon</a>),
             </td>
 <td>intent(out)</td>
@@ -216,12 +216,12 @@ any updates here MUST be reflected in docs/config.md</p>
             <td>::</td>
             <td><strong>packet</strong></td>
             <td>
-                
+                <p>Photon packet. Used to store information to save computation</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dict~12"></span>
+              <span class="anchor" id="variable-dict~8"></span>
               type(toml_table),
             </td>
 <td>intent(inout)</td>
@@ -231,12 +231,12 @@ any updates here MUST be reflected in docs/config.md</p>
             <td>::</td>
             <td><strong>dict</strong></td>
             <td>
-                
+                <p>Dictonary used to store metadata</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-spectrum~4"></span>
+              <span class="anchor" id="variable-spectrum~2"></span>
               type(<a href='../type/spectrum_t.html'>spectrum_t</a>),
             </td>
 <td>intent(out)</td>
@@ -246,12 +246,12 @@ any updates here MUST be reflected in docs/config.md</p>
             <td>::</td>
             <td><strong>spectrum</strong></td>
             <td>
-                
+                <p>Spectrum type.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-context~6"></span>
+              <span class="anchor" id="variable-context~4"></span>
               type(toml_context)
             </td>
 <td></td>
@@ -261,7 +261,7 @@ any updates here MUST be reflected in docs/config.md</p>
             <td>::</td>
             <td><strong>context</strong></td>
             <td>
-                
+                <p>Context handle for error reporting</p>
             </td>
         </tr>
     </tbody>
@@ -313,15 +313,21 @@ any updates here MUST be reflected in docs/config.md</p>
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">parse_source</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="n">packet</span><span class="p">,</span><span class="w"> </span><span class="n">dict</span><span class="p">,</span><span class="w"> </span><span class="n">spectrum</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="c">!! Parse source table</span>
+<span class="w">    </span><span class="c">!! Parse sources</span>
 <span class="w">    </span><span class="c">!! any updates here MUST be reflected in docs/config.md</span>
 <span class="w">        </span><span class="k">use </span><span class="n">sim_state_mod</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">state</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">photonmod</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">piecewiseMod</span><span class="w"></span>
 <span class="w">        </span>
-<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_table</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">INOUT</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="n">dict</span><span class="w"></span>
-<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">photon</span><span class="p">),</span><span class="w">      </span><span class="k">intent</span><span class="p">(</span><span class="n">OUT</span><span class="p">)</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">packet</span><span class="w"></span>
-<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">spectrum_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">spectrum</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Input Toml table</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_table</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">table</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Dictonary used to store metadata</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_table</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dict</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Photon packet. Used to store information to save computation</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">photon</span><span class="p">),</span><span class="w">      </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">packet</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Spectrum type.</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">spectrum_t</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">spectrum</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Context handle for error reporting</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_context</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">context</span><span class="w"></span>
 
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_table</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">child</span><span class="w"></span>

@@ -96,7 +96,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="10.1% of total for modules and submodules.">521 statements</a>
+               title="10.2% of total for modules and submodules.">530 statements</a>
           </li>
 
             <li id="source-file">
@@ -192,9 +192,9 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='../module/constants.html'>constants</a></li>
-                <li><a href='../module/vector_class.html'>vector_class</a></li>
                 <li>tomlf</li>
+                <li><a href='../module/vector_class.html'>vector_class</a></li>
+                <li><a href='../module/constants.html'>constants</a></li>
             </ul>
           </li>
       </ul>
@@ -276,7 +276,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
 </h3></div>
     <div class="panel-body">
           
-  <p>vector helper function for parsing toml</p>
+  <p>Vector helper function for parsing toml</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -301,7 +301,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
             <td>::</td>
             <td><strong>child</strong></td>
             <td>
-
+<p>Input Toml entry to read </p>
             </td>
         </tr>
         <tr>
@@ -316,7 +316,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
             <td>::</td>
             <td><strong>key</strong></td>
             <td>
-
+<p>Key to read</p>
             </td>
         </tr>
         <tr>
@@ -331,7 +331,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
             <td>::</td>
             <td><strong>default</strong></td>
             <td>
-
+<p>Default value to assign</p>
             </td>
         </tr>
         <tr>
@@ -346,7 +346,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
             <td>::</td>
             <td><strong>context</strong></td>
             <td>
-
+<p>Context handle for error reporting</p>
             </td>
         </tr>
     </tbody>
@@ -371,7 +371,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Read in Annulus_detector settings and initalise variable</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -456,7 +456,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Read in Camera settings and initalise variable</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -526,7 +526,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
             <td>::</td>
             <td><strong>context</strong></td>
             <td>
-
+<p>Context handle for error reporting.</p>
             </td>
         </tr>
     </tbody>
@@ -541,7 +541,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Read in Circle_detector settings and initalise variable</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -642,16 +642,16 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
         <tr>
             <td>
               <span class="anchor" ></span>
-              type(toml_table)
+              type(toml_table),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
             <td><strong>table</strong></td>
             <td>
-
+<p>Input Toml table</p>
             </td>
         </tr>
         <tr>
@@ -666,7 +666,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
             <td>::</td>
             <td><strong>dects</strong>(:)</td>
             <td>
-
+<p>Detector array to be filled.</p>
             </td>
         </tr>
         <tr>
@@ -681,7 +681,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
             <td>::</td>
             <td><strong>context</strong></td>
             <td>
-
+<p>Context handle for error reporting.</p>
             </td>
         </tr>
     </tbody>
@@ -721,7 +721,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
             <td>::</td>
             <td><strong>table</strong></td>
             <td>
-
+<p>Input Toml table</p>
             </td>
         </tr>
         <tr>
@@ -736,7 +736,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
             <td>::</td>
             <td><strong>dict</strong></td>
             <td>
-
+<p>Dictonary used to store metadata</p>
             </td>
         </tr>
     </tbody>
@@ -776,7 +776,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
             <td>::</td>
             <td><strong>table</strong></td>
             <td>
-
+<p>Input Toml table</p>
             </td>
         </tr>
         <tr>
@@ -791,7 +791,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
             <td>::</td>
             <td><strong>dict</strong></td>
             <td>
-
+<p>Dictonary used to store metadata</p>
             </td>
         </tr>
     </tbody>
@@ -802,7 +802,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-parse_output"></span><h3>private  subroutine <a href='../proc/parse_output.html'>parse_output</a>(table, dict)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-parse_output"></span><h3>private  subroutine <a href='../proc/parse_output.html'>parse_output</a>(table)  
 </h3></div>
     <div class="panel-body">
           
@@ -831,22 +831,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
             <td>::</td>
             <td><strong>table</strong></td>
             <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              type(toml_table),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>dict</strong></td>
-            <td>
-
+<p>Input Toml table </p>
             </td>
         </tr>
     </tbody>
@@ -986,7 +971,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
             <td>::</td>
             <td><strong>table</strong></td>
             <td>
-
+<p>Input Toml table </p>
             </td>
         </tr>
     </tbody>
@@ -1001,7 +986,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
 </h3></div>
     <div class="panel-body">
           
-  <p>Parse source table
+  <p>Parse sources
 any updates here MUST be reflected in docs/config.md</p>
 
   <h4>Arguments</h4>
@@ -1027,7 +1012,7 @@ any updates here MUST be reflected in docs/config.md</p>
             <td>::</td>
             <td><strong>table</strong></td>
             <td>
-
+<p>Input Toml table</p>
             </td>
         </tr>
         <tr>
@@ -1042,7 +1027,7 @@ any updates here MUST be reflected in docs/config.md</p>
             <td>::</td>
             <td><strong>packet</strong></td>
             <td>
-
+<p>Photon packet. Used to store information to save computation</p>
             </td>
         </tr>
         <tr>
@@ -1057,7 +1042,7 @@ any updates here MUST be reflected in docs/config.md</p>
             <td>::</td>
             <td><strong>dict</strong></td>
             <td>
-
+<p>Dictonary used to store metadata</p>
             </td>
         </tr>
         <tr>
@@ -1072,7 +1057,7 @@ any updates here MUST be reflected in docs/config.md</p>
             <td>::</td>
             <td><strong>spectrum</strong></td>
             <td>
-
+<p>Spectrum type.</p>
             </td>
         </tr>
         <tr>
@@ -1087,7 +1072,7 @@ any updates here MUST be reflected in docs/config.md</p>
             <td>::</td>
             <td><strong>context</strong></td>
             <td>
-
+<p>Context handle for error reporting</p>
             </td>
         </tr>
     </tbody>
@@ -1102,7 +1087,7 @@ any updates here MUST be reflected in docs/config.md</p>
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Parse spectrums to be used</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">

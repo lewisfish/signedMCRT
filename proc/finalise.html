@@ -96,7 +96,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 1.2% of total for procedures.">55 statements</a>
+               title=" 1.2% of total for procedures.">56 statements</a>
           </li>
 
             <li id="source-file">
@@ -165,21 +165,22 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li>utils</li>
-                <li><a href='../module/historystack.html'>historyStack</a></li>
                 <li><a href='../module/detectors.html'>detectors</a></li>
+                <li><a href='../module/historystack.html'>historyStack</a></li>
                 <li><a href='../module/iarray.html'>iarray</a></li>
-                <li><a href='../module/writer_mod.html'>writer_mod</a></li>
+                <li>utils</li>
                 <li><a href='../module/constants.html'>constants</a></li>
-                <li><a href='../module/setupmod.html'>setupMod</a></li>
-                <li><a href='../module/sim_state_mod.html'>sim_state_mod</a></li>
                 <li>tomlf</li>
+                <li><a href='../module/sim_state_mod.html'>sim_state_mod</a></li>
+                <li><a href='../module/writer_mod.html'>writer_mod</a></li>
+                <li><a href='../module/setupmod.html'>setupMod</a></li>
             </ul>
           </li>
       </ul>
     </div>
 
 
+    <p>Routine writes out simulation data, deallocates arrays and prints total runtime</p>
 
 
     <h3>Arguments</h3>
@@ -195,7 +196,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-dict~8"></span>
+              <span class="anchor" id="variable-dict~2"></span>
               type(toml_table),
             </td>
 <td>intent(inout)</td>
@@ -205,12 +206,12 @@
             <td>::</td>
             <td><strong>dict</strong></td>
             <td>
-                
+                <p>Dictionary of metadata</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dects~4"></span>
+              <span class="anchor" id="variable-dects~2"></span>
               type(<a href='../type/dect_array.html'>dect_array</a>),
             </td>
 <td>intent(in)</td>
@@ -220,7 +221,7 @@
             <td>::</td>
             <td><strong>dects</strong>(:)</td>
             <td>
-                
+                <p>Detector array</p>
             </td>
         </tr>
         <tr>
@@ -235,7 +236,7 @@
             <td>::</td>
             <td><strong>nscatt</strong></td>
             <td>
-                
+                <p>Total number of scattered photon packets</p>
             </td>
         </tr>
         <tr>
@@ -250,12 +251,12 @@
             <td>::</td>
             <td><strong>start</strong></td>
             <td>
-                
+                <p>Start time of simulation. Used to calculate total runtime.</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-history~4"></span>
+              <span class="anchor" id="variable-history"></span>
               type(<a href='../type/history_stack_t.html'>history_stack_t</a>),
             </td>
 <td>intent(in)</td>
@@ -265,7 +266,7 @@
             <td>::</td>
             <td><strong>history</strong></td>
             <td>
-                
+                <p>Photon histyor object</p>
             </td>
         </tr>
     </tbody>
@@ -317,7 +318,7 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="k">subroutine </span><span class="n">finalise</span><span class="p">(</span><span class="n">dict</span><span class="p">,</span><span class="w"> </span><span class="n">dects</span><span class="p">,</span><span class="w"> </span><span class="n">nscatt</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="p">,</span><span class="w"> </span><span class="n">history</span><span class="p">)</span><span class="w"></span>
-
+<span class="w">    </span><span class="c">!! Routine writes out simulation data, deallocates arrays and prints total runtime</span>
 <span class="w">    </span><span class="k">use </span><span class="n">constants</span><span class="p">,</span><span class="w">     </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">wp</span><span class="p">,</span><span class="w"> </span><span class="n">fileplace</span><span class="w"></span>
 <span class="w">    </span><span class="k">use </span><span class="n">detectors</span><span class="p">,</span><span class="w">     </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">dect_array</span><span class="w"></span>
 <span class="w">    </span><span class="k">use </span><span class="n">historyStack</span><span class="p">,</span><span class="w">  </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">history_stack_t</span><span class="w"></span>
@@ -329,9 +330,15 @@
 <span class="w">    </span><span class="k">use </span><span class="n">utils</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">get_time</span><span class="p">,</span><span class="w"> </span><span class="n">print_time</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="w"></span>
 <span class="w">    </span><span class="k">use </span><span class="n">tomlf</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">toml_table</span><span class="p">,</span><span class="w"> </span><span class="n">set_value</span><span class="w"></span>
 
-<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w">         </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">nscatt</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="w"></span>
+<span class="w">    </span><span class="c">!&gt; Total number of scattered photon packets</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w">         </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">nscatt</span><span class="w"></span>
+<span class="w">    </span><span class="c">!&gt; Start time of simulation. Used to calculate total runtime.</span>
+<span class="w">    </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w">         </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">start</span><span class="w"></span>
+<span class="w">    </span><span class="c">!&gt; Detector array</span>
 <span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">dect_array</span><span class="p">),</span><span class="w">      </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">dects</span><span class="p">(:)</span><span class="w"></span>
+<span class="w">    </span><span class="c">!&gt; Photon histyor object</span>
 <span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">history_stack_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">history</span><span class="w"></span>
+<span class="w">    </span><span class="c">!&gt; Dictionary of metadata</span>
 <span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">toml_table</span><span class="p">),</span><span class="w">      </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dict</span><span class="w"></span>
 
 <span class="w">    </span><span class="kt">integer</span><span class="w">       </span><span class="kd">::</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">numproc</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="w"></span>

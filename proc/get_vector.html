@@ -96,7 +96,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 0.5% of total for procedures.">22 statements</a>
+               title=" 0.6% of total for procedures.">28 statements</a>
           </li>
 
             <li id="source-file">
@@ -160,7 +160,7 @@
 </h2>
     
 
-    <p>vector helper function for parsing toml</p>
+    <p>Vector helper function for parsing toml</p>
 
 
     <h3>Arguments</h3>
@@ -186,7 +186,7 @@
             <td>::</td>
             <td><strong>child</strong></td>
             <td>
-                
+                <p>Input Toml entry to read </p>
             </td>
         </tr>
         <tr>
@@ -201,7 +201,7 @@
             <td>::</td>
             <td><strong>key</strong></td>
             <td>
-                
+                <p>Key to read</p>
             </td>
         </tr>
         <tr>
@@ -216,7 +216,7 @@
             <td>::</td>
             <td><strong>default</strong></td>
             <td>
-                
+                <p>Default value to assign</p>
             </td>
         </tr>
         <tr>
@@ -231,7 +231,7 @@
             <td>::</td>
             <td><strong>context</strong></td>
             <td>
-                
+                <p>Context handle for error reporting</p>
             </td>
         </tr>
     </tbody>
@@ -290,17 +290,29 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="w"> </span><span class="k">function </span><span class="n">get_vector</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">default</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="c">!!vector helper function for parsing toml</span>
+<span class="w">        </span><span class="c">!! Vector helper function for parsing toml</span>
+
+<span class="w">        </span><span class="c">!&gt; Input Toml entry to read </span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_table</span><span class="p">),</span><span class="w">   </span><span class="k">pointer</span><span class="p">,</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">child</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Key to read</span>
 <span class="w">        </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w">                 </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">key</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Default value to assign</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">       </span><span class="k">optional</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">default</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Context handle for error reporting</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_context</span><span class="p">),</span><span class="w"> </span><span class="k">optional</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">context</span><span class="w"></span>
 
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_array</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">arr</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span><span class="w"></span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tmp</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">default_</span><span class="w"></span>
 <span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="w"></span>
 
-<span class="w">        </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">arr</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="nb">present</span><span class="p">(</span><span class="n">default</span><span class="p">))</span><span class="k">then</span>
+<span class="k">            </span><span class="n">default_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">default</span><span class="w"></span>
+<span class="w">        </span><span class="k">else</span>
+<span class="k">            </span><span class="n">default_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vector</span><span class="p">(</span><span class="mf">0._wp</span><span class="p">,</span><span class="w"> </span><span class="mf">0._wp</span><span class="p">,</span><span class="w"> </span><span class="mf">0._wp</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="k">end if</span>
+
+<span class="k">        call </span><span class="n">get_value</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">arr</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span><span class="w"></span>
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">associated</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span><span class="k">then</span>
 <span class="k">            if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="k">then</span>
 <span class="k">                print</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Expected vector of size 3&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Wrong vector size&quot;</span><span class="p">)</span><span class="w"></span>

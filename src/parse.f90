@@ -44,7 +44,7 @@ module parse_mod
         call parse_grid(table, dict)
         call parse_geometry(table, dict)
         call parse_detectors(table, dects, context)
-        call parse_output(table, dict)
+        call parse_output(table)
         call parse_simulation(table)
 
     end subroutine parse_params
@@ -55,8 +55,11 @@ module parse_mod
         use detectors,     only : dect_array, circle_dect, annulus_dect, camera
         use sim_state_mod, only : state
 
-        type(toml_table) :: table
+        !> Input Toml table
+        type(toml_table),  intent(inout) :: table
+        !> Detector array to be filled.
         type(dect_array), allocatable :: dects(:)
+        !> Context handle for error reporting.
         type(toml_context), intent(in) :: context
 
         type(toml_array), pointer :: array
@@ -131,14 +134,15 @@ module parse_mod
     end subroutine parse_detectors
 
     subroutine handle_camera(child, dects, counts, context)
-
+        !! Read in Camera settings and initalise variable
         use detectors,     only : camera
         use sim_state_mod, only : state
 
         type(toml_table), pointer, intent(in)    :: child
         type(camera),              intent(inout) :: dects(:)
         integer,                   intent(inout) :: counts
-        type(toml_context),        intent(in) :: context
+        !> Context handle for error reporting.
+        type(toml_context),        intent(in)    :: context
 
         integer       :: layer, nbins
         real(kind=wp) :: maxval
@@ -163,7 +167,7 @@ module parse_mod
     end subroutine handle_camera
 
     subroutine handle_circle_dect(child, dects, counts, context)
-
+        !! Read in Circle_detector settings and initalise variable
         use detectors,     only : circle_dect
         use sim_state_mod, only : state
 
@@ -195,7 +199,7 @@ module parse_mod
     end subroutine handle_circle_dect
 
     subroutine handle_annulus_dect(child, dects, counts, context)
-
+        !! Read in Annulus_detector settings and initalise variable
         use detectors,     only : annulus_dect
         use sim_state_mod, only : state
 
@@ -229,6 +233,7 @@ module parse_mod
     end subroutine handle_annulus_dect
 
     subroutine parse_spectrum(table, spectrum, dict, context)
+    !! Parse spectrums to be used
     ! TODO seperate out each case to seperate functions.
     ! handle all possible errors
     ! document code and update config.md
@@ -317,15 +322,21 @@ module parse_mod
     end subroutine parse_spectrum
 
     subroutine parse_source(table, packet, dict, spectrum, context)
-    !! Parse source table
+    !! Parse sources
     !! any updates here MUST be reflected in docs/config.md
         use sim_state_mod, only : state
         use photonmod
         use piecewiseMod
         
-        type(toml_table),  intent(INOUT) :: table, dict
-        type(photon),      intent(OUT)   :: packet
-        type(spectrum_t), intent(out) :: spectrum
+        !> Input Toml table
+        type(toml_table),  intent(inout) :: table
+        !> Dictonary used to store metadata
+        type(toml_table),  intent(inout) :: dict
+        !> Photon packet. Used to store information to save computation
+        type(photon),      intent(out)   :: packet
+        !> Spectrum type.
+        type(spectrum_t),  intent(out)   :: spectrum
+        !> Context handle for error reporting
         type(toml_context) :: context
 
         type(toml_table), pointer :: child
@@ -515,7 +526,10 @@ module parse_mod
         use sim_state_mod, only : state
         use gridMod,       only : init_grid 
         
-        type(toml_table),  intent(INOUT) :: table, dict
+        !> Input Toml table
+        type(toml_table),  intent(INOUT) :: table
+        !> Dictonary used to store metadata
+        type(toml_table),  intent(INOUT) :: dict
 
         type(toml_table), pointer     :: child
         integer                       :: nxg, nyg, nzg
@@ -544,8 +558,11 @@ module parse_mod
     subroutine parse_geometry(table, dict)
         !! parse geometry information
         use sim_state_mod, only : state
-                
-        type(toml_table),  intent(INOUT) :: table, dict
+        
+        !> Input Toml table
+        type(toml_table),  intent(INOUT) :: table
+        !> Dictonary used to store metadata
+        type(toml_table),  intent(INOUT) :: dict
         
         type(toml_table), pointer :: child
         real(kind=wp)             :: tau, musb, musc, muab, muac, hgg
@@ -577,11 +594,12 @@ module parse_mod
 
     end subroutine parse_geometry
 
-    subroutine parse_output(table, dict)
+    subroutine parse_output(table)
         !! parse output file information
         use sim_state_mod, only : state
-        
-        type(toml_table),  intent(INOUT) :: table, dict
+
+        !> Input Toml table 
+        type(toml_table),  intent(INOUT) :: table
 
         type(toml_table), pointer :: child
         type(toml_array), pointer :: children
@@ -619,7 +637,8 @@ module parse_mod
     subroutine parse_simulation(table)
         !! parse simulation information
         use sim_state_mod, only : state
-        
+
+        !> Input Toml table 
         type(toml_table), intent(INOUT) :: table
 
         type(toml_table), pointer :: child
@@ -637,15 +656,27 @@ module parse_mod
     end subroutine parse_simulation
 
     type(vector) function get_vector(child, key, default, context)
-        !!vector helper function for parsing toml
+        !! Vector helper function for parsing toml
+
+        !> Input Toml entry to read 
         type(toml_table),   pointer,  intent(in) :: child
+        !> Key to read
         character(*),                 intent(in) :: key
+        !> Default value to assign
         type(vector),       optional, intent(in) :: default
+        !> Context handle for error reporting
         type(toml_context), optional, intent(in) :: context
 
         type(toml_array), pointer  :: arr => null()
         real(kind=wp) :: tmp(3)
+        type(vector) :: default_
         integer :: j, origin
+
+        if(present(default))then
+            default_ = default
+        else
+            default_ = vector(0._wp, 0._wp, 0._wp)
+        end if
 
         call get_value(child, key, arr, origin=origin)
         if (associated(arr))then

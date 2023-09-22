@@ -203,8 +203,8 @@ minimum implmented for neural sdf type</p>
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='../module/constants.html'>constants</a></li>
                 <li><a href='../module/vec4_class.html'>vec4_class</a></li>
+                <li><a href='../module/constants.html'>constants</a></li>
             </ul>
           </li>
       </ul>
@@ -294,6 +294,9 @@ minimum implmented for neural sdf type</p>
       <h3>public        interface <a href='../interface/mat.html'>mat</a> 
       </h3>
     </div>
+      <div class="panel-body">
+        <p>Intalise Matrix with 1D Array</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
@@ -301,7 +304,7 @@ minimum implmented for neural sdf type</p>
 
     </h3>
     
-  
+  <p>Initalise matrix type from 1D array</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -326,7 +329,7 @@ minimum implmented for neural sdf type</p>
             <td>::</td>
             <td><strong>array</strong>(16)</td>
             <td>
-
+<p>1D array to initalise from.</p>
             </td>
         </tr>
     </tbody>
@@ -385,7 +388,7 @@ minimum implmented for neural sdf type</p>
                 <td></td>
                 <td></td>
             <td>
-
+<p>Matrix values</p>
             </td>
         </tr>
     </tbody>
@@ -393,7 +396,7 @@ minimum implmented for neural sdf type</p>
 
 
         <h4>Constructor</h4>
-          
+          <p>Intalise Matrix with 1D Array</p>
         <table class="table table-striped varlist">
           <tbody>
                 <tr>
@@ -405,7 +408,7 @@ minimum implmented for neural sdf type</p>
                     <strong><a href='../proc/mat_init.html'>mat_init</a></strong>
                     (array)
                   </td>
-                  <td></td>
+                  <td><p>Initalise matrix type from 1D array</p></td>
                 </tr>
           </tbody>
         </table>
@@ -462,7 +465,7 @@ generic,
  =>
                     <a href='../type/mat.html#boundprocedure-mat_mult_scal'>mat_mult_scal</a>, <a href='../type/mat.html#boundprocedure-scal_mult_mat'>scal_mult_mat</a>, <a href='../type/mat.html#boundprocedure-mat_mult_mat'>mat_mult_mat</a>
                 </td>
-                <td></td>
+                <td><p>Overload for Multiplication operator</p></td>
               </tr>
               <tr>
                 <td>
@@ -472,7 +475,7 @@ generic,
  =>
                     <a href='../type/mat.html#boundprocedure-mat_add_scal'>mat_add_scal</a>, <a href='../type/mat.html#boundprocedure-scal_add_mat'>scal_add_mat</a>
                 </td>
-                <td></td>
+                <td><p>Overload for Addition operator</p></td>
               </tr>
               <tr>
                 <td>
@@ -482,7 +485,7 @@ generic,
  =>
                     <a href='../type/mat.html#boundprocedure-mat_minus_scal'>mat_minus_scal</a>
 <small></small>                </td>
-                <td></td>
+                <td><p>Overload for Subtraction operator</p></td>
               </tr>
               <tr>
                 <td>
@@ -492,7 +495,7 @@ generic,
  =>
                     <a href='../type/mat.html#boundprocedure-mat_div_scal'>mat_div_scal</a>
 <small></small>                </td>
-                <td></td>
+                <td><p>Overload for Division operator</p></td>
               </tr>
               <tr>
                 <td>
@@ -525,8 +528,8 @@ generic,
 </h3></div>
     <div class="panel-body">
           
-  <p>from http://fortranwiki.org/fortran/show/Matrix+inversion
-Performs a direct calculation of the inverse of a 4×4 matrix.</p>
+  <p>Performs a direct calculation of the inverse of a 4×4 matrix.
+from http://fortranwiki.org/fortran/show/Matrix+inversion</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -551,7 +554,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
             <td>::</td>
             <td><strong>A</strong>(4,4)</td>
             <td>
-<p>Matrix</p>
+<p>Input Matric</p>
             </td>
         </tr>
     </tbody>
@@ -561,7 +564,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
     Return Value
     <small>real(kind=wp), (4,4)</small>
     </h4>
-    <p>Inverse matrix</p>
+    
 
     </div>
   </div>
@@ -571,7 +574,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Matrix + Scalar = Matrix</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -596,7 +599,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input Matrix</p>
             </td>
         </tr>
         <tr>
@@ -611,7 +614,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Scalar to add</p>
             </td>
         </tr>
     </tbody>
@@ -631,7 +634,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Matrix / scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -656,7 +659,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input Matrix</p>
             </td>
         </tr>
         <tr>
@@ -671,7 +674,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Scalar to divide by</p>
             </td>
         </tr>
     </tbody>
@@ -691,7 +694,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Initalise matrix type from 1D array</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -716,7 +719,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
             <td>::</td>
             <td><strong>array</strong>(16)</td>
             <td>
-
+<p>1D array to initalise from.</p>
             </td>
         </tr>
     </tbody>
@@ -736,7 +739,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Matrix - Scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -761,7 +764,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input Matrix</p>
             </td>
         </tr>
         <tr>
@@ -776,7 +779,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Scalar to subtract</p>
             </td>
         </tr>
     </tbody>
@@ -796,7 +799,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Matrix * vec4</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -821,7 +824,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input Matrix</p>
             </td>
         </tr>
         <tr>
@@ -836,7 +839,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Vec4 to multiply by</p>
             </td>
         </tr>
     </tbody>
@@ -856,7 +859,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Matrix * Scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -881,7 +884,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Input Matrix</p>
             </td>
         </tr>
         <tr>
@@ -896,7 +899,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Scalar to multiply by</p>
             </td>
         </tr>
     </tbody>
@@ -916,7 +919,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Scaler + Matrix</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -941,7 +944,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Scalat to add</p>
             </td>
         </tr>
         <tr>
@@ -956,7 +959,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Input Matrix</p>
             </td>
         </tr>
     </tbody>
@@ -976,7 +979,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
 </h3></div>
     <div class="panel-body">
           
-  
+  <p>Matrix * Scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1001,7 +1004,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
             <td>::</td>
             <td><strong>a</strong></td>
             <td>
-
+<p>Scalar to multiply by</p>
             </td>
         </tr>
         <tr>
@@ -1016,7 +1019,7 @@ Performs a direct calculation of the inverse of a 4×4 matrix.</p>
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-
+<p>Input Matrix</p>
             </td>
         </tr>
     </tbody>
