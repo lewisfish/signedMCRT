@@ -37,6 +37,7 @@ program test_all
     use testsSDFMod 
     use testsVecMod
     use testsFresnelMod
+    use testsPiecewiseMod
 
     implicit none
 
@@ -48,7 +49,9 @@ program test_all
     testsuites = [new_testsuite("Suite: Detector Class", detector_suite, context), &
                   new_testsuite("Suite: End to End tests", End_to_End_suite, context) &
                  ]
-                 
+    
+    ! call Piecewise_suite(tmp, context)
+    ! call grow_suite(tmp, testsuites)
     call Vector_suite(tmp, context)
     call grow_suite(tmp, testsuites)
 

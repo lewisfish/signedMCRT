@@ -17,6 +17,10 @@ option run sMCRT --compiler gfortran --flag "-fopenmp -O2 -march=native -flto -m
 @test
 option test --compiler gfortran --flag "-O0 -fprofile-arcs -ftest-coverage --coverage"
 
+@testdebug
+option test --compiler gfortran --flag "-O0 -g -fbacktrace -fcheck=all"
+
+
 @testintel
 option test --compiler ifort
 

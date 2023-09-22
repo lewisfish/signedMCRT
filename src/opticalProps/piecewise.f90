@@ -17,8 +17,10 @@ module piecewiseMod
 
     implicit none
 
+    !> Abstract spectrum base type. 
     type, abstract :: piecewise
         contains
+            !> Deferred procdure. Used to generate a sample from spectrum or get constant value etc.
             procedure(sampleInterface), deferred :: sample
     end type piecewise
 
@@ -32,48 +34,71 @@ module piecewiseMod
             real(kind=wp), intent(in), optional :: value
         end subroutine sampleInterface
     end interface
-
+    
+    !> Spectrum_t type. Used as a container type
     type :: spectrum_t
         class(piecewise), pointer :: p => null()
     end type spectrum_t
-
+    
+    !> Constant piecewise type. i.e a piecewise function that does not change value
     type, extends(piecewise) :: constant
+        !> The constant value
         real(kind=wp) :: value
         contains
+            !> Sampling routine
             procedure :: sample => getValue
     end type constant
 
+    !> 1D piecewise type. Used for the spectral type
     type, extends(piecewise) :: piecewise1D
-        real(kind=wp), allocatable :: array(:, :), cdf(:)
+        !> Input array to sample from. Should be size(n, 2). 1st column is x-axis, 2nd column is y-axis
+        real(kind=wp), allocatable :: array(:, :)
+        !> cumulative distribution function (CDF) of array.
+        real(kind=wp), allocatable :: cdf(:)
         contains
+            !> Overloaded sampling function
             procedure :: sample => sample1D
     end type piecewise1D
-
+    
+    !> 2D piecewise type. Used for images
     type, extends(piecewise) :: piecewise2D
-        real(kind=wp) :: cell_width, cell_height
+        !> Height of each cell
+        real(kind=wp) :: cell_height
+        !> Width of each cell
+        real(kind=wp) :: cell_width
+        !>cumulative distribution function (CDF) of array.
         real(kind=wp), allocatable :: cdf(:)
+        !> Offsets
         integer, private :: xoffset, yoffset
         contains
+            !> Overloaded sampling function
             procedure :: sample => sample2D
     end type piecewise2D
 
     interface piecewise1D
+        !> Initalise piecewise1D
         module procedure init_piecewise1D
     end interface piecewise1D
 
     interface piecewise2D
+        !> Initalise piecewise2D
         module procedure init_piecewise2D
     end interface piecewise2D
 
-    private
+    ! private
     public :: spectrum_t, piecewise, piecewise1D, piecewise2D, constant
 
     contains
 
     subroutine getValue(this, x, y, value)
-
+        !! The constant version of sample
+        
         class(constant), intent(in) :: this
-        real(kind=wp),   intent(out) :: x, y
+        !> Output value
+        real(kind=wp),   intent(out) :: x
+        !> Not used. Kept to keep interface the same for constant, piecewise1D and piecewise2D
+        real(kind=wp),   intent(out) :: y
+        !> Not used. Kept to keep interface the same for constant, piecewise1D and piecewise2D
         real(kind=wp), intent(in), optional :: value
 
         x = this%value
@@ -82,11 +107,15 @@ module piecewiseMod
     end subroutine getValue
 
     subroutine sample1D(this, x, y, value)
-        
+        !! Randomly sample from 1D array
         use random, only : ran2, ranu
 
         class(piecewise1D), intent(in)  :: this
-        real(kind=wp),      intent(out) :: x, y
+        !> Return value
+        real(kind=wp),      intent(out) :: x
+        !> Not used, but here so we can have same interface as 2D sample routine.
+        real(kind=wp),      intent(out) :: y
+        !> Optional x value. If not present we generate a random one in the range [0., 1.] 
         real(kind=wp), intent(in), optional :: value
 
         integer(kind=int64) :: idx
@@ -100,6 +129,7 @@ module piecewiseMod
             ! offset by +1 if not get wrong values. e.g miss out on end values and get more near start.
             x = this%array(idx+1, 1) + (this%array(idx+2, 1) - this%array(idx+1, 1)) * &
                    ((val - this%cdf(idx))/(this%cdf(idx+1) - this%cdf(idx)))
+            print*,x
         else
             !already have x so get y
             call search_2D(this%array, idx, value)
@@ -111,15 +141,26 @@ module piecewiseMod
 
 
     type(piecewise1D) function init_piecewise1D(array) result(res)
-
+        !! initalise the piecewise1D type with an array size (n, 2). Calculates the CDF of this array.
+        !> Input array
         real(kind=wp), intent(in) :: array(:, :)
         
         integer :: i, j
         real :: summ
 
+        if(size(array, 2) /= 2)error stop "Array must be size (n, 2)"
+
         res%array = array
         allocate(res%cdf(size(array,1)-1))
+        ! steps
+        ! norm pdf -> divide array by sum(array)
+        ! get cdf
+            ! loop 2-> end
+            ! cdf(i) = cdf(i-1) + pdf(i)
+            ! norm = cdf(size(pdf))
+            ! cdf = cdf / norm
 
+        res%cdf(1) = res%array(1,1)
         do j = 1 , size(array, 1)-1
         summ = 0.
             do i = 1, j
@@ -155,8 +196,13 @@ module piecewiseMod
 
     
     type(piecewise2D) function init_piecewise2D(cell_width, cell_height, image)
-    
-        real(kind=wp), intent(in) :: cell_width, cell_height
+        !! Initalise the piecewise2D type with a given cell_width, cell_height and input image
+
+        !> Input cell width
+        real(kind=wp), intent(in) :: cell_width
+        !> Input cell height
+        real(kind=wp), intent(in) :: cell_height
+        !> Input image
         real(kind=wp), intent(in) :: image(:,:)
         
         real(kind=wp), allocatable :: HC1D(:), imagenew(:,:)
@@ -203,6 +249,8 @@ module piecewiseMod
     end function init_piecewise2D
     
     integer function nextpwr2(v) result(res)
+    !! Get the next power of 2. i.e given 5 will return 8 (4^2)
+    !! only works on 32bit ints
     !! [ref](https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2)
         integer, intent(in) :: v
 
@@ -217,12 +265,13 @@ module piecewiseMod
     end function nextpwr2
 
     subroutine search_1D(array, nlow, value)
-        !
-        !  search by bisection for 1D array
-        !
+        !! search by bisection for 1D array
         
-        integer(kind=int64), intent(out) :: nlow
+        !> Array to search
         real(kind=wp),       intent(in)  :: array(:)
+        !> index of found value
+        integer(kind=int64), intent(out) :: nlow
+        !> value to find in 1D array
         real(kind=wp),       intent(in)  :: value
         
         integer :: nup, middle
@@ -242,12 +291,13 @@ module piecewiseMod
     end subroutine search_1D
 
     subroutine search_2D(array, nlow, value)
-        !
-        !  search by bisection for 1D array
-        !
+        !! search by bisection for 1D array
         
-        integer(kind=int64), intent(out) :: nlow
+        !> 2D array to search. Only searches 1st column
         real(kind=wp),       intent(in)  :: array(:, :)
+        !> Index of found index
+        integer(kind=int64), intent(out) :: nlow
+        !> Value to find in the array.
         real(kind=wp),       intent(in)  :: value
         
         integer :: nup, middle
@@ -266,10 +316,11 @@ module piecewiseMod
         end do
     end subroutine search_2D
 
-
-
     integer(kind=int64) function split(a) result(x)
-    !! Adapted from archer2 cpp [course](https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order)
+        !! Go from an integer abcd to 0a0b0c0d
+        !! input is 32-bit int. Ouput is 64-bit int
+        !! Adapted from archer2 cpp [course](https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order)
+        !> Input integer to interleave
         integer(kind=int32) :: a
 
         x = a
@@ -282,8 +333,9 @@ module piecewiseMod
     end function split
 
     integer(kind=int64) function pack_bits(z) result(x)
+    !! Reverse the split function. I.e go from 0a0b0c0d to abcd
     !! Adapted from archer2 cpp [course](https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order)
-
+        !> Input interleaved integer
         integer(kind=int64), intent(in) :: z
 
         x = z
@@ -302,8 +354,10 @@ module piecewiseMod
     end function pack_bits
 
     integer(kind=int64) function encode(x, y)
+    !! Compute the Morton index from a pair of indices
     !! Adapted from archer2 cpp [course](https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order)
-
+        
+        !> Input index pair
         integer(kind=int32), intent(in) :: x, y
         
         encode = ior(split(x), lshift(split(y),1))
@@ -311,9 +365,12 @@ module piecewiseMod
     end function encode
 
     subroutine decode(z, x, y)
-    !! Adapted from archer2 cpp [course](https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order)
-
+        !! Compute the 2 indices from a Morton index
+        !! Adapted from archer2 cpp [course](https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order)
+        
+        !> Morton Index
         integer(kind=int64), intent(in) :: z
+        !> The computed indices
         integer(kind=int32), intent(out) :: x, y
 
         integer(kind=int64) :: i, j
@@ -337,13 +394,14 @@ end module piecewiseMod
 !     implicit none
 
 !     integer ::  ix, iy, u
-!     integer, parameter :: n=129
+!     integer, parameter :: n=200
 !     real(kind=wp) :: xx, yy, bin_wid
 !     integer(kind=int64) :: i
 !     real(kind=wp) :: xr, yr
-!     real :: data2d(n, n), data1d(n, 2)
-!     type(piecewise1D) :: obj
-    
+!     real(kind=wp) :: data2d(n, n), data1d(n, 2)
+!     type(piecewise1D) :: obj1D
+!     type(piecewise2D) :: obj2D
+
 !     !set seed
 !     call init_rng(spread(123456789, 1, 8), .true.)
     
@@ -352,7 +410,12 @@ end module piecewiseMod
 
 !     do i = 1, n
 !         xr = i*bin_wid
-!         yr = exp(-(xr-10.)**2 / (2*(0.9)**2))
+!         if(xr>= 9.9 .and. xr <= 10.1)then
+!             yr = 10.
+!         else
+!             yr = 0.
+!         end if
+!         ! yr = exp(-(xr-10.)**2 / (2*(0.9)**2))
 !         data1d(i, 1) = xr
 !         data1d(i, 2) = yr
 !     end do
@@ -362,64 +425,62 @@ end module piecewiseMod
 !         write(u,"(es24.16e3,1x,es24.16e3)") data1d(i, 1),  data1d(i,2)
 !     end do
 !     close(u)
-    
-    
+
 !     data1d(:,2) = data1d(:,2) / maxval(data1d,2)
-!     obj = piecewise1D(data1d)
+!     obj1D = piecewise1D(data1d)
 
 !     open(newunit=u,file="cdf.dat")
-!     do i = 1, size(obj%cdf)
-!         write(u,*) obj%cdf(i)
+!     do i = 1, size(obj1D%cdf)
+!         write(u,*) obj1D%cdf(i)
+!     end do
+!     close(u)
+
+!     open(newunit=u, file="sampled.dat")
+!     do i = 1, 10000
+!         call obj1D%sample(xr, yr)
+!         write(u,*) xr
+!     end do
+!     close(u)
+!     stop
+!     ! generate image
+!     data2d = 0.
+!     data1d = 0.
+!     bin_wid = 2. / n
+!     do i = 1, 100000
+!         call rang(xx, yy, 1._wp, 0.1_wp)
+!         ix = nint(xx / bin_wid)-10
+!         iy = nint(yy / bin_wid)-30
+!         if(ix > n .or. ix < 1)cycle
+!         if(iy > n .or. iy < 1)cycle
+!         data2d(ix, iy) = data2d(ix, iy) + 1.
+!         call rang(xx, yy, 1._wp, 0.1_wp)
+!         ix = nint(xx / bin_wid)+30
+!         iy = nint(yy / bin_wid)+30
+!         if(ix > n .or. ix < 1)cycle
+!         if(iy > n .or. iy < 1)cycle
+!         data2d(ix, iy) = data2d(ix, iy) + 1.
+!     end do
+
+!     open(newunit=u, file="image.dat")
+!     do i = 1, n
+!         write(u,*) data2d(:, i)
+!     end do
+!     close(u)
+
+!     data2d = data2d / maxval(data2d)
+
+!     obj2D = piecewise2D(0.5_wp, 0.5_wp, data2d)
+
+!     open(newunit=u,file="cdf.dat")
+!     do i = 1, (n**2)
+!         write(u,*) obj2D%cdf(i)
 !     end do
 !     close(u)
 
 !     open(newunit=u, file="sampled.dat")
 !     do i = 1, 1000
-!         call obj%sample(xr, yr)
-!         write(u,*) xr
+!         call obj2D%sample(xr, yr)
+!         write(u,*) xr, yr
 !     end do
 !     close(u)
-
-
-    !generate image
-    ! data2d = 0.
-    ! data1d = 0.
-    ! bin_wid = 2. / n
-    ! do i = 1, 100000
-    !     call rang(xx, yy, 1._wp, 0.1_wp)
-    !     ix = nint(xx / bin_wid)-10
-    !     iy = nint(yy / bin_wid)-30
-    !     if(ix > n .or. ix < 1)cycle
-    !     if(iy > n .or. iy < 1)cycle
-    !     data2d(ix, iy) = data2d(ix, iy) + 1.
-    !     call rang(xx, yy, 1._wp, 0.1_wp)
-    !     ix = nint(xx / bin_wid)+30
-    !     iy = nint(yy / bin_wid)+30
-    !     if(ix > n .or. ix < 1)cycle
-    !     if(iy > n .or. iy < 1)cycle
-    !     data2d(ix, iy) = data2d(ix, iy) + 1.
-    ! end do
-
-    ! open(newunit=u, file="image.dat")
-    ! do i = 1, n
-    !     write(u,*) data2d(:, i)
-    ! end do
-    ! close(u)
-
-    ! data2d = data2d / maxval(data2d)
-
-    ! obj = piecewise2D(0.5_wp, 0.5_wp, data2d)
-
-    ! open(newunit=u,file="cdf.dat")
-    ! do i = 1, (n**2)
-    !     write(u,*) obj%cdf(i)
-    ! end do
-    ! close(u)
-
-    ! open(newunit=u, file="sampled.dat")
-    ! do i = 1, 1000
-    !     call obj%sample(xr, yr)
-    !     write(u,*) xr, yr
-    ! end do
-    ! close(u)
 ! end program

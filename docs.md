@@ -17,8 +17,8 @@ display: public
          private
          protected
 source: true
-graph: false
-search: false
+graph: true
+search: true
 sort: alpha
 fpp_extensions: fpp
 preprocess: true
