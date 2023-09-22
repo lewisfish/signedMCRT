@@ -3,15 +3,14 @@
 [![DOI](https://zenodo.org/badge/390770167.svg)](https://zenodo.org/badge/latestdoi/390770167) [![codecov](https://codecov.io/github/lewisfish/signedMCRT/branch/main/graph/badge.svg?token=U402PQWWUY)](https://codecov.io/github/lewisfish/signedMCRT)
 ![workflow](https://github.com/lewisfish/signedMCRT/actions/workflows/build.yml/badge.svg
 )
+[![License](https://img.shields.io/badge/License-MIT-blue)](#license)
 
+[![view - Documentation](https://img.shields.io/badge/view-Documentation-blue?style=for-the-badge)](https://lewismcmillan.com/signedMCRT "Go to project documentation")
 
-Use of signed distance fields in Monte Carlo Radiative Transfer.
-This allows modelling of smooth surfaces with out the need to use triangle or similar meshes.
+## SignedMCRT
 
-Paper describing operation of signedMCRT: [https://doi.org/10.1117/1.JBO.27.8.083003](https://doi.org/10.1117/1.JBO.27.8.083003)
-
-Paper describing of an application of signedMCRT: [https://doi.org/10.1364/OE.451496](https://doi.org/10.1364/OE.451496)
-
+SignedMCRT is a Monte Carlo Radiation Transfer (MCRT) code that uses signed distance functions (SDF) to represent the geometry as opposed to the usual voxel or mesh represention.
+The use of SDFs allows modelling of smooth surfaces more accuratly than other methods.
 
 ## Instructions
 
@@ -22,13 +21,16 @@ To run the code you can use:
   - The [Fortran package manager](https://fpm.fortran-lang.org/) by running; "fpm run" for single core uage
   or "fpm @runmp" for multicore usage.
 
-See [this](docs/main.md) for more detailed instructions and details on the code and build systems used.
+See [this](https://lewismcmillan.com/signedMCRT/page/index.html) for more detailed instructions and details on the code and build systems used.
   
 ## Publication
-The code in this repo forms the basis for the following publication:
+The code in this repo forms the basis for the following publications:
 
-Meshless Monte Carlo Radiation Transfer Method for Curved Geometries using Signed Distance Functions, currently in review.
-Data created with this code can be found at: https://doi.org/10.5281/zenodo.5780513
+Paper describing operation of signedMCRT: [https://doi.org/10.1117/1.JBO.27.8.083003](https://doi.org/10.1117/1.JBO.27.8.083003)
+
+Paper describing of an application of signedMCRT: [https://doi.org/10.1364/OE.451496](https://doi.org/10.1364/OE.451496)
+
+Data created with this code can be found at: [https://doi.org/10.5281/zenodo.5780513](https://doi.org/10.5281/zenodo.5780513)
 
 ## Example of SDF models produced by signedMCRT
 
@@ -43,7 +45,8 @@ Comparison of voxel interpolated surface normals, mesh based Monte Carlo (MMC), 
 
 ## SDF information
 List of SDF functions
-https://iquilezles.org/www/articles/distfunctions/distfunctions.htm
+[https://iquilezles.org/www/articles/distfunctions/distfunctions.htm](https://iquilezles.org/www/articles/distfunctions/distfunctions.htm)
 
 What can be modelled with SDF's
-https://iquilezles.org/www/articles/raymarchingdf/raymarchingdf.htm
+[https://iquilezles.org/www/articles/raymarchingdf/raymarchingdf.htm](https://iquilezles.org/www/articles/raymarchingdf/raymarchingdf.htm
+)
