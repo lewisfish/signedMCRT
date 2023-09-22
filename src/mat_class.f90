@@ -7,12 +7,17 @@ module mat_class
     !! not fully implmented matix class
     !! minimum implmented for neural sdf type
     type :: mat
+        !> Matrix values
         real(kind=wp) :: vals(4, 4)
         contains
 
+        !> Overload for Division operator
         generic   :: operator(/)     => mat_div_scal
+        !> Overload for Multiplication operator
         generic   :: operator(*)     => mat_mult_scal, scal_mult_mat, mat_mult_mat
+        !> Overload for Addition operator
         generic   :: operator(+)     => mat_add_scal, scal_add_mat
+        !> Overload for Subtraction operator
         generic   :: operator(-)     => mat_minus_scal
 
         procedure, pass(a), private :: mat_div_scal
@@ -29,17 +34,21 @@ module mat_class
     end type mat
 
     interface mat
+        !! Intalise Matrix with 1D Array
         module procedure mat_init
     end interface mat
 
-private
-public :: mat, invert
+    private
+    public :: mat, invert
+
 contains
 
-    
     type(mat) function mat_init(array)
-
+        !! Initalise matrix type from 1D array
+        
+        !> 1D array to initalise from.
         real(kind=wp) :: array(16)
+
         integer :: i, cnt
 
         cnt = 1
@@ -53,8 +62,11 @@ contains
 
 
     type(mat) function mat_add_scal(a, b)
+        !! Matrix + Scalar = Matrix
 
+        !> Input Matrix
         class(mat),    intent(IN) :: a
+        !> Scalar to add
         real(kind=wp), intent(IN) :: b
 
         mat_add_scal%vals = a%vals + b
@@ -63,8 +75,11 @@ contains
 
 
     type(mat) function scal_add_mat(a, b)
+        !! Scaler + Matrix
 
+        !> Input Matrix
         class(mat),    intent(IN) :: b
+        !> Scalat to add
         real(kind=wp), intent(IN) :: a
 
         scal_add_mat%vals = b%vals + a
@@ -73,8 +88,11 @@ contains
 
 
     type(mat) function mat_minus_scal(a, b)
+        !! Matrix - Scalar
 
+        !> Input Matrix
         class(mat),    intent(IN) :: a
+        !> Scalar to subtract
         real(kind=wp), intent(IN) :: b
 
         mat_minus_scal%vals = a%vals - b
@@ -82,8 +100,11 @@ contains
     end function mat_minus_scal
 
     type(mat) function mat_div_scal(a, b)
+        !! Matrix / scalar
 
+        !> Input Matrix
         class(mat),    intent(IN) :: a
+        !> Scalar to divide by
         real(kind=wp), intent(IN) :: b
 
         mat_div_scal%vals = a%vals / b
@@ -91,8 +112,11 @@ contains
     end function mat_div_scal
 
     type(mat) function mat_mult_scal(a, b)
+        !! Matrix * Scalar
 
+        !> Input Matrix
         class(mat),    intent(IN) :: a
+        !> Scalar to multiply by
         real(kind=wp), intent(IN) :: b
 
         mat_mult_scal%vals = a%vals * b
@@ -100,8 +124,11 @@ contains
     end function mat_mult_scal
 
     type(mat) function scal_mult_mat(a, b)
+        !! Matrix * Scalar
 
+        !> Input Matrix
         class(mat),    intent(IN) :: b
+        !> Scalar to multiply by
         real(kind=wp), intent(IN) :: a
 
         scal_mult_mat%vals = b%vals * a
@@ -109,10 +136,12 @@ contains
     end function scal_mult_mat
 
     type(vec4) function mat_mult_mat(a, b)
-
+        !! Matrix * vec4
         use vec4_class
 
+        !> Input Matrix
         class(mat), intent(IN) :: a
+        !> Vec4 to multiply by
         type(vec4), intent(IN) :: b
 
         real(kind=wp) :: tmp(4)
@@ -123,11 +152,12 @@ contains
     end function mat_mult_mat
 
     pure function invert(A) result(B)
-    !! from http://fortranwiki.org/fortran/show/Matrix+inversion
     !! Performs a direct calculation of the inverse of a 4×4 matrix.
-        real(kind=wp), intent(in) :: A(4,4)   !! Matrix
+    !! from http://fortranwiki.org/fortran/show/Matrix+inversion
+        !> Input Matric
+        real(kind=wp), intent(in) :: A(4,4)
 
-        real(kind=wp) :: B(4,4)   !! Inverse matrix
+        real(kind=wp) :: B(4,4)   ! Inverse matrix
         real(kind=wp) :: detinv
 
         ! Calculate the inverse determinant of the matrix

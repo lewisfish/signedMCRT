@@ -269,7 +269,7 @@ module piecewiseMod
 
 
     integer(kind=int64) function split(a) result(x)
-    !! taken from archer2 cpp course
+    !! Adapted from archer2 cpp [course](https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order)
         integer(kind=int32) :: a
 
         x = a
@@ -282,7 +282,7 @@ module piecewiseMod
     end function split
 
     integer(kind=int64) function pack_bits(z) result(x)
-    !! taken from archer2 cpp course
+    !! Adapted from archer2 cpp [course](https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order)
 
         integer(kind=int64), intent(in) :: z
 
@@ -302,7 +302,7 @@ module piecewiseMod
     end function pack_bits
 
     integer(kind=int64) function encode(x, y)
-    !! taken from archer2 cpp course
+    !! Adapted from archer2 cpp [course](https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order)
 
         integer(kind=int32), intent(in) :: x, y
         
@@ -311,7 +311,7 @@ module piecewiseMod
     end function encode
 
     subroutine decode(z, x, y)
-    !! taken from archer2 cpp course
+    !! Adapted from archer2 cpp [course](https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order)
 
         integer(kind=int64), intent(in) :: z
         integer(kind=int32), intent(out) :: x, y

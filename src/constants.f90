@@ -18,6 +18,8 @@ module constants
     integer,           parameter :: wp = real64 !can change this to other precision, not tested for lower or higher precisions.
     !> single precision variable.
     integer,           parameter :: sp = real32
+    !> double precision variable.
+    integer,           parameter :: dp = real64
     !> \[\pi\]
     real(kind=wp),     parameter :: PI=4._wp*atan(1._wp)
     !> \[2 \pi\]

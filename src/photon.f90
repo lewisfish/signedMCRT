@@ -3,15 +3,16 @@ module photonMod
 !! This source file contains the photon type, all the photon launch routines for different light sources, and the scattering code.
 
 !! Below are the current types of light sources available. Check [here](config.md) for parameters needed for each light source.
-!! uniform
-!! pencil
-!! annulus
-!! focus
-!! point
-!! circular
-!! SLM (2D image source)
-!! double slit
-!! square aperture
+!!   
+!! - uniform
+!! - pencil
+!! - annulus
+!! - focus
+!! - point
+!! - circular
+!! - SLM (2D image source)
+!! - double slit
+!! - square aperture
 
     use constants, only : wp
     use vector_class

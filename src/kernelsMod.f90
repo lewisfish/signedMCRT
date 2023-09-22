@@ -496,7 +496,7 @@ contains
 end subroutine setup
 
 subroutine finalise(dict, dects, nscatt, start, history)
-
+    !! Routine writes out simulation data, deallocates arrays and prints total runtime
     use constants,     only : wp, fileplace
     use detectors,     only : dect_array
     use historyStack,  only : history_stack_t
@@ -508,9 +508,15 @@ subroutine finalise(dict, dects, nscatt, start, history)
     use utils, only : get_time, print_time, str
     use tomlf, only : toml_table, set_value
 
-    real(kind=wp),         intent(in)    :: nscatt, start
+    !> Total number of scattered photon packets
+    real(kind=wp),         intent(in)    :: nscatt
+    !> Start time of simulation. Used to calculate total runtime.
+    real(kind=wp),         intent(in)    :: start
+    !> Detector array
     type(dect_array),      intent(in)    :: dects(:)
+    !> Photon histyor object
     type(history_stack_t), intent(in)    :: history
+    !> Dictionary of metadata
     type(toml_table),      intent(inout) :: dict
 
     integer       :: id, numproc, i
@@ -577,13 +583,19 @@ subroutine finalise(dict, dects, nscatt, start, history)
 end subroutine finalise
 
 subroutine display_settings(state, input_file, packet, kernel_type)
+    !! Displays the settings used in the current simulation run
 
     use sim_state_mod, only : settings_t
     use photonMod,     only : photon
     use utils,         only : str
 
+    !> Simulation state
     type(settings_t), intent(IN) :: state
-    character(*),     intent(IN) :: input_file, kernel_type
+    !> Input filenname
+    character(*),     intent(IN) :: input_file
+    !> Kernel type to run
+    character(*),     intent(IN) :: kernel_type
+    !> Photon packet
     type(photon),     intent(IN) :: packet
 
     print*,repeat("#", 20)//" Settings "//repeat("#", 20)
