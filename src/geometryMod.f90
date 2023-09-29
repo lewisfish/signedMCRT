@@ -8,7 +8,6 @@ module geometry
 !!    - Ellipse
 !!    - Sphere
 
-
     use vector_class, only : vector
     use constants,    only : wp
 
