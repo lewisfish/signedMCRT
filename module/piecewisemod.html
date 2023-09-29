@@ -105,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 4.2% of total for modules and submodules.">217 statements</a>
+               title=" 3.9% of total for modules and submodules.">204 statements</a>
           </li>
 
             <li id="source-file">
@@ -192,12 +192,10 @@
       </div>
       <div id="funcs-0" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../module/piecewisemod.html#proc-encode">encode</a>
             <a class="list-group-item" href="../module/piecewisemod.html#proc-init_piecewise1d">init_piecewise1D</a>
             <a class="list-group-item" href="../module/piecewisemod.html#proc-init_piecewise2d">init_piecewise2D</a>
             <a class="list-group-item" href="../module/piecewisemod.html#proc-nextpwr2">nextpwr2</a>
             <a class="list-group-item" href="../module/piecewisemod.html#proc-pack_bits">pack_bits</a>
-            <a class="list-group-item" href="../module/piecewisemod.html#proc-split">split</a>
         </div>
       </div>
     </div>
@@ -324,12 +322,10 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
       </div>
       <div id="funcs-1" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../module/piecewisemod.html#proc-encode">encode</a>
             <a class="list-group-item" href="../module/piecewisemod.html#proc-init_piecewise1d">init_piecewise1D</a>
             <a class="list-group-item" href="../module/piecewisemod.html#proc-init_piecewise2d">init_piecewise2D</a>
             <a class="list-group-item" href="../module/piecewisemod.html#proc-nextpwr2">nextpwr2</a>
             <a class="list-group-item" href="../module/piecewisemod.html#proc-pack_bits">pack_bits</a>
-            <a class="list-group-item" href="../module/piecewisemod.html#proc-split">split</a>
         </div>
       </div>
     </div>
@@ -1004,67 +1000,6 @@ NOTE: optical properties are not currently adjusted on wavelength change.</p>
         <section>
           <h2>Functions</h2>
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-encode"></span><h3>public  function <a href='../proc/encode.html'>encode</a>(x, y)  
-</h3></div>
-    <div class="panel-body">
-          
-  <p>Compute the Morton index from a pair of indices
-Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order">course</a></p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer(kind=int32),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>x</strong></td>
-            <td>
-<p>Input index pair</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer(kind=int32),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>y</strong></td>
-            <td>
-<p>Input index pair</p>
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>integer(kind=int64)</small>
-    </h4>
-    
-
-    </div>
-  </div>
-
-              <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="proc-init_piecewise1d"></span><h3>public  function <a href='../proc/init_piecewise1d.html'>init_piecewise1D</a>(array) result(res)  
 </h3></div>
     <div class="panel-body">
@@ -1263,53 +1198,6 @@ Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/mai
             <td><strong>z</strong></td>
             <td>
 <p>Input interleaved integer</p>
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>integer(kind=int64)</small>
-    </h4>
-    
-
-    </div>
-  </div>
-
-              <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-split"></span><h3>public  function <a href='../proc/split.html'>split</a>(a) result(x)  
-</h3></div>
-    <div class="panel-body">
-          
-  <p>Go from an integer abcd to 0a0b0c0d
-input is 32-bit int. Ouput is 64-bit int
-Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order">course</a></p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              integer(kind=int32)
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-<p>Input integer to interleave</p>
             </td>
         </tr>
     </tbody>

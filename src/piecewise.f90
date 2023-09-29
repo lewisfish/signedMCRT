@@ -311,22 +311,6 @@ module piecewiseMod
         end do
     end subroutine search_2D
 
-    integer(kind=int64) function split(a) result(x)
-        !! Go from an integer abcd to 0a0b0c0d
-        !! input is 32-bit int. Ouput is 64-bit int
-        !! Adapted from archer2 cpp [course](https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order)
-        !> Input integer to interleave
-        integer(kind=int32) :: a
-
-        x = a
-        x = iand(ior(x, lshift(x, 16)), 281470681808895_int64)
-        x = iand(ior(x, lshift(x, 8)), 71777214294589695_int64)
-        x = iand(ior(x, lshift(x, 4)), 1085102592571150095_int64)
-        x = iand(ior(x, lshift(x, 2)), 3689348814741910323_int64)
-        x = iand(ior(x, lshift(x, 1)), 6148914691236517205_int64)
-
-    end function split
-
     integer(kind=int64) function pack_bits(z) result(x)
     !! Reverse the split function. I.e go from 0a0b0c0d to abcd
     !! Adapted from archer2 cpp [course](https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order)
@@ -348,16 +332,6 @@ module piecewiseMod
 
     end function pack_bits
 
-    integer(kind=int64) function encode(x, y)
-    !! Compute the Morton index from a pair of indices
-    !! Adapted from archer2 cpp [course](https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order)
-        
-        !> Input index pair
-        integer(kind=int32), intent(in) :: x, y
-        
-        encode = ior(split(x), lshift(split(y),1))
-        
-    end function encode
 
     subroutine decode(z, x, y)
         !! Compute the 2 indices from a Morton index
@@ -377,65 +351,3 @@ module piecewiseMod
 
     end subroutine decode
 end module piecewiseMod
-! program test
-
-!     use, intrinsic :: iso_c_binding
-!     use iso_fortran_env, only : int64
-
-!     use piecewiseMod
-!     use random,    only : rang, init_rng
-!     use constants, only : wp
-
-!     implicit none
-
-!     integer ::  ix, iy, u
-!     integer, parameter :: n=200
-!     real(kind=wp) :: xx, yy, bin_wid
-!     integer(kind=int64) :: i
-!     real(kind=wp) :: xr, yr
-!     real(kind=wp) :: data2d(n, n), bins(n,n)
-!     type(piecewise2D) :: obj2D
-
-!     !set seed
-!     call init_rng(spread(123456789, 1, 8), .true.)
-    
-!     ! generate image
-!     data2d = 0.
-!     bins = 0.
-!     bin_wid = 2. / n
-
-!     do i = 1, 10000000
-!         call rang(xx, yy, 1._wp, 0.1_wp)
-!         ix = nint(xx / bin_wid)-10
-!         iy = nint(yy / bin_wid)-30
-!         if(ix > n .or. ix < 1)cycle
-!         if(iy > n .or. iy < 1)cycle
-!         data2d(ix, iy) = data2d(ix, iy) + 1.
-!         call rang(xx, yy, 1._wp, 0.1_wp)
-!         ix = nint(xx / bin_wid)+50
-!         iy = nint(yy / bin_wid)+50
-!         if(ix > n .or. ix < 1)cycle
-!         if(iy > n .or. iy < 1)cycle
-!         data2d(ix, iy) = data2d(ix, iy) + 1.
-!     end do
-
-!     open(newunit=u, file="image.dat", access="stream", form="unformatted")
-!     write(u) data2d
-!     close(u)
-
-!     data2d = data2d / maxval(data2d)
-
-!     obj2D = piecewise2D(0.5_wp, 0.5_wp, data2d)
-
-!     do i = 1, 10000000
-!         call obj2D%sample(xr, yr)
-!         ix = nint(xr)+2
-!         iy = nint(yr)+2
-!         if(ix > n .or. ix < 1)cycle
-!         if(iy > n .or. iy < 1)cycle
-!         bins(ix, iy) = bins(ix, iy) + 1.
-!     end do
-!     open(newunit=u, file="sampled.dat", access="stream", form="unformatted")
-!     write(u) bins
-!     close(u)
-! end program
