@@ -125,11 +125,10 @@ module piecewiseMod
             !get random x coordinate then get corresponding y
             val = ran2()
             call search_1D(this%cdf, idx, val)
-            ! linear interpolation
-            ! offset by +1 if not get wrong values. e.g miss out on end values and get more near start.
-            x = this%array(idx+1, 1) + (this%array(idx+2, 1) - this%array(idx+1, 1)) * &
-                   ((val - this%cdf(idx))/(this%cdf(idx+1) - this%cdf(idx)))
-            print*,x
+            
+            x = this%array(idx, 1) + &
+            ((val - this%cdf(idx))*(this%array(idx + 1, 1) - this%array(idx, 1))) / (this%cdf(idx + 1) - this%cdf(idx))
+
         else
             !already have x so get y
             call search_2D(this%array, idx, value)
@@ -145,30 +144,24 @@ module piecewiseMod
         !> Input array
         real(kind=wp), intent(in) :: array(:, :)
         
-        integer :: i, j
-        real :: summ
+        integer :: i, j, length
+        real(kind=wp) :: summ
 
         if(size(array, 2) /= 2)error stop "Array must be size (n, 2)"
 
         res%array = array
-        allocate(res%cdf(size(array,1)-1))
-        ! steps
-        ! norm pdf -> divide array by sum(array)
-        ! get cdf
-            ! loop 2-> end
-            ! cdf(i) = cdf(i-1) + pdf(i)
-            ! norm = cdf(size(pdf))
-            ! cdf = cdf / norm
+        allocate(res%cdf(size(array,1)))
 
-        res%cdf(1) = res%array(1,1)
-        do j = 1 , size(array, 1)-1
-        summ = 0.
-            do i = 1, j
-                summ = summ + 0.5 * (array(i+1, 2) + array(i, 2)) * (array(i+1, 1) - array(i, 1))
+        length = size(array, 1)
+
+        do j=1,length-1
+            summ=0.
+            do i=1,j   
+               summ=summ+0.5*(array(i+1,2)+array(i,2))*(array(i+1,1)-array(i,1))
             end do
-            res%cdf(j) = summ
-        end do
-        res%cdf = res%cdf / maxval(res%cdf)
+            res%cdf(j)=summ      
+         end do
+         res%cdf=res%cdf/res%cdf(length-1)
 
     end function init_piecewise1D
 
@@ -393,11 +386,12 @@ end module piecewiseMod
 
 !     implicit none
 
-!     integer ::  ix, iy, u
-!     integer, parameter :: n=200
+!     integer ::  ix, iy, u, idx
+!     integer, parameter :: n=376, p=376
 !     real(kind=wp) :: xx, yy, bin_wid
 !     integer(kind=int64) :: i
 !     real(kind=wp) :: xr, yr
+!     real(kind=wp) :: bins(p)
 !     real(kind=wp) :: data2d(n, n), data1d(n, 2)
 !     type(piecewise1D) :: obj1D
 !     type(piecewise2D) :: obj2D
@@ -406,18 +400,12 @@ end module piecewiseMod
 !     call init_rng(spread(123456789, 1, 8), .true.)
     
 !     data1d = 0.
-!     bin_wid = 20. / n
+!     bin_wid = (1000.-250.)/p
+!     bins = 0.
 
-!     do i = 1, n
-!         xr = i*bin_wid
-!         if(xr>= 9.9 .and. xr <= 10.1)then
-!             yr = 10.
-!         else
-!             yr = 0.
-!         end if
-!         ! yr = exp(-(xr-10.)**2 / (2*(0.9)**2))
-!         data1d(i, 1) = xr
-!         data1d(i, 2) = yr
+!     open(newunit=u, file="../res/solar.dat")
+!     do i = 1, 376
+!         read(u,*) data1d(i, :)
 !     end do
 
 !     open(newunit=u, file="../res/spectrum.dat")
@@ -426,7 +414,6 @@ end module piecewiseMod
 !     end do
 !     close(u)
 
-!     data1d(:,2) = data1d(:,2) / maxval(data1d,2)
 !     obj1D = piecewise1D(data1d)
 
 !     open(newunit=u,file="cdf.dat")
@@ -435,10 +422,15 @@ end module piecewiseMod
 !     end do
 !     close(u)
 
-!     open(newunit=u, file="sampled.dat")
-!     do i = 1, 10000
+!     do i = 1, 100000000
 !         call obj1D%sample(xr, yr)
-!         write(u,*) xr
+!         idx = nint((xr-250) / bin_wid) + 1
+!         if(idx > 0 .and. idx < 377)bins(idx) = bins(idx) + 1
+!     end do
+
+!     open(newunit=u, file="sampled.dat")
+!     do i = 1, p
+!         write(u,*)250+(bin_wid*i), bins(i)
 !     end do
 !     close(u)
 !     stop
