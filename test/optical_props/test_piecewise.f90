@@ -1,7 +1,7 @@
 module testsPiecewiseMod
 
     use piecewiseMod
-    use testdrive, only : new_unittest, unittest_type, error_type, check, new_testsuite, testsuite_type, context_t
+    use testdrive, only : new_unittest, unittest_type, error_type, check, new_testsuite, testsuite_type, context_t, test_failed
     use constants, only : wp
 
     implicit none
@@ -16,7 +16,7 @@ module testsPiecewiseMod
         type(testsuite_type), allocatable, intent(out) :: testsuites(:)
         type(context_t) :: context
 
-        testsuites = [new_testsuite("Test Sources", collect_suite1, context)&
+        testsuites = [new_testsuite("Test Piecewise", collect_suite1, context)&
                      ]
 
     end subroutine Piecewise_suite
@@ -26,63 +26,52 @@ module testsPiecewiseMod
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
-                new_unittest("Init", test_piecewise1D_init)&
-                ! new_unittest("Sample", test_piecewise1D_Sample),&
-                ! new_unittest("CDF", test_piecewise1d_CDF)&
+                new_unittest("Piecewise1D", test_piecewise1D)&
                 ]
 
     end subroutine collect_suite1
 
-    subroutine test_piecewise1D_init(error)
+    subroutine test_piecewise1D(error)
+
+        use random, only : init_rng
+        use utils,  only : str
 
         type(error_type), allocatable, intent(out) :: error
 
-        integer :: u
-        integer, parameter :: n=129
-        real(kind=wp) :: bin_wid
-        integer(kind=int64) :: i
-        real(kind=wp) :: xr, yr
-        real(kind=wp) :: data1d(n, 2)
+        integer ::  u, idx, i
+        integer, parameter :: n=376
+        real(kind=wp) :: bin_wid, xr, yr, bins(n), data1d(n, 2), diff_sum
         type(piecewise1D) :: obj1D
+    
+        !set seed
+        call init_rng(spread(123456789, 1, 8), .true.)
         
         data1d = 0.
-        bin_wid = 20. / n
-
-        do i = 1, n
-            xr = i*bin_wid
-            yr = exp(-(xr-10.)**2 / (2*(0.9)**2))
-            data1d(i, 1) = xr
-            data1d(i, 2) = yr
+        bin_wid = (1000.-250.)/n
+        bins = 0.
+    
+        open(newunit=u, file="test/optical_props/blood.dat")
+        do i = 1, 376
+            read(u,*) data1d(i, :)
         end do
-
-        ! open(newunit=u, file="../res/spectrum.dat")
-        ! do i = 1, n
-        !     write(u,"(es24.16e3,1x,es24.16e3)") data1d(i, 1),  data1d(i,2)
-        ! end do
-        ! close(u)
-        
-        data1d(:,2) = data1d(:,2) / maxval(data1d,2)
+    
         obj1D = piecewise1D(data1d)
-
-        ! open(newunit=u,file="cdf.dat")
-        ! do i = 1, size(obj1D%cdf)
-        !     write(u,*) obj1D%cdf(i)
-        ! end do
-        ! close(u)
-
-        open(newunit=u, file="sampled.dat")
-        do i = 1, 10000
+    
+        do i = 1, 1000000
             call obj1D%sample(xr, yr)
-            write(u,*) xr
+            idx = nint((xr-250) / bin_wid) + 1
+            if(idx > 0 .and. idx < 377)bins(idx) = bins(idx) + 1
         end do
-        close(u)
+        
+        data1d(:, 2) = data1d(:, 2) / maxval(data1d(:, 2))
+        bins = bins / maxval(bins)
 
-        ! call check(error, c%x, 2._wp)
-        ! if(allocated(error))return
-        ! call check(error, c%y, 2._wp)
-        ! if(allocated(error))return
-        ! call check(error, c%z, 2._wp)
-        ! if(allocated(error))return
+        diff_sum = sum(abs(data1d(:, 2) - bins))
 
-    end subroutine test_piecewise1D_init
+        if(diff_sum > 2.0)then
+            call test_failed(error, "Piecewise check failed!", "Expected a value less than 1.0! Got "//str(diff_sum, 5))
+        end if
+        if(allocated(error))return
+
+    end subroutine test_piecewise1D
 end module testsPiecewiseMod

@@ -181,7 +181,6 @@ contains
         use utils,         only : pbar
         use vec4_class,    only : vec4
         use vector_class,  only : vector
-        use piecewiseMod
 
         !external deps
         use tev_mod, only : tevipc

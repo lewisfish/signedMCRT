@@ -50,8 +50,9 @@ program test_all
                   new_testsuite("Suite: End to End tests", End_to_End_suite, context) &
                  ]
     
-    ! call Piecewise_suite(tmp, context)
-    ! call grow_suite(tmp, testsuites)
+    call Piecewise_suite(tmp, context)
+    call grow_suite(tmp, testsuites)
+    
     call Vector_suite(tmp, context)
     call grow_suite(tmp, testsuites)
 

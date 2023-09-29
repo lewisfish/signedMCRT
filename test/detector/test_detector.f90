@@ -18,9 +18,6 @@ module testsDetectorMod
 
         testsuite = [ &
                 new_unittest("Check_hit_circle", hit_circle) &
-                ! ! new_unittest("Vector_subtract", vector_sub), &
-                ! ! new_unittest("Vector_multiply", vector_mult), &
-                ! ! new_unittest("Vector_dot", vector_dot) &
                 ]
 
     end subroutine detector_suite
