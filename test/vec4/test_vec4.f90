@@ -1,12 +1,24 @@
 module testsVec4Mod
 
     use vec4_class
-    use testdrive, only : new_unittest, unittest_type, error_type, check
+    use testdrive, only : new_unittest, unittest_type, error_type, check, testsuite_type, context_t, new_testsuite
     use constants, only : wp
 
     implicit none
 
     contains
+
+    subroutine vec4_suite(testsuites, context)
+
+        type(testsuite_type), allocatable, intent(out) :: testsuites(:)
+        type(context_t) :: context
+
+        testsuites = [new_testsuite("Vec4 .op. vector", collect_suite1, context),&
+                      new_testsuite("Vec4 .op scalar", collect_suite2, context),&
+                      new_testsuite("Vec4 functions", collect_suite3, context)&
+                     ]
+
+    end subroutine vec4_suite
 
     subroutine collect_suite1(testsuite)
 
