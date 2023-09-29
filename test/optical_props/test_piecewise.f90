@@ -26,7 +26,8 @@ module testsPiecewiseMod
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
-                new_unittest("Piecewise1D", test_piecewise1D)&
+                new_unittest("Piecewise1D", test_piecewise1D),&
+                new_unittest("Piecewise2D", test_piecewise2D)&
                 ]
 
     end subroutine collect_suite1
@@ -74,4 +75,65 @@ module testsPiecewiseMod
         if(allocated(error))return
 
     end subroutine test_piecewise1D
+    
+    subroutine test_piecewise2D(error)
+
+        use random, only : init_rng, rang
+        use utils,  only : str
+
+        type(error_type), allocatable, intent(out) :: error
+
+        integer ::  ix, iy, u
+        integer, parameter :: n=200
+        real(kind=wp) :: xx, yy, bin_wid
+        integer(kind=int64) :: i
+        real(kind=wp) :: xr, yr, diff_sum
+        real(kind=wp) :: data2d(n, n), bins(n,n)
+        type(piecewise2D) :: obj2D
+    
+        !set seed
+        call init_rng(spread(123456789, 1, 8), .true.)
+        
+        ! generate image
+        data2d = 0.
+        bins = 0.
+        bin_wid = 2. / n
+    
+        do i = 1, 10000000
+            call rang(xx, yy, 1._wp, 0.1_wp)
+            ix = nint(xx / bin_wid)-10
+            iy = nint(yy / bin_wid)-30
+            if(ix > n .or. ix < 1)cycle
+            if(iy > n .or. iy < 1)cycle
+            data2d(ix, iy) = data2d(ix, iy) + 1.
+            call rang(xx, yy, 1._wp, 0.1_wp)
+            ix = nint(xx / bin_wid)+50
+            iy = nint(yy / bin_wid)+50
+            if(ix > n .or. ix < 1)cycle
+            if(iy > n .or. iy < 1)cycle
+            data2d(ix, iy) = data2d(ix, iy) + 1.
+        end do
+        
+        data2d = data2d / maxval(data2d)
+    
+        obj2D = piecewise2D(0.5_wp, 0.5_wp, data2d)
+    
+        do i = 1, 1000000
+            call obj2D%sample(xr, yr)
+            ix = nint(xr)+2
+            iy = nint(yr)+2
+            if(ix > n .or. ix < 1)cycle
+            if(iy > n .or. iy < 1)cycle
+            bins(ix, iy) = bins(ix, iy) + 1.
+        end do
+
+        bins = bins / maxval(bins)
+
+        diff_sum = sum(abs(data2d - bins)) / (n**2)
+        if(diff_sum > 1e-2_wp)then
+            call test_failed(error, "Piecewise2D check failed!", "Expected a value less than 1e-2! Got "//str(diff_sum, 5))
+        end if
+        if(allocated(error))return
+
+    end subroutine test_piecewise2D
 end module testsPiecewiseMod
