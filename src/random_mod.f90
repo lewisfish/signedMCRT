@@ -7,9 +7,9 @@ module random
     implicit none
     !> Sequence type for quasi-monte carlo
     type :: seq
-        !> 
+        !> Current index to get value for.
         integer :: index
-        !> 
+        !> Base from which to calculate radical inverse from.
         integer :: base
         contains
             procedure :: next
@@ -53,7 +53,6 @@ module random
             logical              :: ffwd
             real(kind=wp)        :: a
 
-
             call random_seed(size=n)
             allocate(seed(n))
 
@@ -67,7 +66,7 @@ module random
             if(present(fwd))then
                 ffwd = fwd
             else
-                ffwd = .true.
+                ffwd = .false.
             end if
             call random_seed(put=seed)
 

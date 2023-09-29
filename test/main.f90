@@ -9,7 +9,6 @@ module util
 
     contains
 
-
     subroutine grow_suite(suite1, suite2)
 
         type(testsuite_type), allocatable :: suite1(:), suite2(:), tmp(:)
@@ -38,6 +37,7 @@ program test_all
     use testsVecMod
     use testsFresnelMod
     use testsPiecewiseMod
+    use testsrandom
 
     implicit none
 
@@ -50,6 +50,9 @@ program test_all
                   new_testsuite("Suite: End to End tests", End_to_End_suite, context) &
                  ]
     
+    call random_suite(tmp, context)
+    call grow_suite(tmp, testsuites)
+             
     call Piecewise_suite(tmp, context)
     call grow_suite(tmp, testsuites)
     
