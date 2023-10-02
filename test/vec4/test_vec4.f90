@@ -25,10 +25,10 @@ module testsVec4Mod
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
-                new_unittest("Vector_add", vector_add), &
-                new_unittest("Vector_subtract", vector_sub), &
-                new_unittest("Vector_multiply", vector_mult), &
-                new_unittest("Vector_dot", vector_dot) &
+                new_unittest("Vector4_add", vector_add), &
+                new_unittest("Vector4_subtract", vector_sub), &
+                new_unittest("Vector4_multiply", vector_mult), &
+                new_unittest("Vector4_dot", vector_dot) &
                 ]
 
     end subroutine collect_suite1
@@ -38,10 +38,10 @@ module testsVec4Mod
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
-                new_unittest("Vector_add_scal", vector_add_scal), &
-                new_unittest("Vector_subtract_scal", vector_sub_scal), &
-                new_unittest("Vector_multiply_scal", vector_mult_scal), &
-                new_unittest("Vector_div_scal", vector_div_scal) &
+                new_unittest("Vector4_add_scal", vector_add_scal), &
+                new_unittest("Vector4_subtract_scal", vector_sub_scal), &
+                new_unittest("Vector4_multiply_scal", vector_mult_scal), &
+                new_unittest("Vector4_div_scal", vector_div_scal) &
                 ]
 
     end subroutine collect_suite2
@@ -51,10 +51,10 @@ module testsVec4Mod
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
         testsuite = [ &
-                new_unittest("Vector_init", vector_init), &
-                new_unittest("Vector_sine", vector_sine), &
-                new_unittest("Vector_magnitude", vector_mag), &
-                new_unittest("Vector_length", vector_length) &
+                new_unittest("Vector4_init", vector_init), &
+                new_unittest("Vector4_sine", vector_sine), &
+                new_unittest("Vector4_magnitude", vector_mag), &
+                new_unittest("Vector4_length", vector_length) &
                 ]
     end subroutine collect_suite3
 

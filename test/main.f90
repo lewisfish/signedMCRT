@@ -59,7 +59,7 @@ program test_all
     call Vector_suite(tmp, context)
     call grow_suite(tmp, testsuites)
 
-    call Vector_suite(tmp, context)
+    call vec4_suite(tmp, context)
     call grow_suite(tmp, testsuites)
 
     call Matrix_suite(tmp, context)

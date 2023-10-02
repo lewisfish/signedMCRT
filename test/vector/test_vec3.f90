@@ -17,7 +17,7 @@ module testsVecMod
         type(context_t) :: context
 
         testsuites = [new_testsuite("Vector .op. vector", collect_suite1, context),&
-                      new_testsuite("Vector .op scalar", collect_suite2, context),&
+                      new_testsuite("Vector .op. scalar", collect_suite2, context),&
                       new_testsuite("Vector functions", collect_suite3, context),&
                       new_testsuite("Vector .op. matrix", collect_suite4, context) &
                      ]
@@ -48,7 +48,8 @@ module testsVecMod
                 new_unittest("Vector_subtract_scalar", vector_sub_scal), &
                 new_unittest("Vector_multiply_scalar", vector_mult_scal), &
                 new_unittest("Vector_div_scalar", vector_div_scal), &
-                new_unittest("Vector_div_scalar_int", vector_div_scal_int) &
+                new_unittest("Vector_div_scalar_int", vector_div_scal_int), &
+                new_unittest("Vector_exp_scalar", Vector_exp_scalar) &
                 ]
 
     end subroutine collect_suite2
@@ -312,6 +313,37 @@ module testsVecMod
         call check(error, c%z, 4._wp)
         if(allocated(error))return
     end subroutine vector_div_scal_int
+
+    subroutine Vector_exp_scalar(error)
+
+        use constants, only : dp, sp
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(vector)  :: a, c
+        real(kind=dp) :: bd
+        real(kind=sp) :: bs
+
+        a = vector(2._wp, 2._wp, 2._wp)
+        bd = 2._dp
+        bs = 2._sp
+
+        c = a**bd
+        call check(error, c%x, 4._dp)
+        if(allocated(error))return
+        call check(error, c%y, 4._dp)
+        if(allocated(error))return
+        call check(error, c%z, 4._dp)
+        if(allocated(error))return
+
+        c = a**bs
+        call check(error, c%x, 4._dp)
+        if(allocated(error))return
+        call check(error, c%y, 4._dp)
+        if(allocated(error))return
+        call check(error, c%z, 4._dp)
+        if(allocated(error))return
+    end subroutine Vector_exp_scalar
 
     subroutine vector_mag(error)
 
