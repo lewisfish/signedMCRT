@@ -11,8 +11,9 @@ module vector_class
         real(kind=wp)  :: x, y, z
         contains
 
+        !> Returns the magnitude of the vector
         procedure :: magnitude         => magnitude
-        procedure :: print             => print
+        !> Returns the length of the vector
         procedure :: length            => length
         !> .dot. operator. Dot product
         generic   :: operator(.dot.)   => vec_dot_vec, vec_dot_mat
@@ -61,7 +62,7 @@ module vector_class
     end type vector
 
     private
-    public :: magnitude, vector, print, abs, length, max, nint, min
+    public :: magnitude, vector, abs, length, max, nint, min
 
     interface nint
         !! Overload of the nint intrinsic for a vec3
@@ -408,12 +409,4 @@ module vector_class
             length = sqrt(this%x**2 + this%y**2 + this%z**2)
 
         end function length
-
-        subroutine print(this)
-
-            class(vector) :: this
-
-            print*,this%x, this%y, this%z
-
-        end subroutine print
 end Module vector_class

@@ -64,7 +64,9 @@ module testsVecMod
                 new_unittest("Vector_nint", vector_nint), &
                 new_unittest("Vector_abs", vector_abs), &
                 new_unittest("Vector_min", vector_min), &
-                new_unittest("Vector_max", vector_max) &
+                new_unittest("Vector_max", vector_max), &
+                new_unittest("Vector_maxval", vector_maxval), &
+                new_unittest("Vector_minval", vector_minval) &
                 ]
 
     end subroutine collect_suite3
@@ -278,21 +280,34 @@ module testsVecMod
 
     subroutine vector_div_scal(error)
 
+        use constants, only : sp, dp
+
         type(error_type), allocatable, intent(out) :: error
 
         type(vector) :: a, c
-        real(kind=wp) :: b
+        real(kind=dp) :: bd
+        real(kind=sp) :: bs
 
         a = vector(8._wp, 8._wp, 8._wp)
-        b = 2._wp
+        bd = 2._dp
+        bs = 2._sp
 
-        c = a / b
+        c = a / bd
         call check(error, c%x, 4._wp)
         if(allocated(error))return
         call check(error, c%y, 4._wp)
         if(allocated(error))return
         call check(error, c%z, 4._wp)
         if(allocated(error))return
+        
+        c = a / bs
+        call check(error, c%x, 4._wp)
+        if(allocated(error))return
+        call check(error, c%y, 4._wp)
+        if(allocated(error))return
+        call check(error, c%z, 4._wp)
+        if(allocated(error))return
+
     end subroutine vector_div_scal
 
     subroutine vector_div_scal_int(error)
@@ -428,6 +443,34 @@ module testsVecMod
         call check(error, c%z, 2.2_wp)
         if(allocated(error))return
     end subroutine vector_max
+
+    subroutine vector_maxval(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(vector)  :: a
+        real(kind=wp) :: c
+
+        a = vector(8._wp, -1._wp, 2.2_wp)
+
+        c = max(a)
+        call check(error, c, 8._wp)
+        if(allocated(error))return
+    end subroutine vector_maxval
+
+    subroutine vector_minval(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(vector)  :: a
+        real(kind=wp) :: c
+
+        a = vector(8._wp, -1._wp, 2.2_wp)
+
+        c = min(a)
+        call check(error, c, -1._wp)
+        if(allocated(error))return
+    end subroutine vector_minval
 
     subroutine vector_min(error)
 
