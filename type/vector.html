@@ -105,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p> 7.3% of total for derived types.</p>Including implementation: 272 statements, 18.4% of total for derived types.">34 statements</a>
+               title="<p> 7.1% of total for derived types.</p>Including implementation: 267 statements, 18.1% of total for derived types.">33 statements</a>
           </li>
 
             <li id="source-file">
@@ -182,7 +182,6 @@
             <a class="list-group-item" href="../type/vector.html#boundprocedure-operator%28.dot.%29">operator(.dot.)</a>
             <a class="list-group-item" href="../type/vector.html#boundprocedure-operator%28SLASH%29~2">operator(/)</a>
             <a class="list-group-item" href="../type/vector.html#boundprocedure-operator%28%3D%3D%29">operator(==)</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-print">print</a>
             <a class="list-group-item" href="../type/vector.html#boundprocedure-scal_add_vec">scal_add_vec</a>
             <a class="list-group-item" href="../type/vector.html#boundprocedure-scal_minus_vec">scal_minus_vec</a>
             <a class="list-group-item" href="../type/vector.html#boundprocedure-scal_mult_vec">scal_mult_vec</a>
@@ -275,7 +274,6 @@
             <a class="list-group-item" href="../type/vector.html#boundprocedure-operator%28.dot.%29">operator(.dot.)</a>
             <a class="list-group-item" href="../type/vector.html#boundprocedure-operator%28SLASH%29~2">operator(/)</a>
             <a class="list-group-item" href="../type/vector.html#boundprocedure-operator%28%3D%3D%29">operator(==)</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-print">print</a>
             <a class="list-group-item" href="../type/vector.html#boundprocedure-scal_add_vec">scal_add_vec</a>
             <a class="list-group-item" href="../type/vector.html#boundprocedure-scal_minus_vec">scal_minus_vec</a>
             <a class="list-group-item" href="../type/vector.html#boundprocedure-scal_mult_vec">scal_mult_vec</a>
@@ -387,6 +385,10 @@
             <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-length"></span><h3>procedure, public,  :: <strong>length</strong>          
     </h3></div>
+      <div class="panel-body">
+        
+        <p>Returns the length of the vector</p>
+      </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
@@ -437,6 +439,10 @@
             <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-magnitude"></span><h3>procedure, public,  :: <strong>magnitude</strong>          
     </h3></div>
+      <div class="panel-body">
+        
+        <p>Returns the magnitude of the vector</p>
+      </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
@@ -1669,51 +1675,6 @@
     <small>logical</small>
     </h4>
     
-
-        </li>
-    </ul>
-  </div>
-
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-print"></span><h3>procedure, public,  :: <strong>print</strong>          
-    </h3></div>
-    <ul class="list-group">
-        <li class="list-group-item">
-                  <h3>
-    public  subroutine <a href='../proc/print.html'>print</a>(this)  
-</h3>
-    
-  
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>)
-            </td>
-<td></td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>this</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
 
         </li>
     </ul>
@@ -2961,11 +2922,12 @@
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">type</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vector</span><span class="w"></span>
 <span class="w">        </span><span class="c">!&gt; vector components</span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="w"></span>
-<span class="w">        </span><span class="k">contains</span>
+<span class="w">        </span><span class="k">contains</span><span class="w"></span>
 
-<span class="k">        procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">magnitude</span><span class="w">         </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">magnitude</span><span class="w"></span>
-<span class="w">        </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">print</span><span class="w">             </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">print</span>
-<span class="k">        procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">length</span><span class="w">            </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">length</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Returns the magnitude of the vector</span>
+<span class="w">        </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">magnitude</span><span class="w">         </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">magnitude</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Returns the length of the vector</span>
+<span class="w">        </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">length</span><span class="w">            </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">length</span><span class="w"></span>
 <span class="w">        </span><span class="c">!&gt; .dot. operator. Dot product</span>
 <span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(.</span><span class="n">dot</span><span class="p">.)</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_dot_vec</span><span class="p">,</span><span class="w"> </span><span class="n">vec_dot_mat</span><span class="w"></span>
 <span class="w">        </span><span class="c">!&gt; .cross. operator. Cross product</span>
