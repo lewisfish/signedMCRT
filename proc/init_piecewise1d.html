@@ -105,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 0.4% of total for procedures.">17 statements</a>
+               title=" 0.4% of total for procedures.">18 statements</a>
           </li>
 
             <li id="source-file">
@@ -167,9 +167,22 @@
     <div class="col-md-9" id='text'>
     <h2>public  function init_piecewise1D(array) result(res)  
 </h2>
-    
+        <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Uses</h3>
+      </div>
+      <ul class="list-group">
+          <li class="list-group-item">
+            <ul class="list-inline">
+                <li>stdlib_quadrature</li>
+            </ul>
+          </li>
+      </ul>
+    </div>
 
-    <p>initalise the piecewise1D type with an array size (n, 2). Calculates the CDF of this array.</p>
+
+    <p>initalise the piecewise1D type with an array size (n, 2). Calculates the CDF of this array.
+Input array</p>
 
 
     <h3>Arguments</h3>
@@ -185,7 +198,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-array~9"></span>
+              <span class="anchor" id="variable-array~14"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -195,7 +208,7 @@
             <td>::</td>
             <td><strong>array</strong>(:,:)</td>
             <td>
-                <p>Input array</p>
+                
             </td>
         </tr>
     </tbody>
@@ -256,29 +269,29 @@
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">type</span><span class="p">(</span><span class="n">piecewise1D</span><span class="p">)</span><span class="w"> </span><span class="k">function </span><span class="n">init_piecewise1D</span><span class="p">(</span><span class="k">array</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"></span>
 <span class="w">        </span><span class="c">!! initalise the piecewise1D type with an array size (n, 2). Calculates the CDF of this array.</span>
 <span class="w">        </span><span class="c">!&gt; Input array</span>
+
+<span class="w">        </span><span class="k">use </span><span class="n">stdlib_quadrature</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">trapz_weights</span><span class="w"></span>
+
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">array</span><span class="p">(:,</span><span class="w"> </span><span class="p">:)</span><span class="w"></span>
 <span class="w">        </span>
-<span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"></span>
-<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">summ</span><span class="w"></span>
+<span class="w">        </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"></span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">weights</span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="k">array</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)),</span><span class="w"> </span><span class="n">sumer</span><span class="w"></span>
 
 <span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="k">array</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="k">error stop</span><span class="w"> </span><span class="s2">&quot;Array must be size (n, 2)&quot;</span><span class="w"></span>
 
 <span class="w">        </span><span class="n">res</span><span class="p">%</span><span class="k">array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">array</span>
-<span class="k">        allocate</span><span class="p">(</span><span class="n">res</span><span class="p">%</span><span class="n">cdf</span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="k">array</span><span class="p">,</span><span class="mi">1</span><span class="p">)))</span><span class="w"></span>
-
-<span class="w">        </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="k">array</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-
-<span class="w">        </span><span class="c">!Generate CDF array from PDF array via Trapezoidal rule</span>
-<span class="w">        </span><span class="k">do </span><span class="n">j</span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="o">-</span><span class="mi">1</span><span class="w"></span>
-<span class="w">            </span><span class="n">summ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0_wp</span><span class="w"></span>
-<span class="w">            </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="n">j</span><span class="w">   </span>
-<span class="w">               </span><span class="n">summ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">summ</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.5_wp</span><span class="o">*</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="k">array</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="k">array</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span><span class="w"></span>
-<span class="w">            </span><span class="k">end do</span>
-<span class="k">            </span><span class="n">res</span><span class="p">%</span><span class="n">cdf</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="o">=</span><span class="n">summ</span><span class="w">      </span>
+<span class="k">        </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="k">array</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="k">allocate</span><span class="p">(</span><span class="n">res</span><span class="p">%</span><span class="n">cdf</span><span class="p">(</span><span class="n">length</span><span class="p">))</span><span class="w"></span>
+<span class="w">        </span><span class="n">res</span><span class="p">%</span><span class="n">cdf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w"></span>
+<span class="w">        </span><span class="c">! Generate CDF array from PDF array via Trapezoidal rule</span>
+<span class="w">        </span><span class="n">weights</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">trapz_weights</span><span class="p">(</span><span class="k">array</span><span class="p">(:,</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span><span class="w"></span>
+<span class="w">        </span><span class="n">sumer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="w"></span>
+<span class="w">        </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"></span>
+<span class="w">            </span><span class="n">sumer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sumer</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">weights</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">*</span><span class="k">array</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="n">res</span><span class="p">%</span><span class="n">cdf</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sumer</span><span class="w"></span>
 <span class="w">        </span><span class="k">end do</span><span class="w"></span>
 <span class="w">         </span><span class="c">! normalise</span>
-<span class="w">        </span><span class="n">res</span><span class="p">%</span><span class="n">cdf</span><span class="o">=</span><span class="n">res</span><span class="p">%</span><span class="n">cdf</span><span class="o">/</span><span class="n">res</span><span class="p">%</span><span class="n">cdf</span><span class="p">(</span><span class="n">length</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-
+<span class="w">        </span><span class="n">res</span><span class="p">%</span><span class="n">cdf</span><span class="o">=</span><span class="n">res</span><span class="p">%</span><span class="n">cdf</span><span class="o">/</span><span class="n">res</span><span class="p">%</span><span class="n">cdf</span><span class="p">(</span><span class="n">length</span><span class="p">)</span><span class="w"></span>
 <span class="w">    </span><span class="k">end function </span><span class="n">init_piecewise1D</span><span class="w"></span>
 </pre></div>
 
