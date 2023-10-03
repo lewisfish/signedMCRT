@@ -240,16 +240,30 @@ module testsVec4Mod
 
     subroutine vector_div_scal(error)
 
+        use constants, only : sp, dp
+
         type(error_type), allocatable, intent(out) :: error
 
         type(vec4)    :: a, c
-        real(kind=wp) :: b
+        real(kind=dp) :: bd
+        real(kind=sp) :: bs
         integer :: bi
 
         a = vec4(10._wp, 10._wp, 10._wp, 10._wp)
-        b = 5._wp
+        bd = 5._dp
+        bs = 5._sp
 
-        c = a / b
+        c = a / bd
+        call check(error, c%x, 2._wp)
+        if(allocated(error))return
+        call check(error, c%y, 2._wp)
+        if(allocated(error))return
+        call check(error, c%z, 2._wp)
+        if(allocated(error))return
+        call check(error, c%p, 2._wp)
+        if(allocated(error))return
+
+        c = a / bs
         call check(error, c%x, 2._wp)
         if(allocated(error))return
         call check(error, c%y, 2._wp)

@@ -38,6 +38,7 @@ program test_all
     use testsFresnelMod
     use testsPiecewiseMod
     use testsrandom
+    use testsOpticalPropMod
 
     implicit none
 
@@ -52,7 +53,10 @@ program test_all
     
     call random_suite(tmp, context)
     call grow_suite(tmp, testsuites)
-             
+    
+    call OpticalProp_suite(tmp, context)
+    call grow_suite(tmp, testsuites)
+
     call Piecewise_suite(tmp, context)
     call grow_suite(tmp, testsuites)
     

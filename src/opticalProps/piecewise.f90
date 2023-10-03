@@ -142,29 +142,29 @@ module piecewiseMod
     type(piecewise1D) function init_piecewise1D(array) result(res)
         !! initalise the piecewise1D type with an array size (n, 2). Calculates the CDF of this array.
         !> Input array
+
+        use stdlib_quadrature, only: trapz_weights
+
         real(kind=wp), intent(in) :: array(:, :)
         
-        integer :: i, j, length
-        real(kind=wp) :: summ
+        integer :: i, length
+        real(kind=wp) :: weights(size(array, 1)), sumer
 
         if(size(array, 2) /= 2)error stop "Array must be size (n, 2)"
 
         res%array = array
-        allocate(res%cdf(size(array,1)))
-
         length = size(array, 1)
-
-        !Generate CDF array from PDF array via Trapezoidal rule
-        do j= 1, length-1
-            summ = 0.0_wp
-            do i = 1,j   
-               summ = summ + 0.5_wp*(array(i+1,2) + array(i,2)) * (array(i+1, 1) - array(i,1))
-            end do
-            res%cdf(j)=summ      
+        allocate(res%cdf(length))
+        res%cdf = 0.
+        ! Generate CDF array from PDF array via Trapezoidal rule
+        weights = trapz_weights(array(:, 1))
+        sumer = 0.
+        do i = 2, length
+            sumer = sumer + weights(i)*array(i,2)
+            res%cdf(i) = sumer
         end do
          ! normalise
-        res%cdf=res%cdf/res%cdf(length-1)
-
+        res%cdf=res%cdf/res%cdf(length)
     end function init_piecewise1D
 
 
