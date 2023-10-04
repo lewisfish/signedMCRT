@@ -1,0 +1,28 @@
+[source]
+name = "point"
+nphotons = 100000
+position = [0.0, 0.0, 0.0]
+spectrum_type = "1D"
+spectrum_file = "../test/optical_props/blood.dat"
+
+[grid]
+nxg = 200
+nyg = 200
+nzg = 200
+xmax = 1.0
+ymax = 1.0
+zmax = 1.0
+
+[geometry]
+geom_name = "scat_test"
+tau = 10.0
+
+[output]
+fluence = "fluence.nrrd"
+render = "geom_render.nrrd"
+render_geom = false
+overwrite = true
+
+[simulation]
+iseed = 123456789
+absorb=true

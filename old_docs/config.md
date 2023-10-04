@@ -62,7 +62,7 @@ This table defines the parameters for the light source used in the simulation it
 |:---------:|:----:|:-------:|:-------:|:----:|
 | type | string | annulus, circle, camera | - | - |
 | position | float array size 3 | - | NO DEFAULT! | Central position of detector |
-| direction | float array size 3 | - | [0.0, 0.0, -1.0] | Only used with circle detector |
+| direction | float array size 3 | - | [0.0, 0.0, -1.0] | - |
 | radius1 | float | - | - | Radius of circular detector. Inner radius of annular detector |
 | radius2 | float | - | - | Outer radius of annulus detector. Must be larger than radius1 |
 | p1 | float array size 3 | - | [-1.0, -1.0, -1.0] | Used by camera detector only to set location and size of source|

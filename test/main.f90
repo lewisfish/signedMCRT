@@ -39,6 +39,7 @@ program test_all
     use testsPiecewiseMod
     use testsrandom
     use testsOpticalPropMod
+    use testsParseMod
 
     implicit none
 
@@ -51,6 +52,9 @@ program test_all
                   new_testsuite("Suite: End to End tests", End_to_End_suite, context) &
                  ]
     
+    call parse_suite(tmp, context)
+    call grow_suite(tmp, testsuites)             
+
     call random_suite(tmp, context)
     call grow_suite(tmp, testsuites)
     

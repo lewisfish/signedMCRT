@@ -93,9 +93,9 @@ module detectors
         end if
     end function check_hit_circle
 
-    function init_annulus_dect(pos, layer, r1, r2, nbins, maxval, trackHistory) result(out)
+    function init_annulus_dect(pos, dir, layer, r1, r2, nbins, maxval, trackHistory) result(out)
 
-        type(vector),  intent(IN) :: pos
+        type(vector),  intent(IN) :: pos, dir
         integer,       intent(IN) :: layer, nbins
         real(kind=wp), intent(IN) :: r1, r2, maxval
         logical,       intent(in) :: trackHistory
@@ -103,6 +103,7 @@ module detectors
         type(annulus_dect) :: out
 
         out%pos = pos
+        out%dir = dir
         out%layer = layer
         !extra bin for data beyond end of array
         out%nbins = nbins + 1
