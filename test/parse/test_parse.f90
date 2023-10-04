@@ -74,13 +74,13 @@ module testsParseMod
         type(dect_array), allocatable :: dects(:)
         type(spectrum_t)              :: spectrum
 
-        filename = "res/test_spectra_const.toml"
+        filename = "res/test_spectra_1D.toml"
         call parse_params(filename, packet, dects, spectrum, dict)
         select type(ptr => spectrum%p)
             class is(piecewise1D)    
-                call check(error, size(ptr%cdf), 375, "Wrong CDF length in source spectrum_1D type!")
+                call check(error, size(ptr%cdf), 376, "Wrong CDF length in source spectrum_1D type!")
                 if(allocated(error))return
-                call check(error, size(ptr%array, 1), 375, "Wrong PDF length in source spectrum_1D type!")
+                call check(error, size(ptr%array, 1), 376, "Wrong PDF length in source spectrum_1D type!")
                 if(allocated(error))return
                 call check(error, size(ptr%array, 2), 2, "Wrong PDF length in source spectrum_1D type!")
                 if(allocated(error))return
@@ -90,6 +90,7 @@ module testsParseMod
 
     subroutine spectra_spectral_2D(error)
 
+        use constants,    only : resdir
         use detectors,    only : dect_array
         use photonMod,    only : photon
         use piecewiseMod, only : spectrum_t, piecewise2D
@@ -103,11 +104,12 @@ module testsParseMod
         type(dect_array), allocatable :: dects(:)
         type(spectrum_t)              :: spectrum
 
-        filename = "res/test_spectra_const.toml"
+        resdir = ""
+        filename = "res/test_spectra_2D.toml"
         call parse_params(filename, packet, dects, spectrum, dict)
         select type(ptr => spectrum%p)
-            class is(piecewise2D)    
-                call check(error, size(ptr%cdf), 200*200, "Wrong CDF length in source spectrum_2D type!")
+            class is(piecewise2D) 
+                call check(error, size(ptr%cdf), 256*256, "Wrong CDF length in source spectrum_2D type!")
                 if(allocated(error))return
                 call check(error, ptr%cell_height, 0.5_wp, "Wrong cell height in source spectrum_2D type!")
                 if(allocated(error))return

@@ -3,7 +3,7 @@ name = "point"
 nphotons = 100000
 position = [0.0, 0.0, 0.0]
 spectrum_type = "2D"
-spectrum_file = "../test/parse/test.dat"
+spectrum_file = "/home/lewis/postdoc/signedMCRT/test/parse/test.png"
 cell_size = [0.5, 0.5]
 
 [grid]

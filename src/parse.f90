@@ -241,9 +241,10 @@ module parse_mod
     ! document code and update config.md
         use piecewiseMod
         use stdlib_io, only: loadtxt
-        use constants, only : resdir
+        use constants, only : resdir, sp
 
         use stb_image_mod
+        use, intrinsic :: iso_c_binding
 
         type(toml_table),  intent(INOUT) :: dict
         type(toml_table), pointer :: table
@@ -260,6 +261,7 @@ module parse_mod
         character(len=:), allocatable :: stype, sfile, filetype
         real(kind=wp) :: wavelength, cellsize(2)
         real(kind=wp), allocatable :: array(:,:)
+        real(kind=sp), allocatable :: array_sp(:,:)
 
         call get_value(table, "spectrum_type", stype, "constant", origin=origin)
         select case(stype)
@@ -271,7 +273,9 @@ module parse_mod
             case("1D")
                 allocate(spectrum%p, source=OneD)
                 call get_value(table, "spectrum_file", sfile)
-                call loadtxt("res/"//sfile, array)
+                call loadtxt("res/"//sfile, array_sp)
+                array = array_sp
+                deallocate(array_sp)
                 OneD = piecewise1D(array)
                 allocate(spectrum%p, source=OneD)
                 spectrum%p => OneD
@@ -297,12 +301,12 @@ module parse_mod
                 filetype = sfile(len(sfile)-2:)
                 select case(filetype)
                 case("png")
-                    err = stbi_info(trim(resdir)//trim(sfile), width, height, n_channels)
+                    err = stbi_info(trim(resdir)//trim(sfile)//c_null_char, width, height, n_channels)
                     if(err == 0)then
                         print'(2a,1x,a)', "Error reading file: ", trim(sfile),stbi_failure_reason()
                         stop 1
                     end if
-                    image = stbi_load(trim(resdir)//trim(sfile), width, height, n_channels, 0)
+                    image = stbi_load(trim(resdir)//trim(sfile)//c_null_char, width, height, n_channels, 0)
                     allocate(array(size(image, 1), size(image, 2)))
                     array = image(:,:,1)
 
