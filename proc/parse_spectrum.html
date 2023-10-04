@@ -105,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 1.6% of total for procedures.">73 statements</a>
+               title=" 1.7% of total for procedures.">76 statements</a>
           </li>
 
             <li id="source-file">
@@ -174,10 +174,10 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li>stb_image_mod</li>
                 <li><a href='../module/constants.html'>constants</a></li>
-                <li><a href='../module/piecewisemod.html'>piecewiseMod</a></li>
                 <li>stdlib_io</li>
+                <li><a href='../module/piecewisemod.html'>piecewiseMod</a></li>
+                <li>stb_image_mod</li>
             </ul>
           </li>
       </ul>
@@ -309,6 +309,7 @@
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">parse_spectrum</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="n">spectrum</span><span class="p">,</span><span class="w"> </span><span class="n">dict</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w"></span>
 <span class="w">    </span><span class="c">!! Parse spectrums to be used</span>
 <span class="w">    </span><span class="c">! TODO seperate out each case to seperate functions.</span>
+<span class="w">    </span><span class="c">! TODO add spectra type to input optical properties</span>
 <span class="w">    </span><span class="c">! handle all possible errors</span>
 <span class="w">    </span><span class="c">! document code and update config.md</span>
 <span class="w">        </span><span class="k">use </span><span class="n">piecewiseMod</span><span class="w"></span>
@@ -361,7 +362,10 @@
 <span class="k">                    do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">)</span><span class="w"></span>
 <span class="w">                        </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">children</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">cellsize</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="w"></span>
 <span class="w">                    </span><span class="k">end do</span>
-<span class="k">                end if</span>
+<span class="k">                else</span>
+<span class="k">                    print</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Need a vector of size 2 for cell_size&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;expected vector of size 2&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="k">stop </span><span class="mi">1</span><span class="w"></span>
+<span class="w">                </span><span class="k">end if</span>
 
 <span class="k">                </span><span class="n">filetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sfile</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sfile</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">:)</span><span class="w"></span>
 <span class="w">                </span><span class="k">select case</span><span class="p">(</span><span class="n">filetype</span><span class="p">)</span><span class="w"></span>
@@ -391,8 +395,6 @@
 <span class="w">                </span><span class="k">print</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Not a valid spectrum type!&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;expected one of either [&#39;constant&#39;, &#39;1D&#39;, &#39;2D&#39;]&quot;</span><span class="p">)</span><span class="w"></span>
 <span class="w">                </span><span class="k">stop </span><span class="mi">1</span><span class="w"></span>
 <span class="w">        </span><span class="k">end select</span>
-
-
 <span class="k">    end subroutine </span><span class="n">parse_spectrum</span><span class="w"></span>
 </pre></div>
 

@@ -210,10 +210,11 @@ module parse_mod
 
         integer       :: layer, nbins, origin
         real(kind=wp) :: maxval, radius1, radius2
-        type(vector)  :: pos
+        type(vector)  :: pos, dir
         logical       :: trackHistory
 
         pos = get_vector(child, "position", context=context)
+        dir = get_vector(child, "direction", default=vector(0.0, 0.0, -1.0), context=context)
         call get_value(child, "layer", layer, 1)
         call get_value(child, "radius1", radius1)
         call get_value(child, "radius2", radius2, origin=origin)
@@ -228,13 +229,14 @@ module parse_mod
 #ifdef _OPENMP
         if(trackHistory)error stop "Track history currently incompatable with OpenMP!"
 #endif
-        dects(counts) = annulus_dect(pos, layer, radius1, radius2, nbins, maxval, trackHistory)
+        dects(counts) = annulus_dect(pos, dir, layer, radius1, radius2, nbins, maxval, trackHistory)
         counts = counts + 1
     end subroutine handle_annulus_dect
 
     subroutine parse_spectrum(table, spectrum, dict, context)
     !! Parse spectrums to be used
     ! TODO seperate out each case to seperate functions.
+    ! TODO add spectra type to input optical properties
     ! handle all possible errors
     ! document code and update config.md
         use piecewiseMod
@@ -287,6 +289,9 @@ module parse_mod
                     do i = 1, len(children)
                         call get_value(children, i, cellsize(i))
                     end do
+                else
+                    print'(a)',context%report("Need a vector of size 2 for cell_size", origin, "expected vector of size 2")
+                    stop 1
                 end if
 
                 filetype = sfile(len(sfile)-2:)
@@ -317,8 +322,6 @@ module parse_mod
                 print'(a)',context%report("Not a valid spectrum type!", origin, "expected one of either ['constant', '1D', '2D']")
                 stop 1
         end select
-
-
     end subroutine parse_spectrum
 
     subroutine parse_source(table, packet, dict, spectrum, context)

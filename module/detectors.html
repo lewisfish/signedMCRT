@@ -105,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 2.8% of total for modules and submodules.">146 statements</a>
+               title=" 2.8% of total for modules and submodules.">147 statements</a>
           </li>
 
             <li id="source-file">
@@ -213,9 +213,9 @@ detectors detect photon packets colliding with the detectors.</p>
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
+                <li><a href='../module/constants.html'>constants</a></li>
                 <li><a href='../module/vector_class.html'>vector_class</a></li>
                 <li><a href='../module/detector_mod.html'>detector_mod</a></li>
-                <li><a href='../module/constants.html'>constants</a></li>
             </ul>
           </li>
       </ul>
@@ -310,7 +310,7 @@ detectors detect photon packets colliding with the detectors.</p>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private  function <a href='../proc/init_annulus_dect.html'>init_annulus_dect</a>(pos, layer, r1, r2, nbins, maxval, trackHistory) result(out)  
+    private  function <a href='../proc/init_annulus_dect.html'>init_annulus_dect</a>(pos, dir, layer, r1, r2, nbins, maxval, trackHistory) result(out)  
 
     </h3>
     
@@ -338,6 +338,21 @@ detectors detect photon packets colliding with the detectors.</p>
             </td>
             <td>::</td>
             <td><strong>pos</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/vector.html'>vector</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dir</strong></td>
             <td>
 
             </td>
@@ -930,7 +945,7 @@ detectors detect photon packets colliding with the detectors.</p>
                     
                     function
                     <strong><a href='../proc/init_annulus_dect.html'>init_annulus_dect</a></strong>
-                    (pos, layer, r1, r2, nbins, maxval, trackHistory)
+                    (pos, dir, layer, r1, r2, nbins, maxval, trackHistory)
                   </td>
                   <td></td>
                 </tr>
@@ -1757,7 +1772,7 @@ detectors detect photon packets colliding with the detectors.</p>
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-init_annulus_dect"></span><h3>private  function <a href='../proc/init_annulus_dect.html'>init_annulus_dect</a>(pos, layer, r1, r2, nbins, maxval, trackHistory) result(out)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-init_annulus_dect"></span><h3>private  function <a href='../proc/init_annulus_dect.html'>init_annulus_dect</a>(pos, dir, layer, r1, r2, nbins, maxval, trackHistory) result(out)  
 </h3></div>
     <div class="panel-body">
           
@@ -1785,6 +1800,21 @@ detectors detect photon packets colliding with the detectors.</p>
             </td>
             <td>::</td>
             <td><strong>pos</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/vector.html'>vector</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dir</strong></td>
             <td>
 
             </td>
