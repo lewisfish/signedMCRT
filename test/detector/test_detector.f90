@@ -27,6 +27,7 @@ module testsDetectorMod
     subroutine hit_circle(error)
 
         use vector_class, only : vector
+        use historyStack
 
         type(error_type), allocatable, intent(out) :: error
 
@@ -36,6 +37,7 @@ module testsDetectorMod
         integer :: layer, nbins
         real(kind=wp) :: radius, maxval, val
         logical :: flag
+        type(history_stack_t) :: history
 
         pos = vector(0._wp, 0._wp, 0._wp)
         dir = vector(1._wp, 0._wp, 0._wp)
@@ -52,8 +54,12 @@ module testsDetectorMod
         hitpoint = hit_t(pos, dir, val, layer)
 
         flag = a%check_hit(hitpoint)
-
         call check(error, flag, .true.)
+        if(allocated(error))return
+
+        call a%record_hit(hitpoint, history)
+
+        call check(error, sum(a%data), 1.0_wp)
         if(allocated(error))return
 
     end subroutine hit_circle
@@ -62,6 +68,7 @@ module testsDetectorMod
     subroutine hit_camera(error)
 
         use vector_class, only : vector
+        use historyStack
 
         type(error_type), allocatable, intent(out) :: error
 
@@ -71,7 +78,8 @@ module testsDetectorMod
         integer :: layer, nbins
         real(kind=wp) :: maxval, val
         logical :: flag
-       
+        type(history_stack_t) :: history
+
         p1 = vector(-1._wp, -1._wp, -1._wp)
         p2 = vector(0._wp, 2._wp, 0._wp)
         p3 = vector(0._wp, 0._wp, 2._wp)
@@ -90,6 +98,10 @@ module testsDetectorMod
 
         call check(error, flag, .true.)
         if(allocated(error))return
+    
+        call a%record_hit(hitpoint, history)
+        call check(error, sum(a%data), 1.0_wp)
+        if(allocated(error))return
 
         pos = vector(10._wp, 0._wp, 0._wp)
         dir = vector(1._wp, 0._wp, 0._wp)
@@ -107,6 +119,7 @@ module testsDetectorMod
     subroutine hit_annulus(error)
 
         use vector_class, only : vector
+        use historyStack
 
         type(error_type), allocatable, intent(out) :: error
 
@@ -116,7 +129,8 @@ module testsDetectorMod
         integer :: layer, nbins
         real(kind=wp) :: maxval, val, r1, r2
         logical :: flag
-       
+        type(history_stack_t) :: history
+
         layer = 1
         nbins = 100
         maxval = 100._wp
@@ -132,6 +146,10 @@ module testsDetectorMod
 
         flag = a%check_hit(hitpoint)
         call check(error, flag, .true.)
+        if(allocated(error))return
+
+        call a%record_hit(hitpoint, history)
+        call check(error, sum(a%data), 1.0_wp)
         if(allocated(error))return
 
         pos = vector(0._wp, 0._wp, 0._wp)
