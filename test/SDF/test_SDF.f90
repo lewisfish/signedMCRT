@@ -57,7 +57,6 @@ module testsSDFMod
                 ! new_unittest("extrude_test", test_extrude), &
                 ! new_unittest("revolution_test", test_revolution), &
                 ! new_unittest("onion_test", test_onion), &
-                ! new_unittest("translate_test", test_translate) &
                 ! ]
 
     ! end subroutine collect_suite2

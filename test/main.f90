@@ -30,6 +30,7 @@ program test_all
     
     use testsDetectorMod
     use testsFresnelMod
+    use testsgeometryMod
     use testsIOMod
     use testsMatrixMod
     use testsOpticalPropMod
@@ -53,6 +54,9 @@ program test_all
                   new_testsuite("Suite: End to End tests", End_to_End_suite, context) &
                  ]
     
+    call geometry_suite(tmp, context)
+    call grow_suite(tmp, testsuites)
+
     call parse_suite(tmp, context)
     call grow_suite(tmp, testsuites)
 
