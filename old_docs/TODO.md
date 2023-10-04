@@ -43,8 +43,6 @@ List of ToDo's for SignedMCRT.
 - [ ] Add voxel geometry
 - [ ] Add mesh geometry
 - [ ] Improve performance of SDF intersection
-    - [ ] Implement KD trees in 2D
-    - [ ] Implement KD trees in 3D
 - [ ] Make code serializable so that we can checkpoint simulations
      - [ ] Save input toml file
      - [ ] photons run
@@ -75,10 +73,17 @@ List of ToDo's for SignedMCRT.
 - [x] Matrix class
 - [x] Vec4 Class
 - [ ] SDF Class
-- [ ] Detector Class
-    - [ ] Circle
-    - [ ] Camera
-    - [ ] Annulus
+    - [x] Helpers
+    - [ ] Modifiers
+    - [ ] Base
+    - [x] Shapes
+- [x] Detector Class
+    - [x] Circle
+    - [x] Camera
+    - [x] Annulus
+- [x] Surfaces
+- [x] Grid
+- [x] Optical Properties
 - [ ] Photon class
     - [x] Uniform
     - [x] Point
@@ -92,7 +97,7 @@ List of ToDo's for SignedMCRT.
 - [ ] Photon movement code
 - [ ] History Stack Class
 - [ ] I/O
-- [ ] Random Numbers
+- [x] Random Numbers
 - [x] Fresnel reflections
     - [x] Simple reflect
     - [x] Simple refract

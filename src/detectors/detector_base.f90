@@ -5,10 +5,15 @@ module detector_mod
     use constants, only : wp
     
     implicit none
-    
+    !> Hit type, which records possible interaction information
     type :: hit_t
-        type(vector)  :: pos, dir
+        !> Poition of the interaction
+        type(vector)  :: pos
+        !> Direction the photon came from
+        type(vector)  :: dir
+        !> Value to deposit
         real(kind=wp) :: value
+        !> Layer ID of interaction
         integer       :: layer
     end type hit_t
 
@@ -17,10 +22,15 @@ module detector_mod
         module procedure hit_init
     end interface hit_t
 
+    !> abstract detector
     type, abstract :: detector
-        ! abstract detector
-        type(vector)  :: pos, dir
+        !> position of the detector
+        type(vector)  :: pos
+        !> Surface normal of the detector
+        type(vector)  :: dir
+        !> Layer ID of the detector
         integer :: layer
+        !> Boolean, if true store the history of the photon prior to detection.
         logical :: trackHistory
         contains
             private
@@ -49,18 +59,30 @@ module detector_mod
             type(history_stack_t), intent(inout) :: history
         end subroutine recordHitInterface
     end interface
-
+    
+    !> 1D detector type. Records linear information
     type, abstract, extends(detector) :: detector1D
+        !> Number of bins
         integer       :: nbins
+        !> Bin width
         real(kind=wp) :: bin_wid
+        !> Bins
         real(kind=wp), allocatable :: data(:)
         contains
         procedure :: record_hit => record_hit_1D_sub
     end type detector1D
-
+    
+    !> 2D detecctor type. Records spatial information
     type, abstract, extends(detector) :: detector2D
-        integer       :: nbinsX, nbinsY
-        real(kind=wp) :: bin_wid_x, bin_wid_y
+        !> Number of bins in x dimension (detector space)
+        integer       :: nbinsX
+        !> Number of bins in y dimension (detector space)
+        integer       :: nbinsY
+        !> Bin width in the x dimension
+        real(kind=wp) :: bin_wid_x
+        !> Bin width in the y dimension
+        real(kind=wp) :: bin_wid_y
+        !> Bins
         real(kind=wp), allocatable :: data(:,:)
         contains
         procedure :: record_hit => record_hit_2D_sub
@@ -82,12 +104,15 @@ contains
     end function hit_init
    
     subroutine record_hit_1D_sub(this, hitpoint, history)
+        !! check if a hit is on the detector and record it if so
 
         use historyStack,  only : history_stack_t
         use sim_state_mod, only : state
 
         class(detector1D),     intent(inout) :: this
+        !> Interaction information
         type(hit_t),           intent(in)    :: hitpoint
+        !> Photon packet history
         type(history_stack_t), intent(inout) :: history
 
         real(kind=wp) :: value
@@ -106,12 +131,15 @@ contains
     end subroutine record_hit_1D_sub
 
     subroutine record_hit_2D_sub(this, hitpoint, history)
+        !! check if a hit is on the detector and record it if so
 
         use historyStack, only : history_stack_t
         use sim_state_mod, only : state
 
         class(detector2D),     intent(inout) :: this
+        !> Interaction information
         type(hit_t),           intent(in)    :: hitpoint
+        !> Photon packet history
         type(history_stack_t), intent(inout) :: history
 
         real(kind=wp), volatile :: x, y

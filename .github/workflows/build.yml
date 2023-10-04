@@ -63,7 +63,7 @@ jobs:
         if: ${{ contains(matrix.os, 'ubuntu') && contains(matrix.toolchain.compiler, 'gcc') }}
         uses: codecov/codecov-action@v3.1.1
       
-      - uses: actions/setup-python@v1
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.x'
       - name: build docs

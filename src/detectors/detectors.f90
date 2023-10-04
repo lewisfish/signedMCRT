@@ -18,6 +18,7 @@ module detectors
     end type circle_dect
 
     interface circle_dect
+        !> Initialise circular detector
         module procedure init_circle_dect
     end interface circle_dect
 
@@ -32,6 +33,7 @@ module detectors
     end type annulus_dect
 
     interface annulus_dect
+        !> Initialise annuluar detector
         module procedure init_annulus_dect
     end interface annulus_dect
 
@@ -70,6 +72,7 @@ module detectors
     contains
     
     function init_circle_dect(pos, dir, layer, radius, nbins, maxval, trackHistory) result(out)
+        !! Initalise Circle detector
         !> Centre of detector
         type(vector),  intent(in) :: pos
         !> Normal of the detector
@@ -105,10 +108,12 @@ module detectors
     end function init_circle_dect
 
     logical function check_hit_circle(this, hitpoint)
+        !! Check if a hitpoint is in the circle
         
         use geometry, only : intersectCircle
 
         class(circle_dect), intent(INOUT) :: this
+        !> Hitpoint to check
         type(hit_t),        intent(IN)    :: hitpoint
         
         real(kind=wp) :: t 
@@ -122,6 +127,8 @@ module detectors
     end function check_hit_circle
 
     function init_annulus_dect(pos, dir, layer, r1, r2, nbins, maxval, trackHistory) result(out)
+        !! Initalise Annular detector
+
         !> Centre of detector
         type(vector),  intent(in) :: pos
         !> Normal of the detector
@@ -160,8 +167,9 @@ module detectors
     end function init_annulus_dect
 
     logical function check_hit_annulus(this, hitpoint)
-
+        !! Check if a hitpoint is in the annulus
         class(annulus_dect), intent(INOUT) :: this
+        !> Hitpoint to check
         type(hit_t),         intent(IN)    :: hitpoint
 
         real(kind=wp) :: newpos
@@ -176,6 +184,8 @@ module detectors
     end function check_hit_annulus
 
     function init_camera(p1, p2, p3, layer, nbins, maxval, trackHistory) result(out)
+        !! Initalise Camera detector
+
         !> Position of the 1st corner of the detector
         type(vector),  intent(in) :: p1
         !> Distance from p1 to the 2nd corner
@@ -219,8 +229,10 @@ module detectors
     end function init_camera
 
     logical function check_hit_camera(this, hitpoint)
-    !! [ref](https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection)
+        !! Check if a hitpoint is in the camera detector
+        !! [ref](https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection)
         class(camera), intent(inout) :: this
+        !> Hitpoint to check
         type(hit_t),   intent(in)    :: hitpoint
 
         real(kind=wp) :: t, proj1, proj2
@@ -239,5 +251,4 @@ module detectors
             end if
         end if
     end function check_hit_camera
-
 end module detectors
