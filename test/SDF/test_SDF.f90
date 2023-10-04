@@ -3,6 +3,7 @@ module testsSDFMod
     use constants, only : wp
     use opticalProperties, only : mono, opticalProp_t
     use sdfs
+    use sdfHelpers
     use testdrive, only : new_unittest, unittest_type, error_type, check, testsuite_type, new_testsuite, context_t
     use vector_class
 
@@ -15,8 +16,10 @@ module testsSDFMod
         type(testsuite_type), allocatable, intent(out) :: testsuites(:)
         type(context_t) :: context
 
-        testsuites = [new_testsuite("SDF", collect_suite1, context)&
-                     ]
+        testsuites = [new_testsuite("SDF Shapes", collect_suite1, context),&
+                    !   new_testsuite("SDF Modifiers", collect_suite2, context),&
+                      new_testsuite("SDF Helpers", collect_suite3, context)&
+                    ]
 
     end subroutine SDF_suite
 
@@ -37,6 +40,420 @@ module testsSDFMod
                 new_unittest("egg_test", test_egg)&
                 ]
     end subroutine collect_suite1
+
+    ! subroutine collect_suite2(testsuite)
+
+    !     type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+    !     testsuite = [ &
+    !             new_unittest("union_test", test_union) &
+                ! new_unittest("intersection_test", test_intersection), &
+                ! new_unittest("subtraction_test", test_subtraction), &
+                ! new_unittest("displacement_test", test_displacement), &
+                ! new_unittest("bend_test", test_bend), &
+                ! new_unittest("twist_test", test_twist), &
+                ! new_unittest("elongate_test", test_elongate), &
+                ! new_unittest("repeat_test", test_repeat), &
+                ! new_unittest("extrude_test", test_extrude), &
+                ! new_unittest("revolution_test", test_revolution), &
+                ! new_unittest("onion_test", test_onion), &
+                ! new_unittest("translate_test", test_translate) &
+                ! ]
+
+    ! end subroutine collect_suite2
+
+
+    subroutine collect_suite3(testsuite)
+
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [ &
+                new_unittest("rotate x test", test_rotate_x), &
+                new_unittest("rotate y test", test_rotate_y), &
+                new_unittest("rotate z test", test_rotate_z), &
+                new_unittest("translate test", test_translate), &
+                new_unittest("rotate matrix test", test_rotmat), &
+                new_unittest("identity test", test_identity), &
+                new_unittest("skewsymmetric test", test_skewsymm), &
+                new_unittest("rotation align test", test_rotationalign) &
+                ]
+
+    end subroutine collect_suite3
+
+    subroutine test_rotationalign(error)
+
+        type(error_type), allocatable, intent(out) :: error
+        real(kind=wp) :: id(4, 4)
+        type(vector) :: a, b, c
+
+        a = vector(0., 0., 1.)
+        b = vector(1., 0., 0.)
+
+        id = rotationAlign(a, b)
+        c = a .dot. id
+        call check(error, c%x, b%x)
+        if(allocated(error))return
+
+        call check(error, c%y, b%y)
+        if(allocated(error))return
+
+        call check(error, c%z, b%z)
+        if(allocated(error))return
+
+
+        a = vector(1., 2., 1.)
+        b = vector(1., 4., 5.)
+
+        a = a%magnitude()
+        b = b%magnitude()
+
+        id = rotationAlign(a, b)
+        c = a .dot. id
+        call check(error, c%x, b%x)
+        if(allocated(error))return
+
+        call check(error, c%y, b%y)
+        if(allocated(error))return
+
+        call check(error, c%z, b%z)
+        if(allocated(error))return
+
+    end subroutine test_rotationalign
+
+    subroutine test_rotmat(error)
+
+        use utils, only : deg2rad
+
+        type(error_type), allocatable, intent(out) :: error
+        real(kind=wp) :: id(4, 4), angle
+        type(vector) :: axis
+
+        axis = vector(0._wp, 0._wp, 1._wp)
+        angle = 45._wp
+        id = rotmat(axis, angle)
+        call check(error, all(id==rotate_z(angle)), .true.)
+        if(allocated(error))return
+
+        axis = vector(0._wp, 1._wp, 0._wp)
+        angle = 45._wp
+        id = rotmat(axis, angle)
+        call check(error, all(id==rotate_y(angle)), .true.)
+        if(allocated(error))return
+
+        axis = vector(1._wp, 0._wp, 0._wp)
+        angle = 45._wp
+        id = rotmat(axis, angle)
+        call check(error, all(id==rotate_x(angle)), .true.)
+        if(allocated(error))return
+
+    end subroutine test_rotmat
+
+    subroutine test_rotate_x(error)
+        
+        use utils, only : deg2rad
+
+        type(error_type), allocatable, intent(out) :: error
+
+        real(kind=wp) :: id(4, 4), angle
+
+        angle = 45._wp
+        id = rotate_x(angle)
+        angle = deg2rad(angle)
+
+        call check(error, id(1, 1), 1.0_wp)
+        if(allocated(error))return
+        call check(error, id(2, 1), 0._wp)
+        if(allocated(error))return
+        call check(error, id(3, 1), 0._wp)
+        if(allocated(error))return
+
+        call check(error, id(1, 2), 0._wp)
+        if(allocated(error))return
+        call check(error, id(2, 2), cos(angle))
+        if(allocated(error))return
+        call check(error, id(3, 2), -sin(angle))
+        if(allocated(error))return
+        
+        call check(error, id(1, 3), 0._wp)
+        if(allocated(error))return
+        call check(error, id(2, 3), sin(angle))
+        if(allocated(error))return
+        call check(error, id(3, 3), cos(angle))
+        if(allocated(error))return
+        angle = 90._wp
+        id = rotate_x(angle)
+        angle = deg2rad(angle)
+        call check(error, id(1, 1), 1.0_wp)
+        if(allocated(error))return
+        call check(error, id(2, 1), 0._wp)
+        if(allocated(error))return
+        call check(error, id(3, 1), 0._wp)
+        if(allocated(error))return
+
+        call check(error, id(1, 2), 0._wp)
+        if(allocated(error))return
+        call check(error, id(2, 2), cos(angle))
+        if(allocated(error))return
+        call check(error, id(3, 2), -sin(angle))
+        if(allocated(error))return
+        
+        call check(error, id(1, 3), 0._wp)
+        if(allocated(error))return
+        call check(error, id(2, 3), sin(angle))
+        if(allocated(error))return
+        call check(error, id(3, 3), cos(angle))
+        if(allocated(error))return
+
+
+        angle = 0._wp
+        id = rotate_x(angle)
+        angle = deg2rad(angle)
+        call check(error, id(1, 1), 1.0_wp)
+        if(allocated(error))return
+        call check(error, id(2, 1), 0._wp)
+        if(allocated(error))return
+        call check(error, id(3, 1), 0._wp)
+        if(allocated(error))return
+
+        call check(error, id(1, 2), 0._wp)
+        if(allocated(error))return
+        call check(error, id(2, 2), cos(angle))
+        if(allocated(error))return
+        call check(error, id(3, 2), -sin(angle))
+        if(allocated(error))return
+        
+        call check(error, id(1, 3), 0._wp)
+        if(allocated(error))return
+        call check(error, id(2, 3), sin(angle))
+        if(allocated(error))return
+        call check(error, id(3, 3), cos(angle))
+        if(allocated(error))return
+
+        angle = 64.45_wp
+        id = rotate_x(angle)
+        angle = deg2rad(angle)
+        call check(error, id(1, 1), 1.0_wp)
+        if(allocated(error))return
+        call check(error, id(2, 1), 0._wp)
+        if(allocated(error))return
+        call check(error, id(3, 1), 0._wp)
+        if(allocated(error))return
+
+        call check(error, id(1, 2), 0._wp)
+        if(allocated(error))return
+        call check(error, id(2, 2), cos(angle))
+        if(allocated(error))return
+        call check(error, id(3, 2), -sin(angle))
+        if(allocated(error))return
+        
+        call check(error, id(1, 3), 0._wp)
+        if(allocated(error))return
+        call check(error, id(2, 3), sin(angle))
+        if(allocated(error))return
+        call check(error, id(3, 3), cos(angle))
+        if(allocated(error))return
+
+    end subroutine test_rotate_x
+
+    subroutine test_rotate_y(error)
+        
+        use utils, only: deg2rad
+
+        type(error_type), allocatable, intent(out) :: error
+
+        real(kind=wp) :: id(4, 4), angle
+
+        angle = 45._wp
+        id = rotate_y(angle)
+        angle = deg2rad(angle)
+
+        call check(error, id(1, 1), cos(angle))
+        if(allocated(error))return
+        call check(error, id(2, 1), 0._wp)
+        if(allocated(error))return
+        call check(error, id(3, 1), sin(angle))
+        if(allocated(error))return
+
+        call check(error, id(1, 2), 0.0_wp)
+        if(allocated(error))return
+        call check(error, id(2, 2), 1.0_wp)
+        if(allocated(error))return
+        call check(error, id(3, 2), 0.0_wp)
+        if(allocated(error))return
+        
+        call check(error, id(1, 3), -sin(angle))
+        if(allocated(error))return
+        call check(error, id(2, 3), 0.0_wp)
+        if(allocated(error))return
+        call check(error, id(3, 3), cos(angle))
+        if(allocated(error))return
+
+        angle = 90._wp
+        id = rotate_y(angle)
+        angle = deg2rad(angle)
+
+        call check(error, id(1, 1), cos(angle))
+        if(allocated(error))return
+        call check(error, id(2, 1), 0._wp)
+        if(allocated(error))return
+        call check(error, id(3, 1), sin(angle))
+        if(allocated(error))return
+
+        call check(error, id(1, 2), 0.0_wp)
+        if(allocated(error))return
+        call check(error, id(2, 2), 1.0_wp)
+        if(allocated(error))return
+        call check(error, id(3, 2), 0.0_wp)
+        if(allocated(error))return
+        
+        call check(error, id(1, 3), -sin(angle))
+        if(allocated(error))return
+        call check(error, id(2, 3), 0.0_wp)
+        if(allocated(error))return
+        call check(error, id(3, 3), cos(angle))
+        if(allocated(error))return
+
+        angle = 0._wp
+        id = rotate_y(angle)
+        angle = deg2rad(angle)
+        call check(error, id(1, 1), cos(angle))
+        if(allocated(error))return
+        call check(error, id(2, 1), 0._wp)
+        if(allocated(error))return
+        call check(error, id(3, 1), sin(angle))
+        if(allocated(error))return
+
+        call check(error, id(1, 2), 0.0_wp)
+        if(allocated(error))return
+        call check(error, id(2, 2), 1.0_wp)
+        if(allocated(error))return
+        call check(error, id(3, 2), 0.0_wp)
+        if(allocated(error))return
+        
+        call check(error, id(1, 3), -sin(angle))
+        if(allocated(error))return
+        call check(error, id(2, 3), 0.0_wp)
+        if(allocated(error))return
+        call check(error, id(3, 3), cos(angle))
+        if(allocated(error))return
+
+        angle = 64.45_wp
+        id = rotate_y(angle)
+        angle = deg2rad(angle)
+        call check(error, id(1, 1), cos(angle))
+        if(allocated(error))return
+        call check(error, id(2, 1), 0._wp)
+        if(allocated(error))return
+        call check(error, id(3, 1), sin(angle))
+        if(allocated(error))return
+
+        call check(error, id(1, 2), 0.0_wp)
+        if(allocated(error))return
+        call check(error, id(2, 2), 1.0_wp)
+        if(allocated(error))return
+        call check(error, id(3, 2), 0.0_wp)
+        if(allocated(error))return
+        
+        call check(error, id(1, 3), -sin(angle))
+        if(allocated(error))return
+        call check(error, id(2, 3), 0.0_wp)
+        if(allocated(error))return
+        call check(error, id(3, 3), cos(angle))
+        if(allocated(error))return
+
+    end subroutine test_rotate_y
+
+    subroutine test_rotate_z(error)
+        
+        use utils, only: deg2rad
+
+        type(error_type), allocatable, intent(out) :: error
+
+        real(kind=wp) :: id(4, 4), angle
+
+        angle = 45._wp
+        id = rotate_z(angle)
+        angle = deg2rad(angle)
+
+        call check(error, id(1, 1), cos(angle))
+        if(allocated(error))return
+        call check(error, id(2, 1), -sin(angle))
+        if(allocated(error))return
+        call check(error, id(3, 1), 0.0_wp)
+        if(allocated(error))return
+
+        call check(error, id(1, 2), sin(angle))
+        if(allocated(error))return
+        call check(error, id(2, 2), cos(angle))
+        if(allocated(error))return
+        call check(error, id(3, 2), 0.0_wp)
+        if(allocated(error))return
+        
+        call check(error, id(1, 3), 0.0_wp)
+        if(allocated(error))return
+        call check(error, id(2, 3), 0.0_wp)
+        if(allocated(error))return
+        call check(error, id(3, 3), 1.0_wp)
+        if(allocated(error))return
+
+    end subroutine test_rotate_z
+
+
+    subroutine test_identity(error)
+        
+        use stdlib_linalg, only : eye
+
+        type(error_type), allocatable, intent(out) :: error
+
+        real(kind=wp) :: id(4, 4)
+        integer :: i(4, 4)
+
+        i = eye(4, 4)
+        id = identity()
+        call check(error, all(id == real(i, kind=wp)), .true.)
+        if(allocated(error))return
+
+    end subroutine test_identity
+
+    subroutine test_translate(error)
+        
+        type(error_type), allocatable, intent(out) :: error
+
+        real(kind=wp) :: t(4, 4)
+        type(vector)  :: pos
+        
+        pos = vector(1., 2., 3.)
+        t = translate(pos)
+
+        call check(error, t(4, 1), pos%x)
+        if(allocated(error))return
+        call check(error, t(4, 2), pos%y)
+        if(allocated(error))return
+        call check(error, t(4, 3), pos%z)
+        if(allocated(error))return
+
+    end subroutine test_translate
+
+    subroutine test_skewsymm(error)
+        
+        use stdlib_linalg, only : is_skew_symmetric
+
+        type(error_type), allocatable, intent(out) :: error
+
+        real(kind=wp) :: id(4, 4)
+        type(vector) :: pos
+
+        pos = vector(1._wp, 2._wp, 3._wp)
+        id = skewSymm(pos)
+        call check(error, is_skew_symmetric(id), .true.)
+        if(allocated(error))return
+
+        pos = vector(-1._wp, -2._wp, -3._wp)
+        id = skewSymm(pos)
+        call check(error, is_skew_symmetric(id), .true.)
+        if(allocated(error))return
+
+    end subroutine test_skewsymm
 
     subroutine test_sphere(error)
 

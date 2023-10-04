@@ -54,7 +54,7 @@ program test_all
                  ]
     
     call parse_suite(tmp, context)
-    call grow_suite(tmp, testsuites)             
+    call grow_suite(tmp, testsuites)
 
     call random_suite(tmp, context)
     call grow_suite(tmp, testsuites)

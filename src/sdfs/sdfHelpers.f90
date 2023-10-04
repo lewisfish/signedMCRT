@@ -34,8 +34,8 @@ contains
         s = sin(a)
 
         r(:, 1) = [1._wp, 0._wp, 0._wp, 0._wp]
-        r(:, 2) = [0._wp, c,  s,  0._wp]
-        r(:, 3) = [0._wp,-s,  c,  0._wp]
+        r(:, 2) = [0._wp, c,  -s,  0._wp]
+        r(:, 3) = [0._wp, s,  c,  0._wp]
         r(:, 4) = [0._wp, 0._wp, 0._wp, 1._wp]
 
     end function rotate_x
@@ -54,9 +54,9 @@ contains
         c = cos(a)
         s = sin(a)
 
-        r(:, 1) = [c,  0._wp, -s,  0._wp]
+        r(:, 1) = [c,  0._wp, s,  0._wp]
         r(:, 2) = [0._wp, 1._wp,  0._wp, 0._wp]
-        r(:, 3) = [s,  0._wp,  c,  0._wp]
+        r(:, 3) = [-s,  0._wp,  c,  0._wp]
         r(:, 4) = [0._wp, 0._wp,  0._wp, 1._wp]
 
     end function rotate_y
@@ -84,19 +84,21 @@ contains
 
     function rotmat(axis, angle)
     !! Rotate around around an axis by a given angle taken from [here](http://www.neilmendoza.com/glsl-rotation-about-an-arbitrary-axis/)
-
+        use utils, only : deg2rad
         !> Axis to rotate around
         type(vector),  intent(in) :: axis
-        !> Angle to rotate by
+        !> Angle to rotate by in degrees
         real(kind=wp), intent(in) :: angle
 
         type(vector) :: axist
 
-        real(kind=wp) :: rotmat(4, 4), s, c, oc
+        real(kind=wp) :: rotmat(4, 4), s, c, oc, a
 
         axist = axis%magnitude()
-        s = sqrt(1. - angle**2)
-        c = angle
+        a = deg2rad(angle)
+
+        s = sin(a)
+        c = cos(a)
         oc = 1._wp - c
 
     rotmat(:, 1) = [oc * axist%x * axist%x + c, oc * axist%x * axist%y - axist%z * s,&
