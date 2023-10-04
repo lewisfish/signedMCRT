@@ -29,10 +29,10 @@ module testsSDFMod
                 new_unittest("box_test", test_box), &
                 new_unittest("cylinder_test", test_cylinder), &
                 new_unittest("torus_test", test_torus), &
-                ! new_unittest("triprism_test", test_triprism), &
-                ! new_unittest("cone_test", test_cone), &
-                ! new_unittest("capsule_test", test_capsule), &
-                ! new_unittest("plane_test", test_plane), &
+                new_unittest("triprism_test", test_triprisim), &
+                new_unittest("cone_test", test_cone), &
+                new_unittest("capsule_test", test_capsule), &
+                new_unittest("plane_test", test_plane), &
                 new_unittest("segment_test", test_segment), &
                 new_unittest("egg_test", test_egg)&
                 ]
@@ -234,6 +234,128 @@ module testsSDFMod
         if(allocated(error))return
 
     end subroutine test_segment
+
+    subroutine test_triprisim(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(triprism)  :: tri
+        type(opticalProp_t) :: opt
+        type(vector)  :: pos
+        real(kind=wp) :: h1, h2
+
+        ! height
+        h1 = 1.0_wp
+        ! length
+        h2 = 5.0_wp
+        opt = mono(0._wp, 0._wp, 0._wp, 0._wp)
+        tri = triprism(h1, h2, opt, 1)
+
+        pos = vector(0.0_wp, 0._wp, 5._wp)
+        call check(error, tri%evaluate(pos), 0.0_wp)
+        if(allocated(error))return
+
+        pos = vector(0.0_wp, 1._wp, 0._wp)
+        call check(error, tri%evaluate(pos), 0.0_wp)
+        if(allocated(error))return
+
+    end subroutine test_triprisim
+
+    subroutine test_capsule(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(capsule)  :: cap
+        type(opticalProp_t) :: opt
+        type(vector)  :: pos, a, b
+        real(kind=wp) :: r
+
+        ! start
+        a = vector(-1.0_wp, 0.0_wp, 0.0_wp)
+        ! end
+        b = vector(1.0_wp, 0.0_wp, 0.0_wp)
+        ! radius
+        r = 1.0_wp
+        opt = mono(0._wp, 0._wp, 0._wp, 0._wp)
+        cap = capsule(a, b, r, opt, 1)
+
+        pos = vector(0.0_wp, 0._wp, 0._wp)
+        call check(error, cap%evaluate(pos), -1.0_wp)
+        if(allocated(error))return
+
+        pos = vector(0.0_wp, 1._wp, 0._wp)
+        call check(error, cap%evaluate(pos), 0.0_wp)
+        if(allocated(error))return
+
+        pos = vector(2.0_wp, 0._wp, 0._wp)
+        call check(error, cap%evaluate(pos), 0.0_wp)
+        if(allocated(error))return
+
+    end subroutine test_capsule
+
+    subroutine test_plane(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(plane)  :: plan
+        type(opticalProp_t) :: opt
+        type(vector)  :: pos, a
+
+        ! normal to plane
+        a = vector(0.0_wp, 0.0_wp, 1.0_wp)
+        opt = mono(0._wp, 0._wp, 0._wp, 0._wp)
+        plan = plane(a, opt, 1)
+
+        pos = vector(0.0_wp, 0._wp, 0._wp)
+        call check(error, plan%evaluate(pos), 0.0_wp)
+        if(allocated(error))return
+
+        pos = vector(0.0_wp, 1._wp, 0._wp)
+        call check(error, plan%evaluate(pos), 0.0_wp)
+        if(allocated(error))return
+
+        pos = vector(2.0_wp, 0._wp, 0._wp)
+        call check(error, plan%evaluate(pos), 0.0_wp)
+        if(allocated(error))return
+
+        pos = vector(0.0_wp, 0._wp, -1._wp)
+        call check(error, plan%evaluate(pos), -1.0_wp)
+        if(allocated(error))return
+
+        pos = vector(0.0_wp, 0._wp, 1._wp)
+        call check(error, plan%evaluate(pos), 1.0_wp)
+        if(allocated(error))return
+
+
+    end subroutine test_plane
+
+    subroutine test_cone(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(cone)  :: con
+        type(opticalProp_t) :: opt
+        type(vector)  :: pos, a, b
+        real(kind=wp) :: ra, rb
+
+        ! radius of base
+        ra = 5.0_wp
+        ! radius of tip
+        rb = 0.0_wp
+        opt = mono(0._wp, 0._wp, 0._wp, 0._wp)
+        a = vector(0.0, 0.0, 0.0)
+        b = vector(0.0, 0.0, 1.0)
+        con = cone(a, b, ra, rb, opt, 1)
+
+        pos = vector(0.0_wp, 0._wp, 1._wp)
+        call check(error, con%evaluate(pos), 0.0_wp)
+        if(allocated(error))return
+
+        pos = vector(1.0_wp, 1._wp, 0._wp)
+        call check(error, con%evaluate(pos), 0.0_wp)
+        if(allocated(error))return
+
+    end subroutine test_cone
 
     subroutine test_egg(error)
 

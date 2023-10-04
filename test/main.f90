@@ -22,24 +22,25 @@ module util
     end subroutine grow_suite
 end module util
 program test_all
+
     use, intrinsic :: iso_fortran_env, only: error_unit
     
-    use util, only : grow_suite
+    use util,      only : grow_suite
     use testdrive, only : run_testsuite, new_testsuite, testsuite_type, context_t
     
     use testsDetectorMod
-    use testScatterMod
-    use testsVec4Mod
+    use testsFresnelMod
     use testsIOMod
     use testsMatrixMod
-    use testsPhotonMod
-    use testsSDFMod 
-    use testsVecMod
-    use testsFresnelMod
-    use testsPiecewiseMod
-    use testsrandom
     use testsOpticalPropMod
     use testsParseMod
+    use testsPhotonMod
+    use testsPiecewiseMod
+    use testsrandom
+    use testScatterMod
+    use testsSDFMod 
+    use testsVec4Mod
+    use testsVecMod
 
     implicit none
 
