@@ -105,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 0.6% of total for procedures.">27 statements</a>
+               title=" 0.7% of total for procedures.">30 statements</a>
           </li>
 
             <li id="source-file">
@@ -169,6 +169,14 @@
 </h2>
     
 
+    <p>calculates where a line, with origin:orig and direction:dir hits a ellipse, centre:centre and axii:semia, semib
+returns true if intersection exists
+returns t, the paramertised parameter of the line equation
+adapted from scratchapixel and pbrt
+need to check z height after moving ray
+if not this is an infinte ellipse-cylinder
+ellipse lies length ways along z-axis
+semia and semib are the semimajor axis which are the half width and height.</p>
 
 
     <h3>Arguments</h3>
@@ -194,12 +202,12 @@
             <td>::</td>
             <td><strong>orig</strong></td>
             <td>
-                
+                <p>origin of the ray</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dir~9"></span>
+              <span class="anchor" id="variable-dir~3"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -209,12 +217,12 @@
             <td>::</td>
             <td><strong>dir</strong></td>
             <td>
-                
+                <p>Direction vector of the ray</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-t~4"></span>
+              <span class="anchor" id="variable-t~3"></span>
               real(kind=wp),
             </td>
 <td>intent(out)</td>
@@ -224,7 +232,7 @@
             <td>::</td>
             <td><strong>t</strong></td>
             <td>
-                
+                <p>distance from orig to the intersection point</p>
             </td>
         </tr>
         <tr>
@@ -239,7 +247,7 @@
             <td>::</td>
             <td><strong>centre</strong></td>
             <td>
-                
+                <p>Centre of the ellipse</p>
             </td>
         </tr>
         <tr>
@@ -254,7 +262,7 @@
             <td>::</td>
             <td><strong>semia</strong></td>
             <td>
-                
+                <p>Half width of the ellipse</p>
             </td>
         </tr>
         <tr>
@@ -269,7 +277,7 @@
             <td>::</td>
             <td><strong>semib</strong></td>
             <td>
-                
+                <p>Half height of the ellipse</p>
             </td>
         </tr>
     </tbody>
@@ -328,18 +336,27 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="kt">logical </span><span class="k">function </span><span class="n">intersectEllipse</span><span class="p">(</span><span class="n">orig</span><span class="p">,</span><span class="w"> </span><span class="n">dir</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">centre</span><span class="p">,</span><span class="w"> </span><span class="n">semia</span><span class="p">,</span><span class="w"> </span><span class="n">semib</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="c">! calculates where a line, with origin:orig and direction:dir hits a ellipse, centre:centre and axii:semia, semib</span>
-<span class="w">    </span><span class="c">! returns true if intersection exists</span>
-<span class="w">    </span><span class="c">! returns t, the paramertised parameter of the line equation</span>
-<span class="w">    </span><span class="c">! adapted from scratchapixel and pbrt</span>
-<span class="w">    </span><span class="c">! need to check z height after moving ray</span>
-<span class="w">    </span><span class="c">! if not this is an infinte ellipse-cylinder</span>
-<span class="w">    </span><span class="c">! ellipse lies length ways along z-axis</span>
-<span class="w">    </span><span class="c">! semia and semib are the semimajor axis which are the half width and height.</span>
+<span class="w">    </span><span class="c">!! calculates where a line, with origin:orig and direction:dir hits a ellipse, centre:centre and axii:semia, semib</span>
+<span class="w">    </span><span class="c">!! returns true if intersection exists</span>
+<span class="w">    </span><span class="c">!! returns t, the paramertised parameter of the line equation</span>
+<span class="w">    </span><span class="c">!! adapted from scratchapixel and pbrt</span>
+<span class="w">    </span><span class="c">!! need to check z height after moving ray</span>
+<span class="w">    </span><span class="c">!! if not this is an infinte ellipse-cylinder</span>
+<span class="w">    </span><span class="c">!! ellipse lies length ways along z-axis</span>
+<span class="w">    </span><span class="c">!! semia and semib are the semimajor axis which are the half width and height.</span>
 
-<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">dir</span><span class="p">,</span><span class="w"> </span><span class="n">orig</span><span class="p">,</span><span class="w"> </span><span class="n">centre</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Direction vector of the ray</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">dir</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; origin of the ray</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">orig</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Centre of the ellipse</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">centre</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; distance from orig to the intersection point</span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">OUT</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">t</span><span class="w"></span>
-<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">semia</span><span class="p">,</span><span class="w"> </span><span class="n">semib</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Half width of the ellipse</span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">semia</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Half height of the ellipse</span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">semib</span><span class="w"></span>
 
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">L</span><span class="w"></span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">t0</span><span class="p">,</span><span class="w"> </span><span class="n">t1</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">tmp</span><span class="p">,</span><span class="w"> </span><span class="n">semia2div</span><span class="p">,</span><span class="w"> </span><span class="n">semib2div</span><span class="w"></span>

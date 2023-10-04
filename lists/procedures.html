@@ -115,9 +115,10 @@
 			   <tr><td><a href='../proc/capsule_init.html'>capsule_init</a></td><td><a href='../module/sdfs.html'>sdfs</a></td><td>Function</td><td><p>Initalising function for capsule SDF.</p></td></tr>
 			   <tr><td><a href='../interface/cart_grid.html'>cart_grid</a></td><td><a href='../module/gridmod.html'>gridMod</a></td><td>Interface</td><td></td></tr>
 			   <tr><td><a href='../proc/check_file.html'>check_file</a></td><td><a href='../module/writer_mod.html'>writer_mod</a></td><td>Function</td><td><p>Functional wrapper around inquire to check if file exits</p></td></tr>
-			   <tr><td><a href='../proc/check_hit_annulus.html'>check_hit_annulus</a></td><td><a href='../module/detectors.html'>detectors</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/check_hit_camera.html'>check_hit_camera</a></td><td><a href='../module/detectors.html'>detectors</a></td><td>Function</td><td><p><a href="https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection">ref</a></p></td></tr>
-			   <tr><td><a href='../proc/check_hit_circle.html'>check_hit_circle</a></td><td><a href='../module/detectors.html'>detectors</a></td><td>Function</td><td></td></tr>
+			   <tr><td><a href='../proc/check_hit_annulus.html'>check_hit_annulus</a></td><td><a href='../module/detectors.html'>detectors</a></td><td>Function</td><td><p>Check if a hitpoint is in the annulus</p></td></tr>
+			   <tr><td><a href='../proc/check_hit_camera.html'>check_hit_camera</a></td><td><a href='../module/detectors.html'>detectors</a></td><td>Function</td><td><p>Check if a hitpoint is in the camera detector
+<a href="https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection">ref</a></p></td></tr>
+			   <tr><td><a href='../proc/check_hit_circle.html'>check_hit_circle</a></td><td><a href='../module/detectors.html'>detectors</a></td><td>Function</td><td><p>Check if a hitpoint is in the circle</p></td></tr>
 			   <tr><td><a href='../interface/circle_dect.html'>circle_dect</a></td><td><a href='../module/detectors.html'>detectors</a></td><td>Interface</td><td></td></tr>
 			   <tr><td><a href='../proc/circular.html'>circular</a></td><td><a href='../module/photonmod.html'>photonMod</a></td><td>Subroutine</td><td><p>circular source</p></td></tr>
 			   <tr><td><a href='../interface/cone.html'>cone</a></td><td><a href='../module/sdfs.html'>sdfs</a></td><td>Interface</td><td><p>Interface to cone SDF initialising function</p></td></tr>
@@ -189,9 +190,9 @@ makes a Moss egg. <a href="https://www.shadertoy.com/view/WsjfRt">ref</a>.</p></
 			   <tr><td><a href='../proc/hit_init.html'>hit_init</a></td><td><a href='../module/detector_mod.html'>detector_mod</a></td><td>Function</td><td></td></tr>
 			   <tr><td><a href='../interface/hit_t.html'>hit_t</a></td><td><a href='../module/detector_mod.html'>detector_mod</a></td><td>Interface</td><td></td></tr>
 			   <tr><td><a href='../proc/identity.html'>identity</a></td><td><a href='../module/sdfhelpers.html'>sdfHelpers</a></td><td>Function</td><td><p>Returns the identity transformation matrix</p></td></tr>
-			   <tr><td><a href='../proc/init_annulus_dect.html'>init_annulus_dect</a></td><td><a href='../module/detectors.html'>detectors</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/init_camera.html'>init_camera</a></td><td><a href='../module/detectors.html'>detectors</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/init_circle_dect.html'>init_circle_dect</a></td><td><a href='../module/detectors.html'>detectors</a></td><td>Function</td><td></td></tr>
+			   <tr><td><a href='../proc/init_annulus_dect.html'>init_annulus_dect</a></td><td><a href='../module/detectors.html'>detectors</a></td><td>Function</td><td><p>Initalise Annular detector</p></td></tr>
+			   <tr><td><a href='../proc/init_camera.html'>init_camera</a></td><td><a href='../module/detectors.html'>detectors</a></td><td>Function</td><td><p>Initalise Camera detector</p></td></tr>
+			   <tr><td><a href='../proc/init_circle_dect.html'>init_circle_dect</a></td><td><a href='../module/detectors.html'>detectors</a></td><td>Function</td><td><p>Initalise Circle detector</p></td></tr>
 			   <tr><td><a href='../proc/init_grid.html'>init_grid</a></td><td><a href='../module/gridmod.html'>gridMod</a></td><td>Function</td><td><p>setup grid</p></td></tr>
 			   <tr><td><a href='../proc/init_historystack.html'>init_historyStack</a></td><td><a href='../module/historystack.html'>historyStack</a></td><td>Function</td><td></td></tr>
 			   <tr><td><a href='../proc/init_mono.html'>init_mono</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td>Function</td><td></td></tr>
@@ -205,12 +206,35 @@ Input array</p></td></tr>
 			   <tr><td><a href='../proc/init_vec4_vector_real.html'>init_vec4_vector_real</a></td><td><a href='../module/vec4_class.html'>vec4_class</a></td><td>Function</td><td><p>Initalise vec4 from a vec3 and Scalar
 e.g vec4 = [vec3%x, vec3%y, vec3%z, scalar]</p></td></tr>
 			   <tr><td><a href='../proc/intersectcircle.html'>intersectCircle</a></td><td><a href='../module/geometry.html'>geometry</a></td><td>Function</td><td><p><a href="https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection">ref</a></p></td></tr>
-			   <tr><td><a href='../proc/intersectcone.html'>intersectCone</a></td><td><a href='../module/geometry.html'>geometry</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/intersectcylinder.html'>intersectCylinder</a></td><td><a href='../module/geometry.html'>geometry</a></td><td>Function</td><td></td></tr>
-			   <tr><td><a href='../proc/intersectellipse.html'>intersectEllipse</a></td><td><a href='../module/geometry.html'>geometry</a></td><td>Function</td><td></td></tr>
+			   <tr><td><a href='../proc/intersectcone.html'>intersectCone</a></td><td><a href='../module/geometry.html'>geometry</a></td><td>Function</td><td><p>calculates where a line, with origin:orig and direction:dir hits a cone, radius:radius and height:height with centre:centre.
+centre is the point under the apex at the cone's base.
+returns true if intersection exists
+returns t, the paramertised parameter of the line equation
+adapted from scratchapixel and pbrt
+need to check z height after moving ray
+if not this is an infinte cone
+cone lies height ways along z-axis</p></td></tr>
+			   <tr><td><a href='../proc/intersectcylinder.html'>intersectCylinder</a></td><td><a href='../module/geometry.html'>geometry</a></td><td>Function</td><td><p>calculates where a line, with origin:orig and direction:dir hits a cylinder, centre:centre and radius:radius
+This solves for an infinitely long cylinder centered on the z axis with radius radius
+returns true if intersection exists
+returns t, the paramertised parameter of the line equation
+adapted from scratchapixel
+need to check z height after moving ray
+if not this is an infinite cylinder</p></td></tr>
+			   <tr><td><a href='../proc/intersectellipse.html'>intersectEllipse</a></td><td><a href='../module/geometry.html'>geometry</a></td><td>Function</td><td><p>calculates where a line, with origin:orig and direction:dir hits a ellipse, centre:centre and axii:semia, semib
+returns true if intersection exists
+returns t, the paramertised parameter of the line equation
+adapted from scratchapixel and pbrt
+need to check z height after moving ray
+if not this is an infinte ellipse-cylinder
+ellipse lies length ways along z-axis
+semia and semib are the semimajor axis which are the half width and height.</p></td></tr>
 			   <tr><td><a href='../proc/intersection.html'>intersection</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td>Function</td><td><p>Intersection operator. Returns the intersection of two SDFs.</p></td></tr>
 			   <tr><td><a href='../proc/intersectplane.html'>intersectPlane</a></td><td><a href='../module/geometry.html'>geometry</a></td><td>Function</td><td><p><a href="https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection">ref</a></p></td></tr>
-			   <tr><td><a href='../proc/intersectsphere.html'>intersectSphere</a></td><td><a href='../module/geometry.html'>geometry</a></td><td>Function</td><td></td></tr>
+			   <tr><td><a href='../proc/intersectsphere.html'>intersectSphere</a></td><td><a href='../module/geometry.html'>geometry</a></td><td>Function</td><td><p>calculates where a line, with origin:orig and direction:dir hits a sphere, centre:centre and radius:radius
+returns true if intersection exists
+returns t, the paramertised parameter of the line equation
+adapted from scratchapixel</p></td></tr>
 			   <tr><td><a href='../proc/invert.html'>invert</a></td><td><a href='../module/mat_class.html'>mat_class</a></td><td>Function</td><td><p>Performs a direct calculation of the inverse of a 4×4 matrix.
 from http://fortranwiki.org/fortran/show/Matrix+inversion</p></td></tr>
 			   <tr><td><a href='../proc/json_writer.html'>json_writer</a></td><td><a href='../module/historystack.html'>historyStack</a></td><td>Subroutine</td><td></td></tr>
@@ -273,8 +297,8 @@ any updates here MUST be reflected in docs/config.md</p></td></tr>
 			   <tr><td><a href='../proc/rang.html'>rang</a></td><td><a href='../module/random.html'>random</a></td><td>Subroutine</td><td><p>sample a 2D Guassian distribution</p></td></tr>
 			   <tr><td><a href='../proc/ranu.html'>ranu</a></td><td><a href='../module/random.html'>random</a></td><td>Function</td><td><p>uniformly sample in range[a, b)</p></td></tr>
 			   <tr><td><a href='../interface/raw_write.html'>raw_write</a></td><td><a href='../module/writer_mod.html'>writer_mod</a></td><td>Interface</td><td></td></tr>
-			   <tr><td><a href='../proc/record_hit_1d_sub.html'>record_hit_1D_sub</a></td><td><a href='../module/detector_mod.html'>detector_mod</a></td><td>Subroutine</td><td></td></tr>
-			   <tr><td><a href='../proc/record_hit_2d_sub.html'>record_hit_2D_sub</a></td><td><a href='../module/detector_mod.html'>detector_mod</a></td><td>Subroutine</td><td></td></tr>
+			   <tr><td><a href='../proc/record_hit_1d_sub.html'>record_hit_1D_sub</a></td><td><a href='../module/detector_mod.html'>detector_mod</a></td><td>Subroutine</td><td><p>check if a hit is on the detector and record it if so</p></td></tr>
+			   <tr><td><a href='../proc/record_hit_2d_sub.html'>record_hit_2D_sub</a></td><td><a href='../module/detector_mod.html'>detector_mod</a></td><td>Subroutine</td><td><p>check if a hit is on the detector and record it if so</p></td></tr>
 			   <tr><td><a href='../proc/reflect.html'>reflect</a></td><td><a href='../module/surfaces.html'>surfaces</a></td><td>Subroutine</td><td><p>get vector of reflected photon</p></td></tr>
 			   <tr><td><a href='../proc/reflect_refract.html'>reflect_refract</a></td><td><a href='../module/surfaces.html'>surfaces</a></td><td>Subroutine</td><td><p>wrapper routine for fresnel calculation</p></td></tr>
 			   <tr><td><a href='../proc/refract.html'>refract</a></td><td><a href='../module/surfaces.html'>surfaces</a></td><td>Subroutine</td><td><p>get vector of refracted photon</p></td></tr>
@@ -331,7 +355,10 @@ Setup up various simulation parameters and routines</p></td></tr>
 			   <tr><td><a href='../proc/skewsymm.html'>skewSymm</a></td><td><a href='../module/sdfhelpers.html'>sdfHelpers</a></td><td>Function</td><td><p>Calculate the Skew Symmetric matrix for a given vector</p></td></tr>
 			   <tr><td><a href='../proc/slm.html'>slm</a></td><td><a href='../module/photonmod.html'>photonMod</a></td><td>Subroutine</td><td></td></tr>
 			   <tr><td><a href='../proc/smoothunion.html'>SmoothUnion</a></td><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td>Function</td><td><p>Smooth union. Joins two SDFs together smoothly</p></td></tr>
-			   <tr><td><a href='../proc/solvequadratic.html'>solveQuadratic</a></td><td><a href='../module/geometry.html'>geometry</a></td><td>Function</td><td></td></tr>
+			   <tr><td><a href='../proc/solvequadratic.html'>solveQuadratic</a></td><td><a href='../module/geometry.html'>geometry</a></td><td>Function</td><td><p>solves quadratic equation given coeffs a, b, and c
+returns true if real solution
+returns x0 and x1
+adapted from scratchapixel</p></td></tr>
 			   <tr><td><a href='../interface/spectral.html'>spectral</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td>Interface</td><td></td></tr>
 			   <tr><td><a href='../interface/sphere.html'>sphere</a></td><td><a href='../module/sdfs.html'>sdfs</a></td><td>Interface</td><td></td></tr>
 			   <tr><td><a href='../proc/sphere_init.html'>sphere_init</a></td><td><a href='../module/sdfs.html'>sdfs</a></td><td>Function</td><td><p>Initalising function for Sphere SDF.</p></td></tr>

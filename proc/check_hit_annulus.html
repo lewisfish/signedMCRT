@@ -169,6 +169,7 @@
 </h2>
     
 
+    <p>Check if a hitpoint is in the annulus</p>
 
     <h3>Type Bound</h3>
     <p><a href='../type/annulus_dect.html'>annulus_dect</a></p>
@@ -201,7 +202,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-hitpoint"></span>
+              <span class="anchor" id="variable-hitpoint~2"></span>
               type(<a href='../type/hit_t.html'>hit_t</a>),
             </td>
 <td>intent(in)</td>
@@ -211,7 +212,7 @@
             <td>::</td>
             <td><strong>hitpoint</strong></td>
             <td>
-                
+                <p>Hitpoint to check</p>
             </td>
         </tr>
     </tbody>
@@ -270,8 +271,9 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="kt">logical </span><span class="k">function </span><span class="n">check_hit_annulus</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">hitpoint</span><span class="p">)</span><span class="w"></span>
-
+<span class="w">        </span><span class="c">!! Check if a hitpoint is in the annulus</span>
 <span class="w">        </span><span class="k">class</span><span class="p">(</span><span class="n">annulus_dect</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">INOUT</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">this</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Hitpoint to check</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">hit_t</span><span class="p">),</span><span class="w">         </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">hitpoint</span><span class="w"></span>
 
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">newpos</span><span class="w"></span>

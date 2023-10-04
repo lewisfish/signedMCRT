@@ -11,7 +11,6 @@ module sdfModifiers
 !! - Extrude
 !! - Revolution
 !! - Onion
-!! - Translate
 
     use constants,   only : wp
     use sdf_baseMod, only : sdf_base, primitive

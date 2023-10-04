@@ -167,11 +167,7 @@
 <li><input type="checkbox" disabled> Automate benchmarking so we can catch performance regressions</li>
 <li><input type="checkbox" disabled> Add voxel geometry</li>
 <li><input type="checkbox" disabled> Add mesh geometry</li>
-<li>[ ] Improve performance of SDF intersection<ul class="checklist">
-<li><input type="checkbox" disabled> Implement KD trees in 2D</li>
-<li><input type="checkbox" disabled> Implement KD trees in 3D</li>
-</ul>
-</li>
+<li><input type="checkbox" disabled> Improve performance of SDF intersection</li>
 <li>[ ] Make code serializable so that we can checkpoint simulations<ul class="checklist">
 <li><input type="checkbox" disabled> Save input toml file</li>
 <li><input type="checkbox" disabled> photons run</li>
@@ -211,13 +207,22 @@
 <li><input type="checkbox" disabled checked> Vec3 class</li>
 <li><input type="checkbox" disabled checked> Matrix class</li>
 <li><input type="checkbox" disabled checked> Vec4 Class</li>
-<li><input type="checkbox" disabled> SDF Class</li>
-<li>[ ] Detector Class<ul class="checklist">
-<li><input type="checkbox" disabled> Circle</li>
-<li><input type="checkbox" disabled> Camera</li>
-<li><input type="checkbox" disabled> Annulus</li>
+<li>[ ] SDF Class<ul class="checklist">
+<li><input type="checkbox" disabled checked> Helpers</li>
+<li><input type="checkbox" disabled> Modifiers</li>
+<li><input type="checkbox" disabled> Base</li>
+<li><input type="checkbox" disabled checked> Shapes</li>
 </ul>
 </li>
+<li>[x] Detector Class<ul class="checklist">
+<li><input type="checkbox" disabled checked> Circle</li>
+<li><input type="checkbox" disabled checked> Camera</li>
+<li><input type="checkbox" disabled checked> Annulus</li>
+</ul>
+</li>
+<li><input type="checkbox" disabled checked> Surfaces</li>
+<li><input type="checkbox" disabled checked> Grid</li>
+<li><input type="checkbox" disabled checked> Optical Properties</li>
 <li>[ ] Photon class<ul class="checklist">
 <li><input type="checkbox" disabled checked> Uniform</li>
 <li><input type="checkbox" disabled checked> Point</li>
@@ -233,7 +238,7 @@
 <li><input type="checkbox" disabled> Photon movement code</li>
 <li><input type="checkbox" disabled> History Stack Class</li>
 <li><input type="checkbox" disabled> I/O</li>
-<li><input type="checkbox" disabled> Random Numbers</li>
+<li><input type="checkbox" disabled checked> Random Numbers</li>
 <li>[x] Fresnel reflections<ul class="checklist">
 <li><input type="checkbox" disabled checked> Simple reflect</li>
 <li><input type="checkbox" disabled checked> Simple refract</li>

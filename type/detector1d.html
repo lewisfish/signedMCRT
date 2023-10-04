@@ -143,12 +143,12 @@
       <div id="vars-0" class="panel-collapse collapse">
         <div class="list-group">
             <a class="list-group-item" href="../type/detector1d.html#variable-bin_wid">bin_wid</a>
-            <a class="list-group-item" href="../type/detector1d.html#variable-data~2">data</a>
-            <a class="list-group-item" href="../type/detector1d.html#variable-dir~2">dir</a>
-            <a class="list-group-item" href="../type/detector1d.html#variable-layer~13">layer</a>
-            <a class="list-group-item" href="../type/detector1d.html#variable-nbins">nbins</a>
-            <a class="list-group-item" href="../type/detector1d.html#variable-pos~24">pos</a>
-            <a class="list-group-item" href="../type/detector1d.html#variable-trackhistory~2">trackHistory</a>
+            <a class="list-group-item" href="../type/detector1d.html#variable-data">data</a>
+            <a class="list-group-item" href="../type/detector1d.html#variable-dir~9">dir</a>
+            <a class="list-group-item" href="../type/detector1d.html#variable-layer~6">layer</a>
+            <a class="list-group-item" href="../type/detector1d.html#variable-nbins~4">nbins</a>
+            <a class="list-group-item" href="../type/detector1d.html#variable-pos~8">pos</a>
+            <a class="list-group-item" href="../type/detector1d.html#variable-trackhistory~5">trackHistory</a>
         </div>
       </div>
     </div>
@@ -196,7 +196,7 @@
     
     <div class="col-md-9" id='text'>
       <h2>type, public, abstract, extends(<a href='../type/detector.html'>detector</a>) :: detector1D</h2>
-    
+    <p>1D detector type. Records linear information</p>
     <br>
 
     <section class="visible-xs visible-sm hidden-md">
@@ -211,12 +211,12 @@
       <div id="vars-1" class="panel-collapse collapse">
         <div class="list-group">
             <a class="list-group-item" href="../type/detector1d.html#variable-bin_wid">bin_wid</a>
-            <a class="list-group-item" href="../type/detector1d.html#variable-data~2">data</a>
-            <a class="list-group-item" href="../type/detector1d.html#variable-dir~2">dir</a>
-            <a class="list-group-item" href="../type/detector1d.html#variable-layer~13">layer</a>
-            <a class="list-group-item" href="../type/detector1d.html#variable-nbins">nbins</a>
-            <a class="list-group-item" href="../type/detector1d.html#variable-pos~24">pos</a>
-            <a class="list-group-item" href="../type/detector1d.html#variable-trackhistory~2">trackHistory</a>
+            <a class="list-group-item" href="../type/detector1d.html#variable-data">data</a>
+            <a class="list-group-item" href="../type/detector1d.html#variable-dir~9">dir</a>
+            <a class="list-group-item" href="../type/detector1d.html#variable-layer~6">layer</a>
+            <a class="list-group-item" href="../type/detector1d.html#variable-nbins~4">nbins</a>
+            <a class="list-group-item" href="../type/detector1d.html#variable-pos~8">pos</a>
+            <a class="list-group-item" href="../type/detector1d.html#variable-trackhistory~5">trackHistory</a>
         </div>
       </div>
     </div>
@@ -287,12 +287,12 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Bin width</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-data~2"></span>
+              <span class="anchor" id="variable-data"></span>
               real(kind=wp),
             </td>
               <td>public,</td>
@@ -304,12 +304,12 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Bins</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dir~2"></span>
+              <span class="anchor" id="variable-dir~9"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
@@ -321,12 +321,12 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Surface normal of the detector</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-layer~13"></span>
+              <span class="anchor" id="variable-layer~6"></span>
               integer,
             </td>
               <td>public</td>
@@ -338,12 +338,12 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Layer ID of the detector</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-nbins"></span>
+              <span class="anchor" id="variable-nbins~4"></span>
               integer,
             </td>
               <td>public</td>
@@ -355,12 +355,12 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Number of bins</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-pos~24"></span>
+              <span class="anchor" id="variable-pos~8"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
@@ -372,12 +372,12 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>position of the detector</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-trackhistory~2"></span>
+              <span class="anchor" id="variable-trackhistory~5"></span>
               logical,
             </td>
               <td>public</td>
@@ -389,7 +389,7 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Boolean, if true store the history of the photon prior to detection.</p>
             </td>
         </tr>
     </tbody>
@@ -411,7 +411,7 @@
     private  subroutine <a href='../proc/record_hit_1d_sub.html'>record_hit_1D_sub</a>(this, hitpoint, history)  
 </h3>
     
-  
+  <p>check if a hit is on the detector and record it if so</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -451,7 +451,7 @@
             <td>::</td>
             <td><strong>hitpoint</strong></td>
             <td>
-
+<p>Interaction information</p>
             </td>
         </tr>
         <tr>
@@ -466,7 +466,7 @@
             <td>::</td>
             <td><strong>history</strong></td>
             <td>
-
+<p>Photon packet history</p>
             </td>
         </tr>
     </tbody>
@@ -482,8 +482,11 @@
     <section>
     <h3><span class="anchor" id="src"></span>Source Code</h3>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">type</span><span class="p">,</span><span class="w"> </span><span class="k">abstract</span><span class="p">,</span><span class="w"> </span><span class="k">extends</span><span class="p">(</span><span class="n">detector</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">detector1D</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Number of bins</span>
 <span class="w">        </span><span class="kt">integer</span><span class="w">       </span><span class="kd">::</span><span class="w"> </span><span class="n">nbins</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Bin width</span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bin_wid</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Bins</span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">data</span><span class="p">(:)</span><span class="w"></span>
 <span class="w">        </span><span class="k">contains</span>
 <span class="k">        procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">record_hit</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">record_hit_1D_sub</span><span class="w"></span>

@@ -105,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 0.3% of total for procedures.">14 statements</a>
+               title=" 0.4% of total for procedures.">17 statements</a>
           </li>
 
             <li id="source-file">
@@ -185,7 +185,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-n~6"></span>
+              <span class="anchor" id="variable-n"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -195,12 +195,12 @@
             <td>::</td>
             <td><strong>n</strong></td>
             <td>
-                
+                <p>Normal to the plane</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-p0~2"></span>
+              <span class="anchor" id="variable-p0"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -210,12 +210,12 @@
             <td>::</td>
             <td><strong>p0</strong></td>
             <td>
-                
+                <p>a point on the plane</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-l0~2"></span>
+              <span class="anchor" id="variable-l0"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -225,12 +225,12 @@
             <td>::</td>
             <td><strong>l0</strong></td>
             <td>
-                
+                <p>origin of the ray</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-l~2"></span>
+              <span class="anchor" id="variable-l"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -240,7 +240,7 @@
             <td>::</td>
             <td><strong>l</strong></td>
             <td>
-                
+                <p>direction vector of the ray</p>
             </td>
         </tr>
         <tr>
@@ -255,7 +255,7 @@
             <td>::</td>
             <td><strong>t</strong></td>
             <td>
-                
+                <p>Distance from l0 to the intersection point</p>
             </td>
         </tr>
     </tbody>
@@ -315,14 +315,22 @@
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="kt">logical </span><span class="k">function </span><span class="n">intersectPlane</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">p0</span><span class="p">,</span><span class="w"> </span><span class="n">l0</span><span class="p">,</span><span class="w"> </span><span class="n">l</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">)</span><span class="w"></span>
 <span class="w">    </span><span class="c">!![ref](https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection)</span>
-<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">p0</span><span class="p">,</span><span class="w"> </span><span class="n">l</span><span class="p">,</span><span class="w"> </span><span class="n">l0</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Normal to the plane</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">n</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; a point on the plane</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">p0</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; direction vector of the ray</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">l</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; origin of the ray</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">l0</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Distance from l0 to the intersection point</span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">t</span><span class="w"></span>
 
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">denom</span><span class="w"></span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">p0l0</span><span class="w"></span>
 
 <span class="w">        </span><span class="n">intersectPlane</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span><span class="w"></span>
-<span class="w">        </span><span class="n">denom</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="p">.</span><span class="n">dot</span><span class="p">.</span><span class="w"> </span><span class="n">n</span><span class="w"></span>
+<span class="w">        </span><span class="n">denom</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="p">.</span><span class="n">dot</span><span class="p">.</span><span class="w"> </span><span class="n">l</span><span class="w"></span>
 <span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">denom</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">1e-6_wp</span><span class="p">)</span><span class="k">then</span>
 <span class="k">            </span><span class="n">p0l0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">l0</span><span class="w"></span>
 <span class="w">            </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p0l0</span><span class="w"> </span><span class="p">.</span><span class="n">dot</span><span class="p">.</span><span class="w"> </span><span class="n">n</span><span class="w"></span>

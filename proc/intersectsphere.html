@@ -105,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 0.5% of total for procedures.">25 statements</a>
+               title=" 0.6% of total for procedures.">27 statements</a>
           </li>
 
             <li id="source-file">
@@ -169,6 +169,10 @@
 </h2>
     
 
+    <p>calculates where a line, with origin:orig and direction:dir hits a sphere, centre:centre and radius:radius
+returns true if intersection exists
+returns t, the paramertised parameter of the line equation
+adapted from scratchapixel</p>
 
 
     <h3>Arguments</h3>
@@ -184,7 +188,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-orig~4"></span>
+              <span class="anchor" id="variable-orig"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -194,12 +198,12 @@
             <td>::</td>
             <td><strong>orig</strong></td>
             <td>
-                
+                <p>Origin of the ray</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dir~10"></span>
+              <span class="anchor" id="variable-dir"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -209,12 +213,12 @@
             <td>::</td>
             <td><strong>dir</strong></td>
             <td>
-                
+                <p>Direction vector of the ray</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-t~6"></span>
+              <span class="anchor" id="variable-t"></span>
               real(kind=wp),
             </td>
 <td>intent(out)</td>
@@ -224,12 +228,12 @@
             <td>::</td>
             <td><strong>t</strong></td>
             <td>
-                
+                <p>Distance from orig to the intersection point</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-centre~4"></span>
+              <span class="anchor" id="variable-centre"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -239,12 +243,12 @@
             <td>::</td>
             <td><strong>centre</strong></td>
             <td>
-                
+                <p>Centre of the sphere</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-radius~10"></span>
+              <span class="anchor" id="variable-radius"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -254,7 +258,7 @@
             <td>::</td>
             <td><strong>radius</strong></td>
             <td>
-                
+                <p>Radius of the sphere</p>
             </td>
         </tr>
     </tbody>
@@ -313,13 +317,19 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="kt">logical </span><span class="k">function </span><span class="n">intersectSphere</span><span class="p">(</span><span class="n">orig</span><span class="p">,</span><span class="w"> </span><span class="n">dir</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">centre</span><span class="p">,</span><span class="w"> </span><span class="n">radius</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="c">! calculates where a line, with origin:orig and direction:dir hits a sphere, centre:centre and radius:radius</span>
-<span class="w">    </span><span class="c">! returns true if intersection exists</span>
-<span class="w">    </span><span class="c">! returns t, the paramertised parameter of the line equation</span>
-<span class="w">    </span><span class="c">! adapted from scratchapixel</span>
-
-<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">dir</span><span class="p">,</span><span class="w"> </span><span class="n">orig</span><span class="p">,</span><span class="w"> </span><span class="n">centre</span><span class="w"></span>
+<span class="w">    </span><span class="c">!! calculates where a line, with origin:orig and direction:dir hits a sphere, centre:centre and radius:radius</span>
+<span class="w">    </span><span class="c">!! returns true if intersection exists</span>
+<span class="w">    </span><span class="c">!! returns t, the paramertised parameter of the line equation</span>
+<span class="w">    </span><span class="c">!! adapted from scratchapixel</span>
+<span class="w">        </span><span class="c">!&gt; Direction vector of the ray</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">dir</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Origin of the ray</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">orig</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Centre of the sphere</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">centre</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Distance from orig to the intersection point</span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">OUT</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">t</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Radius of the sphere</span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">radius</span><span class="w"></span>
 
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">L</span><span class="w"></span>

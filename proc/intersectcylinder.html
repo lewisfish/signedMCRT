@@ -105,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 0.5% of total for procedures.">25 statements</a>
+               title=" 0.6% of total for procedures.">27 statements</a>
           </li>
 
             <li id="source-file">
@@ -169,6 +169,13 @@
 </h2>
     
 
+    <p>calculates where a line, with origin:orig and direction:dir hits a cylinder, centre:centre and radius:radius
+This solves for an infinitely long cylinder centered on the z axis with radius radius
+returns true if intersection exists
+returns t, the paramertised parameter of the line equation
+adapted from scratchapixel
+need to check z height after moving ray
+if not this is an infinite cylinder</p>
 
 
     <h3>Arguments</h3>
@@ -194,12 +201,12 @@
             <td>::</td>
             <td><strong>orig</strong></td>
             <td>
-                
+                <p>origin of the ray</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dir~8"></span>
+              <span class="anchor" id="variable-dir~2"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -209,12 +216,12 @@
             <td>::</td>
             <td><strong>dir</strong></td>
             <td>
-                
+                <p>Direction vector of the ray</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-t~3"></span>
+              <span class="anchor" id="variable-t~2"></span>
               real(kind=wp),
             </td>
 <td>intent(out)</td>
@@ -224,7 +231,7 @@
             <td>::</td>
             <td><strong>t</strong></td>
             <td>
-                
+                <p>distance from orig to the intersection point</p>
             </td>
         </tr>
         <tr>
@@ -239,12 +246,12 @@
             <td>::</td>
             <td><strong>centre</strong></td>
             <td>
-                
+                <p>Centre of the cylinder</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-radius~9"></span>
+              <span class="anchor" id="variable-radius~2"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -254,7 +261,7 @@
             <td>::</td>
             <td><strong>radius</strong></td>
             <td>
-                
+                <p>radius of the cylinder</p>
             </td>
         </tr>
     </tbody>
@@ -313,16 +320,22 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="kt">logical </span><span class="k">function </span><span class="n">intersectCylinder</span><span class="p">(</span><span class="n">orig</span><span class="p">,</span><span class="w"> </span><span class="n">dir</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">centre</span><span class="p">,</span><span class="w"> </span><span class="n">radius</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="c">! calculates where a line, with origin:orig and direction:dir hits a cylinder, centre:centre and radius:radius</span>
-<span class="w">    </span><span class="c">! returns true if intersection exists</span>
-<span class="w">    </span><span class="c">! returns t, the paramertised parameter of the line equation</span>
-<span class="w">    </span><span class="c">! adapted from scratchapixel</span>
-<span class="w">    </span><span class="c">! need to check z height after moving ray</span>
-<span class="w">    </span><span class="c">! if not this is an infinte cylinder</span>
-<span class="w">    </span><span class="c">! cylinder lies length ways along z-axis</span>
-
-<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">dir</span><span class="p">,</span><span class="w"> </span><span class="n">orig</span><span class="p">,</span><span class="w"> </span><span class="n">centre</span><span class="w"></span>
+<span class="w">    </span><span class="c">!! calculates where a line, with origin:orig and direction:dir hits a cylinder, centre:centre and radius:radius</span>
+<span class="w">    </span><span class="c">!! This solves for an infinitely long cylinder centered on the z axis with radius radius</span>
+<span class="w">    </span><span class="c">!! returns true if intersection exists</span>
+<span class="w">    </span><span class="c">!! returns t, the paramertised parameter of the line equation</span>
+<span class="w">    </span><span class="c">!! adapted from scratchapixel</span>
+<span class="w">    </span><span class="c">!! need to check z height after moving ray</span>
+<span class="w">    </span><span class="c">!! if not this is an infinite cylinder</span>
+<span class="w">        </span><span class="c">!&gt; Direction vector of the ray</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">dir</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; origin of the ray</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">orig</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Centre of the cylinder</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">centre</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; distance from orig to the intersection point</span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">OUT</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">t</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; radius of the cylinder</span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">radius</span><span class="w"></span>
 
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">L</span><span class="w"></span>
@@ -331,11 +344,12 @@
 <span class="w">        </span><span class="n">intersectCylinder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span><span class="w"></span>
 
 <span class="w">        </span><span class="n">L</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">orig</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">centre</span><span class="w"></span>
-<span class="w">        </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dir</span><span class="p">%</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dir</span><span class="p">%</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="w"></span>
-<span class="w">        </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2._wp</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">dir</span><span class="p">%</span><span class="n">z</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">L</span><span class="p">%</span><span class="n">z</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dir</span><span class="p">%</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">L</span><span class="p">%</span><span class="n">y</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">L</span><span class="p">%</span><span class="n">z</span><span class="o">**</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">L</span><span class="p">%</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">radius</span><span class="o">**</span><span class="mi">2</span><span class="w"></span>
+<span class="w">        </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dir</span><span class="p">%</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dir</span><span class="p">%</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="w"></span>
+<span class="w">        </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2._wp</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">dir</span><span class="p">%</span><span class="n">x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">L</span><span class="p">%</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">dir</span><span class="p">%</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">L</span><span class="p">%</span><span class="n">y</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">L</span><span class="p">%</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">L</span><span class="p">%</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">radius</span><span class="o">**</span><span class="mi">2</span><span class="w"></span>
 
 <span class="w">        </span><span class="k">if</span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">solveQuadratic</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">t0</span><span class="p">,</span><span class="w"> </span><span class="n">t1</span><span class="p">))</span><span class="k">return</span>
+
 <span class="k">        if</span><span class="p">(</span><span class="n">t0</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">t1</span><span class="p">)</span><span class="k">then</span>
 <span class="k">            </span><span class="n">tmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t1</span><span class="w"></span>
 <span class="w">            </span><span class="n">t1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t0</span><span class="w"></span>

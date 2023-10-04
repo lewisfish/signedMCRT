@@ -105,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="<p> 1.7% of total for derived types.</p>Including implementation: 5 statements,  0.3% of total for derived types.">5 statements</a>
+               title="<p> 1.9% of total for derived types.</p>Including implementation: 6 statements,  0.4% of total for derived types.">6 statements</a>
           </li>
 
             <li id="source-file">
@@ -142,10 +142,10 @@
       </div>
       <div id="vars-0" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/hit_t.html#variable-dir~5">dir</a>
-            <a class="list-group-item" href="../type/hit_t.html#variable-layer~17">layer</a>
-            <a class="list-group-item" href="../type/hit_t.html#variable-pos~27">pos</a>
-            <a class="list-group-item" href="../type/hit_t.html#variable-value~10">value</a>
+            <a class="list-group-item" href="../type/hit_t.html#variable-dir~8">dir</a>
+            <a class="list-group-item" href="../type/hit_t.html#variable-layer~5">layer</a>
+            <a class="list-group-item" href="../type/hit_t.html#variable-pos~7">pos</a>
+            <a class="list-group-item" href="../type/hit_t.html#variable-value~6">value</a>
         </div>
       </div>
     </div>
@@ -193,7 +193,7 @@
     
     <div class="col-md-9" id='text'>
       <h2>type, public :: hit_t</h2>
-    
+    <p>Hit type, which records possible interaction information</p>
     <br>
 
     <section class="visible-xs visible-sm hidden-md">
@@ -207,10 +207,10 @@
       </div>
       <div id="vars-1" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../type/hit_t.html#variable-dir~5">dir</a>
-            <a class="list-group-item" href="../type/hit_t.html#variable-layer~17">layer</a>
-            <a class="list-group-item" href="../type/hit_t.html#variable-pos~27">pos</a>
-            <a class="list-group-item" href="../type/hit_t.html#variable-value~10">value</a>
+            <a class="list-group-item" href="../type/hit_t.html#variable-dir~8">dir</a>
+            <a class="list-group-item" href="../type/hit_t.html#variable-layer~5">layer</a>
+            <a class="list-group-item" href="../type/hit_t.html#variable-pos~7">pos</a>
+            <a class="list-group-item" href="../type/hit_t.html#variable-value~6">value</a>
         </div>
       </div>
     </div>
@@ -269,7 +269,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-dir~5"></span>
+              <span class="anchor" id="variable-dir~8"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
@@ -281,12 +281,12 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Direction the photon came from</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-layer~17"></span>
+              <span class="anchor" id="variable-layer~5"></span>
               integer,
             </td>
               <td>public</td>
@@ -298,12 +298,12 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Layer ID of interaction</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-pos~27"></span>
+              <span class="anchor" id="variable-pos~7"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
@@ -315,12 +315,12 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Poition of the interaction</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-value~10"></span>
+              <span class="anchor" id="variable-value~6"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -332,7 +332,7 @@
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Value to deposit</p>
             </td>
         </tr>
     </tbody>
@@ -405,9 +405,14 @@
     <section>
     <h3><span class="anchor" id="src"></span>Source Code</h3>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">type</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">hit_t</span><span class="w"></span>
-<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">pos</span><span class="p">,</span><span class="w"> </span><span class="n">dir</span><span class="w"></span>
-<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">value</span>
-<span class="k">        </span><span class="kt">integer</span><span class="w">       </span><span class="kd">::</span><span class="w"> </span><span class="n">layer</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Poition of the interaction</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">pos</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Direction the photon came from</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">dir</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Value to deposit</span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">value</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Layer ID of interaction</span>
+<span class="w">        </span><span class="kt">integer</span><span class="w">       </span><span class="kd">::</span><span class="w"> </span><span class="n">layer</span><span class="w"></span>
 <span class="w">    </span><span class="k">end type </span><span class="n">hit_t</span><span class="w"></span>
 </pre></div>
 

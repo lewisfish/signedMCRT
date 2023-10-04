@@ -105,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 0.6% of total for procedures.">29 statements</a>
+               title=" 0.7% of total for procedures.">32 statements</a>
           </li>
 
             <li id="source-file">
@@ -169,6 +169,7 @@
 </h2>
     
 
+    <p>Initalise Camera detector</p>
 
 
     <h3>Arguments</h3>
@@ -194,12 +195,12 @@
             <td>::</td>
             <td><strong>p1</strong></td>
             <td>
-                
+                <p>Position of the 1st corner of the detector</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-p2~2"></span>
+              <span class="anchor" id="variable-p2"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -209,12 +210,12 @@
             <td>::</td>
             <td><strong>p2</strong></td>
             <td>
-                
+                <p>Distance from p1 to the 2nd corner</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-p3~2"></span>
+              <span class="anchor" id="variable-p3"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -224,12 +225,12 @@
             <td>::</td>
             <td><strong>p3</strong></td>
             <td>
-                
+                <p>Distance from p1 to the 3rd corner</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-layer~15"></span>
+              <span class="anchor" id="variable-layer~4"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -239,7 +240,7 @@
             <td>::</td>
             <td><strong>layer</strong></td>
             <td>
-                
+                <p>Layer ID</p>
             </td>
         </tr>
         <tr>
@@ -254,12 +255,12 @@
             <td>::</td>
             <td><strong>nbins</strong></td>
             <td>
-                
+                <p>Number of bins in the detector</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-maxval~2"></span>
+              <span class="anchor" id="variable-maxval~3"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -269,7 +270,7 @@
             <td>::</td>
             <td><strong>maxval</strong></td>
             <td>
-                
+                <p>Maximum value to store in bins</p>
             </td>
         </tr>
         <tr>
@@ -284,7 +285,7 @@
             <td>::</td>
             <td><strong>trackHistory</strong></td>
             <td>
-                
+                <p>Boolean on if to store photon's history prior to hitting the detector.</p>
             </td>
         </tr>
     </tbody>
@@ -343,11 +344,22 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">function </span><span class="n">init_camera</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span><span class="w"> </span><span class="n">p2</span><span class="p">,</span><span class="w"> </span><span class="n">p3</span><span class="p">,</span><span class="w"> </span><span class="n">layer</span><span class="p">,</span><span class="w"> </span><span class="n">nbins</span><span class="p">,</span><span class="w"> </span><span class="nb">maxval</span><span class="p">,</span><span class="w"> </span><span class="n">trackHistory</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="c">!! Initalise Camera detector</span>
 
-<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">p1</span><span class="p">,</span><span class="w"> </span><span class="n">p2</span><span class="p">,</span><span class="w"> </span><span class="n">p3</span><span class="w"></span>
-<span class="w">        </span><span class="kt">integer</span><span class="p">,</span><span class="w">       </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">layer</span><span class="p">,</span><span class="w"> </span><span class="n">nbins</span><span class="w"></span>
-<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="nb">maxval</span>
-<span class="nb">        </span><span class="kt">logical</span><span class="p">,</span><span class="w">       </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">trackHistory</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Position of the 1st corner of the detector</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">p1</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Distance from p1 to the 2nd corner</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">p2</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Distance from p1 to the 3rd corner</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">p3</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Layer ID</span>
+<span class="w">        </span><span class="kt">integer</span><span class="p">,</span><span class="w">       </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">layer</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Number of bins in the detector</span>
+<span class="w">        </span><span class="kt">integer</span><span class="p">,</span><span class="w">       </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nbins</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Maximum value to store in bins</span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="nb">maxval</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Boolean on if to store photon&#39;s history prior to hitting the detector.</span>
+<span class="w">        </span><span class="kt">logical</span><span class="p">,</span><span class="w">       </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">trackHistory</span><span class="w"></span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">camera</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">out</span><span class="w"></span>
 
 <span class="w">        </span><span class="n">out</span><span class="p">%</span><span class="n">pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p1</span><span class="w"></span>
