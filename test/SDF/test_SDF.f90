@@ -49,9 +49,9 @@ module testsSDFMod
         testsuite = [ &
     !             new_unittest("union_test", test_union) &
                 new_unittest("intersection_test", test_intersection), &
-                new_unittest("subtraction_test", test_subtraction) &
+                new_unittest("subtraction_test", test_subtraction), &
                 ! new_unittest("displacement_test", test_displacement), &
-                ! new_unittest("bend_test", test_bend), &
+                new_unittest("bend_test", test_bend) &
                 ! new_unittest("twist_test", test_twist), &
                 ! new_unittest("elongate_test", test_elongate), &
                 ! new_unittest("repeat_test", test_repeat), &
@@ -158,6 +158,42 @@ module testsSDFMod
         if(allocated(error))return
 
     end subroutine test_subtraction
+
+    subroutine test_bend(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(box)    :: bbox
+        type(bend)   :: bendy
+        type(opticalProp_t) :: opt
+        type(vector) :: pos
+        real(kind=wp) :: val
+
+        opt = mono(0._wp, 0._wp, 0._wp, 0._wp)
+        
+        bbox = box(vector(1.0, 1.0, 1.0), opt,1)
+        bendy = bend(bbox, k=10.0_wp)
+
+        pos = vector(0., 0., 0.)
+        val = bendy%evaluate(pos)
+        call check(error, val < 0._wp, .true.)
+        if(allocated(error))return
+
+        pos = vector(0.6, 0., 0.)
+        val = bendy%evaluate(pos)
+        call check(error, val > 0._wp, .true.)
+        if(allocated(error))return
+
+        pos = vector(0.4, -0.4, -0.4)
+        val = bendy%evaluate(pos)
+        call check(error, val > 0., .true.)
+
+        pos = vector(0.4, -0.4, -0.4)
+        val = bbox%evaluate(pos)
+        call check(error, val < 0., .true.)
+        if(allocated(error))return
+
+    end subroutine test_bend
 
     subroutine test_rotationalign(error)
 
