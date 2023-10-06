@@ -4,6 +4,7 @@ module testsSDFMod
     use opticalProperties, only : mono, opticalProp_t
     use sdfs
     use sdfHelpers
+    use sdfModifiers
     use testdrive, only : new_unittest, unittest_type, error_type, check, testsuite_type, new_testsuite, context_t
     use vector_class
 
@@ -16,8 +17,8 @@ module testsSDFMod
         type(testsuite_type), allocatable, intent(out) :: testsuites(:)
         type(context_t) :: context
 
-        testsuites = [new_testsuite("SDF Shapes", collect_suite1, context),&
-                    !   new_testsuite("SDF Modifiers", collect_suite2, context),&
+         testsuites = [new_testsuite("SDF Shapes", collect_suite1, context),&
+                      new_testsuite("SDF Modifiers", collect_suite2, context),&
                       new_testsuite("SDF Helpers", collect_suite3, context)&
                     ]
 
@@ -41,14 +42,14 @@ module testsSDFMod
                 ]
     end subroutine collect_suite1
 
-    ! subroutine collect_suite2(testsuite)
+    subroutine collect_suite2(testsuite)
 
-    !     type(unittest_type), allocatable, intent(out) :: testsuite(:)
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
 
-    !     testsuite = [ &
+        testsuite = [ &
     !             new_unittest("union_test", test_union) &
-                ! new_unittest("intersection_test", test_intersection), &
-                ! new_unittest("subtraction_test", test_subtraction), &
+                new_unittest("intersection_test", test_intersection), &
+                new_unittest("subtraction_test", test_subtraction) &
                 ! new_unittest("displacement_test", test_displacement), &
                 ! new_unittest("bend_test", test_bend), &
                 ! new_unittest("twist_test", test_twist), &
@@ -57,9 +58,9 @@ module testsSDFMod
                 ! new_unittest("extrude_test", test_extrude), &
                 ! new_unittest("revolution_test", test_revolution), &
                 ! new_unittest("onion_test", test_onion), &
-                ! ]
+                ]
 
-    ! end subroutine collect_suite2
+    end subroutine collect_suite2
 
 
     subroutine collect_suite3(testsuite)
@@ -78,6 +79,85 @@ module testsSDFMod
                 ]
 
     end subroutine collect_suite3
+
+    subroutine test_intersection(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(sphere)  :: sph1
+        type(box)     :: bbox
+        type(model)   :: mod
+        type(opticalProp_t) :: opt
+        type(vector) :: pos
+        type(sdf), allocatable :: array(:)
+        real(kind=wp) :: val
+
+        allocate(array(2))
+
+        opt = mono(0._wp, 0._wp, 0._wp, 0._wp)
+
+        sph1 = sphere(.25_wp, opt, 1)
+        
+        bbox = box(vector(1.0, 1.0, 1.0), opt,1)
+
+        array(1) = sph1
+        array(2) = bbox
+
+        mod = model(array, intersection, 1.0_wp)
+
+        pos = vector(0., 0., 0.)
+        val = mod%evaluate(pos)
+        call check(error, val, -0.25_wp)
+        if(allocated(error))return
+
+        pos = vector(0.25, 0., 0.)
+        val = mod%evaluate(pos)
+        call check(error, val, 0.0_wp)
+        if(allocated(error))return
+
+        pos = vector(0.4, 0., 0.)
+        val = mod%evaluate(pos)
+        call check(error, val > 0., .true.)
+        if(allocated(error))return
+
+    end subroutine test_intersection
+
+    subroutine test_subtraction(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(sphere)  :: sph1
+        type(box)     :: bbox
+        type(model)   :: mod
+        type(opticalProp_t) :: opt
+        type(vector) :: pos
+        type(sdf), allocatable :: array(:)
+        real(kind=wp) :: val
+
+        allocate(array(2))
+
+        opt = mono(0._wp, 0._wp, 0._wp, 0._wp)
+
+        sph1 = sphere(.25_wp, opt, 1)
+        
+        bbox = box(vector(1.0, 1.0, 1.0), opt,1)
+
+        array(1) = sph1
+        array(2) = bbox
+
+        mod = model(array, subtraction, 1.0_wp)
+
+        pos = vector(0., 0., 0.)
+        val = mod%evaluate(pos)
+        call check(error, val, 0.25_wp)
+        if(allocated(error))return
+
+        pos = vector(0.25, 0., 0.)
+        val = mod%evaluate(pos)
+        call check(error, val, 0.0_wp)
+        if(allocated(error))return
+
+    end subroutine test_subtraction
 
     subroutine test_rotationalign(error)
 

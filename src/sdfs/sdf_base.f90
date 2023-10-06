@@ -335,28 +335,7 @@ module sdf_baseMod
                     do u = 1, size(ds)
                         ds(u) = cnt(u)%evaluate(pos)
                     end do
-                    if(all(ds > 0._wp))then
-                        id=0
-                    else
-                        if(all(ds < 0._wp))then
-                            id = cnt(maxloc(ds,dim=1))%layer
-                        else
-                            ds = -1.*ds
-                            minvalue = 1000000._wp
-                            do u = 1, size(ds)
-                                if(ds(u) > 0. .and. ds(u) < minvalue)then
-                                    minvalue = ds(u)
-                                    id = u
-                                end if
-                            end do
-                            ! id = cnt(minloc(ds),dim=1))%p%layer
-                        end if
-                    end if
-                    ! if(id == 0._wp)then
-                    !     image(i,j,k)=-99._wp
-                    ! else
-                        image(i, j, k) = real(id)!cnt(id)%p%mua
-                    ! end if
+                    image(i, j, k) = minval(ds)
                 end do
             end do
             call bar%progress()
