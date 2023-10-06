@@ -443,6 +443,7 @@ contains
 
     pure function subtraction(d1, d2, k) result(res)
         !! Subtraction operator. Takes one SDF from another.
+        !! Take the first SDF from the 2nd SDF
 
         !> SDF_1 distance
         real(kind=wp), intent(IN) :: d1

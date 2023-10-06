@@ -105,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 1.1% of total for procedures.">52 statements</a>
+               title=" 0.8% of total for procedures.">36 statements</a>
           </li>
 
             <li id="source-file">
@@ -174,10 +174,10 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
+                <li><a href='../module/constants.html'>constants</a></li>
                 <li>utils</li>
                 <li><a href='../module/writer_mod.html'>writer_mod</a></li>
                 <li><a href='../module/sim_state_mod.html'>sim_state_mod</a></li>
-                <li><a href='../module/constants.html'>constants</a></li>
             </ul>
           </li>
       </ul>
@@ -342,28 +342,7 @@
 <span class="w">                    </span><span class="k">do </span><span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span><span class="w"></span>
 <span class="w">                        </span><span class="n">ds</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cnt</span><span class="p">(</span><span class="n">u</span><span class="p">)%</span><span class="n">evaluate</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span><span class="w"></span>
 <span class="w">                    </span><span class="k">end do</span>
-<span class="k">                    if</span><span class="p">(</span><span class="k">all</span><span class="p">(</span><span class="n">ds</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0._wp</span><span class="p">))</span><span class="k">then</span>
-<span class="k">                        </span><span class="n">id</span><span class="o">=</span><span class="mi">0</span><span class="w"></span>
-<span class="w">                    </span><span class="k">else</span>
-<span class="k">                        if</span><span class="p">(</span><span class="k">all</span><span class="p">(</span><span class="n">ds</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0._wp</span><span class="p">))</span><span class="k">then</span>
-<span class="k">                            </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cnt</span><span class="p">(</span><span class="nb">maxloc</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span><span class="nb">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">))%</span><span class="n">layer</span><span class="w"></span>
-<span class="w">                        </span><span class="k">else</span>
-<span class="k">                            </span><span class="n">ds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mf">1.</span><span class="o">*</span><span class="n">ds</span><span class="w"></span>
-<span class="w">                            </span><span class="n">minvalue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100000</span><span class="mf">0._wp</span><span class="w"></span>
-<span class="w">                            </span><span class="k">do </span><span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span><span class="w"></span>
-<span class="w">                                </span><span class="k">if</span><span class="p">(</span><span class="n">ds</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">ds</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">minvalue</span><span class="p">)</span><span class="k">then</span>
-<span class="k">                                    </span><span class="n">minvalue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ds</span><span class="p">(</span><span class="n">u</span><span class="p">)</span><span class="w"></span>
-<span class="w">                                    </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">u</span><span class="w"></span>
-<span class="w">                                </span><span class="k">end if</span>
-<span class="k">                            end do</span><span class="w"></span>
-<span class="w">                            </span><span class="c">! id = cnt(minloc(ds),dim=1))%p%layer</span>
-<span class="w">                        </span><span class="k">end if</span>
-<span class="k">                    end if</span><span class="w"></span>
-<span class="w">                    </span><span class="c">! if(id == 0._wp)then</span>
-<span class="w">                    </span><span class="c">!     image(i,j,k)=-99._wp</span>
-<span class="w">                    </span><span class="c">! else</span>
-<span class="w">                        </span><span class="n">image</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">real</span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="c">!cnt(id)%p%mua</span>
-<span class="w">                    </span><span class="c">! end if</span>
+<span class="k">                    </span><span class="n">image</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">minval</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span><span class="w"></span>
 <span class="w">                </span><span class="k">end do</span>
 <span class="k">            end do</span>
 <span class="k">            call </span><span class="n">bar</span><span class="p">%</span><span class="n">progress</span><span class="p">()</span><span class="w"></span>
