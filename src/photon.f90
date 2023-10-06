@@ -89,12 +89,10 @@ module photonMod
 
             type(vector), intent(in) :: pos, dir
 
-            associate(p => photon_origin)
-                p%pos = pos
-                p%nxp = dir%x
-                p%nyp = dir%y
-                p%nzp = dir%z
-            end associate
+            photon_origin%pos = pos
+            photon_origin%nxp = dir%x
+            photon_origin%nyp = dir%y
+            photon_origin%nzp = dir%z
 
         end subroutine set_photon
 
@@ -258,7 +256,7 @@ module photonMod
             ! get rotation matrix
             t = rotationAlign(a, b)
             ! get translation matrix
-            t = t + invert(translate(photon_origin%pos))
+            t = matmul(t, invert(translate(photon_origin%pos)))
             ! transform point
             this%pos = this%pos .dot. t
 

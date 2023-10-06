@@ -174,14 +174,14 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='../module/random.html'>random</a></li>
-                <li><a href='../module/mat_class.html'>mat_class</a></li>
-                <li><a href='../module/sim_state_mod.html'>sim_state_mod</a></li>
-                <li><a href='../module/constants.html'>constants</a></li>
-                <li><a href='../module/vector_class.html'>vector_class</a></li>
-                <li><a href='../module/piecewisemod.html'>piecewiseMod</a></li>
-                <li>tomlf</li>
                 <li><a href='../module/sdfhelpers.html'>sdfHelpers</a></li>
+                <li><a href='../module/random.html'>random</a></li>
+                <li><a href='../module/sim_state_mod.html'>sim_state_mod</a></li>
+                <li><a href='../module/piecewisemod.html'>piecewiseMod</a></li>
+                <li><a href='../module/mat_class.html'>mat_class</a></li>
+                <li><a href='../module/vector_class.html'>vector_class</a></li>
+                <li><a href='../module/constants.html'>constants</a></li>
+                <li>tomlf</li>
             </ul>
           </li>
       </ul>
@@ -360,7 +360,7 @@
 <span class="w">            </span><span class="c">! get rotation matrix</span>
 <span class="w">            </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rotationAlign</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"></span>
 <span class="w">            </span><span class="c">! get translation matrix</span>
-<span class="w">            </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">invert</span><span class="p">(</span><span class="n">translate</span><span class="p">(</span><span class="n">photon_origin</span><span class="p">%</span><span class="n">pos</span><span class="p">))</span><span class="w"></span>
+<span class="w">            </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">matmul</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">invert</span><span class="p">(</span><span class="n">translate</span><span class="p">(</span><span class="n">photon_origin</span><span class="p">%</span><span class="n">pos</span><span class="p">)))</span><span class="w"></span>
 <span class="w">            </span><span class="c">! transform point</span>
 <span class="w">            </span><span class="n">this</span><span class="p">%</span><span class="n">pos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">this</span><span class="p">%</span><span class="n">pos</span><span class="w"> </span><span class="p">.</span><span class="n">dot</span><span class="p">.</span><span class="w"> </span><span class="n">t</span><span class="w"></span>
 
