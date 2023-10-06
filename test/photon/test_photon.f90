@@ -28,8 +28,9 @@ module testsPhotonMod
         testsuite = [ &
                 new_unittest("Uniform_source", Uniform_src), &
                 new_unittest("Pencil_source", pencil_src), &
-                new_unittest("Point_source", point_src) &
-                ! new_unittest("Circular_source", circular_src) &
+                new_unittest("Point_source", point_src), &
+                new_unittest("Circular_source", circular_src), &
+                new_unittest("SLM_source", SLM_src) &
                 ]
     end subroutine collect_suite1
 
@@ -137,6 +138,51 @@ module testsPhotonMod
         end do
     end subroutine Point_src
 
+    subroutine circular_src(error)
+
+        use vector_class, only : vector
+        use tomlf, only : set_value, toml_table
+        use sim_state_mod, only : state
+        use utils, only : str
+        use gridMod
+        use piecewiseMod
+        use random, only : init_rng
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(photon) :: packet
+        type(vector) :: pos, dir
+        integer :: i
+        real(kind=wp) :: r_pos
+        type(toml_table) :: dict
+        type(spectrum_t) :: spectrum
+        type(constant) :: const
+
+        call init_rng(spread(12345678, 1, 8), .false.)
+
+        const = constant(500._wp)
+        allocate(spectrum%p, source=const)
+
+        state%grid = init_grid(200, 200, 200, 1._wp, 1._wp, 1._wp)
+
+        pos = vector(1.0_wp, 1.0_wp, 1.0_wp)
+        dir = vector(0.0_wp, 0.0_wp, -1.0_wp)
+
+        call set_photon(pos, dir)
+        dict = toml_table()
+        call set_value(dict, "radius", 2.5_wp)
+        packet = photon("circular")
+
+        do i = 1, 10000
+            call packet%emit(spectrum, dict)
+            r_pos = sqrt((packet%pos%x+1)**2 + (packet%pos%y+1)**2+ (packet%pos%z+1)**2)
+            if(r_pos > 2.5_wp .and. packet%pos%z /= -1._wp)then
+                call test_failed(error, "Circle Source failed!", "radial position="//str(r_pos, 5)//" should be less than 2.5")
+                return
+            end if
+        end do
+    end subroutine circular_src
+
     subroutine Pencil_src(error)
 
         use vector_class, only : vector
@@ -180,4 +226,75 @@ module testsPhotonMod
             end if
         end do
     end subroutine Pencil_src
+
+    subroutine SLM_src(error)
+
+        use vector_class, only : vector
+        use tomlf, only : set_value, toml_table
+        use sim_state_mod, only : state
+        use utils, only : str
+        use gridMod
+        use piecewiseMod
+        use random, only : init_rng
+        use stb_image_mod
+        use, intrinsic :: iso_c_binding
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(piecewise2D) :: img
+        type(spectrum_t)  :: spectrum
+        real(kind=wp)     :: cell_height, cell_width, sum_dif
+        type(photon)      :: packet
+        type(vector)      :: pos, dir
+        integer           :: i, err, height, width, n_channels, idx, idy
+        real(kind=wp),    allocatable :: array(:,:), out(:,:)
+        character(len=:), allocatable :: sfile
+        integer,          allocatable :: image(:,:,:)
+
+        cell_height = 2./200.
+        cell_width = 2./200.
+
+        call init_rng(spread(12345678, 1, 8), .false.)
+        
+        ! Read in image
+        sfile = "test/parse/test.png"
+        err = stbi_info(trim(sfile)//c_null_char, width, height, n_channels)
+        if(err == 0)then
+            print'(2a,1x,a)', "Error reading file: ", trim(sfile),stbi_failure_reason()
+            stop 1
+        end if
+        image = stbi_load(trim(sfile)//c_null_char, width, height, n_channels, 0)
+        allocate(array(size(image, 1), size(image, 2)))
+        array = image(:,:,1)
+        ! set all values to 1 in image
+        where(array > 0.)
+            array = 1.
+        end where
+
+        img = piecewise2D(cell_width, cell_height, array)
+        allocate(spectrum%p, source=img)
+        allocate(out(size(image, 1), size(image, 2)))
+        out = 0.
+        state%grid = init_grid(200, 200, 200, 1._wp, 1._wp, 1._wp)
+
+        pos = vector(0.0_wp, 0.0_wp, 1.0_wp)
+        dir = vector(0.0_wp, 0.0_wp, -1.0_wp)
+        call set_photon(pos, dir)
+
+        packet = photon("slm")
+
+        do i = 1, 1000000
+            call packet%emit(spectrum)
+            !why is it always +2?
+            idx = nint((packet%pos%x + 1.) / (2./200.))+2
+            idy = nint((packet%pos%y + 1.) / (2./200.))+2
+            if(idx < 1 .or. idy < 1)cycle
+            out(idx,idy) = out(idx,idy) + 1.
+        end do
+
+        out = out /maxval(out)
+        sum_dif = sum(abs(array - out)) / (200**2)
+        call check(error, sum_dif, 0.0_wp, thr=6e-2_wp)
+        if(allocated(error))return
+    end subroutine SLM_src
 end module testsPhotonMod
