@@ -19,7 +19,8 @@ module testsSDFMod
 
          testsuites = [new_testsuite("SDF Shapes", collect_suite1, context),&
                       new_testsuite("SDF Modifiers", collect_suite2, context),&
-                      new_testsuite("SDF Helpers", collect_suite3, context)&
+                      new_testsuite("SDF Helpers", collect_suite3, context),&
+                      new_testsuite("SDF Misc.", collect_suite4, context)&
                     ]
 
     end subroutine SDF_suite
@@ -62,7 +63,6 @@ module testsSDFMod
 
     end subroutine collect_suite2
 
-
     subroutine collect_suite3(testsuite)
 
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
@@ -80,6 +80,110 @@ module testsSDFMod
 
     end subroutine collect_suite3
 
+    subroutine collect_suite4(testsuite)
+
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [ &
+                new_unittest("model_error_test", test_model_error), &
+                new_unittest("calc_normal_test", test_calc_normal), &
+                new_unittest("assign_test", test_assign) &
+                ]
+    end subroutine collect_suite4
+
+    subroutine test_model_error(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(sphere)  :: sph
+        type(box)     :: bbox
+        type(model)   :: mod
+        type(opticalProp_t) :: opt(2)
+        type(vector) :: pos
+        type(sdf) :: array(2)
+
+        opt(1) = mono(0._wp, 0._wp, 0._wp, 0._wp)
+        opt(2) = mono(1._wp, 2._wp, 3._wp, 4._wp)
+
+        sph = sphere(1.0_wp, opt(1), 1)
+        bbox = box(vector(1.0_wp, 1.0_wp, 1.0_wp), opt(2), 2)
+
+        array(1) = sph
+        array(2) = bbox
+
+        mod = model(array, union, 10.0_wp)
+        call check(error, mod%k, 10.0_wp)
+        if(allocated(error))return
+
+        bbox = box(vector(1.0_wp, 1.0_wp, 1.0_wp), opt(1), 2)
+        array(2) = bbox
+        mod = model(array, union)
+        call check(error, mod%k, 0.0_wp)
+        if(allocated(error))return
+
+    end subroutine test_model_error
+
+    subroutine test_calc_normal(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(sphere)  :: sph
+        type(opticalProp_t) :: opt
+        type(vector) :: pos, N
+
+        opt = mono(0._wp, 0._wp, 0._wp, 0._wp)
+
+        sph = sphere(1.0_wp, opt, 1)
+
+        pos = vector(1.0, 0.0, 0.0)
+        N = calcNormal(pos, sph)
+        
+        call check(error, N%x, 1.0_wp)
+        if(allocated(error))return
+        call check(error, N%y, 0.0_wp)
+        if(allocated(error))return
+        call check(error, N%z, 0.0_wp)
+        if(allocated(error))return
+
+        pos = vector(0.0, 1.0, 0.0)
+        N = calcNormal(pos, sph)
+        
+        call check(error, N%x, 0.0_wp)
+        if(allocated(error))return
+        call check(error, N%y, 1.0_wp)
+        if(allocated(error))return
+        call check(error, N%z, 0.0_wp)
+        if(allocated(error))return
+
+        pos = vector(0.0, 0.0, 1.0)
+        N = calcNormal(pos, sph)
+        
+        call check(error, N%x, 0.0_wp)
+        if(allocated(error))return
+        call check(error, N%y, 0.0_wp)
+        if(allocated(error))return
+        call check(error, N%z, 1.0_wp)
+        if(allocated(error))return
+
+    end subroutine test_calc_normal
+
+    subroutine test_assign(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(sphere)  :: sph
+        type(opticalProp_t) :: opt
+        type(sdf) :: base
+
+        opt = mono(0._wp, 0._wp, 0._wp, 0._wp)
+
+        sph = sphere(1.0_wp, opt, 1)
+        base = sph
+        call check(error, base%getAlbedo(), 1.0_wp)
+        if(allocated(error))return
+
+    end subroutine test_assign
+
     subroutine test_intersection(error)
 
         type(error_type), allocatable, intent(out) :: error
@@ -95,7 +199,6 @@ module testsSDFMod
         allocate(array(2))
 
         opt = mono(0._wp, 0._wp, 0._wp, 0._wp)
-
         sph1 = sphere(.25_wp, opt, 1)
         
         bbox = box(vector(1.0, 1.0, 1.0), opt,1)
