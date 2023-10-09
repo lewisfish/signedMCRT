@@ -178,6 +178,7 @@
       </div>
       <div id="boundprocs-0" class="panel-collapse collapse">
         <div class="list-group">
+            <a class="list-group-item" href="../type/detector2d.html#boundprocedure-check_hit~4">check_hit</a>
             <a class="list-group-item" href="../type/detector2d.html#boundprocedure-record_hit~2">record_hit</a>
         </div>
       </div>
@@ -248,6 +249,7 @@
       </div>
       <div id="boundprocs-1" class="panel-collapse collapse">
         <div class="list-group">
+            <a class="list-group-item" href="../type/detector2d.html#boundprocedure-check_hit~4">check_hit</a>
             <a class="list-group-item" href="../type/detector2d.html#boundprocedure-record_hit~2">record_hit</a>
         </div>
       </div>
@@ -440,6 +442,70 @@
 
       <section>
         <h2>Type-Bound Procedures</h2>
+            <div class="panel panel-default">
+    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-check_hit~4"></span><h3>procedure(<a href='../interface/checkhitinterface.html'>checkHitInterface</a>), public, deferred :: <strong>check_hit</strong>          
+    </h3></div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+     function checkHitInterface(this, hitpoint)  
+<small>Prototype</small></h3>
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th>Type</th>
+<th>Intent</th><th>Optional</th>        <th>Attributes</th>
+        <th></th>
+        <th>Name</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='../type/detector.html'>detector</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>this</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='../type/hit_t.html'>hit_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>hitpoint</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+        </li>
+    </ul>
+  </div>
+
             <div class="panel panel-default">
     <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-record_hit~2"></span><h3>procedure, public,  :: <strong>record_hit</strong>  => <a href='../proc/record_hit_2d_sub.html'>record_hit_2D_sub</a>         
     </h3></div>
