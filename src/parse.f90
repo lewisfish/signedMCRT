@@ -2,6 +2,7 @@ module parse_mod
 !! Module contains all routines related to parsing the input toml config files.
 !! See [config](../|page|/config.html) for details of toml input file.
     use tomlf
+    use tomlf_error, only : make_error
     use constants, only : wp
     use vector_class
 
@@ -12,7 +13,7 @@ module parse_mod
 
     contains
 
-    subroutine parse_params(filename, packet, dects, spectrum, dict)
+    subroutine parse_params(filename, packet, dects, spectrum, dict, error)
         !! entry point for parsing toml file
 
         use detectors,   only : dect_array
@@ -29,27 +30,36 @@ module parse_mod
         type(dect_array), allocatable, intent(out) :: dects(:)
         !> spectrum type which is set up during parsing
         type(spectrum_t), intent(out) :: spectrum
+        !> Last error raised during parsing. Unallocated if no error raised. Need to handle this on return from parse_params.
+        type(toml_error), allocatable, intent(out) :: error
 
         type(toml_table), allocatable :: table
         type(toml_context) :: context
-        type(toml_error), allocatable :: error
 
         call toml_load(table, trim(filename), context=context, error=error)
-        if(allocated(error))then
-            print'(a)',error%message
-            stop 1
-        end if
+        if(allocated(error))return
 
-        call parse_source(table, packet, dict, spectrum, context)
-        call parse_grid(table, dict)
-        call parse_geometry(table, dict)
-        call parse_detectors(table, dects, context)
-        call parse_output(table)
-        call parse_simulation(table)
+        call parse_source(table, packet, dict, spectrum, context, error)
+        if(allocated(error))return
+
+        call parse_grid(table, dict, error)
+        if(allocated(error))return
+
+        call parse_geometry(table, dict, error)
+        if(allocated(error))return
+
+        call parse_detectors(table, dects, context, error)
+        if(allocated(error))return
+
+        call parse_output(table, error)
+        if(allocated(error))return
+
+        call parse_simulation(table, error)
+        if(allocated(error))return
 
     end subroutine parse_params
     
-    subroutine parse_detectors(table, dects, context)
+    subroutine parse_detectors(table, dects, context, error)
         !! parse the detectors
 
         use detectors,     only : dect_array, circle_dect, annulus_dect, camera
@@ -61,6 +71,7 @@ module parse_mod
         type(dect_array), allocatable :: dects(:)
         !> Context handle for error reporting.
         type(toml_context), intent(in) :: context
+        type(toml_error),  allocatable, intent(out) :: error
 
         type(toml_array), pointer :: array
         type(toml_table), pointer :: child
@@ -81,9 +92,10 @@ module parse_mod
             call get_value(child, "type", dect_type, origin=origin)
             select case(dect_type)
             case default
-                print'(a)',context%report("Invalid detector type. Valid types are [circle, annulus, camera]", &
-                           origin, "expected valid detector type")
-                stop 1
+                call make_error(error, &
+                    context%report("Invalid detector type. Valid types are [circle, annulus, camera]", &
+                    origin, "expected valid detector type"), -1)
+                return
             case("circle")
                 c_counter = c_counter + 1
             case("annulus")
@@ -106,11 +118,14 @@ module parse_mod
             call get_value(child, "historyFileName", state%historyFilename, "photPos.obj")
             select case(dect_type)
             case("circle")
-                call handle_circle_dect(child, dect_c, c_counter, context)
+                call handle_circle_dect(child, dect_c, c_counter, context, error)
+                if(allocated(error))return
             case("annulus")
-                call handle_annulus_dect(child, dect_a, a_counter, context)
+                call handle_annulus_dect(child, dect_a, a_counter, context, error)
+                if(allocated(error))return
             case("camera")
-                call handle_camera(child, dect_cam, cam_counter, context)
+                call handle_camera(child, dect_cam, cam_counter, context, error)
+                if(allocated(error))return
             end select
         end do
 
@@ -133,7 +148,7 @@ module parse_mod
 
     end subroutine parse_detectors
 
-    subroutine handle_camera(child, dects, counts, context)
+    subroutine handle_camera(child, dects, counts, context, error)
         !! Read in Camera settings and initalise variable
         use detectors,     only : camera
         use sim_state_mod, only : state
@@ -143,15 +158,16 @@ module parse_mod
         integer,                   intent(inout) :: counts
         !> Context handle for error reporting.
         type(toml_context),        intent(in)    :: context
+        type(toml_error), allocatable, intent(out) :: error
 
         integer       :: layer, nbins
         real(kind=wp) :: maxval
         type(vector)  :: p1, p2, p3
         logical       :: trackHistory
 
-        p1 = get_vector(child, "p1", default=vector(-1.0, -1.0, -1.0), context=context)
-        p2 = get_vector(child, "p2", default=vector(2.0, 0.0, 0.0), context=context)
-        p3 = get_vector(child, "p3", default=vector(0.0, 2.0, 0.0), context=context)
+        p1 = get_vector(child, "p1", default=vector(-1.0, -1.0, -1.0), context=context, error=error)
+        p2 = get_vector(child, "p2", default=vector(2.0, 0.0, 0.0), context=context, error=error)
+        p3 = get_vector(child, "p3", default=vector(0.0, 2.0, 0.0), context=context, error=error)
  
         call get_value(child, "layer", layer, 1)
         call get_value(child, "nbins", nbins, 100)
@@ -166,7 +182,7 @@ module parse_mod
 
     end subroutine handle_camera
 
-    subroutine handle_circle_dect(child, dects, counts, context)
+    subroutine handle_circle_dect(child, dects, counts, context, error)
         !! Read in Circle_detector settings and initalise variable
         use detectors,     only : circle_dect
         use sim_state_mod, only : state
@@ -175,14 +191,15 @@ module parse_mod
         type(circle_dect),         intent(inout) :: dects(:)
         integer,                   intent(inout) :: counts
         type(toml_context),        intent(in)    :: context
+        type(toml_error), allocatable, intent(out) :: error
 
         integer       :: layer, nbins
         real(kind=wp) :: maxval, radius
         type(vector)  :: pos, dir
         logical       :: trackHistory
 
-        pos = get_vector(child, "position", context=context)
-        dir = get_vector(child, "direction", default=vector(0.0, 0.0, -1.0), context=context)
+        pos = get_vector(child, "position", context=context, error=error)
+        dir = get_vector(child, "direction", default=vector(0.0, 0.0, -1.0), context=context, error=error)
         dir = dir%magnitude()
         call get_value(child, "layer", layer, 1)
         call get_value(child, "radius1", radius)
@@ -198,7 +215,7 @@ module parse_mod
 
     end subroutine handle_circle_dect
 
-    subroutine handle_annulus_dect(child, dects, counts, context)
+    subroutine handle_annulus_dect(child, dects, counts, context, error)
         !! Read in Annulus_detector settings and initalise variable
         use detectors,     only : annulus_dect
         use sim_state_mod, only : state
@@ -207,14 +224,15 @@ module parse_mod
         type(annulus_dect),        intent(inout) :: dects(:)
         integer,                   intent(inout) :: counts
         type(toml_context),        intent(in) :: context
+        type(toml_error), allocatable, intent(out) :: error
 
         integer       :: layer, nbins, origin
         real(kind=wp) :: maxval, radius1, radius2
         type(vector)  :: pos, dir
         logical       :: trackHistory
 
-        pos = get_vector(child, "position", context=context)
-        dir = get_vector(child, "direction", default=vector(0.0, 0.0, -1.0), context=context)
+        pos = get_vector(child, "position", context=context, error=error)
+        dir = get_vector(child, "direction", default=vector(0.0, 0.0, -1.0), context=context, error=error)
         call get_value(child, "layer", layer, 1)
         call get_value(child, "radius1", radius1)
         call get_value(child, "radius2", radius2, origin=origin)
@@ -233,7 +251,7 @@ module parse_mod
         counts = counts + 1
     end subroutine handle_annulus_dect
 
-    subroutine parse_spectrum(table, spectrum, dict, context)
+    subroutine parse_spectrum(table, spectrum, dict, context, error)
     !! Parse spectrums to be used
     ! TODO seperate out each case to seperate functions.
     ! TODO add spectra type to input optical properties
@@ -251,6 +269,7 @@ module parse_mod
 
         type(toml_context) :: context
         type(spectrum_t), intent(out) :: spectrum
+        type(toml_error), allocatable, intent(out) :: error
 
         type(toml_array), pointer :: children
         integer :: origin, nlen, i, err, width, height, n_channels,u
@@ -287,15 +306,17 @@ module parse_mod
                 if(associated(children))then
                     nlen = len(children)
                     if(nlen /= 2)then
-                        print'(a)',context%report("Need a vector of size 2 for cell_size", origin, "expected vector of size 2")
-                        stop 1
+                        call make_error(error,&
+                        context%report("Need a vector of size 2 for cell_size", origin, "expected vector of size 2"), -1)
+                        return
                     end if
                     do i = 1, len(children)
                         call get_value(children, i, cellsize(i))
                     end do
                 else
-                    print'(a)',context%report("Need a vector of size 2 for cell_size", origin, "expected vector of size 2")
-                    stop 1
+                    call make_error(error,&
+                    context%report("Need a vector of size 2 for cell_size", origin, "expected vector of size 2"), -1)
+                    return
                 end if
 
                 filetype = sfile(len(sfile)-2:)
@@ -303,8 +324,8 @@ module parse_mod
                 case("png")
                     err = stbi_info(trim(resdir)//trim(sfile)//c_null_char, width, height, n_channels)
                     if(err == 0)then
-                        print'(2a,1x,a)', "Error reading file: ", trim(sfile),stbi_failure_reason()
-                        stop 1
+                        call make_error(error, "Error reading file: "//trim(sfile)//" "//stbi_failure_reason(), -1)
+                        return
                     end if
                     image = stbi_load(trim(resdir)//trim(sfile)//c_null_char, width, height, n_channels, 0)
                     allocate(array(size(image, 1), size(image, 2)))
@@ -323,17 +344,19 @@ module parse_mod
                 allocate(spectrum%p, source=TwoD)
                 spectrum%p => TwoD
             case default
-                print'(a)',context%report("Not a valid spectrum type!", origin, "expected one of either ['constant', '1D', '2D']")
-                stop 1
+                call make_error(error,&
+                context%report("Not a valid spectrum type!", origin, "expected one of either ['constant', '1D', '2D']"),-1)
+                return
         end select
     end subroutine parse_spectrum
 
-    subroutine parse_source(table, packet, dict, spectrum, context)
+    subroutine parse_source(table, packet, dict, spectrum, context, error)
     !! Parse sources
     !! any updates here MUST be reflected in docs/config.md
         use sim_state_mod, only : state
         use photonmod
         use piecewiseMod
+        use tomlf_error
         
         !> Input Toml table
         type(toml_table),  intent(inout) :: table
@@ -345,6 +368,8 @@ module parse_mod
         type(spectrum_t),  intent(out)   :: spectrum
         !> Context handle for error reporting
         type(toml_context) :: context
+        !> Error message
+        type(toml_error), allocatable, intent(out) :: error
 
         type(toml_table), pointer :: child
         type(toml_array), pointer :: children
@@ -372,17 +397,18 @@ module parse_mod
             if(associated(children))then
                 nlen = len(children)
                 if(nlen < 3)then
-                    print'(a)',context%report("Need a vector of size 3 for position", origin, "expected vector of size 3 1")
-                    stop 1
+                    call make_error(error, &
+                    context%report("Need a vector of size 3 for position", origin, "expected vector of size 3"), -1)
+                    return
                 end if
                 do i = 1, len(children)
                     call get_value(children, i, pos(i))
                 end do
             else
                 if(state%source == "point")then
-                    print'(a)',context%report(&
-                    "Point source needs a position!", origin, "Need vector of size 3 for position")
-                    stop 1
+                    call make_error(error, &
+                    context%report("Point source needs a position!", origin, "Need vector of size 3 for position"), -1)
+                    return
                 end if
             end if
             poss = vector(pos(1), pos(2), pos(3))
@@ -397,8 +423,9 @@ module parse_mod
                 end if
                 nlen = len(children)
                 if(nlen < 3)then
-                    print'(a)',context%report("Need a vector of size 3 for direction", origin, "expected vector of size 3 2")
-                    stop 1
+                    call make_error(error, &
+                    context%report("Need a vector of size 3 for direction", origin, "expected vector of size 3"), -1)
+                    return
                 end if
                 if(state%source == "circular")then
                     print'(a)',context%report(&
@@ -433,14 +460,14 @@ module parse_mod
                     case("-z")
                         dirr = vector(0._wp, 0._wp, -1._wp)
                     case default
-                        print'(a)',context%report("Direction needs a cardinal direction i.e x, y, or z", origin, &
-                                                "Expected cardinal direction")
-                        stop 1 
+                        call make_error(error, context%report("Direction needs a cardinal direction i.e x, y, or z", origin, &
+                                                "Expected cardinal direction"), -1)
+                        return 
                     end select
                 elseif(state%source /= "point")then
-                    print'(a)',context%report("Need to specify direction for source type!", origin, &
-                                              "No direction specified")
-                    stop 1
+                    call make_error(error, context%report("Need to specify direction for source type!", origin, &
+                                              "No direction specified"), -1)
+                    return
                 end if
             end if
 
@@ -450,8 +477,9 @@ module parse_mod
             if(associated(children))then
                 nlen = len(children)
                 if(nlen < 3)then
-                    print'(a)',context%report("Need a matrix row for points", origin, "expected matrix row of size 3")
-                    stop 1
+                    call make_error(error, &
+                    context%report("Need a matrix row for points", origin, "expected matrix row of size 3"), -1)
+                    return
                 end if
                 do i = 1, len(children)
                     call get_value(children, i, corners(i, 1))
@@ -459,8 +487,9 @@ module parse_mod
                 end do
             else
                 if(state%source == "uniform")then
-                    print'(a)',context%report("Uniform source requires point1 variable", origin, "expected point1 variable")
-                    stop 1
+                    call make_error(error, &
+                    context%report("Uniform source requires point1 variable", origin, "expected point1 variable"), -1)
+                    return
                 end if
             end if
 
@@ -468,8 +497,9 @@ module parse_mod
             if(associated(children))then
                 nlen = len(children)
                 if(nlen < 3)then
-                    print'(a)',context%report("Need a matrix row for points", origin, "expected matrix row of size 3")
-                    stop 1
+                    call make_error(error, &
+                    context%report("Need a matrix row for points", origin, "expected matrix row of size 3"), -1)
+                    return
                 end if
                 do i = 1, len(children)
                     call get_value(children, i, corners(i, 2))
@@ -477,8 +507,9 @@ module parse_mod
                 end do
             else
                 if(state%source == "uniform")then
-                    print'(a)',context%report("Uniform source requires point2 variable", origin, "expected point2 variable")
-                    stop 1
+                    call make_error(error, &
+                    context%report("Uniform source requires point2 variable", origin, "expected point2 variable"), -1)
+                    return
                 end if
             end if
 
@@ -486,8 +517,9 @@ module parse_mod
             if(associated(children))then
                 nlen = len(children)
                 if(nlen < 3)then
-                    print'(a)',context%report("Need a matrix row for points", origin, "expected matrix row of size 3")
-                    stop 1
+                    call make_error(error, &
+                    context%report("Need a matrix row for points", origin, "expected matrix row of size 3"), -1)
+                    return
                 end if
                 do i = 1, len(children)
                     call get_value(children, i, corners(i, 3))
@@ -495,8 +527,9 @@ module parse_mod
                 end do
             else
                 if(state%source == "uniform")then
-                    print'(a)',context%report("Uniform source requires point3 variable", origin, "expected point3 variable")
-                    stop 1
+                    call make_error(error, &
+                    context%report("Uniform source requires point3 variable", origin, "expected point3 variable"), -1)
+                    return
                 end if
             end if
             call get_value(child, "radius", radius, 0.5_wp)
@@ -513,10 +546,11 @@ module parse_mod
             call set_value(dict, "annulus_type", annulus_type)
 
             ! parse spectrum
-            call parse_spectrum(child, spectrum, dict, context)
+            call parse_spectrum(child, spectrum, dict, context, error)
+            if(allocated(error))return
         else
-            print'(a)',context%report("Simulation needs Source table", origin, "Missing source table")
-            stop 1
+            call make_error(error, context%report("Simulation needs Source table", origin, "Missing source table"), -1)
+            return
         end if
 
         call set_photon(poss, dirr)
@@ -528,16 +562,18 @@ module parse_mod
 
     end subroutine parse_source
 
-    subroutine parse_grid(table, dict)
+    subroutine parse_grid(table, dict, error)
     !! parse grid input data
         use sim_state_mod, only : state
         use gridMod,       only : init_grid 
         
         !> Input Toml table
-        type(toml_table),  intent(INOUT) :: table
+        type(toml_table),  intent(inout) :: table
         !> Dictonary used to store metadata
-        type(toml_table),  intent(INOUT) :: dict
+        type(toml_table),  intent(inout) :: dict
+        type(toml_error),  allocatable, intent(out) :: error
 
+        character(len=:), allocatable :: msg
         type(toml_table), pointer     :: child
         integer                       :: nxg, nyg, nzg
         real(kind=wp)                 :: xmax, ymax, zmax
@@ -555,14 +591,16 @@ module parse_mod
             call get_value(child, "units", units, "cm")
             call set_value(dict, "units", units)
         else
-            error stop "Need grid table in input param file"
+            msg = "Need grid table in input param file"
+            call make_error(error, msg)
+            return
         end if
 
         state%grid = init_grid(nxg, nyg, nzg, xmax, ymax, zmax)
 
     end subroutine parse_grid
 
-    subroutine parse_geometry(table, dict)
+    subroutine parse_geometry(table, dict, error)
         !! parse geometry information
         use sim_state_mod, only : state
         
@@ -570,7 +608,8 @@ module parse_mod
         type(toml_table),  intent(INOUT) :: table
         !> Dictonary used to store metadata
         type(toml_table),  intent(INOUT) :: dict
-        
+        type(toml_error),  allocatable, intent(out) :: error
+
         type(toml_table), pointer :: child
         real(kind=wp)             :: tau, musb, musc, muab, muac, hgg
         integer                   :: num_spheres
@@ -596,17 +635,18 @@ module parse_mod
             call get_value(child, "hgg", hgg, 0.7_wp)
             call set_value(dict, "hgg", hgg)
         else
-            error stop "Need geometry table in input param file"
+            call make_error(error, "Need geometry table in input param file", -1)
         end if
 
     end subroutine parse_geometry
 
-    subroutine parse_output(table)
+    subroutine parse_output(table, error)
         !! parse output file information
         use sim_state_mod, only : state
 
         !> Input Toml table 
-        type(toml_table),  intent(INOUT) :: table
+        type(toml_table),              intent(inout) :: table
+        type(toml_error), allocatable, intent(out)   :: error
 
         type(toml_table), pointer :: child
         type(toml_array), pointer :: children
@@ -619,7 +659,6 @@ module parse_mod
             call get_value(child, "absorb", state%outfile_absorb, "absorb.nrrd")
             call get_value(child, "render", state%renderfile, "geom_render.nrrd")
             call get_value(child, "render_geom", state%render_geom, .false.)
-            
 
             call get_value(child, "render_size", children, requested=.false.)
             if(associated(children))then
@@ -636,17 +675,19 @@ module parse_mod
 
             call get_value(child, "overwrite", state%overwrite, .false.)
         else
-            error stop "Need output table in input param file"
+            call make_error(error, "Need output table in input param file", -1)
+            return
         end if
 
     end subroutine parse_output
 
-    subroutine parse_simulation(table)
+    subroutine parse_simulation(table, error)
         !! parse simulation information
         use sim_state_mod, only : state
 
         !> Input Toml table 
-        type(toml_table), intent(INOUT) :: table
+        type(toml_table),              intent(inout) :: table
+        type(toml_error), allocatable, intent(out)   :: error
 
         type(toml_table), pointer :: child
 
@@ -657,22 +698,24 @@ module parse_mod
             call get_value(child, "tev", state%tev, .false.)
             call get_value(child, "absorb", state%absorb, .false.)
         else
-            error stop "Need simulation table in input param file"
+            call make_error(error, "Need simulation table in input param file", -1)
+            return
         end if
 
     end subroutine parse_simulation
 
-    type(vector) function get_vector(child, key, default, context)
+    type(vector) function get_vector(child, key, error, context, default)
         !! Vector helper function for parsing toml
 
         !> Input Toml entry to read 
-        type(toml_table),   pointer,  intent(in) :: child
+        type(toml_table),   pointer,     intent(in)  :: child
         !> Key to read
-        character(*),                 intent(in) :: key
+        character(*),                    intent(in)  :: key
         !> Default value to assign
-        type(vector),       optional, intent(in) :: default
+        type(vector),       optional,    intent(in)  :: default
         !> Context handle for error reporting
-        type(toml_context), optional, intent(in) :: context
+        type(toml_context),              intent(in)  :: context
+        type(toml_error),   allocatable, intent(out) :: error
 
         type(toml_array), pointer  :: arr => null()
         real(kind=wp) :: tmp(3)
@@ -688,8 +731,9 @@ module parse_mod
         call get_value(child, key, arr, origin=origin)
         if (associated(arr))then
             if(len(arr) /= 3)then
-                print'(a)',context%report("Expected vector of size 3", origin, "Wrong vector size")
-                stop 1    
+                call make_error(error, &
+                context%report("Expected vector of size 3", origin, "Wrong vector size"), -1)
+                return
             end if
             do j = 1, len(arr)
                 call get_value(arr, j, tmp(j))

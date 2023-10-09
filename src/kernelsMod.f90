@@ -434,7 +434,7 @@ contains
         use vector_class,  only : vector
         ! !external deps
         use tev_mod, only : tevipc, tev_init
-        use tomlf,   only : toml_table
+        use tomlf,   only : toml_table, toml_error
         
         !> Filename for toml settings to be used
         character(*),                  intent(in)  :: input_file
@@ -455,14 +455,19 @@ contains
         ! mpi/mp variables
         integer       :: id
         real(kind=wp) :: chance, threshold
-        
+        type(toml_error), allocatable :: error
+
         chance = 1._wp/10._wp
         threshold = 1e-6_wp
         
         call directory()
 
         dict = toml_table()
-        call parse_params("res/"//trim(input_file), packet, dects, spectrum, dict)
+        call parse_params("res/"//trim(input_file), packet, dects, spectrum, dict, error)
+        if(allocated(error))then
+            print*,error%message
+            stop 1
+        end if
         allocate(image(state%grid%nxg,state%grid%nzg,1))
         
         call display_settings(state, input_file, packet, "Pathlength")
