@@ -105,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 3.5% of total for procedures.">161 statements</a>
+               title=" 3.6% of total for procedures.">164 statements</a>
           </li>
 
             <li id="source-file">
@@ -165,7 +165,7 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>private  subroutine parse_source(table, packet, dict, spectrum, context)  
+    <h2>private  subroutine parse_source(table, packet, dict, spectrum, context, error)  
 </h2>
         <div class="panel panel-default">
       <div class="panel-heading">
@@ -174,9 +174,10 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='../module/photonmod.html'>photonMod</a></li>
                 <li><a href='../module/sim_state_mod.html'>sim_state_mod</a></li>
                 <li><a href='../module/piecewisemod.html'>piecewiseMod</a></li>
+                <li><a href='../module/photonmod.html'>photonMod</a></li>
+                <li>tomlf_error</li>
             </ul>
           </li>
       </ul>
@@ -273,6 +274,21 @@ any updates here MUST be reflected in docs/config.md</p>
                 <p>Context handle for error reporting</p>
             </td>
         </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-error~2"></span>
+              type(toml_error),
+            </td>
+<td>intent(out),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>error</strong></td>
+            <td>
+                <p>Error message</p>
+            </td>
+        </tr>
     </tbody>
   </table>
 
@@ -321,12 +337,13 @@ any updates here MUST be reflected in docs/config.md</p>
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">parse_source</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="n">packet</span><span class="p">,</span><span class="w"> </span><span class="n">dict</span><span class="p">,</span><span class="w"> </span><span class="n">spectrum</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w"></span>
+    <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">parse_source</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="n">packet</span><span class="p">,</span><span class="w"> </span><span class="n">dict</span><span class="p">,</span><span class="w"> </span><span class="n">spectrum</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="p">)</span><span class="w"></span>
 <span class="w">    </span><span class="c">!! Parse sources</span>
 <span class="w">    </span><span class="c">!! any updates here MUST be reflected in docs/config.md</span>
 <span class="w">        </span><span class="k">use </span><span class="n">sim_state_mod</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">state</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">photonmod</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">piecewiseMod</span><span class="w"></span>
+<span class="w">        </span><span class="k">use </span><span class="n">tomlf_error</span><span class="w"></span>
 <span class="w">        </span>
 <span class="w">        </span><span class="c">!&gt; Input Toml table</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_table</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">table</span><span class="w"></span>
@@ -338,6 +355,8 @@ any updates here MUST be reflected in docs/config.md</p>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">spectrum_t</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">spectrum</span><span class="w"></span>
 <span class="w">        </span><span class="c">!&gt; Context handle for error reporting</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_context</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">context</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Error message</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_error</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">error</span><span class="w"></span>
 
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_table</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">child</span><span class="w"></span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_array</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">children</span><span class="w"></span>
@@ -365,18 +384,19 @@ any updates here MUST be reflected in docs/config.md</p>
 <span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="nb">associated</span><span class="p">(</span><span class="n">children</span><span class="p">))</span><span class="k">then</span>
 <span class="k">                </span><span class="n">nlen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">)</span><span class="w"></span>
 <span class="w">                </span><span class="k">if</span><span class="p">(</span><span class="n">nlen</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="k">then</span>
-<span class="k">                    print</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Need a vector of size 3 for position&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;expected vector of size 3 1&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                    </span><span class="k">stop </span><span class="mi">1</span><span class="w"></span>
-<span class="w">                </span><span class="k">end if</span>
+<span class="k">                    call </span><span class="n">make_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">                    </span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Need a vector of size 3 for position&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;expected vector of size 3&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="k">return</span>
+<span class="k">                end if</span>
 <span class="k">                do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">)</span><span class="w"></span>
 <span class="w">                    </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">children</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">pos</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="w"></span>
 <span class="w">                </span><span class="k">end do</span>
 <span class="k">            else</span>
 <span class="k">                if</span><span class="p">(</span><span class="n">state</span><span class="p">%</span><span class="n">source</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;point&quot;</span><span class="p">)</span><span class="k">then</span>
-<span class="k">                    print</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(&amp;</span><span class="w"></span>
-<span class="w">                    </span><span class="s2">&quot;Point source needs a position!&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Need vector of size 3 for position&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                    </span><span class="k">stop </span><span class="mi">1</span><span class="w"></span>
-<span class="w">                </span><span class="k">end if</span>
+<span class="k">                    call </span><span class="n">make_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">                    </span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Point source needs a position!&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Need vector of size 3 for position&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="k">return</span>
+<span class="k">                end if</span>
 <span class="k">            end if</span>
 <span class="k">            </span><span class="n">poss</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vector</span><span class="p">(</span><span class="n">pos</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">pos</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">pos</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span><span class="w"></span>
 
@@ -390,9 +410,10 @@ any updates here MUST be reflected in docs/config.md</p>
 <span class="w">                </span><span class="k">end if</span>
 <span class="k">                </span><span class="n">nlen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">)</span><span class="w"></span>
 <span class="w">                </span><span class="k">if</span><span class="p">(</span><span class="n">nlen</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="k">then</span>
-<span class="k">                    print</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Need a vector of size 3 for direction&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;expected vector of size 3 2&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                    </span><span class="k">stop </span><span class="mi">1</span><span class="w"></span>
-<span class="w">                </span><span class="k">end if</span>
+<span class="k">                    call </span><span class="n">make_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">                    </span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Need a vector of size 3 for direction&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;expected vector of size 3&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="k">return</span>
+<span class="k">                end if</span>
 <span class="k">                if</span><span class="p">(</span><span class="n">state</span><span class="p">%</span><span class="n">source</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;circular&quot;</span><span class="p">)</span><span class="k">then</span>
 <span class="k">                    print</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(&amp;</span><span class="w"></span>
 <span class="w">                    </span><span class="s2">&quot;Direction not yet fully tested for source type Circular. Results may not be accurate!&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,&amp;</span><span class="w"></span>
@@ -426,15 +447,15 @@ any updates here MUST be reflected in docs/config.md</p>
 <span class="w">                    </span><span class="k">case</span><span class="p">(</span><span class="s2">&quot;-z&quot;</span><span class="p">)</span><span class="w"></span>
 <span class="w">                        </span><span class="n">dirr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vector</span><span class="p">(</span><span class="mf">0._wp</span><span class="p">,</span><span class="w"> </span><span class="mf">0._wp</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">1._wp</span><span class="p">)</span><span class="w"></span>
 <span class="w">                    </span><span class="k">case </span><span class="n">default</span><span class="w"></span>
-<span class="w">                        </span><span class="k">print</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Direction needs a cardinal direction i.e x, y, or z&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
-<span class="w">                                                </span><span class="s2">&quot;Expected cardinal direction&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                        </span><span class="k">stop </span><span class="mi">1</span><span class="w"> </span>
-<span class="w">                    </span><span class="k">end select</span>
+<span class="w">                        </span><span class="k">call </span><span class="n">make_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Direction needs a cardinal direction i.e x, y, or z&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">                                                </span><span class="s2">&quot;Expected cardinal direction&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">                        </span><span class="k">return </span>
+<span class="k">                    end select</span>
 <span class="k">                </span><span class="n">elseif</span><span class="p">(</span><span class="n">state</span><span class="p">%</span><span class="n">source</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="s2">&quot;point&quot;</span><span class="p">)</span><span class="k">then</span>
-<span class="k">                    print</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Need to specify direction for source type!&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
-<span class="w">                                              </span><span class="s2">&quot;No direction specified&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                    </span><span class="k">stop </span><span class="mi">1</span><span class="w"></span>
-<span class="w">                </span><span class="k">end if</span>
+<span class="k">                    call </span><span class="n">make_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Need to specify direction for source type!&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">                                              </span><span class="s2">&quot;No direction specified&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="k">return</span>
+<span class="k">                end if</span>
 <span class="k">            end if</span>
 
 <span class="k">            </span><span class="n">children</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span><span class="w"></span>
@@ -443,54 +464,60 @@ any updates here MUST be reflected in docs/config.md</p>
 <span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="nb">associated</span><span class="p">(</span><span class="n">children</span><span class="p">))</span><span class="k">then</span>
 <span class="k">                </span><span class="n">nlen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">)</span><span class="w"></span>
 <span class="w">                </span><span class="k">if</span><span class="p">(</span><span class="n">nlen</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="k">then</span>
-<span class="k">                    print</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Need a matrix row for points&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;expected matrix row of size 3&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                    </span><span class="k">stop </span><span class="mi">1</span><span class="w"></span>
-<span class="w">                </span><span class="k">end if</span>
+<span class="k">                    call </span><span class="n">make_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">                    </span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Need a matrix row for points&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;expected matrix row of size 3&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="k">return</span>
+<span class="k">                end if</span>
 <span class="k">                do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">)</span><span class="w"></span>
 <span class="w">                    </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">children</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">corners</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span><span class="w"></span>
 <span class="w">                    </span><span class="k">call </span><span class="n">set_value</span><span class="p">(</span><span class="n">dict</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;pos1%&quot;</span><span class="o">//</span><span class="n">axis</span><span class="p">(</span><span class="n">i</span><span class="p">),</span><span class="w"> </span><span class="n">corners</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span><span class="w"></span>
 <span class="w">                </span><span class="k">end do</span>
 <span class="k">            else</span>
 <span class="k">                if</span><span class="p">(</span><span class="n">state</span><span class="p">%</span><span class="n">source</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;uniform&quot;</span><span class="p">)</span><span class="k">then</span>
-<span class="k">                    print</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Uniform source requires point1 variable&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;expected point1 variable&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                    </span><span class="k">stop </span><span class="mi">1</span><span class="w"></span>
-<span class="w">                </span><span class="k">end if</span>
+<span class="k">                    call </span><span class="n">make_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">                    </span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Uniform source requires point1 variable&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;expected point1 variable&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="k">return</span>
+<span class="k">                end if</span>
 <span class="k">            end if</span>
 
 <span class="k">            call </span><span class="n">get_value</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;point2&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">children</span><span class="p">,</span><span class="w"> </span><span class="n">requested</span><span class="o">=</span><span class="p">.</span><span class="n">false</span><span class="p">.,</span><span class="w"> </span><span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span><span class="w"></span>
 <span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="nb">associated</span><span class="p">(</span><span class="n">children</span><span class="p">))</span><span class="k">then</span>
 <span class="k">                </span><span class="n">nlen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">)</span><span class="w"></span>
 <span class="w">                </span><span class="k">if</span><span class="p">(</span><span class="n">nlen</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="k">then</span>
-<span class="k">                    print</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Need a matrix row for points&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;expected matrix row of size 3&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                    </span><span class="k">stop </span><span class="mi">1</span><span class="w"></span>
-<span class="w">                </span><span class="k">end if</span>
+<span class="k">                    call </span><span class="n">make_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">                    </span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Need a matrix row for points&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;expected matrix row of size 3&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="k">return</span>
+<span class="k">                end if</span>
 <span class="k">                do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">)</span><span class="w"></span>
 <span class="w">                    </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">children</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">corners</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span><span class="w"></span>
 <span class="w">                    </span><span class="k">call </span><span class="n">set_value</span><span class="p">(</span><span class="n">dict</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;pos2%&quot;</span><span class="o">//</span><span class="n">axis</span><span class="p">(</span><span class="n">i</span><span class="p">),</span><span class="w"> </span><span class="n">corners</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span><span class="w"></span>
 <span class="w">                </span><span class="k">end do</span>
 <span class="k">            else</span>
 <span class="k">                if</span><span class="p">(</span><span class="n">state</span><span class="p">%</span><span class="n">source</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;uniform&quot;</span><span class="p">)</span><span class="k">then</span>
-<span class="k">                    print</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Uniform source requires point2 variable&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;expected point2 variable&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                    </span><span class="k">stop </span><span class="mi">1</span><span class="w"></span>
-<span class="w">                </span><span class="k">end if</span>
+<span class="k">                    call </span><span class="n">make_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">                    </span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Uniform source requires point2 variable&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;expected point2 variable&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="k">return</span>
+<span class="k">                end if</span>
 <span class="k">            end if</span>
 
 <span class="k">            call </span><span class="n">get_value</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;point3&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">children</span><span class="p">,</span><span class="w"> </span><span class="n">requested</span><span class="o">=</span><span class="p">.</span><span class="n">false</span><span class="p">.,</span><span class="w"> </span><span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span><span class="w"></span>
 <span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="nb">associated</span><span class="p">(</span><span class="n">children</span><span class="p">))</span><span class="k">then</span>
 <span class="k">                </span><span class="n">nlen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">)</span><span class="w"></span>
 <span class="w">                </span><span class="k">if</span><span class="p">(</span><span class="n">nlen</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="k">then</span>
-<span class="k">                    print</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Need a matrix row for points&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;expected matrix row of size 3&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                    </span><span class="k">stop </span><span class="mi">1</span><span class="w"></span>
-<span class="w">                </span><span class="k">end if</span>
+<span class="k">                    call </span><span class="n">make_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">                    </span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Need a matrix row for points&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;expected matrix row of size 3&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="k">return</span>
+<span class="k">                end if</span>
 <span class="k">                do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">)</span><span class="w"></span>
 <span class="w">                    </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">children</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">corners</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">))</span><span class="w"></span>
 <span class="w">                    </span><span class="k">call </span><span class="n">set_value</span><span class="p">(</span><span class="n">dict</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;pos3%&quot;</span><span class="o">//</span><span class="n">axis</span><span class="p">(</span><span class="n">i</span><span class="p">),</span><span class="w"> </span><span class="n">corners</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span><span class="w"></span>
 <span class="w">                </span><span class="k">end do</span>
 <span class="k">            else</span>
 <span class="k">                if</span><span class="p">(</span><span class="n">state</span><span class="p">%</span><span class="n">source</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;uniform&quot;</span><span class="p">)</span><span class="k">then</span>
-<span class="k">                    print</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Uniform source requires point3 variable&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;expected point3 variable&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">                    </span><span class="k">stop </span><span class="mi">1</span><span class="w"></span>
-<span class="w">                </span><span class="k">end if</span>
+<span class="k">                    call </span><span class="n">make_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
+<span class="w">                    </span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Uniform source requires point3 variable&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;expected point3 variable&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="k">return</span>
+<span class="k">                end if</span>
 <span class="k">            end if</span>
 <span class="k">            call </span><span class="n">get_value</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;radius&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">radius</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5_wp</span><span class="p">)</span><span class="w"></span>
 <span class="w">            </span><span class="k">call </span><span class="n">set_value</span><span class="p">(</span><span class="n">dict</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;radius&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">radius</span><span class="p">)</span><span class="w"></span>
@@ -506,11 +533,12 @@ any updates here MUST be reflected in docs/config.md</p>
 <span class="w">            </span><span class="k">call </span><span class="n">set_value</span><span class="p">(</span><span class="n">dict</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;annulus_type&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">annulus_type</span><span class="p">)</span><span class="w"></span>
 
 <span class="w">            </span><span class="c">! parse spectrum</span>
-<span class="w">            </span><span class="k">call </span><span class="n">parse_spectrum</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="n">spectrum</span><span class="p">,</span><span class="w"> </span><span class="n">dict</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="k">else</span>
-<span class="k">            print</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Simulation needs Source table&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Missing source table&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="k">stop </span><span class="mi">1</span><span class="w"></span>
-<span class="w">        </span><span class="k">end if</span>
+<span class="w">            </span><span class="k">call </span><span class="n">parse_spectrum</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="n">spectrum</span><span class="p">,</span><span class="w"> </span><span class="n">dict</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="nb">allocated</span><span class="p">(</span><span class="n">error</span><span class="p">))</span><span class="k">return</span>
+<span class="k">        else</span>
+<span class="k">            call </span><span class="n">make_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Simulation needs Source table&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Missing source table&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="k">return</span>
+<span class="k">        end if</span>
 
 <span class="k">        call </span><span class="n">set_photon</span><span class="p">(</span><span class="n">poss</span><span class="p">,</span><span class="w"> </span><span class="n">dirr</span><span class="p">)</span><span class="w"></span>
 <span class="w">        </span><span class="n">packet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">photon</span><span class="p">(</span><span class="n">state</span><span class="p">%</span><span class="n">source</span><span class="p">)</span><span class="w"></span>

@@ -105,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 1.1% of total for procedures.">52 statements</a>
+               title=" 1.2% of total for procedures.">57 statements</a>
           </li>
 
             <li id="source-file">
@@ -174,20 +174,20 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='../module/photonmod.html'>photonMod</a></li>
                 <li><a href='../module/iarray.html'>iarray</a></li>
                 <li><a href='../module/detectors.html'>detectors</a></li>
-                <li>utils</li>
-                <li><a href='../module/sim_state_mod.html'>sim_state_mod</a></li>
-                <li><a href='../module/setupmod.html'>setupMod</a></li>
                 <li><a href='../module/parse_mod.html'>parse_mod</a></li>
-                <li><a href='../module/piecewisemod.html'>piecewiseMod</a></li>
-                <li><a href='../module/vector_class.html'>vector_class</a></li>
                 <li>tev_mod</li>
+                <li>utils</li>
                 <li><a href='../module/sdfs.html'>sdfs</a></li>
-                <li><a href='../module/random.html'>random</a></li>
-                <li>tomlf</li>
+                <li><a href='../module/sim_state_mod.html'>sim_state_mod</a></li>
                 <li><a href='../module/constants.html'>constants</a></li>
+                <li><a href='../module/setupmod.html'>setupMod</a></li>
+                <li>tomlf</li>
+                <li><a href='../module/photonmod.html'>photonMod</a></li>
+                <li><a href='../module/random.html'>random</a></li>
+                <li><a href='../module/vector_class.html'>vector_class</a></li>
+                <li><a href='../module/piecewisemod.html'>piecewiseMod</a></li>
             </ul>
           </li>
       </ul>
@@ -442,7 +442,7 @@
 <span class="w">        </span><span class="k">use </span><span class="n">vector_class</span><span class="p">,</span><span class="w">  </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">vector</span><span class="w"></span>
 <span class="w">        </span><span class="c">! !external deps</span>
 <span class="w">        </span><span class="k">use </span><span class="n">tev_mod</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">tevipc</span><span class="p">,</span><span class="w"> </span><span class="n">tev_init</span><span class="w"></span>
-<span class="w">        </span><span class="k">use </span><span class="n">tomlf</span><span class="p">,</span><span class="w">   </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">toml_table</span><span class="w"></span>
+<span class="w">        </span><span class="k">use </span><span class="n">tomlf</span><span class="p">,</span><span class="w">   </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">toml_table</span><span class="p">,</span><span class="w"> </span><span class="n">toml_error</span><span class="w"></span>
 <span class="w">        </span>
 <span class="w">        </span><span class="c">!&gt; Filename for toml settings to be used</span>
 <span class="w">        </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w">                  </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">input_file</span><span class="w"></span>
@@ -463,15 +463,20 @@
 <span class="w">        </span><span class="c">! mpi/mp variables</span>
 <span class="w">        </span><span class="kt">integer</span><span class="w">       </span><span class="kd">::</span><span class="w"> </span><span class="n">id</span><span class="w"></span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">chance</span><span class="p">,</span><span class="w"> </span><span class="n">threshold</span><span class="w"></span>
-<span class="w">        </span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_error</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">error</span><span class="w"></span>
+
 <span class="w">        </span><span class="n">chance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1._wp</span><span class="o">/</span><span class="mi">1</span><span class="mf">0._wp</span><span class="w"></span>
 <span class="w">        </span><span class="n">threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1e-6_wp</span><span class="w"></span>
 <span class="w">        </span>
 <span class="w">        </span><span class="k">call </span><span class="n">directory</span><span class="p">()</span><span class="w"></span>
 
 <span class="w">        </span><span class="n">dict</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">toml_table</span><span class="p">()</span><span class="w"></span>
-<span class="w">        </span><span class="k">call </span><span class="n">parse_params</span><span class="p">(</span><span class="s2">&quot;res/&quot;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="n">input_file</span><span class="p">),</span><span class="w"> </span><span class="n">packet</span><span class="p">,</span><span class="w"> </span><span class="n">dects</span><span class="p">,</span><span class="w"> </span><span class="n">spectrum</span><span class="p">,</span><span class="w"> </span><span class="n">dict</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="k">allocate</span><span class="p">(</span><span class="n">image</span><span class="p">(</span><span class="n">state</span><span class="p">%</span><span class="n">grid</span><span class="p">%</span><span class="n">nxg</span><span class="p">,</span><span class="n">state</span><span class="p">%</span><span class="n">grid</span><span class="p">%</span><span class="n">nzg</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span><span class="w"></span>
+<span class="w">        </span><span class="k">call </span><span class="n">parse_params</span><span class="p">(</span><span class="s2">&quot;res/&quot;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="n">input_file</span><span class="p">),</span><span class="w"> </span><span class="n">packet</span><span class="p">,</span><span class="w"> </span><span class="n">dects</span><span class="p">,</span><span class="w"> </span><span class="n">spectrum</span><span class="p">,</span><span class="w"> </span><span class="n">dict</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="nb">allocated</span><span class="p">(</span><span class="n">error</span><span class="p">))</span><span class="k">then</span>
+<span class="k">            print</span><span class="o">*</span><span class="p">,</span><span class="n">error</span><span class="p">%</span><span class="n">message</span><span class="w"></span>
+<span class="w">            </span><span class="k">stop </span><span class="mi">1</span><span class="w"></span>
+<span class="w">        </span><span class="k">end if</span>
+<span class="k">        allocate</span><span class="p">(</span><span class="n">image</span><span class="p">(</span><span class="n">state</span><span class="p">%</span><span class="n">grid</span><span class="p">%</span><span class="n">nxg</span><span class="p">,</span><span class="n">state</span><span class="p">%</span><span class="n">grid</span><span class="p">%</span><span class="n">nzg</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span><span class="w"></span>
 <span class="w">        </span>
 <span class="w">        </span><span class="k">call </span><span class="n">display_settings</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="w"> </span><span class="n">input_file</span><span class="p">,</span><span class="w"> </span><span class="n">packet</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Pathlength&quot;</span><span class="p">)</span><span class="w"></span>
 

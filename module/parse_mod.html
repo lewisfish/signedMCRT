@@ -105,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title="10.3% of total for modules and submodules.">538 statements</a>
+               title="10.7% of total for modules and submodules.">563 statements</a>
           </li>
 
             <li id="source-file">
@@ -201,9 +201,10 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='../module/vector_class.html'>vector_class</a></li>
                 <li>tomlf</li>
+                <li><a href='../module/vector_class.html'>vector_class</a></li>
                 <li><a href='../module/constants.html'>constants</a></li>
+                <li>tomlf_error</li>
             </ul>
           </li>
       </ul>
@@ -281,7 +282,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
         <section>
           <h2>Functions</h2>
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-get_vector"></span><h3>private  function <a href='../proc/get_vector.html'>get_vector</a>(child, key, default, context)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-get_vector"></span><h3>private  function <a href='../proc/get_vector.html'>get_vector</a>(child, key, error, context, default)  
 </h3></div>
     <div class="panel-body">
           
@@ -331,6 +332,36 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
         <tr>
             <td>
               <span class="anchor" ></span>
+              type(toml_error),
+            </td>
+<td>intent(out),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>error</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(toml_context),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>context</strong></td>
+            <td>
+<p>Context handle for error reporting</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in),</td>
@@ -341,21 +372,6 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
             <td><strong>default</strong></td>
             <td>
 <p>Default value to assign</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              type(toml_context),
-            </td>
-<td>intent(in),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>context</strong></td>
-            <td>
-<p>Context handle for error reporting</p>
             </td>
         </tr>
     </tbody>
@@ -376,7 +392,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
         <section>
           <h2>Subroutines</h2>
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-handle_annulus_dect"></span><h3>private  subroutine <a href='../proc/handle_annulus_dect.html'>handle_annulus_dect</a>(child, dects, counts, context)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-handle_annulus_dect"></span><h3>private  subroutine <a href='../proc/handle_annulus_dect.html'>handle_annulus_dect</a>(child, dects, counts, context, error)  
 </h3></div>
     <div class="panel-body">
           
@@ -453,6 +469,21 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
 
             </td>
         </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(toml_error),
+            </td>
+<td>intent(out),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>error</strong></td>
+            <td>
+
+            </td>
+        </tr>
     </tbody>
   </table>
 
@@ -461,7 +492,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-handle_camera"></span><h3>private  subroutine <a href='../proc/handle_camera.html'>handle_camera</a>(child, dects, counts, context)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-handle_camera"></span><h3>private  subroutine <a href='../proc/handle_camera.html'>handle_camera</a>(child, dects, counts, context, error)  
 </h3></div>
     <div class="panel-body">
           
@@ -538,6 +569,21 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
 <p>Context handle for error reporting.</p>
             </td>
         </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(toml_error),
+            </td>
+<td>intent(out),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>error</strong></td>
+            <td>
+
+            </td>
+        </tr>
     </tbody>
   </table>
 
@@ -546,7 +592,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-handle_circle_dect"></span><h3>private  subroutine <a href='../proc/handle_circle_dect.html'>handle_circle_dect</a>(child, dects, counts, context)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-handle_circle_dect"></span><h3>private  subroutine <a href='../proc/handle_circle_dect.html'>handle_circle_dect</a>(child, dects, counts, context, error)  
 </h3></div>
     <div class="panel-body">
           
@@ -623,6 +669,21 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
 
             </td>
         </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(toml_error),
+            </td>
+<td>intent(out),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>error</strong></td>
+            <td>
+
+            </td>
+        </tr>
     </tbody>
   </table>
 
@@ -631,7 +692,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-parse_detectors"></span><h3>private  subroutine <a href='../proc/parse_detectors.html'>parse_detectors</a>(table, dects, context)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-parse_detectors"></span><h3>private  subroutine <a href='../proc/parse_detectors.html'>parse_detectors</a>(table, dects, context, error)  
 </h3></div>
     <div class="panel-body">
           
@@ -693,6 +754,21 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
 <p>Context handle for error reporting.</p>
             </td>
         </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(toml_error),
+            </td>
+<td>intent(out),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>error</strong></td>
+            <td>
+
+            </td>
+        </tr>
     </tbody>
   </table>
 
@@ -701,7 +777,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-parse_geometry"></span><h3>private  subroutine <a href='../proc/parse_geometry.html'>parse_geometry</a>(table, dict)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-parse_geometry"></span><h3>private  subroutine <a href='../proc/parse_geometry.html'>parse_geometry</a>(table, dict, error)  
 </h3></div>
     <div class="panel-body">
           
@@ -748,6 +824,21 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
 <p>Dictonary used to store metadata</p>
             </td>
         </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(toml_error),
+            </td>
+<td>intent(out),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>error</strong></td>
+            <td>
+
+            </td>
+        </tr>
     </tbody>
   </table>
 
@@ -756,7 +847,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-parse_grid"></span><h3>private  subroutine <a href='../proc/parse_grid.html'>parse_grid</a>(table, dict)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-parse_grid"></span><h3>private  subroutine <a href='../proc/parse_grid.html'>parse_grid</a>(table, dict, error)  
 </h3></div>
     <div class="panel-body">
           
@@ -803,6 +894,21 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
 <p>Dictonary used to store metadata</p>
             </td>
         </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(toml_error),
+            </td>
+<td>intent(out),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>error</strong></td>
+            <td>
+
+            </td>
+        </tr>
     </tbody>
   </table>
 
@@ -811,7 +917,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-parse_output"></span><h3>private  subroutine <a href='../proc/parse_output.html'>parse_output</a>(table)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-parse_output"></span><h3>private  subroutine <a href='../proc/parse_output.html'>parse_output</a>(table, error)  
 </h3></div>
     <div class="panel-body">
           
@@ -843,6 +949,21 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
 <p>Input Toml table </p>
             </td>
         </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(toml_error),
+            </td>
+<td>intent(out),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>error</strong></td>
+            <td>
+
+            </td>
+        </tr>
     </tbody>
   </table>
 
@@ -851,7 +972,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-parse_params"></span><h3>public  subroutine <a href='../proc/parse_params.html'>parse_params</a>(filename, packet, dects, spectrum, dict)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-parse_params"></span><h3>public  subroutine <a href='../proc/parse_params.html'>parse_params</a>(filename, packet, dects, spectrum, dict, error)  
 </h3></div>
     <div class="panel-body">
           
@@ -943,6 +1064,21 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
 <p>dictionary that stores potential metadata to be saved with simulation output</p>
             </td>
         </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(toml_error),
+            </td>
+<td>intent(out),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>error</strong></td>
+            <td>
+<p>Last error raised during parsing. Unallocated if no error raised. Need to handle this on return from parse_params.</p>
+            </td>
+        </tr>
     </tbody>
   </table>
 
@@ -951,7 +1087,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-parse_simulation"></span><h3>private  subroutine <a href='../proc/parse_simulation.html'>parse_simulation</a>(table)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-parse_simulation"></span><h3>private  subroutine <a href='../proc/parse_simulation.html'>parse_simulation</a>(table, error)  
 </h3></div>
     <div class="panel-body">
           
@@ -983,6 +1119,21 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
 <p>Input Toml table </p>
             </td>
         </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(toml_error),
+            </td>
+<td>intent(out),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>error</strong></td>
+            <td>
+
+            </td>
+        </tr>
     </tbody>
   </table>
 
@@ -991,7 +1142,7 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-parse_source"></span><h3>private  subroutine <a href='../proc/parse_source.html'>parse_source</a>(table, packet, dict, spectrum, context)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-parse_source"></span><h3>private  subroutine <a href='../proc/parse_source.html'>parse_source</a>(table, packet, dict, spectrum, context, error)  
 </h3></div>
     <div class="panel-body">
           
@@ -1084,6 +1235,21 @@ any updates here MUST be reflected in docs/config.md</p>
 <p>Context handle for error reporting</p>
             </td>
         </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(toml_error),
+            </td>
+<td>intent(out),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>error</strong></td>
+            <td>
+<p>Error message</p>
+            </td>
+        </tr>
     </tbody>
   </table>
 
@@ -1092,7 +1258,7 @@ any updates here MUST be reflected in docs/config.md</p>
   </div>
 
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-parse_spectrum"></span><h3>private  subroutine <a href='../proc/parse_spectrum.html'>parse_spectrum</a>(table, spectrum, dict, context)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-parse_spectrum"></span><h3>private  subroutine <a href='../proc/parse_spectrum.html'>parse_spectrum</a>(table, spectrum, dict, context, error)  
 </h3></div>
     <div class="panel-body">
           
@@ -1165,6 +1331,21 @@ any updates here MUST be reflected in docs/config.md</p>
             </td>
             <td>::</td>
             <td><strong>context</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(toml_error),
+            </td>
+<td>intent(out),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>error</strong></td>
             <td>
 
             </td>

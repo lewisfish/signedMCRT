@@ -105,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 0.6% of total for procedures.">28 statements</a>
+               title=" 0.6% of total for procedures.">29 statements</a>
           </li>
 
             <li id="source-file">
@@ -165,7 +165,7 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>private  subroutine parse_geometry(table, dict)  
+    <h2>private  subroutine parse_geometry(table, dict, error)  
 </h2>
         <div class="panel panel-default">
       <div class="panel-heading">
@@ -225,6 +225,21 @@
                 <p>Dictonary used to store metadata</p>
             </td>
         </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-error~8"></span>
+              type(toml_error),
+            </td>
+<td>intent(out),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>error</strong></td>
+            <td>
+                
+            </td>
+        </tr>
     </tbody>
   </table>
 
@@ -273,7 +288,7 @@
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">parse_geometry</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="n">dict</span><span class="p">)</span><span class="w"></span>
+    <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">subroutine </span><span class="n">parse_geometry</span><span class="p">(</span><span class="n">table</span><span class="p">,</span><span class="w"> </span><span class="n">dict</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="p">)</span><span class="w"></span>
 <span class="w">        </span><span class="c">!! parse geometry information</span>
 <span class="w">        </span><span class="k">use </span><span class="n">sim_state_mod</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">state</span><span class="w"></span>
 <span class="w">        </span>
@@ -281,7 +296,8 @@
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_table</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">INOUT</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">table</span><span class="w"></span>
 <span class="w">        </span><span class="c">!&gt; Dictonary used to store metadata</span>
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_table</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">INOUT</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dict</span><span class="w"></span>
-<span class="w">        </span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_error</span><span class="p">),</span><span class="w">  </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">error</span><span class="w"></span>
+
 <span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_table</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">child</span><span class="w"></span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w">             </span><span class="kd">::</span><span class="w"> </span><span class="n">tau</span><span class="p">,</span><span class="w"> </span><span class="n">musb</span><span class="p">,</span><span class="w"> </span><span class="n">musc</span><span class="p">,</span><span class="w"> </span><span class="n">muab</span><span class="p">,</span><span class="w"> </span><span class="n">muac</span><span class="p">,</span><span class="w"> </span><span class="n">hgg</span><span class="w"></span>
 <span class="w">        </span><span class="kt">integer</span><span class="w">                   </span><span class="kd">::</span><span class="w"> </span><span class="n">num_spheres</span><span class="w"></span>
@@ -307,7 +323,7 @@
 <span class="w">            </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;hgg&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">hgg</span><span class="p">,</span><span class="w"> </span><span class="mf">0.7_wp</span><span class="p">)</span><span class="w"></span>
 <span class="w">            </span><span class="k">call </span><span class="n">set_value</span><span class="p">(</span><span class="n">dict</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;hgg&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">hgg</span><span class="p">)</span><span class="w"></span>
 <span class="w">        </span><span class="k">else</span>
-<span class="k">            error stop</span><span class="w"> </span><span class="s2">&quot;Need geometry table in input param file&quot;</span><span class="w"></span>
+<span class="k">            call </span><span class="n">make_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Need geometry table in input param file&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
 <span class="w">        </span><span class="k">end if</span>
 
 <span class="k">    end subroutine </span><span class="n">parse_geometry</span><span class="w"></span>
