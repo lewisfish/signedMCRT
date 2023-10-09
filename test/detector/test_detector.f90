@@ -136,6 +136,7 @@ module testsDetectorMod
         maxval = 100._wp
         r1 = 0.5_wp
         r2 = 1.0_wp
+        pos = vector(0., 0., 0.)
         a = annulus_dect(pos, dir, layer, r1, r2, nbins, maxval, .false.)
 
         pos = vector(.75_wp, 0._wp, 0._wp)

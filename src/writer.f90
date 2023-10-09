@@ -50,20 +50,20 @@ array  = array * ((2._sp*xmax*2._sp*ymax)/(nphotons * (2._sp * xmax / nxg) * (2.
         end subroutine normalise_fluence
 
 
-        subroutine write_detected_photons(detectors)
+        subroutine write_detected_photons(dects)
 
             use detectors
             use constants, only: fileplace
             use utils, only : str
 
-            type(dect_array), intent(in) :: detectors(:)
+            type(dect_array), intent(in) :: dects(:)
 
             integer :: i, j, u
             character(len=:), allocatable :: hdr
 
-            do i = 1, size(detectors)
+            do i = 1, size(dects)
                 open(newunit=u, file=trim(fileplace)//"detectors/detector_"//str(i)//".dat")
-                associate(x => detectors(i)%p)
+                associate(x => dects(i)%p)
                     select type(x)
                     type is(circle_dect)
                         ! hdr = "# pos, layer, nbins, bin_wid, radius"//new_line("a")//str(x%pos)//","//str(x%layer)//","//str(x%nbins)//","//str(x%bin_wid)//","//str(x%radius)

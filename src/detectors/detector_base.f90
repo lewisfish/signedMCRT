@@ -33,9 +33,9 @@ module detector_mod
         !> Boolean, if true store the history of the photon prior to detection.
         logical :: trackHistory
         contains
-            private
+            
             procedure(recordHitInterface), deferred, public :: record_hit
-            procedure(checkHitInterface),  deferred :: check_hit
+            procedure(checkHitInterface),  deferred, public :: check_hit
     end type detector
 
     abstract interface
