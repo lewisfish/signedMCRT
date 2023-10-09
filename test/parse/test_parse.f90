@@ -16,8 +16,8 @@ module testsParseMod
         type(testsuite_type), allocatable, intent(out) :: testsuites(:)
         type(context_t) :: context
 
-        testsuites = &![new_testsuite("Test input file: Success", collect_suite1, context),&
-                      [new_testsuite("Test input file: Fail", collect_suite2, context)&
+        testsuites = [new_testsuite("Test input file: Success", collect_suite1, context),&
+                      new_testsuite("Test input file: Fail", collect_suite2, context)&
                      ]
 
     end subroutine parse_suite
