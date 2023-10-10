@@ -44,16 +44,12 @@ module testsParseMod
                 new_unittest("Test failing: No Source Table", test_no_source_table), &
                 new_unittest("Test failing: Not valid Source Table 1", test_non_valid_src_table_1), &
                 new_unittest("Test failing: Not valid Source Table 2", test_non_valid_src_table_2), &
-                new_unittest("Test failing: Not valid Source Table 3", test_non_valid_src_table_3) &
-                ! new_unittest("Test failing: Not valid Source Table 4", test_non_valid_src_table_4), &
-                ! new_unittest("Test failing: Not valid Source Table 5", test_non_valid_src_table_5), &
-                ! new_unittest("Test failing: Not valid Source Table 6", test_non_valid_src_table_6), &
-                ! new_unittest("Test failing: Not valid Source Table 7", test_non_valid_src_table_7), &
-                ! new_unittest("Test failing: Not valid Source Table 8", test_non_valid_src_table_8), &
-                ! new_unittest("Test failing: Not valid Source Table 9", test_non_valid_src_table_9), &
-                ! new_unittest("Test failing: Not valid Source Table 10", test_non_valid_src_table_10), &
-                ! new_unittest("Test failing: Not valid Source Table 12", test_non_valid_src_table_11), &
-                ! new_unittest("Test failing: Not valid Source Table 11", test_non_valid_src_table_12), &
+                new_unittest("Test failing: Not valid Source Table 3", test_non_valid_src_table_3), &
+                new_unittest("Test failing: Not valid Source Table 4", test_non_valid_src_table_4), &
+                new_unittest("Test failing: Not valid Source Table 5", test_non_valid_src_table_5), &
+                new_unittest("Test failing: Not valid Source Table 6", test_non_valid_src_table_6), &
+                new_unittest("Test failing: Not valid Source Table 7", test_non_valid_src_table_7), &
+                new_unittest("Test failing: Not valid Source Table 8", test_non_valid_src_table_8) &
                 ! new_unittest("Test failing: Not valid detector type", test_non_valid_dect), &
                 ! new_unittest("Test failing: Not valid Annulus dect", test_non_valid_annulus), &
                 ! new_unittest("Test failing: Not valid spectrum type", test_non_valid_spectrum)&
@@ -172,6 +168,243 @@ module testsParseMod
         if (allocated(error))return
 
     end subroutine test_non_valid_src_table_3
+
+    subroutine test_non_valid_src_table_4(error)
+
+        use photonMod, only : photon
+        use detectors, only : dect_array
+        use piecewiseMod, only : spectrum_t, constant
+        use tomlf, only: toml_table, toml_error
+
+        type(error_type), allocatable, intent(out) :: error
+
+        character(len=:),allocatable  :: filename
+        type(toml_table)              :: dict
+        type(photon)                  :: packet
+        type(dect_array), allocatable :: dects(:)
+        type(spectrum_t)              :: spectrum
+        type(toml_error), allocatable :: err
+        integer :: u
+
+        filename = "test/parse/test_fail1.toml"
+        open(newunit=u, file=filename)
+        write(u,'(a)') "[source]"
+        write(u,'(a)') "name='uniform'"
+        write(u,'(a)') "position=[0.0, 0.0, 0.0]"
+        write(u,'(a)') "direction='blah'"
+        close(u)
+
+        call parse_params(filename, packet, dects, spectrum, dict, err)
+        call check(error, allocated(err), .true.)
+        if (allocated(error))return
+
+    end subroutine test_non_valid_src_table_4
+
+    subroutine test_non_valid_src_table_5(error)
+
+        use photonMod, only : photon
+        use detectors, only : dect_array
+        use piecewiseMod, only : spectrum_t, constant
+        use tomlf, only: toml_table, toml_error
+
+        type(error_type), allocatable, intent(out) :: error
+
+        character(len=:),allocatable  :: filename
+        type(toml_table)              :: dict
+        type(photon)                  :: packet
+        type(dect_array), allocatable :: dects(:)
+        type(spectrum_t)              :: spectrum
+        type(toml_error), allocatable :: err
+        integer :: u
+
+        filename = "test/parse/test_fail1.toml"
+        open(newunit=u, file=filename)
+        write(u,'(a)') "[source]"
+        write(u,'(a)') "name='uniform'"
+        write(u,'(a)') "position=[0.0, 0.0, 0.0]"
+        close(u)
+
+        call parse_params(filename, packet, dects, spectrum, dict, err)
+        call check(error, allocated(err), .true.)
+        if (allocated(error))return
+
+    end subroutine test_non_valid_src_table_5
+
+    subroutine test_non_valid_src_table_6(error)
+
+        use photonMod, only : photon
+        use detectors, only : dect_array
+        use piecewiseMod, only : spectrum_t, constant
+        use tomlf, only: toml_table, toml_error
+
+        type(error_type), allocatable, intent(out) :: error
+
+        character(len=:),allocatable  :: filename
+        type(toml_table)              :: dict
+        type(photon)                  :: packet
+        type(dect_array), allocatable :: dects(:)
+        type(spectrum_t)              :: spectrum
+        type(toml_error), allocatable :: err
+        integer :: u
+
+        filename = "test/parse/test_fail1.toml"
+        open(newunit=u, file=filename)
+        write(u,'(a)') "[source]"
+        write(u,'(a)') "name='uniform'"
+        write(u,'(a)') "position=[0.0, 0.0, 0.0]"
+        write(u,'(a)') "direction='-z'"
+        close(u)
+
+        call parse_params(filename, packet, dects, spectrum, dict, err)
+        call check(error, allocated(err), .true.)
+        if (allocated(error))return
+
+    end subroutine test_non_valid_src_table_6
+
+
+    subroutine test_non_valid_src_table_7(error)
+
+        use photonMod, only : photon
+        use detectors, only : dect_array
+        use piecewiseMod, only : spectrum_t, constant
+        use tomlf, only: toml_table, toml_error
+
+        type(error_type), allocatable, intent(out) :: error
+
+        character(len=:),allocatable  :: filename
+        type(toml_table)              :: dict
+        type(photon)                  :: packet
+        type(dect_array), allocatable :: dects(:)
+        type(spectrum_t)              :: spectrum
+        type(toml_error), allocatable :: err
+        integer :: u
+
+        filename = "test/parse/test_fail1.toml"
+        open(newunit=u, file=filename)
+        write(u,'(a)') "[source]"
+        write(u,'(a)') "name='uniform'"
+        write(u,'(a)') "position=[0.0, 0.0, 0.0]"
+        write(u,'(a)') "direction='-z'"
+        write(u,'(a)') "point1 = [0.0, 0.0, 0.0]"
+        close(u)
+
+        call parse_params(filename, packet, dects, spectrum, dict, err)
+        call check(error, allocated(err), .true.)
+        if (allocated(error))return
+
+        filename = "test/parse/test_fail1.toml"
+        open(newunit=u, file=filename)
+        write(u,'(a)') "[source]"
+        write(u,'(a)') "name='uniform'"
+        write(u,'(a)') "position=[0.0, 0.0, 0.0]"
+        write(u,'(a)') "direction='-z'"
+        write(u,'(a)') "point1 = [0.0, 0.0]"
+        write(u,'(a)') "point2 = [0.0, 0.0, 0.0]"
+        write(u,'(a)') "point3 = [0.0, 0.0, 0.0]"
+        close(u)
+
+        call parse_params(filename, packet, dects, spectrum, dict, err)
+        call check(error, allocated(err), .true.)
+        if (allocated(error))return
+
+    end subroutine test_non_valid_src_table_7
+
+    subroutine test_non_valid_src_table_8(error)
+
+        use photonMod, only : photon
+        use detectors, only : dect_array
+        use piecewiseMod, only : spectrum_t, constant
+        use tomlf, only: toml_table, toml_error
+
+        type(error_type), allocatable, intent(out) :: error
+
+        character(len=:),allocatable  :: filename
+        type(toml_table)              :: dict
+        type(photon)                  :: packet
+        type(dect_array), allocatable :: dects(:)
+        type(spectrum_t)              :: spectrum
+        type(toml_error), allocatable :: err
+        integer :: u
+
+        filename = "test/parse/test_fail1.toml"
+        open(newunit=u, file=filename)
+        write(u,'(a)') "[source]"
+        write(u,'(a)') "name='uniform'"
+        write(u,'(a)') "position=[0.0, 0.0, 0.0]"
+        write(u,'(a)') "direction='-z'"
+        write(u,'(a)') "point1 = [0.0, 0.0, 0.0]"
+        write(u,'(a)') "point2 = [0.0, 0.0, 0.0]"
+        close(u)
+
+        call parse_params(filename, packet, dects, spectrum, dict, err)
+        call check(error, allocated(err), .true.)
+        if (allocated(error))return
+
+        filename = "test/parse/test_fail1.toml"
+        open(newunit=u, file=filename)
+        write(u,'(a)') "[source]"
+        write(u,'(a)') "name='uniform'"
+        write(u,'(a)') "position=[0.0, 0.0, 0.0]"
+        write(u,'(a)') "direction='-z'"
+        write(u,'(a)') "point1 = [0.0, 0.0, 0.0]"
+        write(u,'(a)') "point2 = [0.0, 0.0]"
+        write(u,'(a)') "point3 = [0.0, 0.0, 0.0]"
+        close(u)
+
+        call parse_params(filename, packet, dects, spectrum, dict, err)
+        call check(error, allocated(err), .true.)
+        if (allocated(error))return
+
+    end subroutine test_non_valid_src_table_8
+
+    subroutine test_non_valid_src_table_9(error)
+
+        use photonMod, only : photon
+        use detectors, only : dect_array
+        use piecewiseMod, only : spectrum_t, constant
+        use tomlf, only: toml_table, toml_error
+
+        type(error_type), allocatable, intent(out) :: error
+
+        character(len=:),allocatable  :: filename
+        type(toml_table)              :: dict
+        type(photon)                  :: packet
+        type(dect_array), allocatable :: dects(:)
+        type(spectrum_t)              :: spectrum
+        type(toml_error), allocatable :: err
+        integer :: u
+
+        filename = "test/parse/test_fail1.toml"
+        open(newunit=u, file=filename)
+        write(u,'(a)') "[source]"
+        write(u,'(a)') "name='uniform'"
+        write(u,'(a)') "position=[0.0, 0.0, 0.0]"
+        write(u,'(a)') "direction='-z'"
+        write(u,'(a)') "point1 = [0.0, 0.0, 0.0]"
+        write(u,'(a)') "point2 = [0.0, 0.0, 0.0]"
+        write(u,'(a)') "point3 = [0.0, 0.0, 0.0]"
+        close(u)
+
+        call parse_params(filename, packet, dects, spectrum, dict, err)
+        call check(error, allocated(err), .true.)
+        if (allocated(error))return
+
+        filename = "test/parse/test_fail1.toml"
+        open(newunit=u, file=filename)
+        write(u,'(a)') "[source]"
+        write(u,'(a)') "name='uniform'"
+        write(u,'(a)') "position=[0.0, 0.0, 0.0]"
+        write(u,'(a)') "direction='-z'"
+        write(u,'(a)') "point1 = [0.0, 0.0, 0.0]"
+        write(u,'(a)') "point2 = [0.0, 0.0, 0.0]"
+        write(u,'(a)') "point3 = [0.0, 0.0]"
+        close(u)
+
+        call parse_params(filename, packet, dects, spectrum, dict, err)
+        call check(error, allocated(err), .true.)
+        if (allocated(error))return
+
+    end subroutine test_non_valid_src_table_9
 
     subroutine test_no_source_table(error)
 
