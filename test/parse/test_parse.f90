@@ -42,14 +42,15 @@ module testsParseMod
         testsuite = [ &
                 new_unittest("Test failing: No file", test_non_existant), &
                 new_unittest("Test failing: No Source Table", test_no_source_table), &
-                new_unittest("Test failing: Not valid Source Table 1", test_non_valid_src_table_1), &
-                new_unittest("Test failing: Not valid Source Table 2", test_non_valid_src_table_2), &
-                new_unittest("Test failing: Not valid Source Table 3", test_non_valid_src_table_3), &
-                new_unittest("Test failing: Not valid Source Table 4", test_non_valid_src_table_4), &
-                new_unittest("Test failing: Not valid Source Table 5", test_non_valid_src_table_5), &
-                new_unittest("Test failing: Not valid Source Table 6", test_non_valid_src_table_6), &
-                new_unittest("Test failing: Not valid Source Table 7", test_non_valid_src_table_7), &
-                new_unittest("Test failing: Not valid Source Table 8", test_non_valid_src_table_8), &
+                new_unittest("Test failing: Wrong size of position vector", test_non_valid_src_table_1), &
+                new_unittest("Test failing: No position vector", test_non_valid_src_table_2), &
+                new_unittest("Test failing: Wrong size of direction vector", test_non_valid_src_table_3), &
+                new_unittest("Test failing: Invalid direction", test_non_valid_src_table_4), &
+                new_unittest("Test failing: No direction vector", test_non_valid_src_table_5), &
+                new_unittest("Test failing: Invalid point vector 1", test_non_valid_src_table_6), &
+                new_unittest("Test failing: Invalid point vector 2", test_non_valid_src_table_7), &
+                new_unittest("Test failing: Invalid point vector 3", test_non_valid_src_table_8), &
+                new_unittest("Test failing: Invalid point vector 4", test_non_valid_src_table_9), &
                 new_unittest("Test failing: Not valid detector type", test_non_valid_dect), &
                 new_unittest("Test failing: Not valid Annulus dect", test_non_valid_annulus), &
                 new_unittest("Test failing: Not valid spectrum type", test_non_valid_spectrum)&
@@ -382,21 +383,6 @@ module testsParseMod
         write(u,'(a)') "direction='-z'"
         write(u,'(a)') "point1 = [0.0, 0.0, 0.0]"
         write(u,'(a)') "point2 = [0.0, 0.0, 0.0]"
-        write(u,'(a)') "point3 = [0.0, 0.0, 0.0]"
-        close(u)
-
-        call parse_params(filename, packet, dects, spectrum, dict, err)
-        call check(error, allocated(err), .true.)
-        if (allocated(error))return
-
-        filename = "test/parse/test_fail1.toml"
-        open(newunit=u, file=filename)
-        write(u,'(a)') "[source]"
-        write(u,'(a)') "name='uniform'"
-        write(u,'(a)') "position=[0.0, 0.0, 0.0]"
-        write(u,'(a)') "direction='-z'"
-        write(u,'(a)') "point1 = [0.0, 0.0, 0.0]"
-        write(u,'(a)') "point2 = [0.0, 0.0, 0.0]"
         write(u,'(a)') "point3 = [0.0, 0.0]"
         close(u)
 
@@ -421,8 +407,13 @@ module testsParseMod
         type(dect_array), allocatable :: dects(:)
         type(spectrum_t)              :: spectrum
         type(toml_error), allocatable :: err
+        integer                       :: u
 
         filename = "test/parse/test_fail1.toml"
+        open(newunit=u, file=filename)
+        write(u,"(a)") ""
+        close(u)
+
         call parse_params(filename, packet, dects, spectrum, dict, err)
         call check(error, allocated(err), .true.)
         if (allocated(error))return
