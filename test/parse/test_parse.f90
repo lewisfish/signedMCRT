@@ -49,10 +49,10 @@ module testsParseMod
                 new_unittest("Test failing: Not valid Source Table 5", test_non_valid_src_table_5), &
                 new_unittest("Test failing: Not valid Source Table 6", test_non_valid_src_table_6), &
                 new_unittest("Test failing: Not valid Source Table 7", test_non_valid_src_table_7), &
-                new_unittest("Test failing: Not valid Source Table 8", test_non_valid_src_table_8) &
-                ! new_unittest("Test failing: Not valid detector type", test_non_valid_dect), &
-                ! new_unittest("Test failing: Not valid Annulus dect", test_non_valid_annulus), &
-                ! new_unittest("Test failing: Not valid spectrum type", test_non_valid_spectrum)&
+                new_unittest("Test failing: Not valid Source Table 8", test_non_valid_src_table_8), &
+                new_unittest("Test failing: Not valid detector type", test_non_valid_dect), &
+                new_unittest("Test failing: Not valid Annulus dect", test_non_valid_annulus), &
+                new_unittest("Test failing: Not valid spectrum type", test_non_valid_spectrum)&
                 ]
     end subroutine collect_suite2
 
@@ -606,4 +606,106 @@ module testsParseMod
         end do
 
     end subroutine detector_test
+
+    subroutine test_non_valid_dect(error)
+
+        use photonMod, only : photon
+        use detectors, only : dect_array, circle_dect, camera, annulus_dect
+        use piecewiseMod, only : spectrum_t
+        use tomlf, only: toml_table, toml_error
+
+        type(error_type), allocatable, intent(out) :: error
+        character(len=:),allocatable                  :: filename
+        type(toml_table)              :: dict
+        type(photon)                  :: packet
+        type(dect_array), allocatable :: dects(:)
+        type(spectrum_t)              :: spectrum
+        type(toml_error), allocatable :: err
+
+        integer :: u
+
+        filename = "test/parse/test_fail1.toml"
+        open(newunit=u, file=filename)
+        write(u,'(a)') "[source]"
+        write(u,'(a)') "position=[0.0, 0.0, 0.0]"
+        write(u,'(a)') "name='point'"
+        write(u,'(a)') "[[detectors]]"
+        write(u,'(a)') "type='blah'"
+        close(u)        
+
+        call parse_params(filename, packet, dects, spectrum, dict, err)
+        call check(error, allocated(err), .true.)
+        if(allocated(error))return
+
+    end subroutine test_non_valid_dect
+
+
+    subroutine test_non_valid_annulus(error)
+
+        use photonMod, only : photon
+        use detectors, only : dect_array, circle_dect, camera, annulus_dect
+        use piecewiseMod, only : spectrum_t
+        use tomlf, only: toml_table, toml_error
+
+        type(error_type), allocatable, intent(out) :: error
+        character(len=:),allocatable                  :: filename
+        type(toml_table)              :: dict
+        type(photon)                  :: packet
+        type(dect_array), allocatable :: dects(:)
+        type(spectrum_t)              :: spectrum
+        type(toml_error), allocatable :: err
+
+        integer :: u
+
+        filename = "test/parse/test_fail1.toml"
+        open(newunit=u, file=filename)
+        write(u,'(a)') "[source]"
+        write(u,'(a)') "position=[0.0, 0.0, 0.0]"
+        write(u,'(a)') "name='point'"
+        write(u,'(a)') "[[detectors]]"
+        write(u,'(a)') "type='annulus'"
+        write(u,'(a)') "position=[0.0, 0.0, 0.0]"
+        write(u,'(a)') "direction=[0.0, 0.0, -1.0]"
+        write(u,'(a)') "layer=3"
+        write(u,'(a)') "radius1=5.0"
+        write(u,'(a)') "radius2=1.0"
+        close(u)        
+
+        call parse_params(filename, packet, dects, spectrum, dict, err)
+        call check(error, allocated(err), .true.)
+        if(allocated(error))return
+
+    end subroutine test_non_valid_annulus
+
+
+    subroutine test_non_valid_spectrum(error)
+
+        use photonMod, only : photon
+        use detectors, only : dect_array, circle_dect, camera, annulus_dect
+        use piecewiseMod, only : spectrum_t
+        use tomlf, only: toml_table, toml_error
+
+        type(error_type), allocatable, intent(out) :: error
+        character(len=:),allocatable                  :: filename
+        type(toml_table)              :: dict
+        type(photon)                  :: packet
+        type(dect_array), allocatable :: dects(:)
+        type(spectrum_t)              :: spectrum
+        type(toml_error), allocatable :: err
+
+        integer :: u
+
+        filename = "test/parse/test_fail1.toml"
+        open(newunit=u, file=filename)
+        write(u,'(a)') "[source]"
+        write(u,'(a)') "position=[0.0, 0.0, 0.0]"
+        write(u,'(a)') "name='point'"
+        write(u,'(a)') "spectrum_type='blah'"
+        close(u)        
+
+        call parse_params(filename, packet, dects, spectrum, dict, err)
+        call check(error, allocated(err), .true.)
+        if(allocated(error))return
+
+    end subroutine test_non_valid_spectrum
 end module testsParseMod
