@@ -105,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 0.6% of total for procedures.">29 statements</a>
+               title=" 0.7% of total for procedures.">32 statements</a>
           </li>
 
             <li id="source-file">
@@ -174,8 +174,8 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='../module/sim_state_mod.html'>sim_state_mod</a></li>
                 <li><a href='../module/detectors.html'>detectors</a></li>
+                <li><a href='../module/sim_state_mod.html'>sim_state_mod</a></li>
             </ul>
           </li>
       </ul>
@@ -341,15 +341,18 @@
 <span class="w">        </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;radius1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">radius1</span><span class="p">)</span><span class="w"></span>
 <span class="w">        </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;radius2&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">radius2</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span><span class="w"></span>
 <span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">radius2</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">radius1</span><span class="p">)</span><span class="k">then</span>
-<span class="k">            print</span><span class="s1">&#39;(a)&#39;</span><span class="p">,</span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Radii are invalid&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Expected radius2 &gt; radius 1&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="k">stop </span><span class="mi">1</span><span class="w"></span>
-<span class="w">        </span><span class="k">end if</span>
+<span class="k">            call </span><span class="n">make_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Radii are invalid&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Expected radius2 &gt; radius 1&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="k">return</span>
+<span class="k">        end if</span>
 <span class="k">            call </span><span class="n">get_value</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;nbins&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">nbins</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span><span class="w"></span>
 <span class="w">        </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;maxval&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">maxval</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="mf">0._wp</span><span class="p">)</span><span class="w"></span>
 <span class="w">        </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;trackHistory&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">trackHistory</span><span class="p">,</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.)</span><span class="w"></span>
 <span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">trackHistory</span><span class="p">)</span><span class="n">state</span><span class="p">%</span><span class="n">trackHistory</span><span class="o">=</span><span class="p">.</span><span class="n">true</span><span class="p">.</span><span class="w"></span>
 <span class="cp">#ifdef _OPENMP</span>
-<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">trackHistory</span><span class="p">)</span><span class="k">error stop</span><span class="w"> </span><span class="s2">&quot;Track history currently incompatable with OpenMP!&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="p">(</span><span class="n">trackHistory</span><span class="p">)</span><span class="k">then</span>
+<span class="k">            call </span><span class="n">make_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Track history currently incompatable with OpenMP!&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="k">return</span>
+<span class="k">        end if</span><span class="w"></span>
 <span class="cp">#endif</span>
 <span class="w">        </span><span class="n">dects</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">annulus_dect</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span><span class="w"> </span><span class="n">dir</span><span class="p">,</span><span class="w"> </span><span class="n">layer</span><span class="p">,</span><span class="w"> </span><span class="n">radius1</span><span class="p">,</span><span class="w"> </span><span class="n">radius2</span><span class="p">,</span><span class="w"> </span><span class="n">nbins</span><span class="p">,</span><span class="w"> </span><span class="nb">maxval</span><span class="p">,</span><span class="w"> </span><span class="n">trackHistory</span><span class="p">)</span><span class="w"></span>
 <span class="w">        </span><span class="n">counts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">counts</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>

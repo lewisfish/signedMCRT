@@ -175,7 +175,10 @@ module parse_mod
         call get_value(child, "trackHistory", trackHistory, .false.)
         if(trackHistory)state%trackHistory=.true.
 #ifdef _OPENMP
-        if(trackHistory)error stop "Track history currently incompatable with OpenMP!"
+        if(trackHistory)then
+            call make_error(error, "Track history currently incompatable with OpenMP!", -1)
+            return
+        end if
 #endif
         dects(counts) = camera(p1, p2, p3, layer, nbins, maxval, trackHistory)
         counts = counts + 1
@@ -208,7 +211,10 @@ module parse_mod
         call get_value(child, "trackHistory", trackHistory, .false.)
         if(trackHistory)state%trackHistory=.true.
 #ifdef _OPENMP
-        if(trackHistory)error stop "Track history currently incompatable with OpenMP!"
+        if(trackHistory)then
+            call make_error(error, "Track history currently incompatable with OpenMP!", -1)
+            return
+        end if
 #endif
         dects(counts) = circle_dect(pos, dir, layer, radius, nbins, maxval, trackHistory)
         counts = counts + 1
@@ -237,15 +243,18 @@ module parse_mod
         call get_value(child, "radius1", radius1)
         call get_value(child, "radius2", radius2, origin=origin)
         if(radius2 <= radius1)then
-            print'(a)',context%report("Radii are invalid", origin, "Expected radius2 > radius 1")
-            stop 1
+            call make_error(error, context%report("Radii are invalid", origin, "Expected radius2 > radius 1"), -1)
+            return
         end if
             call get_value(child, "nbins", nbins, 100)
         call get_value(child, "maxval", maxval, 100._wp)
         call get_value(child, "trackHistory", trackHistory, .false.)
         if(trackHistory)state%trackHistory=.true.
 #ifdef _OPENMP
-        if(trackHistory)error stop "Track history currently incompatable with OpenMP!"
+        if(trackHistory)then
+            call make_error(error, "Track history currently incompatable with OpenMP!", -1)
+            return
+        end if
 #endif
         dects(counts) = annulus_dect(pos, dir, layer, radius1, radius2, nbins, maxval, trackHistory)
         counts = counts + 1
@@ -664,7 +673,8 @@ module parse_mod
             if(associated(children))then
                 nlen = len(children)
                 if(nlen < 3)then
-                    error stop "Need a vector of size 3 for render_size."
+                    call make_error(error, "Need a vector of size 3 for render_size.", -1)
+                    return
                 end if
                 do i = 1, len(children)
                     call get_value(children, i, state%render_size(i))

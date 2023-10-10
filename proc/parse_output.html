@@ -105,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 0.7% of total for procedures.">31 statements</a>
+               title=" 0.7% of total for procedures.">32 statements</a>
           </li>
 
             <li id="source-file">
@@ -297,8 +297,9 @@
 <span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="nb">associated</span><span class="p">(</span><span class="n">children</span><span class="p">))</span><span class="k">then</span>
 <span class="k">                </span><span class="n">nlen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">)</span><span class="w"></span>
 <span class="w">                </span><span class="k">if</span><span class="p">(</span><span class="n">nlen</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="k">then</span>
-<span class="k">                    error stop</span><span class="w"> </span><span class="s2">&quot;Need a vector of size 3 for render_size.&quot;</span><span class="w"></span>
-<span class="w">                </span><span class="k">end if</span>
+<span class="k">                    call </span><span class="n">make_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Need a vector of size 3 for render_size.&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">                    </span><span class="k">return</span>
+<span class="k">                end if</span>
 <span class="k">                do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">children</span><span class="p">)</span><span class="w"></span>
 <span class="w">                    </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">children</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">state</span><span class="p">%</span><span class="n">render_size</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="w"></span>
 <span class="w">                </span><span class="k">end do</span>
