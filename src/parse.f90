@@ -66,12 +66,13 @@ module parse_mod
         use sim_state_mod, only : state
 
         !> Input Toml table
-        type(toml_table),  intent(inout) :: table
+        type(toml_table),               intent(inout) :: table
         !> Detector array to be filled.
-        type(dect_array), allocatable :: dects(:)
+        type(dect_array), allocatable,  intent(out)   :: dects(:)
         !> Context handle for error reporting.
-        type(toml_context), intent(in) :: context
-        type(toml_error),  allocatable, intent(out) :: error
+        type(toml_context),             intent(in)    :: context
+        !> Error message
+        type(toml_error),  allocatable, intent(out)   :: error
 
         type(toml_array), pointer :: array
         type(toml_table), pointer :: child
@@ -105,9 +106,18 @@ module parse_mod
             end select
         end do
 
-        if(c_counter > 0)allocate(dect_c(c_counter))
-        if(a_counter > 0)allocate(dect_a(a_counter))
-        if(cam_counter > 0)allocate(dect_cam(cam_counter))
+        if(c_counter > 0)then
+            if(allocated(dect_c))deallocate(dect_c)
+            allocate(dect_c(c_counter))
+        end if
+        if(a_counter > 0)then
+            if(allocated(dect_a))deallocate(dect_a)
+            allocate(dect_a(a_counter))
+        end if
+        if(cam_counter > 0)then
+            if(allocated(dect_cam))deallocate(dect_cam)
+            allocate(dect_cam(cam_counter))
+        end if
         c_counter = 1
         a_counter = 1
         cam_counter = 1
@@ -153,12 +163,16 @@ module parse_mod
         use detectors,     only : camera
         use sim_state_mod, only : state
 
-        type(toml_table), pointer, intent(in)    :: child
-        type(camera),              intent(inout) :: dects(:)
-        integer,                   intent(inout) :: counts
+        !> Detector table
+        type(toml_table), pointer,     intent(in)    :: child
+        !> Array of cameras
+        type(camera),                  intent(inout) :: dects(:)
+        !> Number of cameras to create
+        integer,                       intent(inout) :: counts
         !> Context handle for error reporting.
-        type(toml_context),        intent(in)    :: context
-        type(toml_error), allocatable, intent(out) :: error
+        type(toml_context),            intent(in)    :: context
+        !> Error message
+        type(toml_error), allocatable, intent(out)   :: error
 
         integer       :: layer, nbins
         real(kind=wp) :: maxval
@@ -190,11 +204,16 @@ module parse_mod
         use detectors,     only : circle_dect
         use sim_state_mod, only : state
 
-        type(toml_table), pointer, intent(in)    :: child
-        type(circle_dect),         intent(inout) :: dects(:)
-        integer,                   intent(inout) :: counts
-        type(toml_context),        intent(in)    :: context
-        type(toml_error), allocatable, intent(out) :: error
+        !> Detector table
+        type(toml_table), pointer,     intent(in)    :: child
+        !> Array ofcircle_dects
+        type(circle_dect),             intent(inout) :: dects(:)
+        !> Number of circle_dects to create
+        integer,                       intent(inout) :: counts
+        !> Context handle for error reporting.
+        type(toml_context),            intent(in)    :: context
+        !> Error message
+        type(toml_error), allocatable, intent(out)   :: error
 
         integer       :: layer, nbins
         real(kind=wp) :: maxval, radius
@@ -223,14 +242,21 @@ module parse_mod
 
     subroutine handle_annulus_dect(child, dects, counts, context, error)
         !! Read in Annulus_detector settings and initalise variable
+        
         use detectors,     only : annulus_dect
         use sim_state_mod, only : state
+        use utils,         only : str
 
-        type(toml_table), pointer, intent(in)    :: child
-        type(annulus_dect),        intent(inout) :: dects(:)
-        integer,                   intent(inout) :: counts
-        type(toml_context),        intent(in) :: context
-        type(toml_error), allocatable, intent(out) :: error
+        !> Detector Table
+        type(toml_table), pointer,     intent(in)    :: child
+        !> Array of annulus_dects
+        type(annulus_dect),            intent(inout) :: dects(:)
+        !> Number of anulluar dects to create
+        integer,                       intent(inout) :: counts
+        !> Context handle for error reporting.
+        type(toml_context),            intent(in)    :: context
+        !> Error message
+        type(toml_error), allocatable, intent(out)   :: error
 
         integer       :: layer, nbins, origin
         real(kind=wp) :: maxval, radius1, radius2
@@ -242,11 +268,15 @@ module parse_mod
         call get_value(child, "layer", layer, 1)
         call get_value(child, "radius1", radius1)
         call get_value(child, "radius2", radius2, origin=origin)
+        
         if(radius2 <= radius1)then
-            call make_error(error, context%report("Radii are invalid", origin, "Expected radius2 > radius 1"), -1)
+            call make_error(error,&
+            context%report("Radii are invalid", origin, &
+            "Expected radius2 ("//str(radius2,6)//") > radius 1 ("//str(radius1,6)//")"), -1)
             return
         end if
-            call get_value(child, "nbins", nbins, 100)
+        
+        call get_value(child, "nbins", nbins, 100)
         call get_value(child, "maxval", maxval, 100._wp)
         call get_value(child, "trackHistory", trackHistory, .false.)
         if(trackHistory)state%trackHistory=.true.
@@ -273,12 +303,16 @@ module parse_mod
         use stb_image_mod
         use, intrinsic :: iso_c_binding
 
-        type(toml_table),  intent(INOUT) :: dict
-        type(toml_table), pointer :: table
+        type(toml_table),              pointer       :: table
+        !> Polymorphic spectrum type
+        type(spectrum_t),              intent(out)   :: spectrum
+        !> Dictionary of metadata
+        type(toml_table),              intent(inout) :: dict
+        !> Context handle for error reporting.
+        type(toml_context),            intent(inout) :: context
+        !> Error messages that are raised in the routine
+        type(toml_error), allocatable, intent(out)   :: error
 
-        type(toml_context) :: context
-        type(spectrum_t), intent(out) :: spectrum
-        type(toml_error), allocatable, intent(out) :: error
 
         type(toml_array), pointer :: children
         integer :: origin, nlen, i, err, width, height, n_channels,u
@@ -577,10 +611,11 @@ module parse_mod
         use gridMod,       only : init_grid 
         
         !> Input Toml table
-        type(toml_table),  intent(inout) :: table
+        type(toml_table),               intent(inout) :: table
         !> Dictonary used to store metadata
-        type(toml_table),  intent(inout) :: dict
-        type(toml_error),  allocatable, intent(out) :: error
+        type(toml_table),               intent(inout) :: dict
+        !> Error message
+        type(toml_error),  allocatable, intent(out)   :: error
 
         character(len=:), allocatable :: msg
         type(toml_table), pointer     :: child
@@ -614,10 +649,11 @@ module parse_mod
         use sim_state_mod, only : state
         
         !> Input Toml table
-        type(toml_table),  intent(INOUT) :: table
+        type(toml_table),               intent(inout) :: table
         !> Dictonary used to store metadata
-        type(toml_table),  intent(INOUT) :: dict
-        type(toml_error),  allocatable, intent(out) :: error
+        type(toml_table),               intent(inout) :: dict
+        !> Error message
+        type(toml_error),  allocatable, intent(out)   :: error
 
         type(toml_table), pointer :: child
         real(kind=wp)             :: tau, musb, musc, muab, muac, hgg
@@ -655,6 +691,7 @@ module parse_mod
 
         !> Input Toml table 
         type(toml_table),              intent(inout) :: table
+        !> Error message
         type(toml_error), allocatable, intent(out)   :: error
 
         type(toml_table), pointer :: child
@@ -697,6 +734,7 @@ module parse_mod
 
         !> Input Toml table 
         type(toml_table),              intent(inout) :: table
+        !> Error message
         type(toml_error), allocatable, intent(out)   :: error
 
         type(toml_table), pointer :: child
@@ -725,6 +763,7 @@ module parse_mod
         type(vector),       optional,    intent(in)  :: default
         !> Context handle for error reporting
         type(toml_context),              intent(in)  :: context
+        !> Error Message
         type(toml_error),   allocatable, intent(out) :: error
 
         type(toml_array), pointer  :: arr => null()
@@ -752,6 +791,5 @@ module parse_mod
         else
             get_vector = default
         end if
-
     end function get_vector
 end module parse_mod

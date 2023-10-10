@@ -198,7 +198,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-child~3"></span>
+              <span class="anchor" id="variable-child~2"></span>
               type(toml_table),
             </td>
 <td>intent(in),</td>
@@ -208,12 +208,12 @@
             <td>::</td>
             <td><strong>child</strong></td>
             <td>
-                
+                <p>Detector table</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dects~8"></span>
+              <span class="anchor" id="variable-dects~6"></span>
               type(<a href='../type/camera.html'>camera</a>),
             </td>
 <td>intent(inout)</td>
@@ -223,12 +223,12 @@
             <td>::</td>
             <td><strong>dects</strong>(:)</td>
             <td>
-                
+                <p>Array of cameras</p>
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-counts~2"></span>
+              <span class="anchor" id="variable-counts"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -238,7 +238,7 @@
             <td>::</td>
             <td><strong>counts</strong></td>
             <td>
-                
+                <p>Number of cameras to create</p>
             </td>
         </tr>
         <tr>
@@ -258,7 +258,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-error~5"></span>
+              <span class="anchor" id="variable-error~4"></span>
               type(toml_error),
             </td>
 <td>intent(out),</td>
@@ -268,7 +268,7 @@
             <td>::</td>
             <td><strong>error</strong></td>
             <td>
-                
+                <p>Error message</p>
             </td>
         </tr>
     </tbody>
@@ -324,12 +324,16 @@
 <span class="w">        </span><span class="k">use </span><span class="n">detectors</span><span class="p">,</span><span class="w">     </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">camera</span><span class="w"></span>
 <span class="w">        </span><span class="k">use </span><span class="n">sim_state_mod</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">state</span><span class="w"></span>
 
-<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_table</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">child</span><span class="w"></span>
-<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">camera</span><span class="p">),</span><span class="w">              </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dects</span><span class="p">(:)</span><span class="w"></span>
-<span class="w">        </span><span class="kt">integer</span><span class="p">,</span><span class="w">                   </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">counts</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Detector table</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_table</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="p">,</span><span class="w">     </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">child</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Array of cameras</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">camera</span><span class="p">),</span><span class="w">                  </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dects</span><span class="p">(:)</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Number of cameras to create</span>
+<span class="w">        </span><span class="kt">integer</span><span class="p">,</span><span class="w">                       </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">counts</span><span class="w"></span>
 <span class="w">        </span><span class="c">!&gt; Context handle for error reporting.</span>
-<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_context</span><span class="p">),</span><span class="w">        </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">context</span><span class="w"></span>
-<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_error</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">error</span><span class="w"></span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_context</span><span class="p">),</span><span class="w">            </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">context</span><span class="w"></span>
+<span class="w">        </span><span class="c">!&gt; Error message</span>
+<span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">toml_error</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">out</span><span class="p">)</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">error</span><span class="w"></span>
 
 <span class="w">        </span><span class="kt">integer</span><span class="w">       </span><span class="kd">::</span><span class="w"> </span><span class="n">layer</span><span class="p">,</span><span class="w"> </span><span class="n">nbins</span><span class="w"></span>
 <span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="nb">maxval</span>
