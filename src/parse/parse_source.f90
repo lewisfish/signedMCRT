@@ -69,30 +69,8 @@ contains
 
             children => null()
             
-            call get_value(child, "direction", children, requested=.false., origin=origin)
-            if(associated(children))then
-                if(state%source == "point")then
-                    print'(a)',context%report(&
-                    "Point source needs no direction!!", origin, level=toml_level%warning)
-                end if
-                nlen = len(children)
-                if(nlen < 3)then
-                    call make_error(error, &
-                    context%report("Need a vector of size 3 for direction", origin, "expected vector of size 3"), -1)
-                    return
-                end if
-                if(state%source == "circular")then
-                    print'(a)',context%report(&
-                    "Direction not yet fully tested for source type Circular. Results may not be accurate!", origin,&
-                     level=toml_level%warning)
-                end if
-                do i = 1, len(children)
-                    call get_value(children, i, dir(i))
-                end do
-                dirr%x = dir(1)
-                dirr%y = dir(2)
-                dirr%z = dir(3)
-            else
+            dirr = get_vector(child, "direction", error, context)
+            if(allocated(error))then
                 call get_value(child, "direction", direction, origin=origin)
                 if(allocated(direction))then
                     if(state%source == "point")then
@@ -123,7 +101,18 @@ contains
                                               "No direction specified"), -1)
                     return
                 end if
+            else
+                if(state%source == "point")then
+                    print'(a)',context%report(&
+                    "Point source needs no direction!!", origin, level=toml_level%warning)
+                elseif(state%source == "circular")then
+                    print'(a)',context%report(&
+                    "Direction not yet fully tested for source type Circular. Results may not be accurate!", origin,&
+                    level=toml_level%warning)
+                end if
+                return
             end if
+
 
             children => null()
             

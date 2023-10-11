@@ -34,7 +34,7 @@ contains
     if (associated(arr))then
         if(len(arr) /= 3)then
             call make_error(error, &
-            context%report("Expected vector of size 3 for"//key, origin, "Wrong vector size"), -1)
+            context%report("Expected vector of size 3 for "//key, origin, "Wrong vector size"), -1)
             return
         end if
         do j = 1, len(arr)
