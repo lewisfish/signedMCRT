@@ -8,7 +8,7 @@
     <meta name="author" content="Lewis McMillan" >
     <link rel="icon" href="../favicon.png">
 
-    <title>parse_mod &ndash; signedMCRT</title>
+    <title>parse_HelpersMod &ndash; signedMCRT</title>
 
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/pygments.css" rel="stylesheet">
@@ -93,7 +93,7 @@
 
     <div class="container">
   <div class="row">
-    <h1>parse_mod
+    <h1>parse_HelpersMod
       <small>Module</small>
       
     </h1>
@@ -105,17 +105,17 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 2.7% of total for modules and submodules.">142 statements</a>
+               title=" 0.7% of total for modules and submodules.">38 statements</a>
           </li>
 
             <li id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/parse.f90"> Source File</a>
+              <a href="../src/parse_helpers.f90"> Source File</a>
             </li>
         </ul>
         <ol class="breadcrumb in-well text-right">
-              <li><a href='../sourcefile/parse.f90.html'>parse.f90</a></li>
-          <li class="active">parse_mod</li>
+              <li><a href='../sourcefile/parse_helpers.f90.html'>parse_helpers.f90</a></li>
+          <li class="active">parse_HelpersMod</li>
         </ol>
       </div>
     </div>
@@ -143,24 +143,20 @@
   
   
   
-  
       <div class="panel panel-primary">
       <div class="panel-heading text-left">
         <h3 class="panel-title">
-          <a data-toggle="collapse" href="#subs-0">Subroutines</a>
+          <a data-toggle="collapse" href="#funcs-0">Functions</a>
         </h3>
       </div>
-      <div id="subs-0" class="panel-collapse collapse">
+      <div id="funcs-0" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../module/parse_mod.html#proc-parse_geometry">parse_geometry</a>
-            <a class="list-group-item" href="../module/parse_mod.html#proc-parse_grid">parse_grid</a>
-            <a class="list-group-item" href="../module/parse_mod.html#proc-parse_output">parse_output</a>
-            <a class="list-group-item" href="../module/parse_mod.html#proc-parse_params">parse_params</a>
-            <a class="list-group-item" href="../module/parse_mod.html#proc-parse_simulation">parse_simulation</a>
+            <a class="list-group-item" href="../module/parse_helpersmod.html#proc-get_vector">get_vector</a>
         </div>
       </div>
     </div>
 
+  
   
   
   
@@ -174,8 +170,7 @@
     </div>
 
     <div class="col-md-9" id='text'>
-      <p>Module contains all routines related to parsing the input toml config files.
-See <a href=".././page/config.html">config</a> for details of toml input file.</p>
+      
 <br>          <div class="panel panel-default">
       <div class="panel-heading">
         <h3 class="panel-title">Uses</h3>
@@ -183,12 +178,10 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li><a href='../module/vector_class.html'>vector_class</a></li>
-                <li><a href='../module/parse_sourcesmod.html'>parse_sourcesMod</a></li>
-                <li>tomlf_error</li>
-                <li><a href='../module/parse_detectorsmod.html'>parse_detectorsMod</a></li>
                 <li><a href='../module/constants.html'>constants</a></li>
+                <li>tomlf_error</li>
                 <li>tomlf</li>
+                <li><a href='../module/vector_class.html'>vector_class</a></li>
             </ul>
           </li>
       </ul>
@@ -210,24 +203,20 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
   
   
   
-  
       <div class="panel panel-primary">
       <div class="panel-heading text-left">
         <h3 class="panel-title">
-          <a data-toggle="collapse" href="#subs-1">Subroutines</a>
+          <a data-toggle="collapse" href="#funcs-1">Functions</a>
         </h3>
       </div>
-      <div id="subs-1" class="panel-collapse collapse">
+      <div id="funcs-1" class="panel-collapse collapse">
         <div class="list-group">
-            <a class="list-group-item" href="../module/parse_mod.html#proc-parse_geometry">parse_geometry</a>
-            <a class="list-group-item" href="../module/parse_mod.html#proc-parse_grid">parse_grid</a>
-            <a class="list-group-item" href="../module/parse_mod.html#proc-parse_output">parse_output</a>
-            <a class="list-group-item" href="../module/parse_mod.html#proc-parse_params">parse_params</a>
-            <a class="list-group-item" href="../module/parse_mod.html#proc-parse_simulation">parse_simulation</a>
+            <a class="list-group-item" href="../module/parse_helpersmod.html#proc-get_vector">get_vector</a>
         </div>
       </div>
     </div>
 
+  
   
   
   
@@ -245,15 +234,14 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
 
 
 
-
         <section>
-          <h2>Subroutines</h2>
+          <h2>Functions</h2>
               <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-parse_geometry"></span><h3>private  subroutine <a href='../proc/parse_geometry.html'>parse_geometry</a>(table, dict, error)  
+    <div class="panel-heading codesum"><span class="anchor" id="proc-get_vector"></span><h3>public  function <a href='../proc/get_vector.html'>get_vector</a>(child, key, error, context, default)  
 </h3></div>
     <div class="panel-body">
           
-  <p>parse geometry information</p>
+  <p>Vector helper function for parsing toml</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -271,196 +259,16 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
               <span class="anchor" ></span>
               type(toml_table),
             </td>
-<td>intent(inout)</td>
+<td>intent(in),</td>
               <td></td>            <td>
-              
+              pointer
             </td>
             <td>::</td>
-            <td><strong>table</strong></td>
+            <td><strong>child</strong></td>
             <td>
-<p>Input Toml table</p>
+<p>Input Toml entry to read </p>
             </td>
         </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              type(toml_table),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>dict</strong></td>
-            <td>
-<p>Dictonary used to store metadata</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              type(toml_error),
-            </td>
-<td>intent(out),</td>
-              <td></td>            <td>
-              allocatable
-            </td>
-            <td>::</td>
-            <td><strong>error</strong></td>
-            <td>
-<p>Error message</p>
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-              <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-parse_grid"></span><h3>private  subroutine <a href='../proc/parse_grid.html'>parse_grid</a>(table, dict, error)  
-</h3></div>
-    <div class="panel-body">
-          
-  <p>parse grid input data</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              type(toml_table),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>table</strong></td>
-            <td>
-<p>Input Toml table</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              type(toml_table),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>dict</strong></td>
-            <td>
-<p>Dictonary used to store metadata</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              type(toml_error),
-            </td>
-<td>intent(out),</td>
-              <td></td>            <td>
-              allocatable
-            </td>
-            <td>::</td>
-            <td><strong>error</strong></td>
-            <td>
-<p>Error message</p>
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-              <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-parse_output"></span><h3>private  subroutine <a href='../proc/parse_output.html'>parse_output</a>(table, error)  
-</h3></div>
-    <div class="panel-body">
-          
-  <p>parse output file information</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              type(toml_table),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>table</strong></td>
-            <td>
-<p>Input Toml table </p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              type(toml_error),
-            </td>
-<td>intent(out),</td>
-              <td></td>            <td>
-              allocatable
-            </td>
-            <td>::</td>
-            <td><strong>error</strong></td>
-            <td>
-<p>Error message</p>
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-              <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-parse_params"></span><h3>public  subroutine <a href='../proc/parse_params.html'>parse_params</a>(filename, packet, dects, spectrum, dict, error)  
-</h3></div>
-    <div class="panel-body">
-          
-  <p>entry point for parsing toml file</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
@@ -471,69 +279,9 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
               
             </td>
             <td>::</td>
-            <td><strong>filename</strong></td>
+            <td><strong>key</strong></td>
             <td>
-<p>filename of input toml file</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              type(<a href='../type/photon.html'>photon</a>),
-            </td>
-<td>intent(out)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>packet</strong></td>
-            <td>
-<p>some input options set up data in the photon class</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              type(<a href='../type/dect_array.html'>dect_array</a>),
-            </td>
-<td>intent(out),</td>
-              <td></td>            <td>
-              allocatable
-            </td>
-            <td>::</td>
-            <td><strong>dects</strong>(:)</td>
-            <td>
-<p>detector array which is setup during parsing</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              type(<a href='../type/spectrum_t.html'>spectrum_t</a>),
-            </td>
-<td>intent(out)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>spectrum</strong></td>
-            <td>
-<p>spectrum type which is set up during parsing</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              type(toml_table),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>dict</strong></td>
-            <td>
-<p>dictionary that stores potential metadata to be saved with simulation output</p>
+<p>Key to read</p>
             </td>
         </tr>
         <tr>
@@ -548,73 +296,54 @@ See <a href=".././page/config.html">config</a> for details of toml input file.</
             <td>::</td>
             <td><strong>error</strong></td>
             <td>
-<p>Last error raised during parsing. Unallocated if no error raised. Need to handle this on return from parse_params.</p>
+<p>Error Message</p>
             </td>
         </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-              <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-parse_simulation"></span><h3>private  subroutine <a href='../proc/parse_simulation.html'>parse_simulation</a>(table, error)  
-</h3></div>
-    <div class="panel-body">
-          
-  <p>parse simulation information</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
-    </thead>
-    <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              type(toml_table),
+              type(toml_context),
             </td>
-<td>intent(inout)</td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>table</strong></td>
+            <td><strong>context</strong></td>
             <td>
-<p>Input Toml table </p>
+<p>Context handle for error reporting</p>
             </td>
         </tr>
         <tr>
             <td>
               <span class="anchor" ></span>
-              type(toml_error),
+              type(<a href='../type/vector.html'>vector</a>),
             </td>
-<td>intent(out),</td>
-              <td></td>            <td>
-              allocatable
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
             </td>
             <td>::</td>
-            <td><strong>error</strong></td>
+            <td><strong>default</strong></td>
             <td>
-<p>Error message</p>
+<p>Default value to assign</p>
             </td>
         </tr>
     </tbody>
   </table>
 
+    <h4>
+    Return Value
+    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    </h4>
+    
 
     </div>
   </div>
 
         </section>
         <br>
+
 
 
 

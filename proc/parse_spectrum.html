@@ -110,12 +110,12 @@
 
             <li id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/parse.f90"> Source File</a>
+              <a href="../src/parse_spectrum.f90"> Source File</a>
             </li>
         </ul>
         <ol class="breadcrumb in-well text-right">
-              <li><a href='../sourcefile/parse.f90.html'>parse.f90</a></li>
-              <li><a href='../module/parse_mod.html'>parse_mod</a></li>
+              <li><a href='../sourcefile/parse_spectrum.f90.html'>parse_spectrum.f90</a></li>
+              <li><a href='../module/parse_spectrummod.html'>parse_SpectrumMod</a></li>
           <li class="active">parse_spectrum</li>
         </ol>
       </div>
@@ -165,7 +165,7 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>private  subroutine parse_spectrum(table, spectrum, dict, context, error)  
+    <h2>public  subroutine parse_spectrum(table, spectrum, dict, context, error)  
 </h2>
         <div class="panel panel-default">
       <div class="panel-heading">
@@ -174,11 +174,11 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li>stb_image_mod</li>
                 <li><a href='../module/constants.html'>constants</a></li>
-                <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_c_binding">iso_c_binding</a>'>iso_c_binding</a></li>
-                <li>stdlib_io</li>
+                <li>stb_image_mod</li>
                 <li><a href='../module/piecewisemod.html'>piecewiseMod</a></li>
+                <li>stdlib_io</li>
+                <li><a href='<a href="http://fortranwiki.org/fortran/show/iso_c_binding">iso_c_binding</a>'>iso_c_binding</a></li>
             </ul>
           </li>
       </ul>
@@ -246,7 +246,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-context~6"></span>
+              <span class="anchor" id="variable-context~2"></span>
               type(toml_context),
             </td>
 <td>intent(inout)</td>
@@ -261,7 +261,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-error~7"></span>
+              <span class="anchor" id="variable-error~2"></span>
               type(toml_error),
             </td>
 <td>intent(out),</td>

@@ -110,12 +110,12 @@
 
             <li id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/parse.f90"> Source File</a>
+              <a href="../src/parse_detectors.f90"> Source File</a>
             </li>
         </ul>
         <ol class="breadcrumb in-well text-right">
-              <li><a href='../sourcefile/parse.f90.html'>parse.f90</a></li>
-              <li><a href='../module/parse_mod.html'>parse_mod</a></li>
+              <li><a href='../sourcefile/parse_detectors.f90.html'>parse_detectors.f90</a></li>
+              <li><a href='../module/parse_detectorsmod.html'>parse_detectorsMod</a></li>
           <li class="active">handle_camera</li>
         </ol>
       </div>
@@ -198,7 +198,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-child~2"></span>
+              <span class="anchor" id="variable-child"></span>
               type(toml_table),
             </td>
 <td>intent(in),</td>
@@ -213,7 +213,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dects~6"></span>
+              <span class="anchor" id="variable-dects~5"></span>
               type(<a href='../type/camera.html'>camera</a>),
             </td>
 <td>intent(inout)</td>
@@ -243,7 +243,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-context~3"></span>
+              <span class="anchor" id="variable-context~4"></span>
               type(toml_context),
             </td>
 <td>intent(in)</td>
@@ -343,7 +343,7 @@
 <span class="w">        </span><span class="n">p1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_vector</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;p1&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">default</span><span class="o">=</span><span class="n">vector</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">1.0</span><span class="p">),</span><span class="w"> </span><span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="o">=</span><span class="n">error</span><span class="p">)</span><span class="w"></span>
 <span class="w">        </span><span class="n">p2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_vector</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;p2&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">default</span><span class="o">=</span><span class="n">vector</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">),</span><span class="w"> </span><span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="o">=</span><span class="n">error</span><span class="p">)</span><span class="w"></span>
 <span class="w">        </span><span class="n">p3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_vector</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;p3&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">default</span><span class="o">=</span><span class="n">vector</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">),</span><span class="w"> </span><span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="o">=</span><span class="n">error</span><span class="p">)</span><span class="w"></span>
-<span class="w"> </span>
+
 <span class="w">        </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;layer&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">layer</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
 <span class="w">        </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;nbins&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">nbins</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span><span class="w"></span>
 <span class="w">        </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;maxval&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">maxval</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="mf">0._wp</span><span class="p">)</span><span class="w"></span>

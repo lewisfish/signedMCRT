@@ -166,7 +166,7 @@ makes a Moss egg. <a href="https://www.shadertoy.com/view/WsjfRt">ref</a>.</p></
 			   <tr><td><a href='../proc/focus.html'>focus</a></td><td><a href='../module/photonmod.html'>photonMod</a></td><td>Subroutine</td><td></td></tr>
 			   <tr><td><a href='../proc/fresnel.html'>fresnel</a></td><td><a href='../module/surfaces.html'>surfaces</a></td><td>Function</td><td><p>calculates the fresnel coefficents</p></td></tr>
 			   <tr><td><a href='../proc/get_new_file_name.html'>get_new_file_name</a></td><td><a href='../module/writer_mod.html'>writer_mod</a></td><td>Function</td><td><p>If file exits, get numeral to append to filename </p></td></tr>
-			   <tr><td><a href='../proc/get_vector.html'>get_vector</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Function</td><td><p>Vector helper function for parsing toml</p></td></tr>
+			   <tr><td><a href='../proc/get_vector.html'>get_vector</a></td><td><a href='../module/parse_helpersmod.html'>parse_HelpersMod</a></td><td>Function</td><td><p>Vector helper function for parsing toml</p></td></tr>
 			   <tr><td><a href='../proc/get_vessels.html'>get_vessels</a></td><td><a href='../module/setupgeometry.html'>setupGeometry</a></td><td>Function</td><td><p>setup blood vessel scene</p></td></tr>
 			   <tr><td><a href='../proc/get_voxel.html'>get_voxel</a></td><td><a href='../module/gridmod.html'>gridMod</a></td><td>Function</td><td><p>get current voxel the photon packet is in</p></td></tr>
 			   <tr><td><a href='../proc/getalbedo.html'>getAlbedo</a></td><td><a href='../module/sdf_basemod.html'>sdf_baseMod</a></td><td>Function</td><td><p>Return albedo for the current SDF.</p></td></tr>
@@ -176,9 +176,9 @@ makes a Moss egg. <a href="https://www.shadertoy.com/view/WsjfRt">ref</a>.</p></
 			   <tr><td><a href='../proc/getmua.html'>getMua</a></td><td><a href='../module/sdf_basemod.html'>sdf_baseMod</a></td><td>Function</td><td><p>Return <script type="math/tex">\mu_a</script> for the current SDF.</p></td></tr>
 			   <tr><td><a href='../proc/getn.html'>getN</a></td><td><a href='../module/sdf_basemod.html'>sdf_baseMod</a></td><td>Function</td><td><p>Return refractive index for the current SDF.</p></td></tr>
 			   <tr><td><a href='../proc/getvalue.html'>getValue</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Subroutine</td><td><p>The constant version of sample</p></td></tr>
-			   <tr><td><a href='../proc/handle_annulus_dect.html'>handle_annulus_dect</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>Read in Annulus_detector settings and initalise variable</p></td></tr>
-			   <tr><td><a href='../proc/handle_camera.html'>handle_camera</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>Read in Camera settings and initalise variable</p></td></tr>
-			   <tr><td><a href='../proc/handle_circle_dect.html'>handle_circle_dect</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>Read in Circle_detector settings and initalise variable</p></td></tr>
+			   <tr><td><a href='../proc/handle_annulus_dect.html'>handle_annulus_dect</a></td><td><a href='../module/parse_detectorsmod.html'>parse_detectorsMod</a></td><td>Subroutine</td><td><p>Read in Annulus_detector settings and initalise variable</p></td></tr>
+			   <tr><td><a href='../proc/handle_camera.html'>handle_camera</a></td><td><a href='../module/parse_detectorsmod.html'>parse_detectorsMod</a></td><td>Subroutine</td><td><p>Read in Camera settings and initalise variable</p></td></tr>
+			   <tr><td><a href='../proc/handle_circle_dect.html'>handle_circle_dect</a></td><td><a href='../module/parse_detectorsmod.html'>parse_detectorsMod</a></td><td>Subroutine</td><td><p>Read in Circle_detector settings and initalise variable</p></td></tr>
 			   <tr><td><a href='../proc/histempty_fn.html'>histempty_fn</a></td><td><a href='../module/historystack.html'>historyStack</a></td><td>Function</td><td></td></tr>
 			   <tr><td><a href='../proc/histfinish_sub.html'>histfinish_sub</a></td><td><a href='../module/historystack.html'>historyStack</a></td><td>Subroutine</td><td></td></tr>
 			   <tr><td><a href='../interface/history_stack_t.html'>history_stack_t</a></td><td><a href='../module/historystack.html'>historyStack</a></td><td>Interface</td><td></td></tr>
@@ -274,15 +274,15 @@ only works on 32bit ints
 			   <tr><td><a href='../proc/opticaprop_new.html'>opticaProp_new</a></td><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td>Function</td><td></td></tr>
 			   <tr><td><a href='../proc/pack_bits.html'>pack_bits</a></td><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td>Function</td><td><p>Reverse the split function. I.e go from 0a0b0c0d to abcd
 Adapted from archer2 cpp <a href="https://github.com/EPCCed/archer2-cpp/tree/main/exercises/morton-order">course</a></p></td></tr>
-			   <tr><td><a href='../proc/parse_detectors.html'>parse_detectors</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>parse the detectors</p></td></tr>
+			   <tr><td><a href='../proc/parse_detectors.html'>parse_detectors</a></td><td><a href='../module/parse_detectorsmod.html'>parse_detectorsMod</a></td><td>Subroutine</td><td><p>parse the detectors</p></td></tr>
 			   <tr><td><a href='../proc/parse_geometry.html'>parse_geometry</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>parse geometry information</p></td></tr>
 			   <tr><td><a href='../proc/parse_grid.html'>parse_grid</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>parse grid input data</p></td></tr>
 			   <tr><td><a href='../proc/parse_output.html'>parse_output</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>parse output file information</p></td></tr>
 			   <tr><td><a href='../proc/parse_params.html'>parse_params</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>entry point for parsing toml file</p></td></tr>
 			   <tr><td><a href='../proc/parse_simulation.html'>parse_simulation</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>parse simulation information</p></td></tr>
-			   <tr><td><a href='../proc/parse_source.html'>parse_source</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>Parse sources
+			   <tr><td><a href='../proc/parse_source.html'>parse_source</a></td><td><a href='../module/parse_sourcesmod.html'>parse_sourcesMod</a></td><td>Subroutine</td><td><p>Parse sources
 any updates here MUST be reflected in docs/config.md</p></td></tr>
-			   <tr><td><a href='../proc/parse_spectrum.html'>parse_spectrum</a></td><td><a href='../module/parse_mod.html'>parse_mod</a></td><td>Subroutine</td><td><p>Parse spectrums to be used</p></td></tr>
+			   <tr><td><a href='../proc/parse_spectrum.html'>parse_spectrum</a></td><td><a href='../module/parse_spectrummod.html'>parse_SpectrumMod</a></td><td>Subroutine</td><td><p>Parse spectrums to be used</p></td></tr>
 			   <tr><td><a href='../proc/pathlength_scatter.html'>pathlength_scatter</a></td><td><a href='../module/kernels.html'>kernels</a></td><td>Subroutine</td><td></td></tr>
 			   <tr><td><a href='../proc/pencil.html'>pencil</a></td><td><a href='../module/photonmod.html'>photonMod</a></td><td>Subroutine</td><td><p>pencil beam source</p></td></tr>
 			   <tr><td><a href='../interface/photon.html'>photon</a></td><td><a href='../module/photonmod.html'>photonMod</a></td><td>Interface</td><td></td></tr>
