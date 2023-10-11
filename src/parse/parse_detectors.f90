@@ -1,10 +1,11 @@
 module parse_detectorsMod
 
+    use constants, only : wp
+    use parse_HelpersMod
+    use vector_class
+
     use tomlf
     use tomlf_error, only : make_error
-    use constants, only : wp
-    use vector_class
-    use parseHelpers
 
     implicit none
 

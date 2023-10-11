@@ -1,10 +1,11 @@
 module parse_sourcesMod
 
     use constants, only : wp
-    use parseHelpers
-    use tomlf
+    use parse_HelpersMod
+    use parse_SpectrumMod
     use vector_class
-    use parseSpectrumMod
+
+    use tomlf
 
     implicit none
     

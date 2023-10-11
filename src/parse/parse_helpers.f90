@@ -1,4 +1,4 @@
-module parseHelpers
+module parse_HelpersMod
     
     use constants, only : wp
     use tomlf, only : toml_table, toml_context, toml_array, toml_error, get_value, len
@@ -51,4 +51,4 @@ contains
         end if
     end if
     end function get_vector
-end module parseHelpers
+end module parse_HelpersMod

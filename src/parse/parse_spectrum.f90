@@ -1,10 +1,11 @@
-module parseSpectrumMod
+module parse_SpectrumMod
 
     use constants, only : wp
-    use parseHelpers
+    use parse_HelpersMod
+    use vector_class
+
     use tomlf
     use tomlf_error, only: make_error
-    use vector_class
 
     implicit none
     
@@ -115,4 +116,4 @@ contains
                 return
         end select
     end subroutine parse_spectrum
-end module parseSpectrumMod
+end module parse_SpectrumMod
