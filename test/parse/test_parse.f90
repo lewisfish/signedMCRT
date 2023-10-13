@@ -30,7 +30,8 @@ module testsParseMod
                 new_unittest("Test parsing of detectors", detector_test), &
                 new_unittest("Test parsing of spectra constant", spectra_const),&
                 new_unittest("Test parsing of spectra spectral 1D", spectra_spectral_1D),&
-                new_unittest("Test parsing of spectra spectral 2D", spectra_spectral_2D)&
+                new_unittest("Test parsing of spectra spectral 2D", spectra_spectral_2D),&
+                new_unittest("Test parsing of direction string", test_dir_string)&
                 ]
     end subroutine collect_suite1
 
@@ -57,6 +58,106 @@ module testsParseMod
                 ]
     end subroutine collect_suite2
 
+    subroutine test_dir_string(error)
+
+        use photonMod, only : photon
+        use detectors, only : dect_array
+        use piecewiseMod, only : spectrum_t, constant
+        use tomlf, only: toml_table, toml_error
+
+        type(error_type), allocatable, intent(out) :: error
+
+        character(len=:),allocatable  :: filename
+        type(toml_table)              :: dict
+        type(photon)                  :: packet
+        type(dect_array), allocatable :: dects(:)
+        type(spectrum_t)              :: spectrum
+        type(toml_error), allocatable :: err
+        integer :: u
+
+        filename = "test/parse/tmp.toml"
+        open(newunit=u, file=filename)
+        write(u,'(a)') "[source]"
+        write(u,'(a)') "position=[0.0, 0.0, 0.0]"
+        write(u,'(a)') "name='pencil'"
+        write(u,'(a)') "direction='x'"
+        close(u)
+
+        call parse_params(filename, packet, dects, spectrum, dict, err)
+        call packet%emit(spectrum)
+
+        call check(error, packet%nxp, 1._wp)
+        if (allocated(error))return
+
+        filename = "test/parse/tmp.toml"
+        open(newunit=u, file=filename)
+        write(u,'(a)') "[source]"
+        write(u,'(a)') "position=[0.0, 0.0, 0.0]"
+        write(u,'(a)') "name='pencil'"
+        write(u,'(a)') "direction='-x'"
+        close(u)
+
+        call parse_params(filename, packet, dects, spectrum, dict, err)
+        call packet%emit(spectrum)
+
+        call check(error, packet%nxp, -1._wp)
+        if (allocated(error))return
+
+        filename = "test/parse/tmp.toml"
+        open(newunit=u, file=filename)
+        write(u,'(a)') "[source]"
+        write(u,'(a)') "position=[0.0, 0.0, 0.0]"
+        write(u,'(a)') "name='pencil'"
+        write(u,'(a)') "direction='y'"
+        close(u)
+
+        call parse_params(filename, packet, dects, spectrum, dict, err)
+        call packet%emit(spectrum)
+
+        call check(error, packet%nyp, 1._wp)
+        if (allocated(error))return
+
+        filename = "test/parse/tmp.toml"
+        open(newunit=u, file=filename)
+        write(u,'(a)') "[source]"
+        write(u,'(a)') "position=[0.0, 0.0, 0.0]"
+        write(u,'(a)') "name='pencil'"
+        write(u,'(a)') "direction='-y'"
+        close(u)
+
+        call parse_params(filename, packet, dects, spectrum, dict, err)
+        call packet%emit(spectrum)
+
+        call check(error, packet%nyp, -1._wp)
+        if (allocated(error))return
+
+        filename = "test/parse/tmp.toml"
+        open(newunit=u, file=filename)
+        write(u,'(a)') "[source]"
+        write(u,'(a)') "position=[0.0, 0.0, 0.0]"
+        write(u,'(a)') "name='pencil'"
+        write(u,'(a)') "direction='z'"
+        close(u)
+
+        call parse_params(filename, packet, dects, spectrum, dict, err)
+        call packet%emit(spectrum)
+        call check(error, packet%nzp, 1._wp)
+        if (allocated(error))return
+
+        filename = "test/parse/tmp.toml"
+        open(newunit=u, file=filename)
+        write(u,'(a)') "[source]"
+        write(u,'(a)') "position=[0.0, 0.0, 0.0]"
+        write(u,'(a)') "name='pencil'"
+        write(u,'(a)') "direction='-z'"
+        close(u)
+
+        call parse_params(filename, packet, dects, spectrum, dict, err)
+        call packet%emit(spectrum)
+        call check(error, packet%nzp, -1._wp)
+        if (allocated(error))return
+
+    end subroutine test_dir_string
 
     subroutine test_non_existant(error)
 
@@ -98,7 +199,7 @@ module testsParseMod
         type(toml_error), allocatable :: err
         integer :: u
 
-        filename = "test/parse/test_fail1.toml"
+        filename = "test/parse/tmp.toml"
         open(newunit=u, file=filename)
         write(u,'(a)') "[source]"
         write(u,'(a)') "position=[0.0, 0.0]"
@@ -127,7 +228,7 @@ module testsParseMod
         type(toml_error), allocatable :: err
         integer :: u
 
-        filename = "test/parse/test_fail1.toml"
+        filename = "test/parse/tmp.toml"
         open(newunit=u, file=filename)
         write(u,'(a)') "[source]"
         write(u,'(a)') "name='point'"
@@ -156,7 +257,7 @@ module testsParseMod
         type(toml_error), allocatable :: err
         integer :: u
 
-        filename = "test/parse/test_fail1.toml"
+        filename = "test/parse/tmp.toml"
         open(newunit=u, file=filename)
         write(u,'(a)') "[source]"
         write(u,'(a)') "name='uniform'"
@@ -187,7 +288,7 @@ module testsParseMod
         type(toml_error), allocatable :: err
         integer :: u
 
-        filename = "test/parse/test_fail1.toml"
+        filename = "test/parse/tmp.toml"
         open(newunit=u, file=filename)
         write(u,'(a)') "[source]"
         write(u,'(a)') "name='uniform'"
@@ -218,7 +319,7 @@ module testsParseMod
         type(toml_error), allocatable :: err
         integer :: u
 
-        filename = "test/parse/test_fail1.toml"
+        filename = "test/parse/tmp.toml"
         open(newunit=u, file=filename)
         write(u,'(a)') "[source]"
         write(u,'(a)') "name='uniform'"
@@ -248,7 +349,7 @@ module testsParseMod
         type(toml_error), allocatable :: err
         integer :: u
 
-        filename = "test/parse/test_fail1.toml"
+        filename = "test/parse/tmp.toml"
         open(newunit=u, file=filename)
         write(u,'(a)') "[source]"
         write(u,'(a)') "name='uniform'"
@@ -280,7 +381,7 @@ module testsParseMod
         type(toml_error), allocatable :: err
         integer :: u
 
-        filename = "test/parse/test_fail1.toml"
+        filename = "test/parse/tmp.toml"
         open(newunit=u, file=filename)
         write(u,'(a)') "[source]"
         write(u,'(a)') "name='uniform'"
@@ -293,7 +394,7 @@ module testsParseMod
         call check(error, allocated(err), .true.)
         if (allocated(error))return
 
-        filename = "test/parse/test_fail1.toml"
+        filename = "test/parse/tmp.toml"
         open(newunit=u, file=filename)
         write(u,'(a)') "[source]"
         write(u,'(a)') "name='uniform'"
@@ -327,7 +428,7 @@ module testsParseMod
         type(toml_error), allocatable :: err
         integer :: u
 
-        filename = "test/parse/test_fail1.toml"
+        filename = "test/parse/tmp.toml"
         open(newunit=u, file=filename)
         write(u,'(a)') "[source]"
         write(u,'(a)') "name='uniform'"
@@ -341,7 +442,7 @@ module testsParseMod
         call check(error, allocated(err), .true.)
         if (allocated(error))return
 
-        filename = "test/parse/test_fail1.toml"
+        filename = "test/parse/tmp.toml"
         open(newunit=u, file=filename)
         write(u,'(a)') "[source]"
         write(u,'(a)') "name='uniform'"
@@ -375,7 +476,7 @@ module testsParseMod
         type(toml_error), allocatable :: err
         integer :: u
 
-        filename = "test/parse/test_fail1.toml"
+        filename = "test/parse/tmp.toml"
         open(newunit=u, file=filename)
         write(u,'(a)') "[source]"
         write(u,'(a)') "name='uniform'"
@@ -409,7 +510,7 @@ module testsParseMod
         type(toml_error), allocatable :: err
         integer                       :: u
 
-        filename = "test/parse/test_fail1.toml"
+        filename = "test/parse/tmp.toml"
         open(newunit=u, file=filename)
         write(u,"(a)") ""
         close(u)
@@ -615,7 +716,7 @@ module testsParseMod
 
         integer :: u
 
-        filename = "test/parse/test_fail1.toml"
+        filename = "test/parse/tmp.toml"
         open(newunit=u, file=filename)
         write(u,'(a)') "[source]"
         write(u,'(a)') "position=[0.0, 0.0, 0.0]"
@@ -648,7 +749,7 @@ module testsParseMod
 
         integer :: u
 
-        filename = "test/parse/test_fail1.toml"
+        filename = "test/parse/tmp.toml"
         open(newunit=u, file=filename)
         write(u,'(a)') "[source]"
         write(u,'(a)') "position=[0.0, 0.0, 0.0]"
@@ -686,7 +787,7 @@ module testsParseMod
 
         integer :: u
 
-        filename = "test/parse/test_fail1.toml"
+        filename = "test/parse/tmp.toml"
         open(newunit=u, file=filename)
         write(u,'(a)') "[source]"
         write(u,'(a)') "position=[0.0, 0.0, 0.0]"

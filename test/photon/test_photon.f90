@@ -16,7 +16,8 @@ module testsPhotonMod
         type(testsuite_type), allocatable, intent(out) :: testsuites(:)
         type(context_t) :: context
 
-        testsuites = [new_testsuite("Test Sources", collect_suite1, context)&
+        testsuites = [new_testsuite("Test Sources", collect_suite1, context),&
+                      new_testsuite("Photon Misc. routines", collect_suite2, context)&
                      ]
 
     end subroutine photon_suite
@@ -33,6 +34,32 @@ module testsPhotonMod
                 new_unittest("SLM_source", SLM_src) &
                 ]
     end subroutine collect_suite1
+
+    subroutine collect_suite2(testsuite)
+
+        type(unittest_type), allocatable, intent(out) :: testsuite(:)
+
+        testsuite = [new_unittest("Test init photon", photon_init_test) &
+                    ]
+    end subroutine collect_suite2
+    
+    subroutine photon_init_test(error)
+
+        type(error_type), allocatable, intent(out) :: error
+
+        type(photon) :: packet
+
+        packet = photon(10._wp)
+
+        call check(error, packet%nxp, 10._wp)
+        if(allocated(error))return
+        call check(error, packet%sint, 10._wp)
+        if(allocated(error))return
+        call check(error, packet%wavelength, 10._wp)
+        if(allocated(error))return
+        call check(error, packet%tflag, .true.)
+        if(allocated(error))return
+    end subroutine photon_init_test
 
     subroutine Uniform_src(error)
 

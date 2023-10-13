@@ -1,5 +1,5 @@
 module parse_mod
-!! Module contains all routines related to parsing the input toml config files.
+!! Module contains parses the input toml config files.
 !! See [config](../|page|/config.html) for details of toml input file.
     use tomlf
     use tomlf_error, only : make_error

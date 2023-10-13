@@ -1,5 +1,5 @@
 module parse_SpectrumMod
-
+    !! routine to parse the spectrum entry in the source table from the input Toml file.
     use constants, only : wp
     use parse_HelpersMod
     use vector_class

@@ -1,5 +1,5 @@
 module parse_detectorsMod
-
+    !! routine to parse the detector table from the input Toml file.
     use constants, only : wp
     use parse_HelpersMod
     use vector_class
