@@ -105,7 +105,7 @@
           <li id="statements"><i class="fa fa-list-ol"></i>
             <a data-toggle="tooltip"
                data-placement="bottom" data-html="true"
-               title=" 3.1% of total for procedures.">144 statements</a>
+               title=" 3.0% of total for procedures.">140 statements</a>
           </li>
 
             <li id="source-file">
@@ -174,10 +174,10 @@
       <ul class="list-group">
           <li class="list-group-item">
             <ul class="list-inline">
-                <li>tomlf_error</li>
                 <li><a href='../module/piecewisemod.html'>piecewiseMod</a></li>
-                <li><a href='../module/photonmod.html'>photonMod</a></li>
                 <li><a href='../module/sim_state_mod.html'>sim_state_mod</a></li>
+                <li>tomlf_error</li>
+                <li><a href='../module/photonmod.html'>photonMod</a></li>
             </ul>
           </li>
       </ul>
@@ -380,14 +380,9 @@ any updates here MUST be reflected in docs/config.md</p>
 <span class="k">            call </span><span class="n">get_value</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;name&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">state</span><span class="p">%</span><span class="n">source</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;point&quot;</span><span class="p">)</span><span class="w"></span>
 <span class="w">            </span><span class="k">call </span><span class="n">get_value</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;nphotons&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">state</span><span class="p">%</span><span class="n">nphotons</span><span class="p">,</span><span class="w"> </span><span class="mi">1000000</span><span class="p">)</span><span class="w"></span>
 
-<span class="w">            </span><span class="n">poss</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_vector</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;position&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="nb">allocated</span><span class="p">(</span><span class="n">error</span><span class="p">))</span><span class="k">then</span>
-<span class="k">                if</span><span class="p">(</span><span class="n">state</span><span class="p">%</span><span class="n">source</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;point&quot;</span><span class="p">)</span><span class="k">then</span>
-<span class="k">                    deallocate</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="w"></span>
-<span class="w">                    </span><span class="k">call </span><span class="n">make_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span><span class="w"></span>
-<span class="w">                    </span><span class="n">context</span><span class="p">%</span><span class="n">report</span><span class="p">(</span><span class="s2">&quot;Point source needs a position!&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">origin</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Need vector of size 3 for position&quot;</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="k">end if</span>
-<span class="k">                return</span>
+<span class="w">            </span><span class="k">if</span><span class="p">(</span><span class="n">state</span><span class="p">%</span><span class="n">source</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="s2">&quot;uniform&quot;</span><span class="p">)</span><span class="k">then</span>
+<span class="k">                </span><span class="n">poss</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_vector</span><span class="p">(</span><span class="n">child</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;position&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="k">if</span><span class="p">(</span><span class="nb">allocated</span><span class="p">(</span><span class="n">error</span><span class="p">))</span><span class="k">return</span>
 <span class="k">            end if</span>
 
 <span class="k">            </span><span class="n">children</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span><span class="w"></span>

@@ -1,5 +1,5 @@
 module parse_sourcesMod
-
+    !! routine to parse the source table from the input Toml file.
     use constants, only : wp
     use parse_HelpersMod
     use parse_SpectrumMod
@@ -57,14 +57,9 @@ contains
             call get_value(child, "name", state%source, "point")
             call get_value(child, "nphotons", state%nphotons, 1000000)
 
-            poss = get_vector(child, "position", error, context)
-            if(allocated(error))then
-                if(state%source == "point")then
-                    deallocate(error)
-                    call make_error(error, &
-                    context%report("Point source needs a position!", origin, "Need vector of size 3 for position"), -1)
-                end if
-                return
+            if(state%source /= "uniform")then
+                poss = get_vector(child, "position", error, context)
+                if(allocated(error))return
             end if
 
             children => null()
