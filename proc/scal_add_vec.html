@@ -85,15 +85,15 @@
 
             <li class="list-inline-item" id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/vector_class.f90"> Source File</a>
+              <a href="../src/vec4_class.f90"> Source File</a>
             </li>
         </ul>
       </div>
       <div class="col">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb justify-content-end mb-0">
-                <li class="breadcrumb-item"><a href='../sourcefile/vector_class.f90.html'>vector_class.f90</a></li>
-                <li class="breadcrumb-item"><a href='../module/vector_class.html'>vector_class</a></li>
+                <li class="breadcrumb-item"><a href='../sourcefile/vec4_class.f90.html'>vec4_class.f90</a></li>
+                <li class="breadcrumb-item"><a href='../module/vec4_class.html'>vec4_class</a></li>
             <li class="breadcrumb-item active" aria-current="page">scal_add_vec</li>
           </ol>
         </nav>
@@ -149,10 +149,10 @@
 </h2>
     
 
-    <p>vec3 + scalar</p>
+    <p>Elementwise scalar + vec4</p>
 
     <h3>Type Bound</h3>
-    <p><a href='../type/vector.html'>vector</a></p>
+    <p><a href='../type/vec4.html'>vec4</a></p>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -167,7 +167,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~34"></span>
+              <span class="anchor" id="variable-a~36"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -182,8 +182,8 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~27"></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              <span class="anchor" id="variable-b~28"></span>
+              class(<a href='../type/vec4.html'>vec4</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -192,7 +192,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-                <p>Input vector</p>
+                <p>Input vec4</p>
             </td>
         </tr>
     </tbody>
@@ -201,7 +201,7 @@
       <h3>Return Value
         <small>
           <span class="anchor" id="variable-scal_add_vec~2"></span>
-          type(<a href='../type/vector.html'>vector</a>)
+          type(<a href='../type/vec4.html'>vec4</a>)
         </small>
       </h3>
       
@@ -219,14 +219,14 @@
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl codehilite"><pre><span></span><span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="w"> </span><span class="k">pure elemental function </span><span class="n">scal_add_vec</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">)</span>
-<span class="w">            </span><span class="c">!! vec3 + scalar</span>
-<span class="w">            </span><span class="c">!&gt; Input vector</span>
-<span class="w">            </span><span class="k">class</span><span class="p">(</span><span class="n">vector</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">b</span>
+    <div class="hl codehilite"><pre><span></span><span class="w">        </span><span class="k">type</span><span class="p">(</span><span class="n">vec4</span><span class="p">)</span><span class="w"> </span><span class="k">pure elemental function </span><span class="n">scal_add_vec</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">)</span>
+<span class="w">            </span><span class="c">!! Elementwise scalar + vec4</span>
+<span class="w">            </span><span class="c">!&gt; Input vec4</span>
+<span class="w">            </span><span class="k">class</span><span class="p">(</span><span class="n">vec4</span><span class="p">),</span><span class="w">   </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">b</span>
 <span class="w">            </span><span class="c">!&gt; Scalar to add</span>
 <span class="w">            </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">a</span>
 
-<span class="w">            </span><span class="n">scal_add_vec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vector</span><span class="p">(</span><span class="n">b</span><span class="p">%</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">%</span><span class="n">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">%</span><span class="n">z</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">a</span><span class="p">)</span>
+<span class="w">            </span><span class="n">scal_add_vec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec4</span><span class="p">(</span><span class="n">b</span><span class="p">%</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">%</span><span class="n">y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">%</span><span class="n">z</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w">  </span><span class="n">b</span><span class="p">%</span><span class="n">p</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">a</span><span class="p">)</span>
 
 <span class="w">        </span><span class="k">end function </span><span class="n">scal_add_vec</span>
 </pre></div>
