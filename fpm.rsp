@@ -1,24 +1,24 @@
 @buildmp
-option build --compiler gfortran --profile debug --flag "-fopenmp"
+option build --compiler gfortran-10 --profile debug --flag "-fopenmp"
 
 @buildintel
 option build --compiler ifort
 
 @runmp
-option run sMCRT --compiler gfortran --profile release --flag "-fopenmp -O3 -flto -march=native -fPIC -funroll-loops -fstack-arrays"
+option run sMCRT --compiler gfortran-10 --profile release --flag "-fopenmp -O2 -flto -march=native -fPIC -funroll-loops -fstack-arrays"
 
 @debug
-option run sMCRT --compiler gfortran --flag "-O2 -march=native -flto -mavx -g -fbacktrace -fcheck=all -fbounds-check -ffpe-trap=invalid,overflow,underflow,denormal"
+option run sMCRT --compiler gfortran-10 --flag "-O2 -march=native -flto -mavx -g -fbacktrace -fcheck=all -fbounds-check -ffpe-trap=invalid,overflow,underflow,denormal"
 
 @debugmp
-option run sMCRT --compiler gfortran --flag "-fopenmp -O2 -march=native -flto -mavx -g -fbacktrace -fcheck=all -fbounds-check -ffpe-trap=invalid,overflow,underflow,denormal -fstack-arrays"
+option run sMCRT --compiler gfortran-10 --flag "-fopenmp -O2 -march=native -flto -mavx -g -fbacktrace -fcheck=all -fbounds-check -ffpe-trap=invalid,overflow,underflow,denormal -fstack-arrays"
 
 
 @test
-option test --compiler gfortran --flag "-O0 -fprofile-arcs -ftest-coverage --coverage"
+option test --compiler gfortran-10 --flag "-O0 -fPIE -fprofile-arcs -ftest-coverage --coverage"
 
 @testdebug
-option test --compiler gfortran --flag "-O0 -g -fbacktrace -fcheck=all -ffpe-trap=invalid,overflow,underflow,denormal"
+option test --compiler gfortran-10 --flag "-O0 -g -fbacktrace -fcheck=all -ffpe-trap=invalid,overflow,underflow,denormal"
 
 
 @testintel
@@ -26,7 +26,7 @@ option test --compiler ifort
 
 
 @runnv
-option run sMCRT --compiler nvfortran --flag "-fast -Mbackslash"
+option run sMCRT --compiler nvfortran --flag "-Mbackslash -Minform=inform -C -g -Mbackslash -Mbounds -Mchkstk -traceback"
 
 @runifort
 option run sMCRT --compiler ifort --profile release --flag "-qopenmp"
