@@ -157,7 +157,9 @@ module photonMod
         end function init_source
 
         subroutine slm(this, spectrum, dict, seqs)
-            
+            !! image source
+            ! TODO fix hardcoded size of 200
+            ! investigate +2 error
             use piecewiseMod
             use tomlf,         only : toml_table, get_value
             use random,        only : ran2, seq
@@ -165,9 +167,12 @@ module photonMod
             use constants,     only : TWOPI
 
             class(photon) :: this
-            type(spectrum_t), intent(in) :: spectrum
+            !> Input image to sample position from
+            type(spectrum_t),           intent(in)    :: spectrum
+            !> Metadata dictionary
             type(toml_table), optional, intent(inout) :: dict
-            type(seq), optional, intent(inout) :: seqs(2)
+            !> random numbers from a sequence. Quasi-Monte Carlo
+            type(seq),        optional, intent(inout) :: seqs(2)
             
             integer :: cell(3)
             real(kind=wp) :: x, y

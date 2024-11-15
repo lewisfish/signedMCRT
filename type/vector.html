@@ -1,3 +1,5 @@
+<!-- -*- mode: jinja2 -*- -->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -10,86 +12,60 @@
 
     <title>vector &ndash; signedMCRT </title>
 
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link href="../css/pygments.css" rel="stylesheet">
     <link href="../css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/local.css" rel="stylesheet">
       <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
-
-         <script src="../js/jquery-2.1.3.min.js"></script>
-         <script src="../js/svg-pan-zoom.min.js"></script>
-
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="../js/svg-pan-zoom.min.js"></script>
   </head>
 
   <body>
 
     <!-- Fixed navbar -->
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
           <a class="navbar-brand" href="../index.html">signedMCRT </a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-              <li><a href='../page/index.html'>main</a></li>
-            <li class="dropdown hidden-xs visible-sm visible-md hidden-lg">
-              <a href="#" class="dropdown-toggle"
-                 data-toggle="dropdown" role="button"
-                 aria-haspopup="true"
-                 aria-expanded="false">
-                 Contents <span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu">
-                    <li><a href="../lists/files.html">Source Files</a></li>
-                  <li><a href="../lists/modules.html">Modules</a></li>
-                  <li><a href="../lists/procedures.html">Procedures</a></li>
-                  <li><a href="../lists/absint.html">Abstract Interfaces</a></li>
-                  <li><a href="../lists/types.html">Derived Types</a></li>
-                  <li><a href="../program/mcpolar.html">Program</a></li>
-              </ul>
-            </li>
-                <li class="visible-xs hidden-sm visible-lg">
-                  <a href="../lists/files.html">Source Files</a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="../page/index.html">main</a></li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
                 </li>
-              <li class="visible-xs hidden-sm visible-lg">
-                <a href="../lists/modules.html">Modules</a>
-              </li>
-              <li class="visible-xs hidden-sm visible-lg">
-                <a href="../lists/procedures.html">Procedures</a>
-              </li>
-              <li class="visible-xs hidden-sm visible-lg">
-                <a href="../lists/absint.html">Abstract Interfaces</a>
-              </li>
-              <li class="visible-xs hidden-sm visible-lg">
-                <a href="../lists/types.html">Derived Types</a>
-              </li>
-              <li class="visible-xs hidden-sm visible-lg">
-                <a href="../program/mcpolar.html">Program</a>
-              </li>
-          </ul>
-            <form action="../search.html" class="navbar-form navbar-right" role="search">
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/absint.html">Abstract Interfaces</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../program/mcpolar.html">Program</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
               </div>
-              <!--
-                  <button type="submit" class="btn btn-default">Submit</button>
-                  -->
-            </form>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
 
     <div class="container">
   <div class="row">
@@ -97,33 +73,36 @@
       <small>Derived Type</small>
       
     </h1>
-      <div class="row" id="info-bar">
-    <div class="col-lg-12">
-      <div class="well well-sm">
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
         <ul class="list-inline" style="margin-bottom:0px;display:inline">
 
-          <li id="statements"><i class="fa fa-list-ol"></i>
-            <a data-toggle="tooltip"
-               data-placement="bottom" data-html="true"
-               title="<p> 7.0% of total for derived types.</p>Including implementation: 267 statements, 18.0% of total for derived types.">33 statements</a>
-          </li>
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                 title="<p> 6.9% of total for derived types.</p>Including implementation: 155 statements, 12.4% of total for derived types.">33 statements</a>
+            </li>
 
-            <li id="source-file">
+            <li class="list-inline-item" id="source-file">
               <i class="fa fa-code"></i>
               <a href="../src/vector_class.f90"> Source File</a>
             </li>
         </ul>
-        <ol class="breadcrumb in-well text-right">
-              <li><a href='../sourcefile/vector_class.f90.html'>vector_class.f90</a></li>
-              <li><a href='../module/vector_class.html'>vector_class</a></li>
-          <li class="active">vector</li>
-        </ol>
+      </div>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+                <li class="breadcrumb-item"><a href='../sourcefile/vector_class.f90.html'>vector_class.f90</a></li>
+                <li class="breadcrumb-item"><a href='../module/vector_class.html'>vector_class</a></li>
+            <li class="breadcrumb-item active" aria-current="page">vector</li>
+          </ol>
+        </nav>
       </div>
     </div>
   </div>
   <script>
     $(function () {
-    $('[data-toggle="tooltip"]').tooltip()
+    $('[data-bs-toggle="tooltip"]').tooltip()
     })
   </script>
 
@@ -134,17 +113,16 @@
       <div id="sidebar">
       <h3>Contents</h3>
   
-      <div class="panel panel-primary">
-      <div class="panel-heading text-left">
-        <h3 class="panel-title">
-          <a data-toggle="collapse" href="#vars-0">Variables</a>
-        </h3>
-      </div>
-      <div id="vars-0" class="panel-collapse collapse">
-        <div class="list-group">
-            <a class="list-group-item" href="../type/vector.html#variable-x">x</a>
-            <a class="list-group-item" href="../type/vector.html#variable-y">y</a>
-            <a class="list-group-item" href="../type/vector.html#variable-z">z</a>
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#vars-0"
+         aria-expanded="false" aria-controls="vars-0">
+         <h4 class="card-header bg-primary text-white">Variables</h4>
+      </a>
+      <div id="vars-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../type/vector.html#variable-x~4">x</a>
+            <a class="list-group-item" href="../type/vector.html#variable-y~4">y</a>
+            <a class="list-group-item" href="../type/vector.html#variable-z~3">z</a>
         </div>
       </div>
     </div>
@@ -164,14 +142,13 @@
   
   
   
-      <div class="panel panel-primary">
-      <div class="panel-heading text-left">
-        <h3 class="panel-title">
-          <a data-toggle="collapse" href="#boundprocs-0">Type-Bound Procedures</a>
-        </h3>
-      </div>
-      <div id="boundprocs-0" class="panel-collapse collapse">
-        <div class="list-group">
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#boundprocs-0"
+         aria-expanded="false" aria-controls="boundprocs-0">
+         <h4 class="card-header bg-primary text-white">Type-Bound Procedures</h4>
+      </a>
+      <div id="boundprocs-0" class="collapse">
+        <div class="list-group list-group-flush">
             <a class="list-group-item" href="../type/vector.html#boundprocedure-length">length</a>
             <a class="list-group-item" href="../type/vector.html#boundprocedure-magnitude">magnitude</a>
             <a class="list-group-item" href="../type/vector.html#boundprocedure-operator%28ASTERISK%29~2">operator(*)</a>
@@ -206,8 +183,9 @@
     </div>
 
   
-    <div class="panel panel-primary">
-      <div class="panel-heading text-left"><h3 class="panel-title">Source Code</h3></div>
+  
+    <div class="card card-primary">
+      <div class="card-header text-left"><h3 class="card-title">Source Code</h3></div>
       <div class="list-group">
         <a class="list-group-item" href="../type/vector.html#src">vector</a>
       </div>
@@ -219,111 +197,26 @@
     </div>
     
     <div class="col-md-9" id='text'>
-      <h2>type, public :: vector</h2>
+      <h2 id="type-def-statement">
+        type, public :: vector</h2>
     <p>Vector class</p>
     <br>
-
-    <section class="visible-xs visible-sm hidden-md">
-        <h3>Contents</h3>
-  
-      <div class="panel panel-primary">
-      <div class="panel-heading text-left">
-        <h3 class="panel-title">
-          <a data-toggle="collapse" href="#vars-1">Variables</a>
-        </h3>
-      </div>
-      <div id="vars-1" class="panel-collapse collapse">
-        <div class="list-group">
-            <a class="list-group-item" href="../type/vector.html#variable-x">x</a>
-            <a class="list-group-item" href="../type/vector.html#variable-y">y</a>
-            <a class="list-group-item" href="../type/vector.html#variable-z">z</a>
-        </div>
-      </div>
-    </div>
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-      <div class="panel panel-primary">
-      <div class="panel-heading text-left">
-        <h3 class="panel-title">
-          <a data-toggle="collapse" href="#boundprocs-1">Type-Bound Procedures</a>
-        </h3>
-      </div>
-      <div id="boundprocs-1" class="panel-collapse collapse">
-        <div class="list-group">
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-length">length</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-magnitude">magnitude</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-operator%28ASTERISK%29~2">operator(*)</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-operator%28ASTERISKASTERISK%29">operator(**)</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-operator%28%2B%29~2">operator(+)</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-operator%28-%29~2">operator(-)</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-operator%28.cross.%29">operator(.cross.)</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-operator%28.dot.%29">operator(.dot.)</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-operator%28SLASH%29~2">operator(/)</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-operator%28%3D%3D%29">operator(==)</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-scal_add_vec">scal_add_vec</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-scal_minus_vec">scal_minus_vec</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-scal_mult_vec">scal_mult_vec</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_add_scal">vec_add_scal</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_add_vec">vec_add_vec</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_cross_vec">vec_cross_vec</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_div_scal_int">vec_div_scal_int</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_div_scal_r4">vec_div_scal_r4</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_div_scal_r8">vec_div_scal_r8</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_dot_mat">vec_dot_mat</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_dot_vec">vec_dot_vec</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_equal_vec">vec_equal_vec</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_minus_scal">vec_minus_scal</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_minus_vec">vec_minus_vec</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_mult_exp_scal_int">vec_mult_exp_scal_int</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_mult_exp_scal_r4">vec_mult_exp_scal_r4</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_mult_exp_scal_r8">vec_mult_exp_scal_r8</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_mult_scal">vec_mult_scal</a>
-            <a class="list-group-item" href="../type/vector.html#boundprocedure-vec_mult_vec">vec_mult_vec</a>
-        </div>
-      </div>
-    </div>
-
-  
-    <div class="panel panel-primary">
-      <div class="panel-heading text-left"><h3 class="panel-title">Source Code</h3></div>
-      <div class="list-group">
-        <a class="list-group-item" href="../type/vector.html#src">vector</a>
-      </div>
-    </div>
-
-
-    </section>
-    <br class="visible-xs visible-sm hidden-md">
 
     <section>
     <h2>Components</h2>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Visibility</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-<th></th><th>Initial</th>        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-x"></span>
+              <span class="anchor" id="variable-x~4"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -340,7 +233,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-y"></span>
+              <span class="anchor" id="variable-y~4"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -357,7 +250,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-z"></span>
+              <span class="anchor" id="variable-z~3"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -382,10 +275,17 @@
 
       <section>
         <h2>Type-Bound Procedures</h2>
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-length"></span><h3>procedure, public,  :: <strong>length</strong>          
-    </h3></div>
-      <div class="panel-body">
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-length"></span>
+      <h3>
+          procedure, public ::
+  <strong>length</strong>
+        
+      </h3>
+    </div>
+      <div class="card-body">
         
         <p>Returns the length of the vector</p>
       </div>
@@ -395,23 +295,24 @@
     public pure elemental function <a href='../proc/length.html'>length</a>(this)  
 </h3>
     
+
   <p>Returns the length of a vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -436,10 +337,18 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-magnitude"></span><h3>procedure, public,  :: <strong>magnitude</strong>          
-    </h3></div>
-      <div class="panel-body">
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-magnitude"></span>
+      <h3>
+          procedure, public ::
+  <strong>magnitude</strong>
+        
+      </h3>
+    </div>
+      <div class="card-body">
         
         <p>Returns the magnitude of the vector</p>
       </div>
@@ -449,23 +358,24 @@
     public pure elemental function <a href='../proc/magnitude.html'>magnitude</a>(this)  
 </h3>
     
+
   <p>Returns the magnitude of a vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -482,7 +392,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -490,10 +400,18 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-operator%28ASTERISK%29~2"></span><h3>generic, public,  :: <strong>operator(*)</strong>  => <a href='../type/vector.html#boundprocedure-vec_mult_vec'>vec_mult_vec</a>, <a href='../type/vector.html#boundprocedure-vec_mult_scal'>vec_mult_scal</a>, <a href='../type/vector.html#boundprocedure-scal_mult_vec'>scal_mult_vec</a>         
-    </h3></div>
-      <div class="panel-body">
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-operator%28ASTERISK%29~2"></span>
+      <h3>
+          generic, public ::
+  <strong>operator(*)</strong> => <a href='/home/runner/work/signedMCRT/signedMCRT/docs/type/vector.html#boundprocedure-vec_mult_vec'>vec_mult_vec</a>, <a href='/home/runner/work/signedMCRT/signedMCRT/docs/type/vector.html#boundprocedure-vec_mult_scal'>vec_mult_scal</a>, <a href='/home/runner/work/signedMCRT/signedMCRT/docs/type/vector.html#boundprocedure-scal_mult_vec'>scal_mult_vec</a>
+        
+      </h3>
+    </div>
+      <div class="card-body">
         
         <p>Overloads the Multiplication operator for vec3</p>
       </div>
@@ -503,23 +421,24 @@
     private pure elemental function <a href='../proc/vec_mult_vec.html'>vec_mult_vec</a>(a, b)  
 </h3>
     
+
   <p>vec3 * vec3 elementwise</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -534,7 +453,7 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              type(<a href='../type/vector.html'>vector</a>),
+              type(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -551,7 +470,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -561,23 +480,24 @@
     private pure elemental function <a href='../proc/vec_mult_scal.html'>vec_mult_scal</a>(a, b)  
 </h3>
     
+
   <p>vec3 * scalar elementwise</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -609,7 +529,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -619,17 +539,18 @@
     private pure elemental function <a href='../proc/scal_mult_vec.html'>scal_mult_vec</a>(a, b)  
 </h3>
     
+
   <p>Scalar * vec3 elementwise</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
@@ -650,7 +571,7 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -667,7 +588,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -675,10 +596,18 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-operator%28ASTERISKASTERISK%29"></span><h3>generic, public,  :: <strong>operator(**)</strong>  => <a href='../type/vector.html#boundprocedure-vec_mult_exp_scal_int'>vec_mult_exp_scal_int</a>, <a href='../type/vector.html#boundprocedure-vec_mult_exp_scal_r4'>vec_mult_exp_scal_r4</a>, <a href='../type/vector.html#boundprocedure-vec_mult_exp_scal_r8'>vec_mult_exp_scal_r8</a>         
-    </h3></div>
-      <div class="panel-body">
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-operator%28ASTERISKASTERISK%29"></span>
+      <h3>
+          generic, public ::
+  <strong>operator(**)</strong> => <a href='/home/runner/work/signedMCRT/signedMCRT/docs/type/vector.html#boundprocedure-vec_mult_exp_scal_int'>vec_mult_exp_scal_int</a>, <a href='/home/runner/work/signedMCRT/signedMCRT/docs/type/vector.html#boundprocedure-vec_mult_exp_scal_r4'>vec_mult_exp_scal_r4</a>, <a href='/home/runner/work/signedMCRT/signedMCRT/docs/type/vector.html#boundprocedure-vec_mult_exp_scal_r8'>vec_mult_exp_scal_r8</a>
+        
+      </h3>
+    </div>
+      <div class="card-body">
         
         <p>Overloads the exponential operator for vec3</p>
       </div>
@@ -688,23 +617,24 @@
     private pure elemental function <a href='../proc/vec_mult_exp_scal_int.html'>vec_mult_exp_scal_int</a>(a, b)  
 </h3>
     
+
   <p>vec3**scalar for integer scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -736,7 +666,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -746,23 +676,24 @@
     private pure elemental function <a href='../proc/vec_mult_exp_scal_r4.html'>vec_mult_exp_scal_r4</a>(a, b)  
 </h3>
     
+
   <p>vec3**scalar for 32-bit float scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -794,7 +725,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -804,23 +735,24 @@
     private pure elemental function <a href='../proc/vec_mult_exp_scal_r8.html'>vec_mult_exp_scal_r8</a>(a, b)  
 </h3>
     
+
   <p>vec3**scalar for 64-bit float scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -852,7 +784,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -860,10 +792,18 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-operator%28%2B%29~2"></span><h3>generic, public,  :: <strong>operator(+)</strong>  => <a href='../type/vector.html#boundprocedure-vec_add_vec'>vec_add_vec</a>, <a href='../type/vector.html#boundprocedure-vec_add_scal'>vec_add_scal</a>, <a href='../type/vector.html#boundprocedure-scal_add_vec'>scal_add_vec</a>         
-    </h3></div>
-      <div class="panel-body">
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-operator%28%2B%29~2"></span>
+      <h3>
+          generic, public ::
+  <strong>operator(+)</strong> => <a href='/home/runner/work/signedMCRT/signedMCRT/docs/type/vector.html#boundprocedure-vec_add_vec'>vec_add_vec</a>, <a href='/home/runner/work/signedMCRT/signedMCRT/docs/type/vector.html#boundprocedure-vec_add_scal'>vec_add_scal</a>, <a href='/home/runner/work/signedMCRT/signedMCRT/docs/type/vector.html#boundprocedure-scal_add_vec'>scal_add_vec</a>
+        
+      </h3>
+    </div>
+      <div class="card-body">
         
         <p>Overloads the Addition operator for vec3</p>
       </div>
@@ -873,23 +813,24 @@
     private pure elemental function <a href='../proc/vec_add_vec.html'>vec_add_vec</a>(a, b)  
 </h3>
     
+
   <p>vec3 + vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -904,7 +845,7 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              type(<a href='../type/vector.html'>vector</a>),
+              type(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -921,7 +862,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -931,23 +872,24 @@
     private pure elemental function <a href='../proc/vec_add_scal.html'>vec_add_scal</a>(a, b)  
 </h3>
     
+
   <p>vec3 + scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -979,7 +921,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -989,17 +931,18 @@
     private pure elemental function <a href='../proc/scal_add_vec.html'>scal_add_vec</a>(a, b)  
 </h3>
     
+
   <p>vec3 + scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
@@ -1020,7 +963,7 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1037,7 +980,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -1045,10 +988,18 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-operator%28-%29~2"></span><h3>generic, public,  :: <strong>operator(-)</strong>  => <a href='../type/vector.html#boundprocedure-vec_minus_vec'>vec_minus_vec</a>, <a href='../type/vector.html#boundprocedure-vec_minus_scal'>vec_minus_scal</a>, <a href='../type/vector.html#boundprocedure-scal_minus_vec'>scal_minus_vec</a>         
-    </h3></div>
-      <div class="panel-body">
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-operator%28-%29~2"></span>
+      <h3>
+          generic, public ::
+  <strong>operator(-)</strong> => <a href='/home/runner/work/signedMCRT/signedMCRT/docs/type/vector.html#boundprocedure-vec_minus_vec'>vec_minus_vec</a>, <a href='/home/runner/work/signedMCRT/signedMCRT/docs/type/vector.html#boundprocedure-vec_minus_scal'>vec_minus_scal</a>, <a href='/home/runner/work/signedMCRT/signedMCRT/docs/type/vector.html#boundprocedure-scal_minus_vec'>scal_minus_vec</a>
+        
+      </h3>
+    </div>
+      <div class="card-body">
         
         <p>Overloads the Subtraction operator for vec3</p>
       </div>
@@ -1058,23 +1009,24 @@
     private pure elemental function <a href='../proc/vec_minus_vec.html'>vec_minus_vec</a>(a, b)  
 </h3>
     
+
   <p>vec3 - vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1089,7 +1041,7 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              type(<a href='../type/vector.html'>vector</a>),
+              type(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1106,7 +1058,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -1116,23 +1068,24 @@
     private pure elemental function <a href='../proc/vec_minus_scal.html'>vec_minus_scal</a>(a, b)  
 </h3>
     
+
   <p>vec3 - scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1164,7 +1117,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -1174,17 +1127,18 @@
     private pure elemental function <a href='../proc/scal_minus_vec.html'>scal_minus_vec</a>(a, b)  
 </h3>
     
+
   <p>scalar - vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
@@ -1205,7 +1159,7 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1222,7 +1176,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -1230,10 +1184,18 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-operator%28.cross.%29"></span><h3>generic, public,  :: <strong>operator(.cross.)</strong>  => <a href='../type/vector.html#boundprocedure-vec_cross_vec'>vec_cross_vec</a>         
-    </h3></div>
-      <div class="panel-body">
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-operator%28.cross.%29"></span>
+      <h3>
+          generic, public ::
+  <strong>operator(.cross.)</strong> => <a href='/home/runner/work/signedMCRT/signedMCRT/docs/type/vector.html#boundprocedure-vec_cross_vec'>vec_cross_vec</a>
+        
+      </h3>
+    </div>
+      <div class="card-body">
         
         <p>.cross. operator. Cross product</p>
       </div>
@@ -1243,23 +1205,24 @@
     private pure elemental function <a href='../proc/vec_cross_vec.html'>vec_cross_vec</a>(a, b) result(cross)  
 </h3>
     
+
   <p>vec3 x vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1274,7 +1237,7 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              type(<a href='../type/vector.html'>vector</a>),
+              type(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1291,7 +1254,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -1299,10 +1262,18 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-operator%28.dot.%29"></span><h3>generic, public,  :: <strong>operator(.dot.)</strong>  => <a href='../type/vector.html#boundprocedure-vec_dot_vec'>vec_dot_vec</a>, <a href='../type/vector.html#boundprocedure-vec_dot_mat'>vec_dot_mat</a>         
-    </h3></div>
-      <div class="panel-body">
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-operator%28.dot.%29"></span>
+      <h3>
+          generic, public ::
+  <strong>operator(.dot.)</strong> => <a href='/home/runner/work/signedMCRT/signedMCRT/docs/type/vector.html#boundprocedure-vec_dot_vec'>vec_dot_vec</a>, <a href='/home/runner/work/signedMCRT/signedMCRT/docs/type/vector.html#boundprocedure-vec_dot_mat'>vec_dot_mat</a>
+        
+      </h3>
+    </div>
+      <div class="card-body">
         
         <p>.dot. operator. Dot product</p>
       </div>
@@ -1312,23 +1283,24 @@
     private pure elemental function <a href='../proc/vec_dot_vec.html'>vec_dot_vec</a>(a, b) result(dot)  
 </h3>
     
+
   <p>vec3 . vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1343,7 +1315,7 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              type(<a href='../type/vector.html'>vector</a>),
+              type(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1370,23 +1342,24 @@
     private pure function <a href='../proc/vec_dot_mat.html'>vec_dot_mat</a>(a, b) result(dot)  
 </h3>
     
+
   <p>vec3 . matrix</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1418,7 +1391,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -1426,10 +1399,18 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-operator%28SLASH%29~2"></span><h3>generic, public,  :: <strong>operator(/)</strong>  => <a href='../type/vector.html#boundprocedure-vec_div_scal_r4'>vec_div_scal_r4</a>, <a href='../type/vector.html#boundprocedure-vec_div_scal_r8'>vec_div_scal_r8</a>, <a href='../type/vector.html#boundprocedure-vec_div_scal_int'>vec_div_scal_int</a>         
-    </h3></div>
-      <div class="panel-body">
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-operator%28SLASH%29~2"></span>
+      <h3>
+          generic, public ::
+  <strong>operator(/)</strong> => <a href='/home/runner/work/signedMCRT/signedMCRT/docs/type/vector.html#boundprocedure-vec_div_scal_r4'>vec_div_scal_r4</a>, <a href='/home/runner/work/signedMCRT/signedMCRT/docs/type/vector.html#boundprocedure-vec_div_scal_r8'>vec_div_scal_r8</a>, <a href='/home/runner/work/signedMCRT/signedMCRT/docs/type/vector.html#boundprocedure-vec_div_scal_int'>vec_div_scal_int</a>
+        
+      </h3>
+    </div>
+      <div class="card-body">
         
         <p>Overloads the Division operator for vec3</p>
       </div>
@@ -1439,23 +1420,24 @@
     private pure elemental function <a href='../proc/vec_div_scal_r4.html'>vec_div_scal_r4</a>(a, b)  
 </h3>
     
+
   <p>vec3 / scalar elementwise. Scalar is a 32-bit float</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1487,7 +1469,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -1497,23 +1479,24 @@
     private pure elemental function <a href='../proc/vec_div_scal_r8.html'>vec_div_scal_r8</a>(a, b)  
 </h3>
     
+
   <p>vec3 / scalar elementwise. Scalar is a 64-bit float</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1545,7 +1528,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -1555,23 +1538,24 @@
     private pure elemental function <a href='../proc/vec_div_scal_int.html'>vec_div_scal_int</a>(a, b)  
 </h3>
     
+
   <p>vec3 / scalar elementwise. Scalar is an integer</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1603,7 +1587,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -1611,10 +1595,18 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-operator%28%3D%3D%29"></span><h3>generic, public,  :: <strong>operator(==)</strong>  => <a href='../type/vector.html#boundprocedure-vec_equal_vec'>vec_equal_vec</a>         
-    </h3></div>
-      <div class="panel-body">
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-operator%28%3D%3D%29"></span>
+      <h3>
+          generic, public ::
+  <strong>operator(==)</strong> => <a href='/home/runner/work/signedMCRT/signedMCRT/docs/type/vector.html#boundprocedure-vec_equal_vec'>vec_equal_vec</a>
+        
+      </h3>
+    </div>
+      <div class="card-body">
         
         <p>Overloads the equal operator for vec3</p>
       </div>
@@ -1624,23 +1616,24 @@
     private pure elemental function <a href='../proc/vec_equal_vec.html'>vec_equal_vec</a>(a, b)  
 </h3>
     
+
   <p>vec3 == vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1655,7 +1648,7 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1680,26 +1673,35 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-scal_add_vec"></span><h3>procedure, private, pass(b) :: <strong>scal_add_vec</strong>          
-    </h3></div>
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-scal_add_vec"></span>
+      <h3>
+          procedure, private, pass(b) ::
+  <strong>scal_add_vec</strong>
+        
+      </h3>
+    </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/scal_add_vec.html'>scal_add_vec</a>(a, b)  
 </h3>
     
+
   <p>vec3 + scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
@@ -1720,7 +1722,7 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1737,7 +1739,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -1745,26 +1747,35 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-scal_minus_vec"></span><h3>procedure, private, pass(b) :: <strong>scal_minus_vec</strong>          
-    </h3></div>
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-scal_minus_vec"></span>
+      <h3>
+          procedure, private, pass(b) ::
+  <strong>scal_minus_vec</strong>
+        
+      </h3>
+    </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/scal_minus_vec.html'>scal_minus_vec</a>(a, b)  
 </h3>
     
+
   <p>scalar - vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
@@ -1785,7 +1796,7 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1802,7 +1813,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -1810,26 +1821,35 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-scal_mult_vec"></span><h3>procedure, private, pass(b) :: <strong>scal_mult_vec</strong>          
-    </h3></div>
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-scal_mult_vec"></span>
+      <h3>
+          procedure, private, pass(b) ::
+  <strong>scal_mult_vec</strong>
+        
+      </h3>
+    </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/scal_mult_vec.html'>scal_mult_vec</a>(a, b)  
 </h3>
     
+
   <p>Scalar * vec3 elementwise</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
@@ -1850,7 +1870,7 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1867,7 +1887,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -1875,32 +1895,41 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-vec_add_scal"></span><h3>procedure, private, pass(a) :: <strong>vec_add_scal</strong>          
-    </h3></div>
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-vec_add_scal"></span>
+      <h3>
+          procedure, private, pass(a) ::
+  <strong>vec_add_scal</strong>
+        
+      </h3>
+    </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/vec_add_scal.html'>vec_add_scal</a>(a, b)  
 </h3>
     
+
   <p>vec3 + scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1932,7 +1961,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -1940,32 +1969,41 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-vec_add_vec"></span><h3>procedure, private, pass(a) :: <strong>vec_add_vec</strong>          
-    </h3></div>
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-vec_add_vec"></span>
+      <h3>
+          procedure, private, pass(a) ::
+  <strong>vec_add_vec</strong>
+        
+      </h3>
+    </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/vec_add_vec.html'>vec_add_vec</a>(a, b)  
 </h3>
     
+
   <p>vec3 + vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1980,7 +2018,7 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              type(<a href='../type/vector.html'>vector</a>),
+              type(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1997,7 +2035,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -2005,32 +2043,41 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-vec_cross_vec"></span><h3>procedure, private, pass(a) :: <strong>vec_cross_vec</strong>          
-    </h3></div>
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-vec_cross_vec"></span>
+      <h3>
+          procedure, private, pass(a) ::
+  <strong>vec_cross_vec</strong>
+        
+      </h3>
+    </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/vec_cross_vec.html'>vec_cross_vec</a>(a, b) result(cross)  
 </h3>
     
+
   <p>vec3 x vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -2045,7 +2092,7 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              type(<a href='../type/vector.html'>vector</a>),
+              type(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -2062,7 +2109,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -2070,32 +2117,41 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-vec_div_scal_int"></span><h3>procedure, private, pass(a) :: <strong>vec_div_scal_int</strong>          
-    </h3></div>
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-vec_div_scal_int"></span>
+      <h3>
+          procedure, private, pass(a) ::
+  <strong>vec_div_scal_int</strong>
+        
+      </h3>
+    </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/vec_div_scal_int.html'>vec_div_scal_int</a>(a, b)  
 </h3>
     
+
   <p>vec3 / scalar elementwise. Scalar is an integer</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -2127,7 +2183,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -2135,32 +2191,41 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-vec_div_scal_r4"></span><h3>procedure, private, pass(a) :: <strong>vec_div_scal_r4</strong>          
-    </h3></div>
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-vec_div_scal_r4"></span>
+      <h3>
+          procedure, private, pass(a) ::
+  <strong>vec_div_scal_r4</strong>
+        
+      </h3>
+    </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/vec_div_scal_r4.html'>vec_div_scal_r4</a>(a, b)  
 </h3>
     
+
   <p>vec3 / scalar elementwise. Scalar is a 32-bit float</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -2192,7 +2257,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -2200,32 +2265,41 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-vec_div_scal_r8"></span><h3>procedure, private, pass(a) :: <strong>vec_div_scal_r8</strong>          
-    </h3></div>
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-vec_div_scal_r8"></span>
+      <h3>
+          procedure, private, pass(a) ::
+  <strong>vec_div_scal_r8</strong>
+        
+      </h3>
+    </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/vec_div_scal_r8.html'>vec_div_scal_r8</a>(a, b)  
 </h3>
     
+
   <p>vec3 / scalar elementwise. Scalar is a 64-bit float</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -2257,7 +2331,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -2265,32 +2339,41 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-vec_dot_mat"></span><h3>procedure, private, pass(a) :: <strong>vec_dot_mat</strong>          
-    </h3></div>
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-vec_dot_mat"></span>
+      <h3>
+          procedure, private, pass(a) ::
+  <strong>vec_dot_mat</strong>
+        
+      </h3>
+    </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure function <a href='../proc/vec_dot_mat.html'>vec_dot_mat</a>(a, b) result(dot)  
 </h3>
     
+
   <p>vec3 . matrix</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -2322,7 +2405,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -2330,32 +2413,41 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-vec_dot_vec"></span><h3>procedure, private, pass(a) :: <strong>vec_dot_vec</strong>          
-    </h3></div>
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-vec_dot_vec"></span>
+      <h3>
+          procedure, private, pass(a) ::
+  <strong>vec_dot_vec</strong>
+        
+      </h3>
+    </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/vec_dot_vec.html'>vec_dot_vec</a>(a, b) result(dot)  
 </h3>
     
+
   <p>vec3 . vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -2370,7 +2462,7 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              type(<a href='../type/vector.html'>vector</a>),
+              type(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -2395,32 +2487,41 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-vec_equal_vec"></span><h3>procedure, private, pass(a) :: <strong>vec_equal_vec</strong>          
-    </h3></div>
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-vec_equal_vec"></span>
+      <h3>
+          procedure, private, pass(a) ::
+  <strong>vec_equal_vec</strong>
+        
+      </h3>
+    </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/vec_equal_vec.html'>vec_equal_vec</a>(a, b)  
 </h3>
     
+
   <p>vec3 == vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -2435,7 +2536,7 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -2460,32 +2561,41 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-vec_minus_scal"></span><h3>procedure, private, pass(a) :: <strong>vec_minus_scal</strong>          
-    </h3></div>
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-vec_minus_scal"></span>
+      <h3>
+          procedure, private, pass(a) ::
+  <strong>vec_minus_scal</strong>
+        
+      </h3>
+    </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/vec_minus_scal.html'>vec_minus_scal</a>(a, b)  
 </h3>
     
+
   <p>vec3 - scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -2517,7 +2627,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -2525,32 +2635,41 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-vec_minus_vec"></span><h3>procedure, private, pass(a) :: <strong>vec_minus_vec</strong>          
-    </h3></div>
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-vec_minus_vec"></span>
+      <h3>
+          procedure, private, pass(a) ::
+  <strong>vec_minus_vec</strong>
+        
+      </h3>
+    </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/vec_minus_vec.html'>vec_minus_vec</a>(a, b)  
 </h3>
     
+
   <p>vec3 - vec3</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -2565,7 +2684,7 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              type(<a href='../type/vector.html'>vector</a>),
+              type(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -2582,7 +2701,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -2590,32 +2709,41 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-vec_mult_exp_scal_int"></span><h3>procedure, private, pass(a) :: <strong>vec_mult_exp_scal_int</strong>          
-    </h3></div>
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-vec_mult_exp_scal_int"></span>
+      <h3>
+          procedure, private, pass(a) ::
+  <strong>vec_mult_exp_scal_int</strong>
+        
+      </h3>
+    </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/vec_mult_exp_scal_int.html'>vec_mult_exp_scal_int</a>(a, b)  
 </h3>
     
+
   <p>vec3**scalar for integer scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -2647,7 +2775,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -2655,32 +2783,41 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-vec_mult_exp_scal_r4"></span><h3>procedure, private, pass(a) :: <strong>vec_mult_exp_scal_r4</strong>          
-    </h3></div>
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-vec_mult_exp_scal_r4"></span>
+      <h3>
+          procedure, private, pass(a) ::
+  <strong>vec_mult_exp_scal_r4</strong>
+        
+      </h3>
+    </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/vec_mult_exp_scal_r4.html'>vec_mult_exp_scal_r4</a>(a, b)  
 </h3>
     
+
   <p>vec3**scalar for 32-bit float scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -2712,7 +2849,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -2720,32 +2857,41 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-vec_mult_exp_scal_r8"></span><h3>procedure, private, pass(a) :: <strong>vec_mult_exp_scal_r8</strong>          
-    </h3></div>
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-vec_mult_exp_scal_r8"></span>
+      <h3>
+          procedure, private, pass(a) ::
+  <strong>vec_mult_exp_scal_r8</strong>
+        
+      </h3>
+    </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/vec_mult_exp_scal_r8.html'>vec_mult_exp_scal_r8</a>(a, b)  
 </h3>
     
+
   <p>vec3**scalar for 64-bit float scalar</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -2777,7 +2923,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -2785,32 +2931,41 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-vec_mult_scal"></span><h3>procedure, private, pass(a) :: <strong>vec_mult_scal</strong>          
-    </h3></div>
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-vec_mult_scal"></span>
+      <h3>
+          procedure, private, pass(a) ::
+  <strong>vec_mult_scal</strong>
+        
+      </h3>
+    </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/vec_mult_scal.html'>vec_mult_scal</a>(a, b)  
 </h3>
     
+
   <p>vec3 * scalar elementwise</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -2842,7 +2997,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -2850,32 +3005,41 @@
     </ul>
   </div>
 
-            <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="boundprocedure-vec_mult_vec"></span><h3>procedure, private, pass(a) :: <strong>vec_mult_vec</strong>          
-    </h3></div>
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-vec_mult_vec"></span>
+      <h3>
+          procedure, private, pass(a) ::
+  <strong>vec_mult_vec</strong>
+        
+      </h3>
+    </div>
     <ul class="list-group">
         <li class="list-group-item">
                   <h3>
     private pure elemental function <a href='../proc/vec_mult_vec.html'>vec_mult_vec</a>(a, b)  
 </h3>
     
+
   <p>vec3 * vec3 elementwise</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='../type/vector.html'>vector</a>),
+              class(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -2890,7 +3054,7 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              type(<a href='../type/vector.html'>vector</a>),
+              type(<a href='vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -2907,7 +3071,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/vector.html'>vector</a>)</small>
+    <small>type(<a href='vector.html'>vector</a>)</small>
     </h4>
     
 
@@ -2915,64 +3079,65 @@
     </ul>
   </div>
 
+          </div>
       </section>
 
     <section>
     <h3><span class="anchor" id="src"></span>Source Code</h3>
-    <div class="highlight"><pre><span></span><span class="w">    </span><span class="k">type</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vector</span><span class="w"></span>
+    <div class="hl codehilite"><pre><span></span><span class="w">    </span><span class="k">type</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vector</span>
 <span class="w">        </span><span class="c">!&gt; vector components</span>
-<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="w"></span>
-<span class="w">        </span><span class="k">contains</span><span class="w"></span>
+<span class="w">        </span><span class="kt">real</span><span class="p">(</span><span class="nb">kind</span><span class="o">=</span><span class="n">wp</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">z</span>
+<span class="w">        </span><span class="k">contains</span>
 
 <span class="w">        </span><span class="c">!&gt; Returns the magnitude of the vector</span>
-<span class="w">        </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">magnitude</span><span class="w">         </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">magnitude</span><span class="w"></span>
+<span class="w">        </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">magnitude</span><span class="w">         </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">magnitude</span>
 <span class="w">        </span><span class="c">!&gt; Returns the length of the vector</span>
-<span class="w">        </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">length</span><span class="w">            </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">length</span><span class="w"></span>
+<span class="w">        </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">length</span><span class="w">            </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">length</span>
 <span class="w">        </span><span class="c">!&gt; .dot. operator. Dot product</span>
-<span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(.</span><span class="n">dot</span><span class="p">.)</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_dot_vec</span><span class="p">,</span><span class="w"> </span><span class="n">vec_dot_mat</span><span class="w"></span>
+<span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(.</span><span class="n">dot</span><span class="p">.)</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_dot_vec</span><span class="p">,</span><span class="w"> </span><span class="n">vec_dot_mat</span>
 <span class="w">        </span><span class="c">!&gt; .cross. operator. Cross product</span>
-<span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(.</span><span class="n">cross</span><span class="p">.)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_cross_vec</span><span class="w"></span>
+<span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(.</span><span class="n">cross</span><span class="p">.)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_cross_vec</span>
 <span class="w">        </span><span class="c">!&gt; Overloads the Division operator for vec3</span>
-<span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">/</span><span class="p">)</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_div_scal_r4</span><span class="p">,</span><span class="w"> </span><span class="n">vec_div_scal_r8</span><span class="p">,</span><span class="w"> </span><span class="n">vec_div_scal_int</span><span class="w"></span>
+<span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">/</span><span class="p">)</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_div_scal_r4</span><span class="p">,</span><span class="w"> </span><span class="n">vec_div_scal_r8</span><span class="p">,</span><span class="w"> </span><span class="n">vec_div_scal_int</span>
 <span class="w">        </span><span class="c">!&gt; Overloads the Multiplication operator for vec3</span>
-<span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_mult_vec</span><span class="p">,</span><span class="w"> </span><span class="n">vec_mult_scal</span><span class="p">,</span><span class="w"> </span><span class="n">scal_mult_vec</span><span class="w"></span>
+<span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_mult_vec</span><span class="p">,</span><span class="w"> </span><span class="n">vec_mult_scal</span><span class="p">,</span><span class="w"> </span><span class="n">scal_mult_vec</span>
 <span class="w">        </span><span class="c">!&gt; Overloads the exponential operator for vec3</span>
-<span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">**</span><span class="p">)</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_mult_exp_scal_int</span><span class="p">,</span><span class="w"> </span><span class="n">vec_mult_exp_scal_r4</span><span class="p">,</span><span class="w"> </span><span class="n">vec_mult_exp_scal_r8</span><span class="w"></span>
+<span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">**</span><span class="p">)</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_mult_exp_scal_int</span><span class="p">,</span><span class="w"> </span><span class="n">vec_mult_exp_scal_r4</span><span class="p">,</span><span class="w"> </span><span class="n">vec_mult_exp_scal_r8</span>
 <span class="w">        </span><span class="c">!&gt; Overloads the Addition operator for vec3</span>
-<span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_add_vec</span><span class="p">,</span><span class="w"> </span><span class="n">vec_add_scal</span><span class="p">,</span><span class="w"> </span><span class="n">scal_add_vec</span><span class="w"></span>
+<span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">+</span><span class="p">)</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_add_vec</span><span class="p">,</span><span class="w"> </span><span class="n">vec_add_scal</span><span class="p">,</span><span class="w"> </span><span class="n">scal_add_vec</span>
 <span class="w">        </span><span class="c">!&gt; Overloads the Subtraction operator for vec3</span>
-<span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">-</span><span class="p">)</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_minus_vec</span><span class="p">,</span><span class="w"> </span><span class="n">vec_minus_scal</span><span class="p">,</span><span class="w"> </span><span class="n">scal_minus_vec</span><span class="w"></span>
+<span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">-</span><span class="p">)</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_minus_vec</span><span class="p">,</span><span class="w"> </span><span class="n">vec_minus_scal</span><span class="p">,</span><span class="w"> </span><span class="n">scal_minus_vec</span>
 <span class="w">        </span><span class="c">!&gt; Overloads the equal operator for vec3</span>
-<span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">==</span><span class="p">)</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_equal_vec</span><span class="w"></span>
+<span class="w">        </span><span class="k">generic</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">operator</span><span class="p">(</span><span class="o">==</span><span class="p">)</span><span class="w">      </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">vec_equal_vec</span>
 
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_dot_vec</span><span class="w"></span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_dot_mat</span><span class="w"></span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_dot_vec</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_dot_mat</span>
 
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_cross_vec</span><span class="w"></span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_cross_vec</span>
 
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_div_scal_r4</span><span class="w"></span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_div_scal_r8</span><span class="w"></span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_div_scal_int</span><span class="w"></span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_div_scal_r4</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_div_scal_r8</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_div_scal_int</span>
 
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_mult_vec</span><span class="w"></span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_mult_scal</span><span class="w"></span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">b</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">scal_mult_vec</span><span class="w"></span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_mult_vec</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_mult_scal</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">b</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">scal_mult_vec</span>
 <span class="w">        </span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_mult_exp_scal_int</span><span class="w"></span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_mult_exp_scal_r4</span><span class="w"></span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_mult_exp_scal_r8</span><span class="w"></span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_mult_exp_scal_int</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_mult_exp_scal_r4</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_mult_exp_scal_r8</span>
 
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_add_vec</span><span class="w"></span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_add_scal</span><span class="w"></span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">b</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">scal_add_vec</span><span class="w"></span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_add_vec</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_add_scal</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">b</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">scal_add_vec</span>
 
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_minus_vec</span><span class="w"></span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_minus_scal</span><span class="w"></span>
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">b</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">scal_minus_vec</span><span class="w"></span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_minus_vec</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_minus_scal</span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">b</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">scal_minus_vec</span>
 
-<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_equal_vec</span><span class="w"></span>
+<span class="w">        </span><span class="k">procedure</span><span class="p">,</span><span class="w"> </span><span class="k">pass</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="k">private</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">vec_equal_vec</span>
 
-<span class="w">    </span><span class="k">end type </span><span class="n">vector</span><span class="w"></span>
+<span class="w">    </span><span class="k">end type </span><span class="n">vector</span>
 </pre></div>
 
     </section>
@@ -2984,12 +3149,15 @@
     </div> <!-- /container -->
     <footer>
       <div class="container">
-        <div class="row">
-          <div class="col-xs-6 col-md-6"><p>signedMCRT was developed by Lewis McMillan<br>&copy; 2023 
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              signedMCRT
+ was developed by Lewis McMillan<br>              &copy; 2024 
 </p>
           </div>
-          <div class="col-xs-6 col-md-6">
-            <p class="text-right">
+          <div class="col">
+            <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
             </p>
@@ -2999,17 +3167,12 @@
       </div> <!-- /container -->
     </footer>
 
-    <!-- Bootstrap core JavaScript
-         ================================================== -->
-         <!-- Placed at the end of the document so the pages load faster -->
-    <!--
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-        -->
-        <script src="../js/bootstrap.min.js"></script>
-        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-        <script src="../js/ie10-viewport-bug-workaround.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>    
 
-        <!-- MathJax JavaScript
+    <!-- MathJax JavaScript
              ================================================== -->
              <!-- Placed at the end of the document so the pages load faster -->
         <script type="text/x-mathjax-config">

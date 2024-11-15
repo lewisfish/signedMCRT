@@ -1,3 +1,5 @@
+<!-- -*- mode: jinja2 -*- -->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -10,86 +12,60 @@
 
     <title>detectors &ndash; signedMCRT</title>
 
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link href="../css/pygments.css" rel="stylesheet">
     <link href="../css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/local.css" rel="stylesheet">
       <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
-
-         <script src="../js/jquery-2.1.3.min.js"></script>
-         <script src="../js/svg-pan-zoom.min.js"></script>
-
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="../js/svg-pan-zoom.min.js"></script>
   </head>
 
   <body>
 
     <!-- Fixed navbar -->
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
           <a class="navbar-brand" href="../index.html">signedMCRT </a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-              <li><a href='../page/index.html'>main</a></li>
-            <li class="dropdown hidden-xs visible-sm visible-md hidden-lg">
-              <a href="#" class="dropdown-toggle"
-                 data-toggle="dropdown" role="button"
-                 aria-haspopup="true"
-                 aria-expanded="false">
-                 Contents <span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu">
-                    <li><a href="../lists/files.html">Source Files</a></li>
-                  <li><a href="../lists/modules.html">Modules</a></li>
-                  <li><a href="../lists/procedures.html">Procedures</a></li>
-                  <li><a href="../lists/absint.html">Abstract Interfaces</a></li>
-                  <li><a href="../lists/types.html">Derived Types</a></li>
-                  <li><a href="../program/mcpolar.html">Program</a></li>
-              </ul>
-            </li>
-                <li class="visible-xs hidden-sm visible-lg">
-                  <a href="../lists/files.html">Source Files</a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="../page/index.html">main</a></li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
                 </li>
-              <li class="visible-xs hidden-sm visible-lg">
-                <a href="../lists/modules.html">Modules</a>
-              </li>
-              <li class="visible-xs hidden-sm visible-lg">
-                <a href="../lists/procedures.html">Procedures</a>
-              </li>
-              <li class="visible-xs hidden-sm visible-lg">
-                <a href="../lists/absint.html">Abstract Interfaces</a>
-              </li>
-              <li class="visible-xs hidden-sm visible-lg">
-                <a href="../lists/types.html">Derived Types</a>
-              </li>
-              <li class="visible-xs hidden-sm visible-lg">
-                <a href="../program/mcpolar.html">Program</a>
-              </li>
-          </ul>
-            <form action="../search.html" class="navbar-form navbar-right" role="search">
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/absint.html">Abstract Interfaces</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../program/mcpolar.html">Program</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
               </div>
-              <!--
-                  <button type="submit" class="btn btn-default">Submit</button>
-                  -->
-            </form>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
 
     <div class="container">
   <div class="row">
@@ -97,39 +73,42 @@
       <small>Module</small>
       
     </h1>
-      <div class="row" id="info-bar">
-    <div class="col-lg-12">
-      <div class="well well-sm">
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
         <ul class="list-inline" style="margin-bottom:0px;display:inline">
 
-          <li id="statements"><i class="fa fa-list-ol"></i>
-            <a data-toggle="tooltip"
-               data-placement="bottom" data-html="true"
-               title=" 3.1% of total for modules and submodules.">163 statements</a>
-          </li>
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                 title=" 3.0% of total for modules and submodules.">163 statements</a>
+            </li>
 
-            <li id="source-file">
+            <li class="list-inline-item" id="source-file">
               <i class="fa fa-code"></i>
               <a href="../src/detectors.f90"> Source File</a>
             </li>
         </ul>
-        <ol class="breadcrumb in-well text-right">
-              <li><a href='../sourcefile/detectors.f90.html'>detectors.f90</a></li>
-          <li class="active">detectors</li>
-        </ol>
+      </div>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+                <li class="breadcrumb-item"><a href='../sourcefile/detectors.f90.html'>detectors.f90</a></li>
+            <li class="breadcrumb-item active" aria-current="page">detectors</li>
+          </ol>
+        </nav>
       </div>
     </div>
   </div>
   <script>
     $(function () {
-    $('[data-toggle="tooltip"]').tooltip()
+    $('[data-bs-toggle="tooltip"]').tooltip()
     })
   </script>
 
   </div>
 
   <div class="row">
-    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+    <div class="col-md-3">
         <div id="sidebar">
       <h3>Contents</h3>
   
@@ -140,14 +119,13 @@
   
   
   
-      <div class="panel panel-primary">
-      <div class="panel-heading text-left">
-        <h3 class="panel-title">
-          <a data-toggle="collapse" href="#inters-0">Interfaces</a>
-        </h3>
-      </div>
-      <div id="inters-0" class="panel-collapse collapse">
-        <div class="list-group">
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#inters-0"
+         aria-expanded="false" aria-controls="inters-0">
+         <h4 class="card-header bg-primary text-white">Interfaces</h4>
+      </a>
+      <div id="inters-0" class="collapse">
+        <div class="list-group list-group-flush">
             <a class="list-group-item" href="../module/detectors.html#interface-annulus_dect">annulus_dect</a>
             <a class="list-group-item" href="../module/detectors.html#interface-camera">camera</a>
             <a class="list-group-item" href="../module/detectors.html#interface-circle_dect">circle_dect</a>
@@ -156,14 +134,13 @@
     </div>
 
   
-      <div class="panel panel-primary">
-      <div class="panel-heading text-left">
-        <h3 class="panel-title">
-          <a data-toggle="collapse" href="#types-0">Derived Types</a>
-        </h3>
-      </div>
-      <div id="types-0" class="panel-collapse collapse">
-        <div class="list-group">
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#types-0"
+         aria-expanded="false" aria-controls="types-0">
+         <h4 class="card-header bg-primary text-white">Derived Types</h4>
+      </a>
+      <div id="types-0" class="collapse">
+        <div class="list-group list-group-flush">
             <a class="list-group-item" href="../module/detectors.html#type-annulus_dect">annulus_dect</a>
             <a class="list-group-item" href="../module/detectors.html#type-camera">camera</a>
             <a class="list-group-item" href="../module/detectors.html#type-circle_dect">circle_dect</a>
@@ -172,14 +149,13 @@
       </div>
     </div>
 
-      <div class="panel panel-primary">
-      <div class="panel-heading text-left">
-        <h3 class="panel-title">
-          <a data-toggle="collapse" href="#funcs-0">Functions</a>
-        </h3>
-      </div>
-      <div id="funcs-0" class="panel-collapse collapse">
-        <div class="list-group">
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#funcs-0"
+         aria-expanded="false" aria-controls="funcs-0">
+         <h4 class="card-header bg-primary text-white">Functions</h4>
+      </a>
+      <div id="funcs-0" class="collapse">
+        <div class="list-group list-group-flush">
             <a class="list-group-item" href="../module/detectors.html#proc-check_hit_annulus">check_hit_annulus</a>
             <a class="list-group-item" href="../module/detectors.html#proc-check_hit_camera">check_hit_camera</a>
             <a class="list-group-item" href="../module/detectors.html#proc-check_hit_circle">check_hit_circle</a>
@@ -190,6 +166,7 @@
       </div>
     </div>
 
+  
   
   
   
@@ -206,103 +183,31 @@
     <div class="col-md-9" id='text'>
       <p>Module contains each detector type which inherits from the base detector class.
 detectors detect photon packets colliding with the detectors.</p>
-<br>          <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">Uses</h3>
+<br>          <div class="card mb-4">
+      <h3 class="card-header card-title bg-light">Uses</h3>
+      <div class="card-body">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <ul class="list-inline">
+                  <li class="list-inline-item"><a href='constants.html'>constants</a></li>
+                  <li class="list-inline-item"><a href='detector_mod.html'>detector_mod</a></li>
+                  <li class="list-inline-item"><a href='vector_class.html'>vector_class</a></li>
+              </ul>
+            </li>
+        </ul>
       </div>
-      <ul class="list-group">
-          <li class="list-group-item">
-            <ul class="list-inline">
-                <li><a href='../module/detector_mod.html'>detector_mod</a></li>
-                <li><a href='../module/vector_class.html'>vector_class</a></li>
-                <li><a href='../module/constants.html'>constants</a></li>
-            </ul>
-          </li>
-      </ul>
     </div>
 
       
       <br>
-
-      <section class="visible-xs visible-sm hidden-md">
-          <h3>Contents</h3>
-  
-  
-  
-  
-  
-  
-  
-  
-      <div class="panel panel-primary">
-      <div class="panel-heading text-left">
-        <h3 class="panel-title">
-          <a data-toggle="collapse" href="#inters-1">Interfaces</a>
-        </h3>
-      </div>
-      <div id="inters-1" class="panel-collapse collapse">
-        <div class="list-group">
-            <a class="list-group-item" href="../module/detectors.html#interface-annulus_dect">annulus_dect</a>
-            <a class="list-group-item" href="../module/detectors.html#interface-camera">camera</a>
-            <a class="list-group-item" href="../module/detectors.html#interface-circle_dect">circle_dect</a>
-        </div>
-      </div>
-    </div>
-
-  
-      <div class="panel panel-primary">
-      <div class="panel-heading text-left">
-        <h3 class="panel-title">
-          <a data-toggle="collapse" href="#types-1">Derived Types</a>
-        </h3>
-      </div>
-      <div id="types-1" class="panel-collapse collapse">
-        <div class="list-group">
-            <a class="list-group-item" href="../module/detectors.html#type-annulus_dect">annulus_dect</a>
-            <a class="list-group-item" href="../module/detectors.html#type-camera">camera</a>
-            <a class="list-group-item" href="../module/detectors.html#type-circle_dect">circle_dect</a>
-            <a class="list-group-item" href="../module/detectors.html#type-dect_array">dect_array</a>
-        </div>
-      </div>
-    </div>
-
-      <div class="panel panel-primary">
-      <div class="panel-heading text-left">
-        <h3 class="panel-title">
-          <a data-toggle="collapse" href="#funcs-1">Functions</a>
-        </h3>
-      </div>
-      <div id="funcs-1" class="panel-collapse collapse">
-        <div class="list-group">
-            <a class="list-group-item" href="../module/detectors.html#proc-check_hit_annulus">check_hit_annulus</a>
-            <a class="list-group-item" href="../module/detectors.html#proc-check_hit_camera">check_hit_camera</a>
-            <a class="list-group-item" href="../module/detectors.html#proc-check_hit_circle">check_hit_circle</a>
-            <a class="list-group-item" href="../module/detectors.html#proc-init_annulus_dect">init_annulus_dect</a>
-            <a class="list-group-item" href="../module/detectors.html#proc-init_camera">init_camera</a>
-            <a class="list-group-item" href="../module/detectors.html#proc-init_circle_dect">init_circle_dect</a>
-        </div>
-      </div>
-    </div>
-
-  
-  
-  
-  
-  
-  
-  
-
-
-      </section>
-      <br class="visible-xs visible-sm hidden-md">
 
 
 
 
         <section>
           <h2>Interfaces</h2>
-              <div class="panel panel-default">
-    <div class="panel-heading codesum">
+              <div class="card">
+    <div class="card-header bg-light codesum">
       <span class="anchor" id="interface-annulus_dect"></span>
       <h3>public        interface <a href='../interface/annulus_dect.html'>annulus_dect</a> 
       </h3>
@@ -320,16 +225,16 @@ detectors detect photon packets colliding with the detectors.</p>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-pos~10"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -344,7 +249,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-dir~8"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -359,7 +264,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-layer~3"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -374,7 +279,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-r1~2"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -389,7 +294,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-r2~2"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -404,7 +309,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-nbins~2"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -419,7 +324,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-maxval~2"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -434,7 +339,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-trackhistory~2"></span>
               logical,
             </td>
 <td>intent(in)</td>
@@ -460,8 +365,8 @@ detectors detect photon packets colliding with the detectors.</p>
     </ul>
   </div>
 
-              <div class="panel panel-default">
-    <div class="panel-heading codesum">
+              <div class="card">
+    <div class="card-header bg-light codesum">
       <span class="anchor" id="interface-camera"></span>
       <h3>public        interface <a href='../interface/camera.html'>camera</a> 
       </h3>
@@ -479,16 +384,16 @@ detectors detect photon packets colliding with the detectors.</p>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-p1"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -503,7 +408,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-p2~2"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -518,7 +423,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-p3~2"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -533,7 +438,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-layer~4"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -548,7 +453,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-nbins~3"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -563,7 +468,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-maxval~3"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -578,7 +483,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-trackhistory~3"></span>
               logical,
             </td>
 <td>intent(in)</td>
@@ -604,8 +509,8 @@ detectors detect photon packets colliding with the detectors.</p>
     </ul>
   </div>
 
-              <div class="panel panel-default">
-    <div class="panel-heading codesum">
+              <div class="card">
+    <div class="card-header bg-light codesum">
       <span class="anchor" id="interface-circle_dect"></span>
       <h3>public        interface <a href='../interface/circle_dect.html'>circle_dect</a> 
       </h3>
@@ -623,16 +528,16 @@ detectors detect photon packets colliding with the detectors.</p>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-pos~9"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -647,7 +552,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-dir~7"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -662,7 +567,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-layer~2"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -677,7 +582,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-radius~4"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -692,7 +597,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-nbins"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -707,7 +612,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-maxval"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -722,7 +627,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-trackhistory"></span>
               logical,
             </td>
 <td>intent(in)</td>
@@ -754,8 +659,8 @@ detectors detect photon packets colliding with the detectors.</p>
 
         <section>
           <h2>Derived Types</h2>
-              <div class="panel panel-default">
-    <div class="panel-heading codesum">
+              <div class="card">
+    <div class="card-header codesum">
       <span class="anchor" id="type-annulus_dect"></span>
       <h3>
         type, public, extends(<a href='../type/detector1d.html'>detector1D</a>)&nbsp;::&nbsp;
@@ -763,18 +668,18 @@ detectors detect photon packets colliding with the detectors.</p>
         
       </h3>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
       <p>Annuluar detector</p>
 
         <h4>Components</h4>
           <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Visibility</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-<th></th><th>Initial</th>        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
@@ -796,7 +701,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-data"></span>
+              <span class="anchor" id="variable-data~2"></span>
               real(kind=wp),
             </td>
               <td>public,</td>
@@ -813,7 +718,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dir~9"></span>
+              <span class="anchor" id="variable-dir~14"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
@@ -830,7 +735,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-layer~6"></span>
+              <span class="anchor" id="variable-layer~8"></span>
               integer,
             </td>
               <td>public</td>
@@ -864,7 +769,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-pos~8"></span>
+              <span class="anchor" id="variable-pos~13"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
@@ -881,7 +786,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-r1~2"></span>
+              <span class="anchor" id="variable-r1"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -898,7 +803,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-r2~2"></span>
+              <span class="anchor" id="variable-r2"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -944,7 +849,7 @@ detectors detect photon packets colliding with the detectors.</p>
 
                     
                     function
-                    <strong><a href='../proc/init_annulus_dect.html'>init_annulus_dect</a></strong>
+                    <strong><a href='/home/runner/work/signedMCRT/signedMCRT/docs/proc/init_annulus_dect.html'>init_annulus_dect</a></strong>
                     (pos, dir, layer, r1, r2, nbins, maxval, trackHistory)
                   </td>
                   <td><p>Initalise Annular detector</p></td>
@@ -957,23 +862,13 @@ detectors detect photon packets colliding with the detectors.</p>
         <table class="table table-striped varlist">
           <tbody>
               <tr>
-                <td>
-                    procedure
-                    ,                  public
-,                   :: <strong><a href='../type/annulus_dect.html#boundprocedure-check_hit'>check_hit</a></strong>
- =>
-                    <a href='../proc/check_hit_annulus.html'>check_hit_annulus</a>
-<small>Function</small>                </td>
+                <td>  procedure, public ::
+  <strong><a href='../type/annulus_dect.html#boundprocedure-check_hit~2'>check_hit</a></strong> => <a href='/home/runner/work/signedMCRT/signedMCRT/docs/proc/check_hit_annulus.html'>check_hit_annulus</a></td>
                 <td></td>
               </tr>
               <tr>
-                <td>
-                    procedure
-                    ,                  public
-,                   :: <strong><a href='../type/detector1d.html#boundprocedure-record_hit'>record_hit</a></strong>
- =>
-                    <a href='../proc/record_hit_1d_sub.html'>record_hit_1D_sub</a>
-<small>Subroutine</small>                </td>
+                <td>  procedure, public ::
+  <strong><a href='../type/detector1d.html#boundprocedure-record_hit~2'>record_hit</a></strong> => <a href='/home/runner/work/signedMCRT/signedMCRT/docs/proc/record_hit_1d_sub.html'>record_hit_1D_sub</a></td>
                 <td></td>
               </tr>
           </tbody>
@@ -981,8 +876,8 @@ detectors detect photon packets colliding with the detectors.</p>
     </div>
   </div>
 
-              <div class="panel panel-default">
-    <div class="panel-heading codesum">
+              <div class="card">
+    <div class="card-header codesum">
       <span class="anchor" id="type-camera"></span>
       <h3>
         type, public, extends(<a href='../type/detector2d.html'>detector2D</a>)&nbsp;::&nbsp;
@@ -990,18 +885,18 @@ detectors detect photon packets colliding with the detectors.</p>
         
       </h3>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
       <p>Rectangular or "camera" detector</p>
 
         <h4>Components</h4>
           <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Visibility</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-<th></th><th>Initial</th>        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
@@ -1040,7 +935,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-data~2"></span>
+              <span class="anchor" id="variable-data~3"></span>
               real(kind=wp),
             </td>
               <td>public,</td>
@@ -1057,7 +952,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dir~9"></span>
+              <span class="anchor" id="variable-dir~14"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
@@ -1108,7 +1003,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-height~2"></span>
+              <span class="anchor" id="variable-height"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -1125,7 +1020,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-layer~6"></span>
+              <span class="anchor" id="variable-layer~8"></span>
               integer,
             </td>
               <td>public</td>
@@ -1142,7 +1037,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-n~4"></span>
+              <span class="anchor" id="variable-n~2"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
@@ -1193,7 +1088,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-p2~2"></span>
+              <span class="anchor" id="variable-p2"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
@@ -1210,7 +1105,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-p3~2"></span>
+              <span class="anchor" id="variable-p3"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
@@ -1227,7 +1122,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-pos~8"></span>
+              <span class="anchor" id="variable-pos~13"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
@@ -1290,7 +1185,7 @@ detectors detect photon packets colliding with the detectors.</p>
 
                     
                     function
-                    <strong><a href='../proc/init_camera.html'>init_camera</a></strong>
+                    <strong><a href='/home/runner/work/signedMCRT/signedMCRT/docs/proc/init_camera.html'>init_camera</a></strong>
                     (p1, p2, p3, layer, nbins, maxval, trackHistory)
                   </td>
                   <td><p>Initalise Camera detector</p></td>
@@ -1303,23 +1198,13 @@ detectors detect photon packets colliding with the detectors.</p>
         <table class="table table-striped varlist">
           <tbody>
               <tr>
-                <td>
-                    procedure
-                    ,                  public
-,                   :: <strong><a href='../type/camera.html#boundprocedure-check_hit~2'>check_hit</a></strong>
- =>
-                    <a href='../proc/check_hit_camera.html'>check_hit_camera</a>
-<small>Function</small>                </td>
+                <td>  procedure, public ::
+  <strong><a href='../type/camera.html#boundprocedure-check_hit~3'>check_hit</a></strong> => <a href='/home/runner/work/signedMCRT/signedMCRT/docs/proc/check_hit_camera.html'>check_hit_camera</a></td>
                 <td></td>
               </tr>
               <tr>
-                <td>
-                    procedure
-                    ,                  public
-,                   :: <strong><a href='../type/detector2d.html#boundprocedure-record_hit~2'>record_hit</a></strong>
- =>
-                    <a href='../proc/record_hit_2d_sub.html'>record_hit_2D_sub</a>
-<small>Subroutine</small>                </td>
+                <td>  procedure, public ::
+  <strong><a href='../type/detector2d.html#boundprocedure-record_hit~3'>record_hit</a></strong> => <a href='/home/runner/work/signedMCRT/signedMCRT/docs/proc/record_hit_2d_sub.html'>record_hit_2D_sub</a></td>
                 <td></td>
               </tr>
           </tbody>
@@ -1327,8 +1212,8 @@ detectors detect photon packets colliding with the detectors.</p>
     </div>
   </div>
 
-              <div class="panel panel-default">
-    <div class="panel-heading codesum">
+              <div class="card">
+    <div class="card-header codesum">
       <span class="anchor" id="type-circle_dect"></span>
       <h3>
         type, public, extends(<a href='../type/detector1d.html'>detector1D</a>)&nbsp;::&nbsp;
@@ -1336,18 +1221,18 @@ detectors detect photon packets colliding with the detectors.</p>
         
       </h3>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
       <p>Circle detector</p>
 
         <h4>Components</h4>
           <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Visibility</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-<th></th><th>Initial</th>        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
@@ -1369,7 +1254,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-data"></span>
+              <span class="anchor" id="variable-data~2"></span>
               real(kind=wp),
             </td>
               <td>public,</td>
@@ -1386,7 +1271,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dir~9"></span>
+              <span class="anchor" id="variable-dir~14"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
@@ -1403,7 +1288,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-layer~6"></span>
+              <span class="anchor" id="variable-layer~8"></span>
               integer,
             </td>
               <td>public</td>
@@ -1437,7 +1322,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-pos~8"></span>
+              <span class="anchor" id="variable-pos~13"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
               <td>public</td>
@@ -1454,7 +1339,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-radius~6"></span>
+              <span class="anchor" id="variable-radius~3"></span>
               real(kind=wp),
             </td>
               <td>public</td>
@@ -1500,7 +1385,7 @@ detectors detect photon packets colliding with the detectors.</p>
 
                     
                     function
-                    <strong><a href='../proc/init_circle_dect.html'>init_circle_dect</a></strong>
+                    <strong><a href='/home/runner/work/signedMCRT/signedMCRT/docs/proc/init_circle_dect.html'>init_circle_dect</a></strong>
                     (pos, dir, layer, radius, nbins, maxval, trackHistory)
                   </td>
                   <td><p>Initalise Circle detector</p></td>
@@ -1513,23 +1398,13 @@ detectors detect photon packets colliding with the detectors.</p>
         <table class="table table-striped varlist">
           <tbody>
               <tr>
-                <td>
-                    procedure
-                    ,                  public
-,                   :: <strong><a href='../type/circle_dect.html#boundprocedure-check_hit~3'>check_hit</a></strong>
- =>
-                    <a href='../proc/check_hit_circle.html'>check_hit_circle</a>
-<small>Function</small>                </td>
+                <td>  procedure, public ::
+  <strong><a href='../type/circle_dect.html#boundprocedure-check_hit'>check_hit</a></strong> => <a href='/home/runner/work/signedMCRT/signedMCRT/docs/proc/check_hit_circle.html'>check_hit_circle</a></td>
                 <td></td>
               </tr>
               <tr>
-                <td>
-                    procedure
-                    ,                  public
-,                   :: <strong><a href='../type/detector1d.html#boundprocedure-record_hit'>record_hit</a></strong>
- =>
-                    <a href='../proc/record_hit_1d_sub.html'>record_hit_1D_sub</a>
-<small>Subroutine</small>                </td>
+                <td>  procedure, public ::
+  <strong><a href='../type/detector1d.html#boundprocedure-record_hit~2'>record_hit</a></strong> => <a href='/home/runner/work/signedMCRT/signedMCRT/docs/proc/record_hit_1d_sub.html'>record_hit_1D_sub</a></td>
                 <td></td>
               </tr>
           </tbody>
@@ -1537,8 +1412,8 @@ detectors detect photon packets colliding with the detectors.</p>
     </div>
   </div>
 
-              <div class="panel panel-default">
-    <div class="panel-heading codesum">
+              <div class="card">
+    <div class="card-header codesum">
       <span class="anchor" id="type-dect_array"></span>
       <h3>
         type, public&nbsp;::&nbsp;
@@ -1546,23 +1421,23 @@ detectors detect photon packets colliding with the detectors.</p>
         
       </h3>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
       <p>Detector array</p>
 
         <h4>Components</h4>
           <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Visibility</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-<th></th><th>Initial</th>        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-p~5"></span>
+              <span class="anchor" id="variable-p~2"></span>
               class(<a href='../type/detector.html'>detector</a>),
             </td>
               <td>public,</td>
@@ -1591,10 +1466,10 @@ detectors detect photon packets colliding with the detectors.</p>
 
         <section>
           <h2>Functions</h2>
-              <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-check_hit_annulus"></span><h3>private  function <a href='../proc/check_hit_annulus.html'>check_hit_annulus</a>(this, hitpoint)  
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-check_hit_annulus"></span> <h3>private  function <a href='../proc/check_hit_annulus.html'>check_hit_annulus</a>(this, hitpoint)  
 </h3></div>
-    <div class="panel-body">
+    <div class="card-body">
           
   <p>Check if a hitpoint is in the annulus</p>
 
@@ -1602,16 +1477,16 @@ detectors detect photon packets colliding with the detectors.</p>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-this~13"></span>
               class(<a href='../type/annulus_dect.html'>annulus_dect</a>),
             </td>
 <td>intent(inout)</td>
@@ -1626,7 +1501,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-hitpoint~2"></span>
               type(<a href='../type/hit_t.html'>hit_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1651,10 +1526,10 @@ detectors detect photon packets colliding with the detectors.</p>
     </div>
   </div>
 
-              <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-check_hit_camera"></span><h3>private  function <a href='../proc/check_hit_camera.html'>check_hit_camera</a>(this, hitpoint)  
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-check_hit_camera"></span> <h3>private  function <a href='../proc/check_hit_camera.html'>check_hit_camera</a>(this, hitpoint)  
 </h3></div>
-    <div class="panel-body">
+    <div class="card-body">
           
   <p>Check if a hitpoint is in the camera detector
 <a href="https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-plane-and-ray-disk-intersection">ref</a></p>
@@ -1663,16 +1538,16 @@ detectors detect photon packets colliding with the detectors.</p>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-this~14"></span>
               class(<a href='../type/camera.html'>camera</a>),
             </td>
 <td>intent(inout)</td>
@@ -1687,7 +1562,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-hitpoint~3"></span>
               type(<a href='../type/hit_t.html'>hit_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1712,10 +1587,10 @@ detectors detect photon packets colliding with the detectors.</p>
     </div>
   </div>
 
-              <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-check_hit_circle"></span><h3>private  function <a href='../proc/check_hit_circle.html'>check_hit_circle</a>(this, hitpoint)  
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-check_hit_circle"></span> <h3>private  function <a href='../proc/check_hit_circle.html'>check_hit_circle</a>(this, hitpoint)  
 </h3></div>
-    <div class="panel-body">
+    <div class="card-body">
           
   <p>Check if a hitpoint is in the circle</p>
 
@@ -1723,16 +1598,16 @@ detectors detect photon packets colliding with the detectors.</p>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-this~12"></span>
               class(<a href='../type/circle_dect.html'>circle_dect</a>),
             </td>
 <td>intent(inout)</td>
@@ -1747,7 +1622,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-hitpoint"></span>
               type(<a href='../type/hit_t.html'>hit_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1772,10 +1647,10 @@ detectors detect photon packets colliding with the detectors.</p>
     </div>
   </div>
 
-              <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-init_annulus_dect"></span><h3>private  function <a href='../proc/init_annulus_dect.html'>init_annulus_dect</a>(pos, dir, layer, r1, r2, nbins, maxval, trackHistory) result(out)  
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-init_annulus_dect"></span> <h3>private  function <a href='../proc/init_annulus_dect.html'>init_annulus_dect</a>(pos, dir, layer, r1, r2, nbins, maxval, trackHistory) result(out)  
 </h3></div>
-    <div class="panel-body">
+    <div class="card-body">
           
   <p>Initalise Annular detector</p>
 
@@ -1783,16 +1658,16 @@ detectors detect photon packets colliding with the detectors.</p>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-pos~10"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -1807,7 +1682,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-dir~8"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -1822,7 +1697,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-layer~3"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -1837,7 +1712,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-r1~2"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -1852,7 +1727,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-r2~2"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -1867,7 +1742,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-nbins~2"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -1882,7 +1757,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-maxval~2"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -1897,7 +1772,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-trackhistory~2"></span>
               logical,
             </td>
 <td>intent(in)</td>
@@ -1922,10 +1797,10 @@ detectors detect photon packets colliding with the detectors.</p>
     </div>
   </div>
 
-              <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-init_camera"></span><h3>private  function <a href='../proc/init_camera.html'>init_camera</a>(p1, p2, p3, layer, nbins, maxval, trackHistory) result(out)  
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-init_camera"></span> <h3>private  function <a href='../proc/init_camera.html'>init_camera</a>(p1, p2, p3, layer, nbins, maxval, trackHistory) result(out)  
 </h3></div>
-    <div class="panel-body">
+    <div class="card-body">
           
   <p>Initalise Camera detector</p>
 
@@ -1933,16 +1808,16 @@ detectors detect photon packets colliding with the detectors.</p>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-p1"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -1957,7 +1832,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-p2~2"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -1972,7 +1847,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-p3~2"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -1987,7 +1862,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-layer~4"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -2002,7 +1877,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-nbins~3"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -2017,7 +1892,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-maxval~3"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -2032,7 +1907,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-trackhistory~3"></span>
               logical,
             </td>
 <td>intent(in)</td>
@@ -2057,10 +1932,10 @@ detectors detect photon packets colliding with the detectors.</p>
     </div>
   </div>
 
-              <div class="panel panel-default">
-    <div class="panel-heading codesum"><span class="anchor" id="proc-init_circle_dect"></span><h3>private  function <a href='../proc/init_circle_dect.html'>init_circle_dect</a>(pos, dir, layer, radius, nbins, maxval, trackHistory) result(out)  
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-init_circle_dect"></span> <h3>private  function <a href='../proc/init_circle_dect.html'>init_circle_dect</a>(pos, dir, layer, radius, nbins, maxval, trackHistory) result(out)  
 </h3></div>
-    <div class="panel-body">
+    <div class="card-body">
           
   <p>Initalise Circle detector</p>
 
@@ -2068,16 +1943,16 @@ detectors detect photon packets colliding with the detectors.</p>
       <table class="table table-striped varlist">
     <thead>
       <tr>
-        <th>Type</th>
-<th>Intent</th><th>Optional</th>        <th>Attributes</th>
-        <th></th>
-        <th>Name</th>
-        <th></th>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
     </thead>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-pos~9"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -2092,7 +1967,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-dir~7"></span>
               type(<a href='../type/vector.html'>vector</a>),
             </td>
 <td>intent(in)</td>
@@ -2107,7 +1982,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-layer~2"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -2122,7 +1997,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-radius~4"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -2137,7 +2012,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-nbins"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -2152,7 +2027,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-maxval"></span>
               real(kind=wp),
             </td>
 <td>intent(in)</td>
@@ -2167,7 +2042,7 @@ detectors detect photon packets colliding with the detectors.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" ></span>
+              <span class="anchor" id="variable-trackhistory"></span>
               logical,
             </td>
 <td>intent(in)</td>
@@ -2205,12 +2080,15 @@ detectors detect photon packets colliding with the detectors.</p>
     </div> <!-- /container -->
     <footer>
       <div class="container">
-        <div class="row">
-          <div class="col-xs-6 col-md-6"><p>signedMCRT was developed by Lewis McMillan<br>&copy; 2023 
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              signedMCRT
+ was developed by Lewis McMillan<br>              &copy; 2024 
 </p>
           </div>
-          <div class="col-xs-6 col-md-6">
-            <p class="text-right">
+          <div class="col">
+            <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
             </p>
@@ -2220,17 +2098,12 @@ detectors detect photon packets colliding with the detectors.</p>
       </div> <!-- /container -->
     </footer>
 
-    <!-- Bootstrap core JavaScript
-         ================================================== -->
-         <!-- Placed at the end of the document so the pages load faster -->
-    <!--
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-        -->
-        <script src="../js/bootstrap.min.js"></script>
-        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-        <script src="../js/ie10-viewport-bug-workaround.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>    
 
-        <!-- MathJax JavaScript
+    <!-- MathJax JavaScript
              ================================================== -->
              <!-- Placed at the end of the document so the pages load faster -->
         <script type="text/x-mathjax-config">

@@ -36,6 +36,9 @@ module sim_state_mod
         logical :: trackHistory
         !> Boolean to indicate whether to store absoption data.
         logical :: absorb
+        integer :: ckptfreq
+        logical :: loadckpt
+        character(len=:), allocatable :: ckptfile
     end type settings_t
 
     !> global var that stores simulation state

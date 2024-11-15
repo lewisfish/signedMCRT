@@ -1,3 +1,5 @@
+<!-- -*- mode: jinja2 -*- -->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -11,86 +13,60 @@
     <title>All Modules &ndash; signedMCRT
 </title>
 
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link href="../css/pygments.css" rel="stylesheet">
     <link href="../css/font-awesome.min.css" rel="stylesheet">
     <link href="../css/local.css" rel="stylesheet">
       <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
-
-         <script src="../js/jquery-2.1.3.min.js"></script>
-         <script src="../js/svg-pan-zoom.min.js"></script>
-
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="../js/svg-pan-zoom.min.js"></script>
   </head>
 
   <body>
 
     <!-- Fixed navbar -->
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
           <a class="navbar-brand" href="../index.html">signedMCRT </a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-              <li><a href='../page/index.html'>main</a></li>
-            <li class="dropdown hidden-xs visible-sm visible-md hidden-lg">
-              <a href="#" class="dropdown-toggle"
-                 data-toggle="dropdown" role="button"
-                 aria-haspopup="true"
-                 aria-expanded="false">
-                 Contents <span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu">
-                    <li><a href="../lists/files.html">Source Files</a></li>
-                  <li><a href="../lists/modules.html">Modules</a></li>
-                  <li><a href="../lists/procedures.html">Procedures</a></li>
-                  <li><a href="../lists/absint.html">Abstract Interfaces</a></li>
-                  <li><a href="../lists/types.html">Derived Types</a></li>
-                  <li><a href="../program/mcpolar.html">Program</a></li>
-              </ul>
-            </li>
-                <li class="visible-xs hidden-sm visible-lg">
-                  <a href="../lists/files.html">Source Files</a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="../page/index.html">main</a></li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
                 </li>
-              <li class="visible-xs hidden-sm visible-lg">
-                <a href="../lists/modules.html">Modules</a>
-              </li>
-              <li class="visible-xs hidden-sm visible-lg">
-                <a href="../lists/procedures.html">Procedures</a>
-              </li>
-              <li class="visible-xs hidden-sm visible-lg">
-                <a href="../lists/absint.html">Abstract Interfaces</a>
-              </li>
-              <li class="visible-xs hidden-sm visible-lg">
-                <a href="../lists/types.html">Derived Types</a>
-              </li>
-              <li class="visible-xs hidden-sm visible-lg">
-                <a href="../program/mcpolar.html">Program</a>
-              </li>
-          </ul>
-            <form action="../search.html" class="navbar-form navbar-right" role="search">
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/absint.html">Abstract Interfaces</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../program/mcpolar.html">Program</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
               </div>
-              <!--
-                  <button type="submit" class="btn btn-default">Submit</button>
-                  -->
-            </form>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
 
     <div class="container">
       <div class="row">
@@ -99,7 +75,10 @@
 			 <table class="table">
 			 <thead><tr><th>Module</th><th>Source File</th><th>Description</th></tr></thead>
 			 <tbody>
-			   <tr class="active"><td><a href='../module/constants.html'>constants</a></td><td><a href='../sourcefile/constants.f90.html'>constants.f90</a></td><td><p>This module contains mathematical constants and strings that contain the various directories used by the program.
+			   <tr class="active">
+                 <td><a href='../module/constants.html'>constants</a></td>
+                 <td><a href='../sourcefile/constants.f90.html'>constants.f90</a></td>
+                 <td><p>This module contains mathematical constants and strings that contain the various directories used by the program.
    Math constants:
    - PI
    - 2 PI
@@ -107,42 +86,126 @@
    Directories:
    - homedir. Root directory of this code
    - fileplace. data folder directory
-  - resdir. holds the path to the directory that holds the parameter and other associated input files</p></td></tr>
-<!--active-->			   <tr class=""><td><a href='../module/detector_mod.html'>detector_mod</a></td><td><a href='../sourcefile/detector_base.f90.html'>detector_base.f90</a></td><td><p>Module contains photon detector abstract class and the derived types the inherit from it
-not fully implmented</p></td></tr>
-<!---->			   <tr class="active"><td><a href='../module/detectors.html'>detectors</a></td><td><a href='../sourcefile/detectors.f90.html'>detectors.f90</a></td><td><p>Module contains each detector type which inherits from the base detector class.
-detectors detect photon packets colliding with the detectors.</p></td></tr>
-<!--active-->			   <tr class=""><td><a href='../module/geometry.html'>geometry</a></td><td><a href='../sourcefile/geometrymod.f90.html'>geometryMod.f90</a></td><td><p>Defines a set of functions for intersecting a ray and a surface.</p><a href="../module/geometry.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-<!---->			   <tr class="active"><td><a href='../module/gridmod.html'>gridMod</a></td><td><a href='../sourcefile/grid.f90.html'>grid.f90</a></td><td><p>This module defines the cartesian grid type (cart_grid) and associated routines.</p><a href="../module/gridmod.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-<!--active-->			   <tr class=""><td><a href='../module/historystack.html'>historyStack</a></td><td><a href='../sourcefile/historystack.f90.html'>historyStack.f90</a></td><td><p>Module contains the history stack type which stores the history of positions of a photon and th I/O routines
-not fully implmented </p></td></tr>
-<!---->			   <tr class="active"><td><a href='../module/iarray.html'>iarray</a></td><td><a href='../sourcefile/iarray.f90.html'>iarray.f90</a></td><td><p>The iarray module contains the variables that record the fluence. These are 3D arrays, with roughly the same dimensions as the cart_grid type.
-Jmean is the <em>local</em> fluence. JmeanGLOBAL is the <em>global</em> fluence grid. The global version is the one that is written to disk at the simulations end.</p></td></tr>
-<!--active-->			   <tr class=""><td><a href='../module/inttau2.html'>inttau2</a></td><td><a href='../sourcefile/inttau2.f90.html'>inttau2.f90</a></td><td><p>inttau2 is the heart of the MCRT simulation. It moves the photons though the simulated media.
+  - resdir. holds the path to the directory that holds the parameter and other associated input files</p></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/detector_mod.html'>detector_mod</a></td>
+                 <td><a href='../sourcefile/detector_base.f90.html'>detector_base.f90</a></td>
+                 <td><p>Module contains photon detector abstract class and the derived types the inherit from it
+not fully implmented</p></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/detectors.html'>detectors</a></td>
+                 <td><a href='../sourcefile/detectors.f90.html'>detectors.f90</a></td>
+                 <td><p>Module contains each detector type which inherits from the base detector class.
+detectors detect photon packets colliding with the detectors.</p></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/geometry.html'>geometry</a></td>
+                 <td><a href='../sourcefile/geometrymod.f90.html'>geometryMod.f90</a></td>
+                 <td><p>Defines a set of functions for intersecting a ray and a surface.</p><a href="../module/geometry.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/gridmod.html'>gridMod</a></td>
+                 <td><a href='../sourcefile/grid.f90.html'>grid.f90</a></td>
+                 <td><p>This module defines the cartesian grid type (cart_grid) and associated routines.</p><a href="../module/gridmod.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/historystack.html'>historyStack</a></td>
+                 <td><a href='../sourcefile/historystack.f90.html'>historyStack.f90</a></td>
+                 <td><p>Module contains the history stack type which stores the history of positions of a photon and th I/O routines
+not fully implmented </p></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/iarray.html'>iarray</a></td>
+                 <td><a href='../sourcefile/iarray.f90.html'>iarray.f90</a></td>
+                 <td><p>The iarray module contains the variables that record the fluence. These are 3D arrays, with roughly the same dimensions as the cart_grid type.
+Jmean is the <em>local</em> fluence. JmeanGLOBAL is the <em>global</em> fluence grid. The global version is the one that is written to disk at the simulations end.</p></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/inttau2.html'>inttau2</a></td>
+                 <td><a href='../sourcefile/inttau2.f90.html'>inttau2.f90</a></td>
+                 <td><p>inttau2 is the heart of the MCRT simulation. It moves the photons though the simulated media.
 tauint2 is the only public function here and is the main function that moves the photon.
-Changes should only be made here if bugs are discovered or new methods of tracking photons (i.e phase tracking) or moving photons (i.e new geometry method) is needed.</p></td></tr>
-<!---->			   <tr class="active"><td><a href='../module/kernels.html'>kernels</a></td><td><a href='../sourcefile/kernelsmod.f90.html'>kernelsMod.f90</a></td><td><p>Contains the main program and scattering loop. Calls all other routine to setup, run and break down the simulation.</p></td></tr>
-<!--active-->			   <tr class=""><td><a href='../module/mat_class.html'>mat_class</a></td><td><a href='../sourcefile/mat_class.f90.html'>mat_class.f90</a></td><td><p>Matrix class module. Defines a matrix type (4x4 matrix) and associated operations on matrices and other types.</p><a href="../module/mat_class.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-<!---->			   <tr class="active"><td><a href='../module/opticalproperties.html'>opticalProperties</a></td><td><a href='../sourcefile/opticalproperties.f90.html'>opticalProperties.f90</a></td><td><p>module implments the optical property abstract type and the types that inheirt from it
-abstract optical property type</p></td></tr>
-<!--active-->			   <tr class=""><td><a href='../module/parse_detectorsmod.html'>parse_detectorsMod</a></td><td><a href='../sourcefile/parse_detectors.f90.html'>parse_detectors.f90</a></td><td><p>routine to parse the detector table from the input Toml file.</p></td></tr>
-<!---->			   <tr class="active"><td><a href='../module/parse_helpersmod.html'>parse_HelpersMod</a></td><td><a href='../sourcefile/parse_helpers.f90.html'>parse_helpers.f90</a></td><td><p>Helper functions for parsing the toml input file</p></td></tr>
-<!--active-->			   <tr class=""><td><a href='../module/parse_mod.html'>parse_mod</a></td><td><a href='../sourcefile/parse.f90.html'>parse.f90</a></td><td><p>Module contains parses the input toml config files.
-See <a href=".././page/config.html">config</a> for details of toml input file.</p></td></tr>
-<!---->			   <tr class="active"><td><a href='../module/parse_sourcesmod.html'>parse_sourcesMod</a></td><td><a href='../sourcefile/parse_source.f90.html'>parse_source.f90</a></td><td><p>routine to parse the source table from the input Toml file.</p></td></tr>
-<!--active-->			   <tr class=""><td><a href='../module/parse_spectrummod.html'>parse_SpectrumMod</a></td><td><a href='../sourcefile/parse_spectrum.f90.html'>parse_spectrum.f90</a></td><td><p>routine to parse the spectrum entry in the source table from the input Toml file.</p></td></tr>
-<!---->			   <tr class="active"><td><a href='../module/photonmod.html'>photonMod</a></td><td><a href='../sourcefile/photon.f90.html'>photon.f90</a></td><td><p>This source file contains the photon type, all the photon launch routines for different light sources, and the scattering code.</p><a href="../module/photonmod.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-<!--active-->			   <tr class=""><td><a href='../module/piecewisemod.html'>piecewiseMod</a></td><td><a href='../sourcefile/piecewise.f90.html'>piecewise.f90</a></td><td><p>This file contains the piecewise abstract type, for sampling from constants, 1D or 2D arrays. Inspired by <a href="https://www.pbr-book.org/">PBRT</a> piecewise class.
-Currently, the following public types are defined:</p><a href="../module/piecewisemod.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-<!---->			   <tr class="active"><td><a href='../module/random.html'>random</a></td><td><a href='../sourcefile/random_mod.f90.html'>random_mod.f90</a></td><td><p>module provides an interface to call random_numbers and various other random distributions=======    !!This module defines a set of functions that return random numbers in different distributions.    !!- ran2. Returns a single float uniformly in the range [0, 1)    !!- ranu. Return a single float uniformly in the range [a, b)    !!- randint. Returns a single integer uniformly in the range [a, b)    !!- rang. Returns a single float from a Gaussian distribution with mean <em>avg</em> and std <em>sigma</em>.    !!- init_rng. Seeds the internal random number generator with a reproducible seed.</p></td></tr>
-<!--active-->			   <tr class=""><td><a href='../module/sdf_basemod.html'>sdf_baseMod</a></td><td><a href='../sourcefile/sdf_base.f90.html'>sdf_base.f90</a></td><td><p>This module defines the signed distance function (SDF) abstract type, sdf_base type, and model type.
+Changes should only be made here if bugs are discovered or new methods of tracking photons (i.e phase tracking) or moving photons (i.e new geometry method) is needed.</p></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/kernels.html'>kernels</a></td>
+                 <td><a href='../sourcefile/kernelsmod.f90.html'>kernelsMod.f90</a></td>
+                 <td><p>Contains the main program and scattering loop. Calls all other routine to setup, run and break down the simulation.</p></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/mat_class.html'>mat_class</a></td>
+                 <td><a href='../sourcefile/mat_class.f90.html'>mat_class.f90</a></td>
+                 <td><p>Matrix class module. Defines a matrix type (4x4 matrix) and associated operations on matrices and other types.</p><a href="../module/mat_class.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/opticalproperties.html'>opticalProperties</a></td>
+                 <td><a href='../sourcefile/opticalproperties.f90.html'>opticalProperties.f90</a></td>
+                 <td><p>module implments the optical property abstract type and the types that inheirt from it
+abstract optical property type</p></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/parse_detectorsmod.html'>parse_detectorsMod</a></td>
+                 <td><a href='../sourcefile/parse_detectors.f90.html'>parse_detectors.f90</a></td>
+                 <td><p>routine to parse the detector table from the input Toml file.</p></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/parse_helpersmod.html'>parse_HelpersMod</a></td>
+                 <td><a href='../sourcefile/parse_helpers.f90.html'>parse_helpers.f90</a></td>
+                 <td><p>Helper functions for parsing the toml input file</p></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/parse_mod.html'>parse_mod</a></td>
+                 <td><a href='../sourcefile/parse.f90.html'>parse.f90</a></td>
+                 <td><p>Module contains parses the input toml config files.
+See <a href="..//home/runner/work/signedMCRT/signedMCRT/docs/page/config.html">config</a> for details of toml input file.</p></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/parse_sourcesmod.html'>parse_sourcesMod</a></td>
+                 <td><a href='../sourcefile/parse_source.f90.html'>parse_source.f90</a></td>
+                 <td><p>routine to parse the source table from the input Toml file.</p></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/parse_spectrummod.html'>parse_SpectrumMod</a></td>
+                 <td><a href='../sourcefile/parse_spectrum.f90.html'>parse_spectrum.f90</a></td>
+                 <td><p>routine to parse the spectrum entry in the source table from the input Toml file.</p></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/photonmod.html'>photonMod</a></td>
+                 <td><a href='../sourcefile/photon.f90.html'>photon.f90</a></td>
+                 <td><p>This source file contains the photon type, all the photon launch routines for different light sources, and the scattering code.</p><a href="../module/photonmod.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/piecewisemod.html'>piecewiseMod</a></td>
+                 <td><a href='../sourcefile/piecewise.f90.html'>piecewise.f90</a></td>
+                 <td><p>This file contains the piecewise abstract type, for sampling from constants, 1D or 2D arrays. Inspired by <a href="https://www.pbr-book.org/">PBRT</a> piecewise class.
+Currently, the following public types are defined:</p><a href="../module/piecewisemod.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/random.html'>random</a></td>
+                 <td><a href='../sourcefile/random_mod.f90.html'>random_mod.f90</a></td>
+                 <td><p>module provides an interface to call random_numbers and various other random distributions=======    !!This module defines a set of functions that return random numbers in different distributions.    !!- ran2. Returns a single float uniformly in the range [0, 1)    !!- ranu. Return a single float uniformly in the range [a, b)    !!- randint. Returns a single integer uniformly in the range [a, b)    !!- rang. Returns a single float from a Gaussian distribution with mean <em>avg</em> and std <em>sigma</em>.    !!- init_rng. Seeds the internal random number generator with a reproducible seed.</p></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/sdf_basemod.html'>sdf_baseMod</a></td>
+                 <td><a href='../sourcefile/sdf_base.f90.html'>sdf_base.f90</a></td>
+                 <td><p>This module defines the signed distance function (SDF) abstract type, sdf_base type, and model type.
 The SDF abstract type contains the optical properties of an SDF (mus, mua, kappa, albedo, hgg, g2,and n), as well as a transform (4x4 matrix), 
 and the layer ID code of the SDF. The SDF abstract type also provides an abstract interface (evaluate) which each inheriting function must implement.
 This evaluate function is the heart of the SDF implementation. Each individual evaluate is the direct implementation of that SDF, e.g. that function defines the mathematical SDF. 
 For more information on SDFs, check out Inigo Quilez's <a href="https://iquilezles.org/articles/">website</a> from which most of the below SDFs and transforms have been taken.
-API based upon <a href="https://fortran-lang.discourse.group/t/attempting-type-erasure-in-fortran/4402/2">here</a></p></td></tr>
-<!---->			   <tr class="active"><td><a href='../module/sdfhelpers.html'>sdfHelpers</a></td><td><a href='../sourcefile/sdfhelpers.f90.html'>sdfHelpers.f90</a></td><td><p>Collection of helper functions for SDFs:</p><a href="../module/sdfhelpers.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-<!--active-->			   <tr class=""><td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td><td><a href='../sourcefile/sdfmodifiers.f90.html'>sdfModifiers.f90</a></td><td><p>This module defines transforms that can be applied to each SDF:
+API based upon <a href="https://fortran-lang.discourse.group/t/attempting-type-erasure-in-fortran/4402/2">here</a></p></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/sdfhelpers.html'>sdfHelpers</a></td>
+                 <td><a href='../sourcefile/sdfhelpers.f90.html'>sdfHelpers.f90</a></td>
+                 <td><p>Collection of helper functions for SDFs:</p><a href="../module/sdfhelpers.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/sdfmodifiers.html'>sdfModifiers</a></td>
+                 <td><a href='../sourcefile/sdfmodifiers.f90.html'>sdfModifiers.f90</a></td>
+                 <td><p>This module defines transforms that can be applied to each SDF:
 - Union
 - Intersection
 - Subtraction
@@ -153,22 +216,55 @@ API based upon <a href="https://fortran-lang.discourse.group/t/attempting-type-e
 - Repeat
 - Extrude
 - Revolution
-- Onion</p></td></tr>
-<!---->			   <tr class="active"><td><a href='../module/sdfs.html'>sdfs</a></td><td><a href='../sourcefile/sdfs.f90.html'>sdfs.f90</a></td><td><p>This module defines the signed distance function (SDF) abstract type and all types that inherit from it.
+- Onion</p></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/sdfs.html'>sdfs</a></td>
+                 <td><a href='../sourcefile/sdfs.f90.html'>sdfs.f90</a></td>
+                 <td><p>This module defines the signed distance function (SDF) abstract type and all types that inherit from it.
 The SDF abstract type defines the optical properties of an SDF (mus, mua, kappa, albedo, hgg, g2,and n), as well as a transform (4x4 matrix), and the layer ID code of the SDF.
 The SDF abstract type also provides an abstract interface (evaluate) which each inheriting function must implement. This evaluate function is the heart of the SDF implementation.
 Each individual evaluate is the direct implementation of that SDF, e.g. that function defines the mathematical SDF.
-For more information on SDFs, check out Inigo Quilez's <a href="https://iquilezles.org/articles/">website</a> from which most of the below SDFs and transforms have been taken.</p><a href="../module/sdfs.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
-<!--active-->			   <tr class=""><td><a href='../module/setupgeometry.html'>setupGeometry</a></td><td><a href='../sourcefile/setupgeometry.f90.html'>setupGeometry.f90</a></td><td><p>contains all the routines that setup premade experimental geometry</p></td></tr>
-<!---->			   <tr class="active"><td><a href='../module/setupmod.html'>setupMod</a></td><td><a href='../sourcefile/setup.f90.html'>setup.f90</a></td><td><p>This file sets up some simulations variables and assigns the geometry for the simulation.</p></td></tr>
-<!--active-->			   <tr class=""><td><a href='../module/sim_state_mod.html'>sim_state_mod</a></td><td><a href='../sourcefile/sim_state.f90.html'>sim_state.f90</a></td><td><p>This module defines the setting_t type which holds simulation metadata:</p></td></tr>
-<!---->			   <tr class="active"><td><a href='../module/surfaces.html'>surfaces</a></td><td><a href='../sourcefile/surfaces.f90.html'>surfaces.f90</a></td><td><p>Contains the routines that handle reflection, and refraction via the Fresnel equations.</p></td></tr>
-<!--active-->			   <tr class=""><td><a href='../module/vec4_class.html'>vec4_class</a></td><td><a href='../sourcefile/vec4_class.f90.html'>vec4_class.f90</a></td><td><p>Vector4 class module. Defines a vector4 type (x, y, z, p) and associated operations on vectors and other types.</p></td></tr>
-<!---->			   <tr class="active"><td><a href='../module/vector_class.html'>vector_class</a></td><td><a href='../sourcefile/vector_class.f90.html'>vector_class.f90</a></td><td><p>Vector class module. Defines a vector type (x, y, z) and associated operations on vectors and other types.</p></td></tr>
-<!--active-->			   <tr class=""><td><a href='../module/writer_mod.html'>writer_mod</a></td><td><a href='../sourcefile/writer.f90.html'>writer.f90</a></td><td><p>This module defines all functions that write simulation data to the disk or pre-process data before writing.
+For more information on SDFs, check out Inigo Quilez's <a href="https://iquilezles.org/articles/">website</a> from which most of the below SDFs and transforms have been taken.</p><a href="../module/sdfs.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/setupgeometry.html'>setupGeometry</a></td>
+                 <td><a href='../sourcefile/setupgeometry.f90.html'>setupGeometry.f90</a></td>
+                 <td><p>contains all the routines that setup premade experimental geometry</p></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/setupmod.html'>setupMod</a></td>
+                 <td><a href='../sourcefile/setup.f90.html'>setup.f90</a></td>
+                 <td><p>This file sets up some simulations variables and assigns the geometry for the simulation.</p></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/sim_state_mod.html'>sim_state_mod</a></td>
+                 <td><a href='../sourcefile/sim_state.f90.html'>sim_state.f90</a></td>
+                 <td><p>This module defines the setting_t type which holds simulation metadata:</p></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/surfaces.html'>surfaces</a></td>
+                 <td><a href='../sourcefile/surfaces.f90.html'>surfaces.f90</a></td>
+                 <td><p>Contains the routines that handle reflection, and refraction via the Fresnel equations.</p></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/vec4_class.html'>vec4_class</a></td>
+                 <td><a href='../sourcefile/vec4_class.f90.html'>vec4_class.f90</a></td>
+                 <td><p>Vector4 class module. Defines a vector4 type (x, y, z, p) and associated operations on vectors and other types.</p></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/vector_class.html'>vector_class</a></td>
+                 <td><a href='../sourcefile/vector_class.f90.html'>vector_class.f90</a></td>
+                 <td><p>Vector class module. Defines a vector type (x, y, z) and associated operations on vectors and other types.</p></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/writer_mod.html'>writer_mod</a></td>
+                 <td><a href='../sourcefile/writer.f90.html'>writer.f90</a></td>
+                 <td><p>This module defines all functions that write simulation data to the disk or pre-process data before writing.
 normalise_fluence. Normalises fluence by number of photons run and size of each voxel. <strong>!Does not normalise by power!</strong>
 write_fluence. Write out fluence in either raw or nrrd format. Default is nrrd.
-write_detected_photons. Write out photons detected by detectors.</p><a href="../module/writer_mod.html" class="pull-right"><emph>Read more&hellip;</emph></a></td></tr>
+write_detected_photons. Write out photons detected by detectors.</p><a href="../module/writer_mod.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
 <!---->			 </tbody></table>
              
         </div>
@@ -177,12 +273,15 @@ write_detected_photons. Write out photons detected by detectors.</p><a href="../
     </div> <!-- /container -->
     <footer>
       <div class="container">
-        <div class="row">
-          <div class="col-xs-6 col-md-6"><p>signedMCRT was developed by Lewis McMillan<br>&copy; 2023 
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              signedMCRT
+ was developed by Lewis McMillan<br>              &copy; 2024 
 </p>
           </div>
-          <div class="col-xs-6 col-md-6">
-            <p class="text-right">
+          <div class="col">
+            <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
             </p>
@@ -192,17 +291,12 @@ write_detected_photons. Write out photons detected by detectors.</p><a href="../
       </div> <!-- /container -->
     </footer>
 
-    <!-- Bootstrap core JavaScript
-         ================================================== -->
-         <!-- Placed at the end of the document so the pages load faster -->
-    <!--
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-        -->
-        <script src="../js/bootstrap.min.js"></script>
-        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-        <script src="../js/ie10-viewport-bug-workaround.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>    
 
-        <!-- MathJax JavaScript
+    <!-- MathJax JavaScript
              ================================================== -->
              <!-- Placed at the end of the document so the pages load faster -->
         <script type="text/x-mathjax-config">
