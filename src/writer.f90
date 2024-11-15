@@ -19,7 +19,7 @@ module writer_mod
     end interface raw_write
 
     private
-    public :: normalise_fluence, write_data, write_detected_photons
+    public :: normalise_fluence, write_data, write_detected_photons, checkpoint
 
     contains
         subroutine normalise_fluence(grid, array, nphotons)
@@ -332,4 +332,37 @@ array  = array * ((2._sp*xmax*2._sp*ymax)/(nphotons * (2._sp * xmax / nxg) * (2.
             close(u)
         
         end subroutine write_3d_r4_nrrd
+
+        subroutine checkpoint(toml_filename, filename, nphotons_run, overwrite)
+
+            use iarray, only : jmean
+
+            !> filename of toml file used in simulation
+            character(*), intent(IN)    :: toml_filename
+            !> name of checkpoint file to be saved
+            character(*), intent(IN)    :: filename
+            !> flag which determines if file is to be overwritten or adjusted
+            logical,      intent(IN) :: overwrite
+            !> number of photons run up to checkpoint
+            integer,      intent(IN) :: nphotons_run
+
+            character(len=:), allocatable :: file
+            integer :: u
+
+            if(check_file(filename) .and. .not. overwrite)then
+                file = get_new_file_name(filename)
+            else
+                file = filename
+            end if
+
+            open(newunit=u,file=file)
+            write(u,"(a,a)")"tomlfile=",toml_filename
+            write(u,"(a,i0)")"photons_run=",nphotons_run
+            close(u)
+
+            open(newunit=u,file=file,access="stream",form="unformatted",position="append")
+            write(u)jmean
+            close(u)
+
+        end subroutine checkpoint
 end module writer_mod

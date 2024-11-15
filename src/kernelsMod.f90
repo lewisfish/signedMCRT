@@ -181,6 +181,7 @@ contains
         use utils,         only : pbar
         use vec4_class,    only : vec4
         use vector_class,  only : vector
+        use writer_mod,    only : checkpoint
 
         !external deps
         use tev_mod, only : tevipc
@@ -204,13 +205,41 @@ contains
         type(tevipc)                  :: tev
         type(seq)                     :: seqs(2)
         type(spectrum_t)              :: spectrum
+        real :: tic, toc
 
-        call setup(input_file, tev, dects, array, packet, spectrum, dict, distances, image, nscatt, start)
+        integer :: nphotons_run,pos
+        character(len=128) :: line
+        character(len=:), allocatable :: checkpt_input_file
+
+        if(state%loadckpt)then
+            call setup(input_file, tev, dects, array, packet, spectrum, dict, distances, image, nscatt, start, .false.)
+            open(newunit=j,file=state%ckptfile, access="stream", form="formatted")
+            read(j,"(a)")line
+            pos = scan(line, "=")
+            checkpt_input_file = trim(line(pos+1:))
+
+            read(j,"(a)")line
+            pos = scan(line, "=")
+            read(line(pos+1:),*) nphotons_run
+
+            inquire(j,pos=pos)
+            close(j)
+
+            open(newunit=j,file=state%ckptfile, access="stream", form="unformatted")
+            read(j,pos=pos)jmean
+            close(j)
+
+            call setup(checkpt_input_file, tev, dects, array, packet, spectrum, dict, distances, image, nscatt, start, .true.)
+            state%iseed=state%iseed*101
+            state%nphotons = state%nphotons - nphotons_run
+        else
+            call setup(input_file, tev, dects, array, packet, spectrum, dict, distances, image, nscatt, start, .true.)
+        end if
 
 #ifdef _OPENMP
-        !is state%seed private, i dont think so...
-        !$omp parallel default(none) shared(dict, array, numproc, start, state, bar, jmean, phasor, tev, dects, spectrum)&
-        !$omp& private(ran, id, distances, image, dir, hpoint, history, seqs) reduction(+:nscatt) firstprivate(packet)
+        tic=omp_get_wtime()
+!$omp parallel default(none) shared(dict, array, numproc, start, bar, jmean, input_file, phasor, tev, dects, spectrum)&
+        !$omp& private(ran, id, distances, image, dir, hpoint, history, seqs) reduction(+:nscatt) firstprivate(state, packet)
         numproc = omp_get_num_threads()
         id = omp_get_thread_num()
         if(numproc > state%nphotons .and. id == 0)print*,"Warning, simulation may be underministic due to low photon count!"
@@ -218,23 +247,26 @@ contains
 #elif MPI
     !nothing
 #else
+        call cpu_time(tic)
         numproc = 1
         id = 0
         if(state%trackHistory)history = history_stack_t(state%historyFilename, id)
 #endif
         if(id == 0)print("(a,I3.1,a)"),'Photons now running on', numproc,' cores.'
-
+        state%iseed = state%iseed + id
         ! set seed for rnd generator. id to change seed for each process
-        call init_rng(spread(state%iseed+id, 1, 8), fwd=.true.)
+        call init_rng(spread(state%iseed, 1, 8), fwd=.true.)
         seqs = [seq((id+1)*(state%nphotons/numproc), 2),&
                 seq((id+1)*(state%nphotons/numproc), 3)]
 
         bar = pbar(state%nphotons/ 10)
+
         !$OMP BARRIER
         !$OMP do
-        !loop over photons 
+        !loop over photons
         do j = 1, state%nphotons
             if(mod(j, 10) == 0)call bar%progress()
+            if(mod(j, state%ckptfreq) == 0 .and. id==0)call checkpoint(input_file, state%ckptfile, j, .true.)
 
             ! Release photon from point source
             call packet%emit(spectrum, dict, seqs)
@@ -291,7 +323,12 @@ contains
 #ifdef _OPENMP
 !$OMP end  do
 !$OMP end parallel
+toc=omp_get_wtime()
+#else
+    call cpu_time(toc)
 #endif
+    print*,"Photons/s: ",(state%nphotons / (toc - tic))
+
     call finalise(dict, dects, nscatt, start, history)
     end subroutine pathlength_scatter
 
@@ -413,7 +450,7 @@ contains
 
 !####################################################################################################
 !                           Setup and break down helper routines
-    subroutine setup(input_file, tev, dects, array, packet, spectrum, dict, distances, image, nscatt, start)
+    subroutine setup(input_file, tev, dects, array, packet, spectrum, dict, distances, image, nscatt, start, display)
         !! setup simulation by reading in setting file, and setup variables to be used.
         
         !shared data
@@ -451,11 +488,20 @@ contains
         real(kind=wp),    allocatable, intent(out) :: distances(:), image(:,:,:)
         real(kind=wp),                 intent(out) :: nscatt, start
         type(spectrum_t),              intent(out) :: spectrum
+        !> flag to display simulation init settings
+        logical, optional,             intent(in) :: display
         
         ! mpi/mp variables
         integer       :: id
         real(kind=wp) :: chance, threshold
         type(toml_error), allocatable :: error
+        logical :: disp
+
+        if(present(display))then
+            disp = display
+        else
+            disp = .true.
+        end if
 
         chance = 1._wp/10._wp
         threshold = 1e-6_wp
@@ -470,7 +516,7 @@ contains
         end if
         allocate(image(state%grid%nxg,state%grid%nzg,1))
         
-        call display_settings(state, input_file, packet, "Pathlength")
+        if(disp)call display_settings(state, input_file, packet, "Pathlength")
 
         if(state%tev)then
             !init TEV link

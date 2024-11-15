@@ -202,6 +202,11 @@ module parse_mod
             call get_value(child, "iseed", state%iseed, 123456789)
             call get_value(child, "tev", state%tev, .false.)
             call get_value(child, "absorb", state%absorb, .false.)
+
+            call get_value(child, "load_checkpoint", state%loadckpt, .false.)
+            call get_value(child, "checkpoint_file", state%ckptfile, "check.ckpt")
+            call get_value(child, "checkpoint_every_n", state%ckptfreq, 1000000)
+
         else
             call make_error(error, "Need simulation table in input param file", -1)
             return

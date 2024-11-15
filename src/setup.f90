@@ -82,7 +82,12 @@ module setupMod
             inquire(directory=trim(fileplace)//"/detectors", exist=detectorsExists)
             inquire(directory=trim(fileplace)//"/phasor", exist=phasorExists)
 #else 
-    error stop "Compiler not supported!"
+    dataExists=.true.
+    jmeanExists=.true.
+    depositExists=.true.
+    detectorsExists=.true.
+    phasorExists=.true.
+    ! error stop "Compiler not supported!"
 #endif
             if(.not. dataExists)then
                 call create_directory("", dataExists, "", .false.)
@@ -150,6 +155,8 @@ module setupMod
             use iarray
             !> grid size
             integer, intent(IN) :: nxg, nyg, nzg
+
+            if(allocated(phasor))call dealloc_array()
 
             allocate(phasor(nxg, nyg, nzg), phasorGLOBAL(nxg, nyg, nzg))
             allocate(jmean(nxg, nyg, nzg), jmeanGLOBAL(nxg, nyg, nzg))

@@ -26,3 +26,6 @@ overwrite = true
 [simulation]
 iseed = 123456789
 absorb=true
+load_checkpoint=false
+checkpoint_file="check.ckpt"
+checkpoint_every_n=10000
